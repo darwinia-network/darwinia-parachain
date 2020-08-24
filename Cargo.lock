@@ -162,7 +162,7 @@ checksum = "4d25d88fd6b8041580a654f9d0c581a047baee2b3efee13275f2fc392fc75034"
 [[package]]
 name = "array-bytes"
 version = "1.0.0-alpha.2"
-source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#47525560af4dccdbf1059f3201576c9e10545649"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#134a558c234e73cca965c5a05d48ff4ab86f4cdd"
 dependencies = [
  "sp-std",
 ]
@@ -398,9 +398,9 @@ dependencies = [
 
 [[package]]
 name = "bindgen"
-version = "0.53.3"
+version = "0.54.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c72a978d268b1d70b0e963217e60fdabd9523a941457a6c42a7315d15c7e89e5"
+checksum = "66c0bb6167449588ff70803f4127f0684f9063097eca5016f37eb52b92c2cf36"
 dependencies = [
  "bitflags",
  "cexpr",
@@ -1200,7 +1200,7 @@ dependencies = [
 [[package]]
 name = "darwinia-balances"
 version = "1.0.0-alpha.2"
-source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#47525560af4dccdbf1059f3201576c9e10545649"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#134a558c234e73cca965c5a05d48ff4ab86f4cdd"
 dependencies = [
  "darwinia-balances-rpc-runtime-api",
  "darwinia-support",
@@ -1215,7 +1215,7 @@ dependencies = [
 [[package]]
 name = "darwinia-balances-rpc-runtime-api"
 version = "1.0.0-alpha.2"
-source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#47525560af4dccdbf1059f3201576c9e10545649"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#134a558c234e73cca965c5a05d48ff4ab86f4cdd"
 dependencies = [
  "darwinia-support",
  "parity-scale-codec",
@@ -1227,7 +1227,7 @@ dependencies = [
 [[package]]
 name = "darwinia-header-mmr"
 version = "1.0.0-alpha.2"
-source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#47525560af4dccdbf1059f3201576c9e10545649"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#134a558c234e73cca965c5a05d48ff4ab86f4cdd"
 dependencies = [
  "ckb-merkle-mountain-range",
  "darwinia-header-mmr-rpc-runtime-api",
@@ -1243,7 +1243,7 @@ dependencies = [
 [[package]]
 name = "darwinia-header-mmr-rpc-runtime-api"
 version = "1.0.0-alpha.2"
-source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#47525560af4dccdbf1059f3201576c9e10545649"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#134a558c234e73cca965c5a05d48ff4ab86f4cdd"
 dependencies = [
  "darwinia-support",
  "parity-scale-codec",
@@ -1256,7 +1256,7 @@ dependencies = [
 [[package]]
 name = "darwinia-support"
 version = "1.0.0-alpha.2"
-source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#47525560af4dccdbf1059f3201576c9e10545649"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#134a558c234e73cca965c5a05d48ff4ab86f4cdd"
 dependencies = [
  "ethereum-primitives",
  "frame-support",
@@ -1544,7 +1544,7 @@ dependencies = [
 [[package]]
 name = "ethereum-primitives"
 version = "1.0.0-alpha.2"
-source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#47525560af4dccdbf1059f3201576c9e10545649"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#134a558c234e73cca965c5a05d48ff4ab86f4cdd"
 dependencies = [
  "array-bytes",
  "ethash",
@@ -3267,9 +3267,9 @@ dependencies = [
 
 [[package]]
 name = "librocksdb-sys"
-version = "6.7.4"
+version = "6.11.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "883213ae3d09bfc3d104aefe94b25ebb183b6f4d3a515b23b14817e1f4854005"
+checksum = "eb5b56f651c204634b936be2f92dbb42c36867e00ff7fe2405591f3b9fa66f09"
 dependencies = [
  "bindgen",
  "cc",
@@ -3459,7 +3459,7 @@ dependencies = [
 [[package]]
 name = "merkle-patricia-trie"
 version = "1.0.0-alpha.2"
-source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#47525560af4dccdbf1059f3201576c9e10545649"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-branch#134a558c234e73cca965c5a05d48ff4ab86f4cdd"
 dependencies = [
  "hashbrown 0.8.2",
  "keccak-hash",
@@ -8983,7 +8983,7 @@ version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3bfd5b7557925ce778ff9b9ef90e3ade34c524b5ff10e239c69a42d546d2af56"
 dependencies = [
- "rand 0.3.23",
+ "rand 0.7.3",
 ]
 
 [[package]]
