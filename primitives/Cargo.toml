@@ -1,0 +1,25 @@
+[package]
+authors     = ["Darwinia Network <hello@darwinia.network>"]
+description = "Parachain node runtime primitives"
+edition     = "2018"
+homepage    = "https://darwinia.network/"
+license     = "GPL-3.0"
+name        = "pangolin-primitives"
+readme      = "README.md"
+repository  = "https://github.com/darwinia-network/parachain/"
+version     = "1.0.0"
+
+[dependencies]
+# substrate
+sp-core    = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-runtime = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "master" }
+
+[features]
+default = ["std"]
+
+std = ["substrate-primitives-std"]
+
+substrate-primitives-std = [
+	"sp-core/std",
+	"sp-runtime/std",
+]

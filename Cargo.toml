@@ -1,0 +1,78 @@
+[package]
+authors     = ["Darwinia Network <hello@darwinia.network>"]
+build       = "build.rs"
+description = "Darwinia Runtime Module Library Node"
+edition     = "2018"
+homepage    = "https://darwinia.network/"
+license     = "GPL-3.0"
+name        = "rococo-pangolin"
+readme      = "README.md"
+repository  = "https://github.com/darwinia-network/darwinia-common/"
+version     = "1.0.0"
+
+[[bin]]
+name = "drml"
+path = "src/main.rs"
+
+[dependencies]
+array-bytes = { version = "0.2.0" }
+codec       = { package = "parity-scale-codec", version = "1.3.5" }
+derive_more = { version = "0.99.11" }
+exit-future = { version = "0.2.0" }
+futures     = { version = "0.3.8", features = ["compat"] }
+log         = { version = "0.4.11" }
+parking_lot = { version = "0.11.1" }
+serde       = { version = "1.0.118", features = ["derive"] }
+structopt   = { version = "0.3.21" }
+trie-root   = { version = "0.16.0" }
+
+# Parachain dependencies
+pangolin-primitives = { path = "primitives" }
+pangolin-runtime    = { package = "pangolin-runtime", path = "runtime" }
+
+# Substrate dependencies
+sc-basic-authorship = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-chain-spec       = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-cli              = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-client-api       = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-consensus        = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-executor         = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-finality-grandpa = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-network          = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-rpc              = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-service          = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-telemetry        = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-tracing          = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-transaction-pool = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-block-builder    = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-blockchain       = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-consensus        = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-core             = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-inherents        = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-io               = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-offchain         = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-runtime          = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-session          = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-timestamp        = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-transaction-pool = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-trie             = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+# RPC related dependencies
+jsonrpc-core = { version = "15.1.0" }
+
+# Cumulus dependencies
+cumulus-collator   = { git = "https://github.com/paritytech/cumulus", branch = "master" }
+cumulus-consensus  = { git = "https://github.com/paritytech/cumulus", branch = "master" }
+cumulus-network    = { git = "https://github.com/paritytech/cumulus", branch = "master" }
+cumulus-primitives = { git = "https://github.com/paritytech/cumulus", branch = "master" }
+cumulus-service    = { git = "https://github.com/paritytech/cumulus", branch = "master" }
+
+# Polkadot dependencies
+polkadot-cli          = { git = "https://github.com/paritytech/polkadot", branch = "master" }
+polkadot-parachain    = { git = "https://github.com/paritytech/polkadot", branch = "master" }
+polkadot-primitives   = { git = "https://github.com/paritytech/polkadot", branch = "master" }
+polkadot-service      = { git = "https://github.com/paritytech/polkadot", branch = "master" }
+polkadot-test-service = { git = "https://github.com/paritytech/polkadot", branch = "master" }
+
+[build-dependencies]
+substrate-build-script-utils = { git = "https://github.com/paritytech/substrate", branch = "master" }
