@@ -46,8 +46,8 @@ fn load_spec(
 	para_id: ParaId,
 ) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
 	match id {
-		"pangolin" => Ok(Box::new(chain_spec::ChainSpec::from_json_bytes(
-		&include_bytes!("../res/pangolin.json")[..],
+		"" | "pangolin" => Ok(Box::new(chain_spec::ChainSpec::from_json_bytes(
+			&include_bytes!("../res/pangolin.json")[..],
 		)?)),
 		"pangolin-genesis" => Ok(Box::new(chain_spec::pangolin_build_spec_config_of(para_id))),
 		"dev" => Ok(Box::new(chain_spec::pangolin_development_config_of(
@@ -268,7 +268,7 @@ pub fn run() -> Result<()> {
 						.chain(cli.relaychain_args.iter()),
 				);
 
-				let id = ParaId::from(cli.run.parachain_id.or(para_id).unwrap_or(100));
+				let id = ParaId::from(cli.run.parachain_id.or(para_id).unwrap_or(18));
 
 				let parachain_account =
 					AccountIdConversion::<polkadot_primitives::v0::AccountId>::into_account(&id);

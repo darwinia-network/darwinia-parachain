@@ -83,17 +83,19 @@ pub fn pangolin_build_spec_config_of(id: ParaId) -> ChainSpec {
 	ChainSpec::from_genesis(
 		"Pangolin",
 		"Pangolin",
-		ChainType::Development,
+		ChainType::Live,
 		move || pangolin_build_spec_genesis(id),
 		vec![],
 		Some(
 			TelemetryEndpoints::new(vec![(PANGOLIN_TELEMETRY_URL.to_string(), 0)])
 				.expect("Pangolin telemetry url is valid; qed"),
 		),
+		// None,
 		None,
 		Some(properties()),
+		// None,
 		Extensions {
-			relay_chain: "Pangolin".into(),
+			relay_chain: "rococo".into(),
 			para_id: id.into(),
 		},
 	)
@@ -141,8 +143,9 @@ pub fn pangolin_development_config_of(id: ParaId) -> ChainSpec {
 		None,
 		None,
 		Some(properties()),
+		// None,
 		Extensions {
-			relay_chain: "Pangolin".into(),
+			relay_chain: "rococo".into(),
 			para_id: id.into(),
 		},
 	)
