@@ -25,14 +25,17 @@ use log::info;
 use cumulus_primitives::{genesis::generate_genesis_block, ParaId};
 use polkadot_parachain::primitives::AccountIdConversion;
 use sc_cli::{
-	ChainSpec, CliConfiguration, DefaultConfigurationValues, ImportParams, KeystoreParams,
-	NetworkParams, Result, RuntimeVersion, SharedParams, SubstrateCli,
+	ChainSpec, CliConfiguration, DefaultConfigurationValues, ImportParams, InitLoggerParams,
+	KeystoreParams, NetworkParams, Result, RuntimeVersion, SharedParams, SubstrateCli,
 };
 use sc_service::{
 	config::{BasePath, PrometheusConfig},
 	PartialComponents,
 };
-use sp_core::hexdisplay::HexDisplay;
+use sp_core::{
+	crypto::{self, Ss58AddressFormat},
+	hexdisplay::HexDisplay,
+};
 use sp_runtime::traits::Block as BlockT;
 // --- darwinia ---
 use crate::{
@@ -141,6 +144,8 @@ fn extract_genesis_wasm(chain_spec: &Box<dyn sc_service::ChainSpec>) -> Result<V
 pub fn run() -> Result<()> {
 	let cli = Cli::from_args();
 
+	crypto::set_default_ss58_version(Ss58AddressFormat::DarwiniaAccount);
+
 	match &cli.subcommand {
 		Some(Subcommand::BuildSpec(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
@@ -209,7 +214,10 @@ pub fn run() -> Result<()> {
 			})
 		}
 		Some(Subcommand::ExportGenesisState(params)) => {
-			sc_cli::init_logger("", sc_tracing::TracingReceiver::Log, None, false)?;
+			sc_cli::init_logger(InitLoggerParams {
+				tracing_receiver: sc_tracing::TracingReceiver::Log,
+				..Default::default()
+			})?;
 
 			let block: Block = generate_genesis_block(&load_spec(
 				&params.chain.clone().unwrap_or_default(),
@@ -231,7 +239,10 @@ pub fn run() -> Result<()> {
 			Ok(())
 		}
 		Some(Subcommand::ExportGenesisWasm(params)) => {
-			sc_cli::init_logger("", sc_tracing::TracingReceiver::Log, None, false)?;
+			sc_cli::init_logger(InitLoggerParams {
+				tracing_receiver: sc_tracing::TracingReceiver::Log,
+				..Default::default()
+			})?;
 
 			let raw_wasm_blob =
 				extract_genesis_wasm(&cli.load_spec(&params.chain.clone().unwrap_or_default())?)?;

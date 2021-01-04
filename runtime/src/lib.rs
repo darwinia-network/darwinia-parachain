@@ -56,9 +56,9 @@ pub mod wasm {
 	include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 	#[cfg(all(feature = "std", not(any(target_arch = "x86_64", target_arch = "x86"))))]
-	pub const WASM_BINARY: &[u8] = include_bytes!("../../../../wasm/pangolin_runtime.compact.wasm");
+	pub const WASM_BINARY: &[u8] = include_bytes!("../wasm/pangolin_runtime.compact.wasm");
 	#[cfg(all(feature = "std", not(any(target_arch = "x86_64", target_arch = "x86"))))]
-	pub const WASM_BINARY_BLOATY: &[u8] = include_bytes!("../../../../wasm/pangolin_runtime.wasm");
+	pub const WASM_BINARY_BLOATY: &[u8] = include_bytes!("../wasm/pangolin_runtime.wasm");
 
 	#[cfg(feature = "std")]
 	/// Wasm binary unwrapped. If built with `BUILD_DUMMY_WASM_BINARY`, the function panics.
@@ -205,6 +205,7 @@ parameter_types! {
 		})
 		.avg_block_initialization(AVERAGE_ON_INITIALIZE_RATIO)
 		.build_or_panic();
+	pub const SS58Prefix: u8 = 18;
 }
 impl frame_system::Config for Runtime {
 	/// The identifier used to distinguish between accounts.
@@ -241,6 +242,7 @@ impl frame_system::Config for Runtime {
 	type SystemWeightInfo = ();
 	type BlockWeights = RuntimeBlockWeights;
 	type BlockLength = RuntimeBlockLength;
+	type SS58Prefix = SS58Prefix;
 }
 
 parameter_types! {

@@ -70,7 +70,7 @@ where
 pub fn properties() -> Properties {
 	let mut properties = Properties::new();
 
-	properties.insert("ss58Format".into(), 42.into());
+	properties.insert("ss58Format".into(), 18.into());
 	properties.insert("tokenDecimals".into(), 9.into());
 	properties.insert("tokenSymbol".into(), "PRING".into());
 	properties.insert("ktonTokenDecimals".into(), 9.into());
@@ -104,14 +104,12 @@ pub fn pangolin_build_spec_config_of(id: ParaId) -> ChainSpec {
 fn pangolin_build_spec_genesis(id: ParaId) -> pangolin_runtime::GenesisConfig {
 	const ROOT: &'static str = "0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c";
 
-	let root = AccountId::from(array_bytes::bytes_array_unchecked!(ROOT, 32));
+	let root = AccountId::from(array_bytes::hex_str_array_unchecked!(ROOT, 32));
 	let endowed_accounts = vec![(root.clone(), 1 << 56)];
 
 	pangolin_runtime::GenesisConfig {
 		frame_system: Some(pangolin_runtime::SystemConfig {
-			code: pangolin_runtime::WASM_BINARY
-				.expect("WASM binary was not build, please build it!")
-				.to_vec(),
+			code: pangolin_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		}),
 		pallet_balances: Some(pangolin_runtime::BalancesConfig {
@@ -158,16 +156,14 @@ fn pangolin_development_genesis(
 ) -> pangolin_runtime::GenesisConfig {
 	pangolin_runtime::GenesisConfig {
 		frame_system: Some(pangolin_runtime::SystemConfig {
-			code: pangolin_runtime::WASM_BINARY
-				.expect("WASM binary was not build, please build it!")
-				.to_vec(),
+			code: pangolin_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		}),
 		pallet_balances: Some(pangolin_runtime::BalancesConfig {
 			balances: endowed_accounts
 				.iter()
 				.cloned()
-				.map(|k| (k, 1 << 60))
+				.map(|k| (k, 1 << 56))
 				.collect(),
 		}),
 		pallet_sudo: Some(pangolin_runtime::SudoConfig { key: root_key }),

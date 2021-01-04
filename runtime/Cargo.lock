@@ -2439,7 +2439,7 @@ dependencies = [
 [[package]]
 name = "pallet-randomness-collective-flip"
 version = "2.0.0"
-source = "git+https://github.com/paritytech/substrate?branch=master#37a7727353f9bac1258acf59cd81688354c9120d"
+source = "git+https://github.com/paritytech/substrate?branch=master#3c5bfc05f9299da6da50dd36b701679d5172bdbe"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -2452,7 +2452,7 @@ dependencies = [
 [[package]]
 name = "pallet-sudo"
 version = "2.0.0"
-source = "git+https://github.com/paritytech/substrate?branch=master#37a7727353f9bac1258acf59cd81688354c9120d"
+source = "git+https://github.com/paritytech/substrate?branch=master#3c5bfc05f9299da6da50dd36b701679d5172bdbe"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -2466,7 +2466,7 @@ dependencies = [
 [[package]]
 name = "pallet-timestamp"
 version = "2.0.0"
-source = "git+https://github.com/paritytech/substrate?branch=master#37a7727353f9bac1258acf59cd81688354c9120d"
+source = "git+https://github.com/paritytech/substrate?branch=master#3c5bfc05f9299da6da50dd36b701679d5172bdbe"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -2483,7 +2483,7 @@ dependencies = [
 [[package]]
 name = "pallet-transaction-payment"
 version = "2.0.0"
-source = "git+https://github.com/paritytech/substrate?branch=master#37a7727353f9bac1258acf59cd81688354c9120d"
+source = "git+https://github.com/paritytech/substrate?branch=master#3c5bfc05f9299da6da50dd36b701679d5172bdbe"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -2500,7 +2500,7 @@ dependencies = [
 [[package]]
 name = "pallet-transaction-payment-rpc-runtime-api"
 version = "2.0.0"
-source = "git+https://github.com/paritytech/substrate?branch=master#37a7727353f9bac1258acf59cd81688354c9120d"
+source = "git+https://github.com/paritytech/substrate?branch=master#3c5bfc05f9299da6da50dd36b701679d5172bdbe"
 dependencies = [
  "frame-support",
  "parity-scale-codec",
@@ -2543,7 +2543,6 @@ dependencies = [
  "sp-block-builder",
  "sp-core",
  "sp-inherents",
- "sp-io",
  "sp-offchain",
  "sp-runtime",
  "sp-session",
@@ -4578,7 +4577,7 @@ dependencies = [
 [[package]]
 name = "sp-offchain"
 version = "2.0.0"
-source = "git+https://github.com/paritytech/substrate?branch=master#37a7727353f9bac1258acf59cd81688354c9120d"
+source = "git+https://github.com/paritytech/substrate?branch=master#3c5bfc05f9299da6da50dd36b701679d5172bdbe"
 dependencies = [
  "sp-api",
  "sp-core",
@@ -4655,7 +4654,7 @@ dependencies = [
 [[package]]
 name = "sp-session"
 version = "2.0.0"
-source = "git+https://github.com/paritytech/substrate?branch=master#37a7727353f9bac1258acf59cd81688354c9120d"
+source = "git+https://github.com/paritytech/substrate?branch=master#3c5bfc05f9299da6da50dd36b701679d5172bdbe"
 dependencies = [
  "parity-scale-codec",
  "sp-api",
