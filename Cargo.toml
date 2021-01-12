@@ -15,9 +15,9 @@ name = "drml"
 path = "src/main.rs"
 
 [dependencies]
-array-bytes = { version = "0.2.0" }
+array-bytes = { version = "0.3.0" }
 codec       = { package = "parity-scale-codec", version = "1.3.5" }
-log         = { version = "0.4.11" }
+log         = { version = "0.4.13" }
 serde       = { version = "1.0.118", features = ["derive"] }
 structopt   = { version = "0.3.21" }
 
