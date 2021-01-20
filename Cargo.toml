@@ -22,8 +22,8 @@ serde       = { version = "1.0.118", features = ["derive"] }
 structopt   = { version = "0.3.21" }
 
 # Parachain dependencies
-pangolin-primitives = { path = "primitives" }
-pangolin-runtime    = { package = "pangolin-runtime", path = "runtime" }
+darwinia-pc2-primitives = { path = "primitives" }
+darwinia-pc2-runtime    = { path = "runtime" }
 
 # Substrate dependencies
 sc-basic-authorship = { git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }

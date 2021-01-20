@@ -42,18 +42,20 @@ use crate::{
 	chain_spec,
 	cli::{Cli, RelayChainCli, Subcommand},
 };
-use pangolin_runtime::Block;
+use darwinia_pc2_runtime::Block;
 
 fn load_spec(
 	id: &str,
 	para_id: ParaId,
 ) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
 	match id {
-		"" | "pangolin" => Ok(Box::new(chain_spec::ChainSpec::from_json_bytes(
-			&include_bytes!("../res/pangolin.json")[..],
+		"" | "darwinia-pc2" => Ok(Box::new(chain_spec::ChainSpec::from_json_bytes(
+			&include_bytes!("../res/darwinia-pc2.json")[..],
 		)?)),
-		"pangolin-genesis" => Ok(Box::new(chain_spec::pangolin_build_spec_config_of(para_id))),
-		"dev" => Ok(Box::new(chain_spec::pangolin_development_config_of(
+		"darwinia-pc2-genesis" => Ok(Box::new(chain_spec::darwinia_pc2_build_spec_config_of(
+			para_id,
+		))),
+		"dev" => Ok(Box::new(chain_spec::darwinia_pc2_development_config_of(
 			para_id,
 		))),
 		path => Ok(Box::new(chain_spec::ChainSpec::from_json_file(
@@ -92,7 +94,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		&pangolin_runtime::VERSION
+		&darwinia_pc2_runtime::VERSION
 	}
 }
 
@@ -302,6 +304,7 @@ pub fn run() -> Result<()> {
 				crate::service::start_node(config, key, polkadot_config, id, collator)
 					.await
 					.map(|r| r.0)
+					.map_err(Into::into)
 			})
 		}
 	}

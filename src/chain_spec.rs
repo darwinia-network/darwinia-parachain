@@ -27,14 +27,14 @@ use sc_telemetry::TelemetryEndpoints;
 use sp_core::{sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 // --- darwinia ---
-use pangolin_primitives::{AccountId, Signature};
+use darwinia_pc2_primitives::{AccountId, Signature};
 
 /// Specialized `ChainSpec` for the normal parachain runtime.
-pub type ChainSpec = sc_service::GenericChainSpec<pangolin_runtime::GenesisConfig, Extensions>;
+pub type ChainSpec = sc_service::GenericChainSpec<darwinia_pc2_runtime::GenesisConfig, Extensions>;
 
 type AccountPublic = <Signature as Verify>::Signer;
 
-const PANGOLIN_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
+const DARWINIA_PC2_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
 /// The extensions for the [`ChainSpec`].
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ChainSpecGroup, ChainSpecExtension)]
@@ -79,16 +79,16 @@ pub fn properties() -> Properties {
 	properties
 }
 
-pub fn pangolin_build_spec_config_of(id: ParaId) -> ChainSpec {
+pub fn darwinia_pc2_build_spec_config_of(id: ParaId) -> ChainSpec {
 	ChainSpec::from_genesis(
-		"Pangolin",
-		"Pangolin",
+		"Darwinia PC2",
+		"Darwinia PC2",
 		ChainType::Live,
-		move || pangolin_build_spec_genesis(id),
+		move || darwinia_pc2_build_spec_genesis(id),
 		vec![],
 		Some(
-			TelemetryEndpoints::new(vec![(PANGOLIN_TELEMETRY_URL.to_string(), 0)])
-				.expect("Pangolin telemetry url is valid; qed"),
+			TelemetryEndpoints::new(vec![(DARWINIA_PC2_TELEMETRY_URL.to_string(), 0)])
+				.expect("Darwinia PC2 telemetry url is valid; qed"),
 		),
 		// None,
 		None,
@@ -101,32 +101,32 @@ pub fn pangolin_build_spec_config_of(id: ParaId) -> ChainSpec {
 	)
 }
 
-fn pangolin_build_spec_genesis(id: ParaId) -> pangolin_runtime::GenesisConfig {
+fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisConfig {
 	const ROOT: &'static str = "0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c";
 
 	let root = AccountId::from(array_bytes::hex_str_array_unchecked!(ROOT, 32));
 	let endowed_accounts = vec![(root.clone(), 1 << 56)];
 
-	pangolin_runtime::GenesisConfig {
-		frame_system: Some(pangolin_runtime::SystemConfig {
-			code: pangolin_runtime::wasm_binary_unwrap().into(),
+	darwinia_pc2_runtime::GenesisConfig {
+		frame_system: Some(darwinia_pc2_runtime::SystemConfig {
+			code: darwinia_pc2_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		}),
-		pallet_balances: Some(pangolin_runtime::BalancesConfig {
+		pallet_balances: Some(darwinia_pc2_runtime::BalancesConfig {
 			balances: endowed_accounts,
 		}),
-		pallet_sudo: Some(pangolin_runtime::SudoConfig { key: root }),
-		parachain_info: Some(pangolin_runtime::ParachainInfoConfig { parachain_id: id }),
+		pallet_sudo: Some(darwinia_pc2_runtime::SudoConfig { key: root }),
+		parachain_info: Some(darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id }),
 	}
 }
 
-pub fn pangolin_development_config_of(id: ParaId) -> ChainSpec {
+pub fn darwinia_pc2_development_config_of(id: ParaId) -> ChainSpec {
 	ChainSpec::from_genesis(
-		"Pangolin",
-		"Pangolin",
+		"Darwinia PC2",
+		"Darwinia PC2",
 		ChainType::Development,
 		move || {
-			pangolin_development_genesis(
+			darwinia_pc2_development_genesis(
 				get_account_id_from_seed::<sr25519::Public>("Alice"),
 				vec![
 					get_account_id_from_seed::<sr25519::Public>("Alice"),
@@ -149,24 +149,24 @@ pub fn pangolin_development_config_of(id: ParaId) -> ChainSpec {
 	)
 }
 
-fn pangolin_development_genesis(
+fn darwinia_pc2_development_genesis(
 	root_key: AccountId,
 	endowed_accounts: Vec<AccountId>,
 	id: ParaId,
-) -> pangolin_runtime::GenesisConfig {
-	pangolin_runtime::GenesisConfig {
-		frame_system: Some(pangolin_runtime::SystemConfig {
-			code: pangolin_runtime::wasm_binary_unwrap().into(),
+) -> darwinia_pc2_runtime::GenesisConfig {
+	darwinia_pc2_runtime::GenesisConfig {
+		frame_system: Some(darwinia_pc2_runtime::SystemConfig {
+			code: darwinia_pc2_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		}),
-		pallet_balances: Some(pangolin_runtime::BalancesConfig {
+		pallet_balances: Some(darwinia_pc2_runtime::BalancesConfig {
 			balances: endowed_accounts
 				.iter()
 				.cloned()
 				.map(|k| (k, 1 << 56))
 				.collect(),
 		}),
-		pallet_sudo: Some(pangolin_runtime::SudoConfig { key: root_key }),
-		parachain_info: Some(pangolin_runtime::ParachainInfoConfig { parachain_id: id }),
+		pallet_sudo: Some(darwinia_pc2_runtime::SudoConfig { key: root_key }),
+		parachain_info: Some(darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id }),
 	}
 }

@@ -30,14 +30,14 @@ use sp_core::Pair;
 use sp_runtime::traits::BlakeTwo256;
 use sp_trie::PrefixedMemoryDB;
 // --- darwinia ---
-use pangolin_primitives::OpaqueBlock as Block;
-use pangolin_runtime::RuntimeApi;
+use darwinia_pc2_primitives::OpaqueBlock as Block;
+use darwinia_pc2_runtime::RuntimeApi;
 
 // Native executor instance.
 native_executor_instance!(
 	pub Executor,
-	pangolin_runtime::api::dispatch,
-	pangolin_runtime::native_version,
+	darwinia_pc2_runtime::api::dispatch,
+	darwinia_pc2_runtime::native_version,
 );
 
 /// Starts a `ServiceBuilder` for a full service.

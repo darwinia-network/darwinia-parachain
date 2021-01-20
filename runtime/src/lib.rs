@@ -56,9 +56,9 @@ pub mod wasm {
 	include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 	#[cfg(all(feature = "std", not(any(target_arch = "x86_64", target_arch = "x86"))))]
-	pub const WASM_BINARY: &[u8] = include_bytes!("../wasm/pangolin_runtime.compact.wasm");
+	pub const WASM_BINARY: &[u8] = include_bytes!("../wasm/darwinia_pc2_runtime.compact.wasm");
 	#[cfg(all(feature = "std", not(any(target_arch = "x86_64", target_arch = "x86"))))]
-	pub const WASM_BINARY_BLOATY: &[u8] = include_bytes!("../wasm/pangolin_runtime.wasm");
+	pub const WASM_BINARY_BLOATY: &[u8] = include_bytes!("../wasm/darwinia_pc2_runtime.wasm");
 
 	#[cfg(feature = "std")]
 	/// Wasm binary unwrapped. If built with `BUILD_DUMMY_WASM_BINARY`, the function panics.
@@ -121,7 +121,7 @@ use xcm_executor::{
 };
 // --- darwinia ---
 use constants::*;
-use pangolin_primitives::*;
+use darwinia_pc2_primitives::*;
 
 /// The address format for describing accounts.
 pub type Address = AccountId;
@@ -151,8 +151,8 @@ pub type Executive = frame_executive::Executive<
 
 /// This runtime version.
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: create_runtime_str!("Pangolin"),
-	impl_name: create_runtime_str!("Pangolin"),
+	spec_name: create_runtime_str!("Darwinia PC2"),
+	impl_name: create_runtime_str!("Darwinia PC2"),
 	authoring_version: 1,
 	spec_version: 1,
 	impl_version: 1,
@@ -290,6 +290,7 @@ impl pallet_sudo::Config for Runtime {
 impl cumulus_parachain_upgrade::Config for Runtime {
 	type Event = Event;
 	type OnValidationData = ();
+	type SelfParaId = parachain_info::Module<Runtime>;
 }
 
 impl cumulus_message_broker::Config for Runtime {
