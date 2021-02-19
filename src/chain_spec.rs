@@ -71,10 +71,8 @@ pub fn properties() -> Properties {
 	let mut properties = Properties::new();
 
 	properties.insert("ss58Format".into(), 18.into());
-	properties.insert("tokenDecimals".into(), 9.into());
-	properties.insert("tokenSymbol".into(), "PRING".into());
-	properties.insert("ktonTokenDecimals".into(), 9.into());
-	properties.insert("ktonTokenSymbol".into(), "PKTON".into());
+	properties.insert("tokenDecimals".into(), vec![9, 9].into());
+	properties.insert("tokenSymbol".into(), vec!["RING", "KTON"].into());
 
 	properties
 }
