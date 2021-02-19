@@ -30,6 +30,7 @@ use cumulus_primitives_core::ParaId;
 use polkadot_primitives::v0::CollatorPair;
 use sc_executor::native_executor_instance;
 use sc_service::{Configuration, PartialComponents, Role, TFullBackend, TFullClient, TaskManager};
+use sc_telemetry::TelemetrySpan;
 use sp_core::Pair;
 use sp_runtime::traits::BlakeTwo256;
 use sp_trie::PrefixedMemoryDB;
@@ -71,6 +72,7 @@ pub fn new_partial(
 
 	let transaction_pool = sc_transaction_pool::BasicPool::new_full(
 		config.transaction_pool.clone(),
+		config.role.is_authority().into(),
 		config.prometheus_registry(),
 		task_manager.spawn_handle(),
 		client.clone(),
@@ -208,9 +210,6 @@ where
 
 		let params = StartCollatorParams {
 			para_id: id,
-			block_import: client.clone(),
-			proposer_factory,
-			inherent_data_providers: params.inherent_data_providers,
 			block_status: client.clone(),
 			announce_block,
 			client: client.clone(),

@@ -22,7 +22,8 @@ use std::{io::Write, net::SocketAddr};
 use codec::Encode;
 use log::info;
 // --- substrate ---
-use cumulus_primitives_core::{genesis::generate_genesis_block, ParaId};
+use cumulus_client_service::genesis::generate_genesis_block;
+use cumulus_primitives_core::ParaId;
 use polkadot_parachain::primitives::AccountIdConversion;
 use sc_cli::{
 	ChainSpec, CliConfiguration, DefaultConfigurationValues, ImportParams, KeystoreParams,
