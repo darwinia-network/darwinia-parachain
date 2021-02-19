@@ -1292,7 +1292,7 @@ dependencies = [
  "xcm",
  "xcm-builder",
  "xcm-executor",
- "xcm-handler",
+ "cumulus-pallet-xcm-handler",
 ]
 
 [[package]]
@@ -10115,7 +10115,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "xcm-handler"
+name = "cumulus-pallet-xcm-handler"
 version = "0.1.0"
 source = "git+https://github.com/paritytech/cumulus?branch=rococo-v1#4b69b8d4bfa113fb3af2da34d1b71313bc43fb0c"
 dependencies = [

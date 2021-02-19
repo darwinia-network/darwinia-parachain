@@ -19,10 +19,11 @@
 // --- std ---
 use std::sync::Arc;
 // --- substrate ---
-use cumulus_network::build_block_announce_validator;
-use cumulus_service::{
+use cumulus_client_network::build_block_announce_validator;
+use cumulus_client_service::{
 	prepare_node_config, start_collator, start_full_node, StartCollatorParams, StartFullNodeParams,
 };
+use cumulus_primitives_core::ParaId;
 use polkadot_primitives::v0::CollatorPair;
 use sc_executor::native_executor_instance;
 use sc_service::{Configuration, PartialComponents, Role, TFullBackend, TFullClient, TaskManager};
@@ -72,7 +73,7 @@ pub fn new_partial(
 		client.clone(),
 	);
 
-	let import_queue = cumulus_consensus::import_queue::import_queue(
+	let import_queue = cumulus_client_consensus::import_queue::import_queue(
 		client.clone(),
 		client.clone(),
 		inherent_data_providers.clone(),
@@ -103,7 +104,7 @@ async fn start_node_impl<RB>(
 	parachain_config: Configuration,
 	collator_key: CollatorPair,
 	polkadot_config: Configuration,
-	id: polkadot_primitives::v0::Id,
+	id: ParaId,
 	validator: bool,
 	rpc_ext_builder: RB,
 ) -> sc_service::error::Result<(TaskManager, Arc<TFullClient<Block, RuntimeApi, Executor>>)>
@@ -121,12 +122,11 @@ where
 	let parachain_config = prepare_node_config(parachain_config);
 
 	let polkadot_full_node =
-		cumulus_service::build_polkadot_full_node(polkadot_config, collator_key.public()).map_err(
-			|e| match e {
+		cumulus_client_service::build_polkadot_full_node(polkadot_config, collator_key.public())
+			.map_err(|e| match e {
 				polkadot_service::Error::Sub(x) => x,
 				s => format!("{}", s).into(),
-			},
-		)?;
+			})?;
 
 	let params = new_partial(&parachain_config)?;
 	params
@@ -231,7 +231,7 @@ pub async fn start_node(
 	parachain_config: Configuration,
 	collator_key: CollatorPair,
 	polkadot_config: Configuration,
-	id: polkadot_primitives::v0::Id,
+	id: ParaId,
 	validator: bool,
 ) -> sc_service::error::Result<(TaskManager, Arc<TFullClient<Block, RuntimeApi, Executor>>)> {
 	start_node_impl(

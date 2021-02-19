@@ -19,7 +19,7 @@
 // --- crates ---
 use serde::{Deserialize, Serialize};
 // --- substrate ---
-use cumulus_primitives::ParaId;
+use cumulus_primitives_core::ParaId;
 // --- substrate ---
 use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
 use sc_service::{ChainType, Properties};
