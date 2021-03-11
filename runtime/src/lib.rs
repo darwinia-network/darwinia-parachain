@@ -20,34 +20,161 @@
 #![recursion_limit = "256"]
 
 pub mod constants {
+	// --- substrate ---
+	use sp_staking::SessionIndex;
 	// --- darwinia ---
 	use crate::*;
 
-	// pub const NANO: Balance = 1;
-	// pub const MICRO: Balance = 1_000 * NANO;
-	// pub const MILLI: Balance = 1_000 * MICRO;
-	// pub const COIN: Balance = 1_000 * MILLI;
+	pub const NANO: Balance = 1;
+	pub const MICRO: Balance = 1_000 * NANO;
+	pub const MILLI: Balance = 1_000 * MICRO;
+	pub const COIN: Balance = 1_000 * MILLI;
 
-	// pub const CAP: Balance = 10_000_000_000 * COIN;
-	// pub const TOTAL_POWER: Power = 1_000_000_000;
+	pub const CAP: Balance = 10_000_000_000 * COIN;
+	pub const TOTAL_POWER: Power = 1_000_000_000;
 
 	pub const MILLISECS_PER_BLOCK: Moment = 6000;
 	pub const SLOT_DURATION: Moment = MILLISECS_PER_BLOCK;
-	// pub const BLOCKS_PER_SESSION: BlockNumber = 10 * MINUTES;
-	// pub const SESSIONS_PER_ERA: SessionIndex = 6;
+	pub const BLOCKS_PER_SESSION: BlockNumber = 10 * MINUTES;
+	pub const SESSIONS_PER_ERA: SessionIndex = 6;
 
-	// // Time is measured by number of blocks.
-	// pub const MINUTES: BlockNumber = 60_000 / (MILLISECS_PER_BLOCK as BlockNumber);
-	// pub const HOURS: BlockNumber = 60 * MINUTES;
-	// pub const DAYS: BlockNumber = 24 * HOURS;
+	// Time is measured by number of blocks.
+	pub const MINUTES: BlockNumber = 60_000 / (MILLISECS_PER_BLOCK as BlockNumber);
+	pub const HOURS: BlockNumber = 60 * MINUTES;
+	pub const DAYS: BlockNumber = 24 * HOURS;
 
-	// // 1 in 4 blocks (on average, not counting collisions) will be primary babe blocks.
-	// pub const PRIMARY_PROBABILITY: (u64, u64) = (1, 4);
+	// 1 in 4 blocks (on average, not counting collisions) will be primary babe blocks.
+	pub const PRIMARY_PROBABILITY: (u64, u64) = (1, 4);
 
-	// pub const fn deposit(items: u32, bytes: u32) -> Balance {
-	// 	items as Balance * 20 * COIN + (bytes as Balance) * 100 * MICRO
-	// }
+	pub const fn deposit(items: u32, bytes: u32) -> Balance {
+		items as Balance * 20 * COIN + (bytes as Balance) * 100 * MICRO
+	}
 }
+
+// pub mod impls {
+// 	//! Some configurable implementations as associated type for the substrate runtime.
+
+// 	pub mod relay {
+// 		// --- darwinia ---
+// 		use crate::*;
+// 		use darwinia_relay_primitives::relayer_game::*;
+// 		use ethereum_primitives::EthereumBlockNumber;
+
+// 		pub struct EthereumRelayerGameAdjustor;
+// 		impl AdjustableRelayerGame for EthereumRelayerGameAdjustor {
+// 			type Moment = BlockNumber;
+// 			type Balance = Balance;
+// 			type RelayHeaderId = EthereumBlockNumber;
+
+// 			fn max_active_games() -> u8 {
+// 				32
+// 			}
+
+// 			fn affirm_time(round: u32) -> Self::Moment {
+// 				match round {
+// 					// 1.5 mins
+// 					0 => 30,
+// 					// 0.5 mins
+// 					_ => 6,
+// 				}
+// 			}
+
+// 			fn complete_proofs_time(round: u32) -> Self::Moment {
+// 				match round {
+// 					// 1.5 mins
+// 					0 => 30,
+// 					// 0.5 mins
+// 					_ => 6,
+// 				}
+// 			}
+
+// 			fn update_sample_points(sample_points: &mut Vec<Vec<Self::RelayHeaderId>>) {
+// 				sample_points.push(vec![sample_points.last().unwrap().last().unwrap() - 1]);
+// 			}
+
+// 			fn estimate_stake(round: u32, affirmations_count: u32) -> Self::Balance {
+// 				match round {
+// 					0 => match affirmations_count {
+// 						0 => 1000 * COIN,
+// 						_ => 1500 * COIN,
+// 					},
+// 					_ => 100 * COIN,
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	// --- crates ---
+// 	use smallvec::smallvec;
+// 	// --- substrate ---
+// 	use frame_support::{
+// 		traits::{Currency, Imbalance, OnUnbalanced},
+// 		weights::{WeightToFeeCoefficient, WeightToFeeCoefficients, WeightToFeePolynomial},
+// 	};
+// 	// --- darwinia ---
+// 	use crate::*;
+
+// 	darwinia_support::impl_account_data! {
+// 		struct AccountData<Balance>
+// 		for
+// 			RingInstance,
+// 			KtonInstance
+// 		where
+// 			Balance = Balance
+// 		{
+// 			// other data
+// 		}
+// 	}
+
+// 	pub struct Author;
+// 	impl OnUnbalanced<NegativeImbalance> for Author {
+// 		fn on_nonzero_unbalanced(amount: NegativeImbalance) {
+// 			Ring::resolve_creating(&Authorship::author(), amount);
+// 		}
+// 	}
+
+// 	pub struct DealWithFees;
+// 	impl OnUnbalanced<NegativeImbalance> for DealWithFees {
+// 		fn on_unbalanceds<B>(mut fees_then_tips: impl Iterator<Item = NegativeImbalance>) {
+// 			if let Some(fees) = fees_then_tips.next() {
+// 				// for fees, 80% to treasury, 20% to author
+// 				let mut split = fees.ration(80, 20);
+// 				if let Some(tips) = fees_then_tips.next() {
+// 					// for tips, if any, 80% to treasury, 20% to author (though this can be anything)
+// 					tips.ration_merge_into(80, 20, &mut split);
+// 				}
+// 				Treasury::on_unbalanced(split.0);
+// 				Author::on_unbalanced(split.1);
+// 			}
+// 		}
+// 	}
+
+// 	/// Handles converting a weight scalar to a fee value, based on the scale and granularity of the
+// 	/// node's balance type.
+// 	///
+// 	/// This should typically create a mapping between the following ranges:
+// 	///   - [0, MAXIMUM_BLOCK_WEIGHT]
+// 	///   - [Balance::min, Balance::max]
+// 	///
+// 	/// Yet, it can be used for any other sort of change to weight-fee. Some examples being:
+// 	///   - Setting it to `0` will essentially disable the weight fee.
+// 	///   - Setting it to `1` will cause the literal `#[weight = x]` values to be charged.
+// 	pub struct WeightToFee;
+// 	impl WeightToFeePolynomial for WeightToFee {
+// 		type Balance = Balance;
+// 		fn polynomial() -> WeightToFeeCoefficients<Self::Balance> {
+// 			// in Crab, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
+// 			let p = 100 * MILLI;
+// 			let q = Balance::from(ExtrinsicBaseWeight::get());
+// 			smallvec![WeightToFeeCoefficient {
+// 				degree: 1,
+// 				negative: false,
+// 				coeff_frac: Perbill::from_rational_approximation(p % q, q),
+// 				coeff_integer: p / q,
+// 			}]
+// 		}
+// 	}
+// }
 
 pub mod wasm {
 	//! Make the WASM binary available.
@@ -74,57 +201,52 @@ pub mod wasm {
 	}
 }
 
-// --- substrate ---
-// A few exports that help ease life for downstream crates.
-pub use frame_support::{
-	construct_runtime, parameter_types,
-	traits::Randomness,
-	weights::{
-		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
-		DispatchClass, IdentityFee, Weight,
-	},
-	StorageValue,
-};
-pub use pallet_balances::Call as BalancesCall;
-pub use pallet_timestamp::Call as TimestampCall;
-#[cfg(any(feature = "std", test))]
-pub use sp_runtime::BuildStorage;
-pub use sp_runtime::{Perbill, Permill};
+pub mod system;
+pub use system::*;
+
+pub mod timestamp;
+pub use timestamp::*;
+
+pub mod balances;
+pub use balances::*;
+
+pub mod transaction_payment;
+pub use transaction_payment::*;
+
+pub mod sudo;
+pub use sudo::*;
+
+pub mod parachain_system;
+pub use parachain_system::*;
+
+pub mod parachain_info_;
+pub use parachain_info_::*;
+
+pub mod xcm_handler;
+pub use xcm_handler::*;
+
 // --- darwinia ---
+use constants::*;
+use darwinia_pc2_primitives::*;
 pub use wasm::*;
 
 // --- substrate ---
-use frame_system::{
-	limits::{BlockLength, BlockWeights},
-	EnsureRoot,
+use frame_support::{
+	traits::Randomness,
+	weights::{constants::WEIGHT_PER_SECOND, Weight},
 };
 use sp_api::impl_runtime_apis;
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
-	traits::{BlakeTwo256, Block as BlockT, IdentityLookup},
+	traits::{Block as BlockT, IdentityLookup},
 	transaction_validity::{TransactionSource, TransactionValidity},
-	ApplyExtrinsicResult,
+	ApplyExtrinsicResult, Perbill,
 };
 use sp_std::prelude::*;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
-// --- xcm ---
-use polkadot_parachain::primitives::Sibling;
-use xcm::v0::{Junction, MultiLocation, NetworkId};
-use xcm_builder::{
-	AccountId32Aliases, CurrencyAdapter, LocationInverter, ParentIsDefault, RelayChainAsNative,
-	SiblingParachainAsNative, SiblingParachainConvertsVia, SignedAccountId32AsNative,
-	SovereignSignedViaLocation,
-};
-use xcm_executor::{
-	traits::{IsConcrete, NativeAsset},
-	Config, XcmExecutor,
-};
-// --- darwinia ---
-use constants::*;
-use darwinia_pc2_primitives::*;
 
 /// The address format for describing accounts.
 pub type Address = AccountId;
@@ -151,6 +273,8 @@ pub type Executive = frame_executive::Executive<
 	Runtime,
 	AllModules,
 >;
+
+type Ring = Balances;
 
 /// This runtime version.
 pub const VERSION: RuntimeVersion = RuntimeVersion {
@@ -185,85 +309,8 @@ pub fn native_version() -> NativeVersion {
 	}
 }
 
-parameter_types! {
-	pub const BlockHashCount: BlockNumber = 250;
-	pub const Version: RuntimeVersion = VERSION;
-	pub RuntimeBlockLength: BlockLength =
-		BlockLength::max_with_normal_ratio(5 * 1024 * 1024, NORMAL_DISPATCH_RATIO);
-	pub RuntimeBlockWeights: BlockWeights = BlockWeights::builder()
-		.base_block(BlockExecutionWeight::get())
-		.for_class(DispatchClass::all(), |weights| {
-			weights.base_extrinsic = ExtrinsicBaseWeight::get();
-		})
-		.for_class(DispatchClass::Normal, |weights| {
-			weights.max_total = Some(NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT);
-		})
-		.for_class(DispatchClass::Operational, |weights| {
-			weights.max_total = Some(MAXIMUM_BLOCK_WEIGHT);
-			// Operational transactions have some extra reserved space, so that they
-			// are included even if block reached `MAXIMUM_BLOCK_WEIGHT`.
-			weights.reserved = Some(
-				MAXIMUM_BLOCK_WEIGHT - NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT
-			);
-		})
-		.avg_block_initialization(AVERAGE_ON_INITIALIZE_RATIO)
-		.build_or_panic();
-	pub const SS58Prefix: u8 = 18;
-}
-impl frame_system::Config for Runtime {
-	/// The identifier used to distinguish between accounts.
-	type AccountId = AccountId;
-	/// The aggregated dispatch type that is available for extrinsics.
-	type Call = Call;
-	/// The lookup mechanism to get account ID from whatever is passed in dispatchers.
-	type Lookup = IdentityLookup<AccountId>;
-	/// The index type for storing how many extrinsics an account has signed.
-	type Index = Nonce;
-	/// The index type for blocks.
-	type BlockNumber = BlockNumber;
-	/// The type for hashing blocks and tries.
-	type Hash = Hash;
-	/// The hashing algorithm used.
-	type Hashing = BlakeTwo256;
-	/// The header type.
-	type Header = Header;
-	/// The ubiquitous event type.
-	type Event = Event;
-	/// The ubiquitous origin type.
-	type Origin = Origin;
-	/// Maximum number of block number to block hash mappings to keep (oldest pruned first).
-	type BlockHashCount = BlockHashCount;
-	/// Runtime version.
-	type Version = Version;
-	/// Converts a module to an index of this module in the runtime.
-	type PalletInfo = PalletInfo;
-	type AccountData = pallet_balances::AccountData<Balance>;
-	type OnNewAccount = ();
-	type OnKilledAccount = ();
-	type DbWeight = ();
-	type BaseCallFilter = ();
-	type SystemWeightInfo = ();
-	type BlockWeights = RuntimeBlockWeights;
-	type BlockLength = RuntimeBlockLength;
-	type SS58Prefix = SS58Prefix;
-}
-
-parameter_types! {
-	pub const MinimumPeriod: u64 = SLOT_DURATION / 2;
-}
-impl pallet_timestamp::Config for Runtime {
-	/// A timestamp: milliseconds since the unix epoch.
-	type Moment = Moment;
-	type OnTimestampSet = ();
-	type MinimumPeriod = MinimumPeriod;
-	type WeightInfo = ();
-}
-
-parameter_types! {
+frame_support::parameter_types! {
 	pub const ExistentialDeposit: Balance = 500;
-	pub const TransferFee: Balance = 0;
-	pub const CreationFee: Balance = 0;
-	pub const TransactionByteFee: Balance = 1;
 	pub const MaxLocks: u32 = 50;
 }
 impl pallet_balances::Config for Runtime {
@@ -278,78 +325,7 @@ impl pallet_balances::Config for Runtime {
 	type MaxLocks = MaxLocks;
 }
 
-impl pallet_transaction_payment::Config for Runtime {
-	type OnChargeTransaction = pallet_transaction_payment::CurrencyAdapter<Balances, ()>;
-	type TransactionByteFee = TransactionByteFee;
-	type WeightToFee = IdentityFee<Balance>;
-	type FeeMultiplierUpdate = ();
-}
-
-impl pallet_sudo::Config for Runtime {
-	type Call = Call;
-	type Event = Event;
-}
-
-impl cumulus_pallet_parachain_system::Config for Runtime {
-	type Event = Event;
-	type OnValidationData = ();
-	type SelfParaId = parachain_info::Module<Runtime>;
-	type DownwardMessageHandlers = ();
-	type HrmpMessageHandlers = ();
-}
-
-impl parachain_info::Config for Runtime {}
-
-pub struct XcmConfig;
-impl Config for XcmConfig {
-	type Call = Call;
-	type XcmSender = XcmHandler;
-	// How to withdraw and deposit an asset.
-	type AssetTransactor = LocalAssetTransactor;
-	type OriginConverter = LocalOriginConverter;
-	type IsReserve = NativeAsset;
-	type IsTeleporter = ();
-	type LocationInverter = LocationInverter<Ancestry>;
-}
-type LocationConverter = (
-	ParentIsDefault<AccountId>,
-	SiblingParachainConvertsVia<Sibling, AccountId>,
-	AccountId32Aliases<RococoNetwork, AccountId>,
-);
-type LocalAssetTransactor = CurrencyAdapter<
-	// Use this currency:
-	Balances,
-	// Use this currency when it is a fungible asset matching the given location or name:
-	IsConcrete<RococoLocation>,
-	// Do a simple punn to convert an AccountId32 MultiLocation into a native chain account ID:
-	LocationConverter,
-	// Our chain's account ID type (we can't get away without mentioning it explicitly):
-	AccountId,
->;
-type LocalOriginConverter = (
-	SovereignSignedViaLocation<LocationConverter, Origin>,
-	RelayChainAsNative<RelayChainOrigin, Origin>,
-	SiblingParachainAsNative<cumulus_pallet_xcm_handler::Origin, Origin>,
-	SignedAccountId32AsNative<RococoNetwork, Origin>,
-);
-parameter_types! {
-	pub const RococoLocation: MultiLocation = MultiLocation::X1(Junction::Parent);
-	pub const RococoNetwork: NetworkId = NetworkId::Polkadot;
-	pub RelayChainOrigin: Origin = cumulus_pallet_xcm_handler::Origin::Relay.into();
-	pub Ancestry: MultiLocation = Junction::Parachain {
-		id: ParachainInfo::parachain_id().into()
-	}.into();
-}
-impl cumulus_pallet_xcm_handler::Config for Runtime {
-	type Event = Event;
-	type XcmExecutor = XcmExecutor<XcmConfig>;
-	type UpwardMessageSender = ParachainSystem;
-	type HrmpMessageSender = ParachainSystem;
-	type SendXcmOrigin = EnsureRoot<AccountId>;
-	type AccountIdConverter = LocationConverter;
-}
-
-construct_runtime! {
+frame_support::construct_runtime! {
 	pub enum Runtime
 	where
 		Block = Block,
