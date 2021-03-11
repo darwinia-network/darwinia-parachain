@@ -332,15 +332,64 @@ frame_support::construct_runtime! {
 		NodeBlock = OpaqueBlock,
 		UncheckedExtrinsic = UncheckedExtrinsic,
 	{
-		System: frame_system::{Module, Call, Storage, Config, Event<T>},
-		Timestamp: pallet_timestamp::{Module, Call, Storage, Inherent},
-		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
-		Sudo: pallet_sudo::{Module, Call, Storage, Config<T>, Event<T>},
-		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Module, Call, Storage},
-		ParachainSystem: cumulus_pallet_parachain_system::{Module, Call, Storage, Inherent, Event},
-		TransactionPayment: pallet_transaction_payment::{Module, Storage},
-		ParachainInfo: parachain_info::{Module, Storage, Config},
-		XcmHandler: cumulus_pallet_xcm_handler::{Module, Call, Event<T>, Origin},
+		// Basic stuff; balances is uncallable initially.
+		System: frame_system::{Module, Call, Storage, Config, Event<T>} = 0,
+		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Module, Call, Storage} = 1,
+
+		Timestamp: pallet_timestamp::{Module, Call, Storage, Inherent} = 2,
+		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>} = 3,
+		// Kton: darwinia_balances::<Instance1>::{Module, Call, Storage, Config<T>, Event<T>} = 4,
+		TransactionPayment: pallet_transaction_payment::{Module, Storage} = 5,
+
+		// Governance stuff; uncallable initially.
+		// Democracy: darwinia_democracy::{Module, Call, Storage, Config, Event<T>} = 6,
+		// Council: pallet_collective::<Instance0>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 7,
+		// TechnicalCommittee: pallet_collective::<Instance1>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 8,
+		// ElectionsPhragmen: darwinia_elections_phragmen::{Module, Call, Storage, Config<T>, Event<T>} = 9,
+		// TechnicalMembership: pallet_membership::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 10,
+		// Treasury: darwinia_treasury::{Module, Call, Storage, Event<T>} = 11,
+
+		Sudo: pallet_sudo::{Module, Call, Storage, Config<T>, Event<T>} = 12,
+
+		// Claims. Usable initially.
+		// Claims: darwinia_claims::{Module, Call, Storage, Config, Event<T>, ValidateUnsigned} = 13,
+
+		// Vesting. Usable initially, but removed once all vesting is finished.
+		// Vesting: darwinia_vesting::{Module, Call, Storage, Event<T>, Config<T>} = 14,
+
+		// Utility module.
+		// Utility: pallet_utility::{Module, Call, Event} = 15,
+
+		// Less simple identity module.
+		// Identity: pallet_identity::{Module, Call, Storage, Event<T>} = 16,
+
+		// Society module.
+		// Society: pallet_society::{Module, Call, Storage, Event<T>} = 17,
+
+		// Social recovery module.
+		// Recovery: pallet_recovery::{Module, Call, Storage, Event<T>} = 18,
+
+		// Proxy module. Late addition.
+		// Proxy: pallet_proxy::{Module, Call, Storage, Event<T>} = 19,
+
+		// Multisig module. Late addition.
+		// Multisig: pallet_multisig::{Module, Call, Storage, Event<T>} = 20,
+
+		// HeaderMMR: darwinia_header_mmr::{Module, Call, Storage} = 21,
+
+		// CrabIssuing: darwinia_crab_issuing::{Module, Call, Storage, Config, Event<T>} = 22,
+		// CrabBacking: darwinia_crab_backing::{Module, Storage, Config<T>} = 23,
+
+		// EthereumRelay: darwinia_ethereum_relay::{Module, Call, Storage, Config<T>, Event<T>} = 24,
+		// EthereumBacking: darwinia_ethereum_backing::{Module, Call, Storage, Config<T>, Event<T>} = 25,
+		// EthereumRelayerGame: darwinia_relayer_game::<Instance0>::{Module, Storage} = 26,
+		// EthereumRelayAuthorities: darwinia_relay_authorities::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 27,
+
+		// TronBacking: darwinia_tron_backing::{Module, Storage, Config<T>} = 28,
+
+		ParachainSystem: cumulus_pallet_parachain_system::{Module, Call, Storage, Inherent, Event} = 29,
+		ParachainInfo: parachain_info::{Module, Storage, Config} = 30,
+		XcmHandler: cumulus_pallet_xcm_handler::{Module, Call, Event<T>, Origin} = 31,
 	}
 }
 
