@@ -102,7 +102,7 @@ pub fn darwinia_pc2_build_spec_config_of(id: ParaId) -> ChainSpec {
 fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisConfig {
 	const ROOT: &'static str = "0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c";
 
-	let root = AccountId::from(array_bytes::hex_str_array_unchecked!(ROOT, 32));
+	let root = AccountId::from(array_bytes::hex2array!(ROOT, 32));
 	let endowed_accounts = vec![(root.clone(), 1 << 56)];
 
 	darwinia_pc2_runtime::GenesisConfig {

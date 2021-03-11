@@ -94,7 +94,10 @@ pub use sp_runtime::{Perbill, Permill};
 pub use wasm::*;
 
 // --- substrate ---
-use frame_system::limits::{BlockLength, BlockWeights, EnsureRoot};
+use frame_system::{
+	limits::{BlockLength, BlockWeights},
+	EnsureRoot,
+};
 use sp_api::impl_runtime_apis;
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
