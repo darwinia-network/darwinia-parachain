@@ -102,19 +102,19 @@ pub fn darwinia_pc2_build_spec_config_of(id: ParaId) -> ChainSpec {
 fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisConfig {
 	const ROOT: &'static str = "0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c";
 
-	let root = AccountId::from(array_bytes::hex2array!(ROOT, 32));
+	let root = AccountId::from(array_bytes::hex2array_unchecked!(ROOT, 32));
 	let endowed_accounts = vec![(root.clone(), 1 << 56)];
 
 	darwinia_pc2_runtime::GenesisConfig {
-		frame_system: Some(darwinia_pc2_runtime::SystemConfig {
+		frame_system: darwinia_pc2_runtime::SystemConfig {
 			code: darwinia_pc2_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
-		}),
-		pallet_balances: Some(darwinia_pc2_runtime::BalancesConfig {
+		},
+		pallet_balances: darwinia_pc2_runtime::BalancesConfig {
 			balances: endowed_accounts,
-		}),
-		pallet_sudo: Some(darwinia_pc2_runtime::SudoConfig { key: root }),
-		parachain_info: Some(darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id }),
+		},
+		pallet_sudo: darwinia_pc2_runtime::SudoConfig { key: root },
+		parachain_info: darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id },
 	}
 }
 
@@ -153,18 +153,18 @@ fn darwinia_pc2_development_genesis(
 	id: ParaId,
 ) -> darwinia_pc2_runtime::GenesisConfig {
 	darwinia_pc2_runtime::GenesisConfig {
-		frame_system: Some(darwinia_pc2_runtime::SystemConfig {
+		frame_system: darwinia_pc2_runtime::SystemConfig {
 			code: darwinia_pc2_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
-		}),
-		pallet_balances: Some(darwinia_pc2_runtime::BalancesConfig {
+		},
+		pallet_balances: darwinia_pc2_runtime::BalancesConfig {
 			balances: endowed_accounts
 				.iter()
 				.cloned()
 				.map(|k| (k, 1 << 56))
 				.collect(),
-		}),
-		pallet_sudo: Some(darwinia_pc2_runtime::SudoConfig { key: root_key }),
-		parachain_info: Some(darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id }),
+		},
+		pallet_sudo: darwinia_pc2_runtime::SudoConfig { key: root_key },
+		parachain_info: darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id },
 	}
 }
