@@ -94,7 +94,7 @@ pub use sp_runtime::{Perbill, Permill};
 pub use wasm::*;
 
 // --- substrate ---
-use frame_system::limits::{BlockLength, BlockWeights};
+use frame_system::limits::{BlockLength, BlockWeights, EnsureRoot};
 use sp_api::impl_runtime_apis;
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
@@ -342,6 +342,7 @@ impl cumulus_pallet_xcm_handler::Config for Runtime {
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 	type UpwardMessageSender = ParachainSystem;
 	type HrmpMessageSender = ParachainSystem;
+	type SendXcmOrigin = EnsureRoot<AccountId>;
 }
 
 construct_runtime! {
