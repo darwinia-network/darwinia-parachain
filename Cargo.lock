@@ -1436,7 +1436,7 @@ dependencies = [
  "frame-executive",
  "frame-support",
  "frame-system",
- "pallet-balances",
+ "pallet-collective",
  "pallet-randomness-collective-flip",
  "pallet-sudo",
  "pallet-timestamp",

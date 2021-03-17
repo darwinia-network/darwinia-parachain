@@ -114,6 +114,8 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 			balances: endowed_accounts,
 		},
 		darwinia_balances_Instance1: Default::default(),
+		pallet_collective_Instance0: Default::default(),
+		pallet_collective_Instance1: Default::default(),
 		pallet_sudo: darwinia_pc2_runtime::SudoConfig { key: root },
 		parachain_info: darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id },
 	}
@@ -172,6 +174,8 @@ fn darwinia_pc2_development_genesis(
 				.map(|k| (k, 1 << 56))
 				.collect(),
 		},
+		pallet_collective_Instance0: Default::default(),
+		pallet_collective_Instance1: Default::default(),
 		pallet_sudo: darwinia_pc2_runtime::SudoConfig { key: root_key },
 		parachain_info: darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id },
 	}

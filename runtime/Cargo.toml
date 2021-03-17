@@ -33,7 +33,7 @@ xcm-executor       = { default-features = false, git = "https://github.com/parit
 frame-executive                   = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 frame-support                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 frame-system                      = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
-pallet-balances                   = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
+pallet-collective                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 pallet-randomness-collective-flip = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 pallet-sudo                       = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 pallet-timestamp                  = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
@@ -73,7 +73,7 @@ std     = [
 	"frame-executive/std",
 	"frame-support/std",
 	"frame-system/std",
-	"pallet-balances/std",
+	"pallet-collective/std",
 	"pallet-randomness-collective-flip/std",
 	"pallet-sudo/std",
 	"pallet-timestamp/std",
