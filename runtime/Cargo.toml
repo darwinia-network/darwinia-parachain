@@ -21,6 +21,7 @@ cumulus-primitives-core         = { default-features = false, git = "https://git
 parachain-info                  = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "rococo-v1" }
 # darwinia
 darwinia-balances           = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
+darwinia-democracy          = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-elections-phragmen = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-header-mmr         = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-pc2-primitives     = { default-features = false, path = "../primitives" }
@@ -36,10 +37,14 @@ frame-executive                   = { default-features = false, git = "https://g
 frame-support                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 frame-system                      = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 pallet-collective                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
+pallet-identity                   = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
+pallet-proxy                      = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 pallet-randomness-collective-flip = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
+pallet-scheduler                  = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 pallet-sudo                       = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 pallet-timestamp                  = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 pallet-transaction-payment        = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
+pallet-utility                    = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 sp-api                            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 sp-block-builder                  = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 sp-core                           = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
@@ -65,6 +70,7 @@ std     = [
 	"cumulus-primitives-core/std",
 	"parachain-info/std",
 	"darwinia-balances/std",
+	"darwinia-democracy/std",
 	"darwinia-elections-phragmen/std",
 	"darwinia-header-mmr/std",
 	"darwinia-pc2-primitives/std",
@@ -78,10 +84,14 @@ std     = [
 	"frame-support/std",
 	"frame-system/std",
 	"pallet-collective/std",
+	"pallet-identity/std",
+	"pallet-proxy/std",
 	"pallet-randomness-collective-flip/std",
+	"pallet-scheduler/std",
 	"pallet-sudo/std",
 	"pallet-timestamp/std",
 	"pallet-transaction-payment/std",
+	"pallet-utility/std",
 	"sp-api/std",
 	"sp-block-builder/std",
 	"sp-core/std",

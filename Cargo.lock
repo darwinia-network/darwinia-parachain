@@ -1384,6 +1384,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "darwinia-democracy"
+version = "2.0.0"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
+dependencies = [
+ "darwinia-support",
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "serde",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "darwinia-elections-phragmen"
 version = "2.0.0"
 source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
@@ -1446,6 +1461,7 @@ dependencies = [
  "cumulus-pallet-xcm-handler",
  "cumulus-primitives-core",
  "darwinia-balances",
+ "darwinia-democracy",
  "darwinia-elections-phragmen",
  "darwinia-header-mmr",
  "darwinia-pc2-primitives",
@@ -1455,10 +1471,14 @@ dependencies = [
  "frame-support",
  "frame-system",
  "pallet-collective",
+ "pallet-identity",
+ "pallet-proxy",
  "pallet-randomness-collective-flip",
+ "pallet-scheduler",
  "pallet-sudo",
  "pallet-timestamp",
  "pallet-transaction-payment",
+ "pallet-utility",
  "parachain-info",
  "parity-scale-codec",
  "polkadot-parachain",

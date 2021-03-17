@@ -88,6 +88,9 @@ pub use balances::*;
 pub mod transaction_payment;
 pub use transaction_payment::*;
 
+pub mod democracy;
+pub use democracy::*;
+
 pub mod collective;
 pub use collective::*;
 
@@ -102,6 +105,18 @@ pub use header_mmr::*;
 
 pub mod sudo;
 pub use sudo::*;
+
+pub mod utility;
+pub use utility::*;
+
+pub mod identity;
+pub use identity::*;
+
+pub mod scheduler;
+pub use scheduler::*;
+
+pub mod proxy;
+pub use proxy::*;
 
 pub mod parachain_system;
 pub use parachain_system::*;
@@ -201,7 +216,7 @@ frame_support::construct_runtime! {
 		TransactionPayment: pallet_transaction_payment::{Module, Storage} = 5,
 
 		// Governance stuff; uncallable initially.
-		// Democracy: darwinia_democracy::{Module, Call, Storage, Config, Event<T>} = 6,
+		Democracy: darwinia_democracy::{Module, Call, Storage, Config, Event<T>} = 6,
 		Council: pallet_collective::<Instance0>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 7,
 		TechnicalCommittee: pallet_collective::<Instance1>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 8,
 		ElectionsPhragmen: darwinia_elections_phragmen::{Module, Call, Storage, Config<T>, Event<T>} = 9,
@@ -218,10 +233,10 @@ frame_support::construct_runtime! {
 		// Vesting: darwinia_vesting::{Module, Call, Storage, Event<T>, Config<T>} = 15,
 
 		// Utility module.
-		// Utility: pallet_utility::{Module, Call, Event} = 16,
+		Utility: pallet_utility::{Module, Call, Event} = 16,
 
 		// Less simple identity module.
-		// Identity: pallet_identity::{Module, Call, Storage, Event<T>} = 17,
+		Identity: pallet_identity::{Module, Call, Storage, Event<T>} = 17,
 
 		// Society module.
 		// Society: pallet_society::{Module, Call, Storage, Event<T>} = 18,
@@ -229,25 +244,28 @@ frame_support::construct_runtime! {
 		// Social recovery module.
 		// Recovery: pallet_recovery::{Module, Call, Storage, Event<T>} = 19,
 
+		// System scheduler.
+		Scheduler: pallet_scheduler::{Module, Call, Storage, Event<T>} = 20,
+
 		// Proxy module. Late addition.
-		// Proxy: pallet_proxy::{Module, Call, Storage, Event<T>} = 20,
+		Proxy: pallet_proxy::{Module, Call, Storage, Event<T>} = 21,
 
 		// Multisig module. Late addition.
-		// Multisig: pallet_multisig::{Module, Call, Storage, Event<T>} = 21,
+		// Multisig: pallet_multisig::{Module, Call, Storage, Event<T>} = 22,
 
-		// CrabIssuing: darwinia_crab_issuing::{Module, Call, Storage, Config, Event<T>} = 22,
-		// CrabBacking: darwinia_crab_backing::{Module, Storage, Config<T>} = 23,
+		// CrabIssuing: darwinia_crab_issuing::{Module, Call, Storage, Config, Event<T>} = 23,
+		// CrabBacking: darwinia_crab_backing::{Module, Storage, Config<T>} = 24,
 
-		// EthereumRelay: darwinia_ethereum_relay::{Module, Call, Storage, Config<T>, Event<T>} = 24,
-		// EthereumBacking: darwinia_ethereum_backing::{Module, Call, Storage, Config<T>, Event<T>} = 25,
-		// EthereumRelayerGame: darwinia_relayer_game::<Instance0>::{Module, Storage} = 26,
-		// EthereumRelayAuthorities: darwinia_relay_authorities::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 27,
+		// EthereumRelay: darwinia_ethereum_relay::{Module, Call, Storage, Config<T>, Event<T>} = 25,
+		// EthereumBacking: darwinia_ethereum_backing::{Module, Call, Storage, Config<T>, Event<T>} = 26,
+		// EthereumRelayerGame: darwinia_relayer_game::<Instance0>::{Module, Storage} = 27,
+		// EthereumRelayAuthorities: darwinia_relay_authorities::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 28,
 
-		// TronBacking: darwinia_tron_backing::{Module, Storage, Config<T>} = 28,
+		// TronBacking: darwinia_tron_backing::{Module, Storage, Config<T>} = 29,
 
-		ParachainSystem: cumulus_pallet_parachain_system::{Module, Call, Storage, Inherent, Event} = 29,
-		ParachainInfo: parachain_info::{Module, Storage, Config} = 30,
-		XcmHandler: cumulus_pallet_xcm_handler::{Module, Call, Event<T>, Origin} = 31,
+		ParachainSystem: cumulus_pallet_parachain_system::{Module, Call, Storage, Inherent, Event} = 30,
+		ParachainInfo: parachain_info::{Module, Storage, Config} = 31,
+		XcmHandler: cumulus_pallet_xcm_handler::{Module, Call, Event<T>, Origin} = 32,
 	}
 }
 

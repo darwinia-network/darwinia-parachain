@@ -114,6 +114,7 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 			balances: endowed_accounts,
 		},
 		darwinia_balances_Instance1: Default::default(),
+		darwinia_democracy: Default::default(),
 		pallet_collective_Instance0: Default::default(),
 		pallet_collective_Instance1: Default::default(),
 		darwinia_elections_phragmen: Default::default(),
@@ -175,6 +176,7 @@ fn darwinia_pc2_development_genesis(
 				.map(|k| (k, 1 << 56))
 				.collect(),
 		},
+		darwinia_democracy: Default::default(),
 		pallet_collective_Instance0: Default::default(),
 		pallet_collective_Instance1: Default::default(),
 		darwinia_elections_phragmen: Default::default(),
