@@ -91,6 +91,12 @@ pub use transaction_payment::*;
 pub mod collective;
 pub use collective::*;
 
+pub mod elections_phragmen;
+pub use elections_phragmen::*;
+
+pub mod treasury;
+pub use treasury::*;
+
 pub mod header_mmr;
 pub use header_mmr::*;
 
@@ -198,9 +204,9 @@ frame_support::construct_runtime! {
 		// Democracy: darwinia_democracy::{Module, Call, Storage, Config, Event<T>} = 6,
 		Council: pallet_collective::<Instance0>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 7,
 		TechnicalCommittee: pallet_collective::<Instance1>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 8,
-		// ElectionsPhragmen: darwinia_elections_phragmen::{Module, Call, Storage, Config<T>, Event<T>} = 9,
+		ElectionsPhragmen: darwinia_elections_phragmen::{Module, Call, Storage, Config<T>, Event<T>} = 9,
 		// TechnicalMembership: pallet_membership::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 10,
-		// Treasury: darwinia_treasury::{Module, Call, Storage, Event<T>} = 11,
+		Treasury: darwinia_treasury::{Module, Call, Storage, Event<T>} = 11,
 		HeaderMMR: darwinia_header_mmr::{Module, Call, Storage} = 12,
 
 		Sudo: pallet_sudo::{Module, Call, Storage, Config<T>, Event<T>} = 13,

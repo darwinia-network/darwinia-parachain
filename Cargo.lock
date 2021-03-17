@@ -1384,6 +1384,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "darwinia-elections-phragmen"
+version = "2.0.0"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
+dependencies = [
+ "darwinia-support",
+ "frame-support",
+ "frame-system",
+ "log",
+ "parity-scale-codec",
+ "serde",
+ "sp-npos-elections",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "darwinia-header-mmr"
 version = "2.0.0"
 source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
@@ -1430,9 +1446,11 @@ dependencies = [
  "cumulus-pallet-xcm-handler",
  "cumulus-primitives-core",
  "darwinia-balances",
+ "darwinia-elections-phragmen",
  "darwinia-header-mmr",
  "darwinia-pc2-primitives",
  "darwinia-support",
+ "darwinia-treasury",
  "frame-executive",
  "frame-support",
  "frame-system",
@@ -1483,6 +1501,20 @@ dependencies = [
  "impl-trait-for-tuples",
  "num-traits",
  "parity-scale-codec",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "darwinia-treasury"
+version = "2.0.0"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
+dependencies = [
+ "darwinia-support",
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "serde",
  "sp-runtime",
  "sp-std",
 ]

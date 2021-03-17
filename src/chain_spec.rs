@@ -116,6 +116,7 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 		darwinia_balances_Instance1: Default::default(),
 		pallet_collective_Instance0: Default::default(),
 		pallet_collective_Instance1: Default::default(),
+		darwinia_elections_phragmen: Default::default(),
 		pallet_sudo: darwinia_pc2_runtime::SudoConfig { key: root },
 		parachain_info: darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id },
 	}
@@ -176,6 +177,7 @@ fn darwinia_pc2_development_genesis(
 		},
 		pallet_collective_Instance0: Default::default(),
 		pallet_collective_Instance1: Default::default(),
+		darwinia_elections_phragmen: Default::default(),
 		pallet_sudo: darwinia_pc2_runtime::SudoConfig { key: root_key },
 		parachain_info: darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id },
 	}
