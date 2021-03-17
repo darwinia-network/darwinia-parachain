@@ -1,17 +1,29 @@
 // --- substrate ---
 use frame_support::weights::{
-	constants::{BlockExecutionWeight, ExtrinsicBaseWeight},
-	DispatchClass,
+	constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
+	DispatchClass, Weight,
 };
 use frame_system::{
 	limits::{BlockLength, BlockWeights},
+	weights::SubstrateWeight,
 	Config,
 };
-use sp_runtime::traits::BlakeTwo256;
+use sp_runtime::{
+	traits::{AccountIdLookup, BlakeTwo256},
+	Perbill,
+};
 use sp_version::RuntimeVersion;
 // --- darwinia ---
 use crate::*;
 
+/// We assume that an on-initialize consumes 2.5% of the weight on average, hence a single extrinsic
+/// will not be allowed to consume more than `AvailableBlockRatio - 2.5%`.
+const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(25);
+/// We allow `Normal` extrinsics to fill up the block up to 75%, the rest can be used
+/// by  Operational  extrinsics.
+const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
+/// We allow for 2 seconds of compute with a 6 second average block time.
+const MAXIMUM_BLOCK_WEIGHT: Weight = 2 * WEIGHT_PER_SECOND;
 frame_support::parameter_types! {
 	pub const BlockHashCount: BlockNumber = 250;
 	pub const Version: RuntimeVersion = VERSION;
@@ -38,39 +50,26 @@ frame_support::parameter_types! {
 	pub const SS58Prefix: u8 = 18;
 }
 impl Config for Runtime {
-	/// The identifier used to distinguish between accounts.
-	type AccountId = AccountId;
-	/// The aggregated dispatch type that is available for extrinsics.
-	type Call = Call;
-	/// The lookup mechanism to get account ID from whatever is passed in dispatchers.
-	type Lookup = IdentityLookup<AccountId>;
-	/// The index type for storing how many extrinsics an account has signed.
-	type Index = Nonce;
-	/// The index type for blocks.
-	type BlockNumber = BlockNumber;
-	/// The type for hashing blocks and tries.
-	type Hash = Hash;
-	/// The hashing algorithm used.
-	type Hashing = BlakeTwo256;
-	/// The header type.
-	type Header = Header;
-	/// The ubiquitous event type.
-	type Event = Event;
-	/// The ubiquitous origin type.
-	type Origin = Origin;
-	/// Maximum number of block number to block hash mappings to keep (oldest pruned first).
-	type BlockHashCount = BlockHashCount;
-	/// Runtime version.
-	type Version = Version;
-	/// Converts a module to an index of this module in the runtime.
-	type PalletInfo = PalletInfo;
-	type AccountData = pallet_balances::AccountData<Balance>;
-	type OnNewAccount = ();
-	type OnKilledAccount = ();
-	type DbWeight = ();
 	type BaseCallFilter = ();
-	type SystemWeightInfo = ();
 	type BlockWeights = RuntimeBlockWeights;
 	type BlockLength = RuntimeBlockLength;
+	type DbWeight = RocksDbWeight;
+	type Origin = Origin;
+	type Call = Call;
+	type Index = Nonce;
+	type BlockNumber = BlockNumber;
+	type Hash = Hash;
+	type Hashing = BlakeTwo256;
+	type AccountId = AccountId;
+	type Lookup = AccountIdLookup<AccountId, ()>;
+	type Header = Header;
+	type Event = Event;
+	type BlockHashCount = BlockHashCount;
+	type Version = Version;
+	type PalletInfo = PalletInfo;
+	type AccountData = AccountData<Balance>;
+	type OnNewAccount = ();
+	type OnKilledAccount = ();
+	type SystemWeightInfo = SubstrateWeight<Runtime>;
 	type SS58Prefix = SS58Prefix;
 }

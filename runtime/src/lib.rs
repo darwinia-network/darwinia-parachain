@@ -51,131 +51,6 @@ pub mod constants {
 	}
 }
 
-// pub mod impls {
-// 	//! Some configurable implementations as associated type for the substrate runtime.
-
-// 	pub mod relay {
-// 		// --- darwinia ---
-// 		use crate::*;
-// 		use darwinia_relay_primitives::relayer_game::*;
-// 		use ethereum_primitives::EthereumBlockNumber;
-
-// 		pub struct EthereumRelayerGameAdjustor;
-// 		impl AdjustableRelayerGame for EthereumRelayerGameAdjustor {
-// 			type Moment = BlockNumber;
-// 			type Balance = Balance;
-// 			type RelayHeaderId = EthereumBlockNumber;
-
-// 			fn max_active_games() -> u8 {
-// 				32
-// 			}
-
-// 			fn affirm_time(round: u32) -> Self::Moment {
-// 				match round {
-// 					// 1.5 mins
-// 					0 => 30,
-// 					// 0.5 mins
-// 					_ => 6,
-// 				}
-// 			}
-
-// 			fn complete_proofs_time(round: u32) -> Self::Moment {
-// 				match round {
-// 					// 1.5 mins
-// 					0 => 30,
-// 					// 0.5 mins
-// 					_ => 6,
-// 				}
-// 			}
-
-// 			fn update_sample_points(sample_points: &mut Vec<Vec<Self::RelayHeaderId>>) {
-// 				sample_points.push(vec![sample_points.last().unwrap().last().unwrap() - 1]);
-// 			}
-
-// 			fn estimate_stake(round: u32, affirmations_count: u32) -> Self::Balance {
-// 				match round {
-// 					0 => match affirmations_count {
-// 						0 => 1000 * COIN,
-// 						_ => 1500 * COIN,
-// 					},
-// 					_ => 100 * COIN,
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	// --- crates ---
-// 	use smallvec::smallvec;
-// 	// --- substrate ---
-// 	use frame_support::{
-// 		traits::{Currency, Imbalance, OnUnbalanced},
-// 		weights::{WeightToFeeCoefficient, WeightToFeeCoefficients, WeightToFeePolynomial},
-// 	};
-// 	// --- darwinia ---
-// 	use crate::*;
-
-// 	darwinia_support::impl_account_data! {
-// 		struct AccountData<Balance>
-// 		for
-// 			RingInstance,
-// 			KtonInstance
-// 		where
-// 			Balance = Balance
-// 		{
-// 			// other data
-// 		}
-// 	}
-
-// 	pub struct Author;
-// 	impl OnUnbalanced<NegativeImbalance> for Author {
-// 		fn on_nonzero_unbalanced(amount: NegativeImbalance) {
-// 			Ring::resolve_creating(&Authorship::author(), amount);
-// 		}
-// 	}
-
-// 	pub struct DealWithFees;
-// 	impl OnUnbalanced<NegativeImbalance> for DealWithFees {
-// 		fn on_unbalanceds<B>(mut fees_then_tips: impl Iterator<Item = NegativeImbalance>) {
-// 			if let Some(fees) = fees_then_tips.next() {
-// 				// for fees, 80% to treasury, 20% to author
-// 				let mut split = fees.ration(80, 20);
-// 				if let Some(tips) = fees_then_tips.next() {
-// 					// for tips, if any, 80% to treasury, 20% to author (though this can be anything)
-// 					tips.ration_merge_into(80, 20, &mut split);
-// 				}
-// 				Treasury::on_unbalanced(split.0);
-// 				Author::on_unbalanced(split.1);
-// 			}
-// 		}
-// 	}
-
-// 	/// Handles converting a weight scalar to a fee value, based on the scale and granularity of the
-// 	/// node's balance type.
-// 	///
-// 	/// This should typically create a mapping between the following ranges:
-// 	///   - [0, MAXIMUM_BLOCK_WEIGHT]
-// 	///   - [Balance::min, Balance::max]
-// 	///
-// 	/// Yet, it can be used for any other sort of change to weight-fee. Some examples being:
-// 	///   - Setting it to `0` will essentially disable the weight fee.
-// 	///   - Setting it to `1` will cause the literal `#[weight = x]` values to be charged.
-// 	pub struct WeightToFee;
-// 	impl WeightToFeePolynomial for WeightToFee {
-// 		type Balance = Balance;
-// 		fn polynomial() -> WeightToFeeCoefficients<Self::Balance> {
-// 			// in Crab, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
-// 			let p = 100 * MILLI;
-// 			let q = Balance::from(ExtrinsicBaseWeight::get());
-// 			smallvec![WeightToFeeCoefficient {
-// 				degree: 1,
-// 				negative: false,
-// 				coeff_frac: Perbill::from_rational_approximation(p % q, q),
-// 				coeff_integer: p / q,
-// 			}]
-// 		}
-// 	}
-// }
-
 pub mod wasm {
 	//! Make the WASM binary available.
 
@@ -213,6 +88,9 @@ pub use balances::*;
 pub mod transaction_payment;
 pub use transaction_payment::*;
 
+pub mod header_mmr;
+pub use header_mmr::*;
+
 pub mod sudo;
 pub use sudo::*;
 
@@ -231,17 +109,14 @@ use darwinia_pc2_primitives::*;
 pub use wasm::*;
 
 // --- substrate ---
-use frame_support::{
-	traits::Randomness,
-	weights::{constants::WEIGHT_PER_SECOND, Weight},
-};
+use frame_support::traits::Randomness;
 use sp_api::impl_runtime_apis;
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
-	traits::{Block as BlockT, IdentityLookup},
+	traits::Block as BlockT,
 	transaction_validity::{TransactionSource, TransactionValidity},
-	ApplyExtrinsicResult, Perbill,
+	ApplyExtrinsicResult, MultiAddress,
 };
 use sp_std::prelude::*;
 #[cfg(feature = "std")]
@@ -249,7 +124,7 @@ use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
 
 /// The address format for describing accounts.
-pub type Address = AccountId;
+pub type Address = MultiAddress<AccountId, ()>;
 /// Block type as expected by this runtime.
 pub type Block = generic::Block<Header, UncheckedExtrinsic>;
 /// A Block signed with a Justification
@@ -287,15 +162,6 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	transaction_version: 1,
 };
 
-/// We assume that ~10% of the block weight is consumed by `on_initalize` handlers.
-/// This is used to limit the maximal weight of a single extrinsic.
-const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(10);
-/// We allow `Normal` extrinsics to fill up the block up to 75%, the rest can be used
-/// by  Operational  extrinsics.
-const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
-/// We allow for 2 seconds of compute with a 6 second average block time.
-const MAXIMUM_BLOCK_WEIGHT: Weight = 2 * WEIGHT_PER_SECOND;
-
 impl_opaque_keys! {
 	pub struct SessionKeys {}
 }
@@ -307,22 +173,6 @@ pub fn native_version() -> NativeVersion {
 		runtime_version: VERSION,
 		can_author_with: Default::default(),
 	}
-}
-
-frame_support::parameter_types! {
-	pub const ExistentialDeposit: Balance = 500;
-	pub const MaxLocks: u32 = 50;
-}
-impl pallet_balances::Config for Runtime {
-	/// The type for recording an account's balance.
-	type Balance = Balance;
-	/// The ubiquitous event type.
-	type Event = Event;
-	type DustRemoval = ();
-	type ExistentialDeposit = ExistentialDeposit;
-	type AccountStore = System;
-	type WeightInfo = ();
-	type MaxLocks = MaxLocks;
 }
 
 frame_support::construct_runtime! {
@@ -337,8 +187,8 @@ frame_support::construct_runtime! {
 		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Module, Call, Storage} = 1,
 
 		Timestamp: pallet_timestamp::{Module, Call, Storage, Inherent} = 2,
-		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>} = 3,
-		// Kton: darwinia_balances::<Instance1>::{Module, Call, Storage, Config<T>, Event<T>} = 4,
+		Balances: darwinia_balances::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 3,
+		Kton: darwinia_balances::<Instance1>::{Module, Call, Storage, Config<T>, Event<T>} = 4,
 		TransactionPayment: pallet_transaction_payment::{Module, Storage} = 5,
 
 		// Governance stuff; uncallable initially.
@@ -348,34 +198,33 @@ frame_support::construct_runtime! {
 		// ElectionsPhragmen: darwinia_elections_phragmen::{Module, Call, Storage, Config<T>, Event<T>} = 9,
 		// TechnicalMembership: pallet_membership::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 10,
 		// Treasury: darwinia_treasury::{Module, Call, Storage, Event<T>} = 11,
+		HeaderMMR: darwinia_header_mmr::{Module, Call, Storage} = 12,
 
-		Sudo: pallet_sudo::{Module, Call, Storage, Config<T>, Event<T>} = 12,
+		Sudo: pallet_sudo::{Module, Call, Storage, Config<T>, Event<T>} = 13,
 
 		// Claims. Usable initially.
-		// Claims: darwinia_claims::{Module, Call, Storage, Config, Event<T>, ValidateUnsigned} = 13,
+		// Claims: darwinia_claims::{Module, Call, Storage, Config, Event<T>, ValidateUnsigned} = 14,
 
 		// Vesting. Usable initially, but removed once all vesting is finished.
-		// Vesting: darwinia_vesting::{Module, Call, Storage, Event<T>, Config<T>} = 14,
+		// Vesting: darwinia_vesting::{Module, Call, Storage, Event<T>, Config<T>} = 15,
 
 		// Utility module.
-		// Utility: pallet_utility::{Module, Call, Event} = 15,
+		// Utility: pallet_utility::{Module, Call, Event} = 16,
 
 		// Less simple identity module.
-		// Identity: pallet_identity::{Module, Call, Storage, Event<T>} = 16,
+		// Identity: pallet_identity::{Module, Call, Storage, Event<T>} = 17,
 
 		// Society module.
-		// Society: pallet_society::{Module, Call, Storage, Event<T>} = 17,
+		// Society: pallet_society::{Module, Call, Storage, Event<T>} = 18,
 
 		// Social recovery module.
-		// Recovery: pallet_recovery::{Module, Call, Storage, Event<T>} = 18,
+		// Recovery: pallet_recovery::{Module, Call, Storage, Event<T>} = 19,
 
 		// Proxy module. Late addition.
-		// Proxy: pallet_proxy::{Module, Call, Storage, Event<T>} = 19,
+		// Proxy: pallet_proxy::{Module, Call, Storage, Event<T>} = 20,
 
 		// Multisig module. Late addition.
-		// Multisig: pallet_multisig::{Module, Call, Storage, Event<T>} = 20,
-
-		// HeaderMMR: darwinia_header_mmr::{Module, Call, Storage} = 21,
+		// Multisig: pallet_multisig::{Module, Call, Storage, Event<T>} = 21,
 
 		// CrabIssuing: darwinia_crab_issuing::{Module, Call, Storage, Config, Event<T>} = 22,
 		// CrabBacking: darwinia_crab_backing::{Module, Storage, Config<T>} = 23,

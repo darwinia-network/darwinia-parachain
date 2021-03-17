@@ -110,9 +110,10 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 			code: darwinia_pc2_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		},
-		pallet_balances: darwinia_pc2_runtime::BalancesConfig {
+		darwinia_balances_Instance0: darwinia_pc2_runtime::BalancesConfig {
 			balances: endowed_accounts,
 		},
+		darwinia_balances_Instance1: Default::default(),
 		pallet_sudo: darwinia_pc2_runtime::SudoConfig { key: root },
 		parachain_info: darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id },
 	}
@@ -157,7 +158,14 @@ fn darwinia_pc2_development_genesis(
 			code: darwinia_pc2_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		},
-		pallet_balances: darwinia_pc2_runtime::BalancesConfig {
+		darwinia_balances_Instance0: darwinia_pc2_runtime::BalancesConfig {
+			balances: endowed_accounts
+				.iter()
+				.cloned()
+				.map(|k| (k, 1 << 56))
+				.collect(),
+		},
+		darwinia_balances_Instance1: darwinia_pc2_runtime::KtonConfig {
 			balances: endowed_accounts
 				.iter()
 				.cloned()
