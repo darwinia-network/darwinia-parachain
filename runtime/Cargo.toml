@@ -23,9 +23,11 @@ parachain-info                  = { default-features = false, git = "https://git
 darwinia-balances           = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-democracy          = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-elections-phragmen = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
+darwinia-ethereum-backing   = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-ethereum-relay     = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-header-mmr         = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-pc2-primitives     = { default-features = false, path = "../primitives" }
+darwinia-relay-authorities  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-relay-primitives   = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-relayer-game       = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 darwinia-support            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
@@ -78,9 +80,11 @@ std     = [
 	"darwinia-balances/std",
 	"darwinia-democracy/std",
 	"darwinia-elections-phragmen/std",
+	"darwinia-ethereum-backing/std",
 	"darwinia-ethereum-relay/std",
 	"darwinia-header-mmr/std",
 	"darwinia-pc2-primitives/std",
+	"darwinia-relay-authorities/std",
 	"darwinia-relay-primitives/std",
 	"darwinia-relayer-game/std",
 	"darwinia-support/std",

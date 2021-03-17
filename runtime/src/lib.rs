@@ -127,8 +127,14 @@ pub use multisig::*;
 pub mod ethereum_relay;
 pub use ethereum_relay::*;
 
+pub mod ethereum_backing;
+pub use ethereum_backing::*;
+
 pub mod relayer_game;
 pub use relayer_game::*;
+
+pub mod relay_authorities;
+pub use relay_authorities::*;
 
 pub mod parachain_system;
 pub use parachain_system::*;
@@ -269,9 +275,9 @@ frame_support::construct_runtime! {
 		// CrabBacking: darwinia_crab_backing::{Module, Storage, Config<T>} = 24,
 
 		EthereumRelay: darwinia_ethereum_relay::{Module, Call, Storage, Config<T>, Event<T>} = 25,
-		// EthereumBacking: darwinia_ethereum_backing::{Module, Call, Storage, Config<T>, Event<T>} = 26,
+		EthereumBacking: darwinia_ethereum_backing::{Module, Call, Storage, Config<T>, Event<T>} = 26,
 		EthereumRelayerGame: darwinia_relayer_game::<Instance0>::{Module, Storage} = 27,
-		// EthereumRelayAuthorities: darwinia_relay_authorities::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 28,
+		EthereumRelayAuthorities: darwinia_relay_authorities::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 28,
 
 		// TronBacking: darwinia_tron_backing::{Module, Storage, Config<T>} = 29,
 

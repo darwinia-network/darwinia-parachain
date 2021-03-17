@@ -37,6 +37,14 @@ type AccountPublic = <Signature as Verify>::Signer;
 
 const DARWINIA_PC2_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
+const TOKEN_REDEEM_ADDRESS: &'static str = "0x49262B932E439271d05634c32978294C7Ea15d0C";
+const DEPOSIT_REDEEM_ADDRESS: &'static str = "0x6EF538314829EfA8386Fc43386cB13B4e0A67D1e";
+const SET_AUTHORITIES_ADDRESS: &'static str = "0xE4A2892599Ad9527D76Ce6E26F93620FA7396D85";
+const RING_TOKEN_ADDRESS: &'static str = "0xb52FBE2B925ab79a821b261C82c5Ba0814AAA5e0";
+const KTON_TOKEN_ADDRESS: &'static str = "0x1994100c58753793D52c6f457f189aa3ce9cEe94";
+const GENESIS_ETHEREUM_RELAY_AUTHORITY_SIGNER: &'static str =
+	"0x68898db1012808808c903f390909c52d9f706749";
+
 /// The extensions for the [`ChainSpec`].
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ChainSpecGroup, ChainSpecExtension)]
 #[serde(deny_unknown_fields)]
@@ -132,6 +140,22 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 			),
 			..Default::default()
 		},
+		darwinia_ethereum_backing: darwinia_pc2_runtime::EthereumBackingConfig {
+			token_redeem_address: array_bytes::hex2array_unchecked!(TOKEN_REDEEM_ADDRESS, 20).into(),
+			deposit_redeem_address: array_bytes::hex2array_unchecked!(DEPOSIT_REDEEM_ADDRESS, 20).into(),
+			set_authorities_address: array_bytes::hex2array_unchecked!(SET_AUTHORITIES_ADDRESS, 20).into(),
+			ring_token_address: array_bytes::hex2array_unchecked!(RING_TOKEN_ADDRESS, 20).into(),
+			kton_token_address: array_bytes::hex2array_unchecked!(KTON_TOKEN_ADDRESS, 20).into(),
+			ring_locked: 1 << 56,
+			kton_locked: 1 << 56,
+		},
+		darwinia_relay_authorities_Instance0: darwinia_pc2_runtime::EthereumRelayAuthoritiesConfig {
+			authorities: vec![(
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
+				array_bytes::hex2array_unchecked!(GENESIS_ETHEREUM_RELAY_AUTHORITY_SIGNER, 20).into(),
+				1
+			)]
+		},
 		parachain_info: darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id },
 	}
 }
@@ -205,6 +229,22 @@ fn darwinia_pc2_development_genesis(
 				"DAG_MERKLE_ROOTS_PATH",
 			),
 			..Default::default()
+		},
+		darwinia_ethereum_backing: darwinia_pc2_runtime::EthereumBackingConfig {
+			token_redeem_address: array_bytes::hex2array_unchecked!(TOKEN_REDEEM_ADDRESS, 20).into(),
+			deposit_redeem_address: array_bytes::hex2array_unchecked!(DEPOSIT_REDEEM_ADDRESS, 20).into(),
+			set_authorities_address: array_bytes::hex2array_unchecked!(SET_AUTHORITIES_ADDRESS, 20).into(),
+			ring_token_address: array_bytes::hex2array_unchecked!(RING_TOKEN_ADDRESS, 20).into(),
+			kton_token_address: array_bytes::hex2array_unchecked!(KTON_TOKEN_ADDRESS, 20).into(),
+			ring_locked: 1 << 56,
+			kton_locked: 1 << 56,
+		},
+		darwinia_relay_authorities_Instance0: darwinia_pc2_runtime::EthereumRelayAuthoritiesConfig {
+			authorities: vec![(
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
+				array_bytes::hex2array_unchecked!(GENESIS_ETHEREUM_RELAY_AUTHORITY_SIGNER, 20).into(),
+				1
+			)]
 		},
 		parachain_info: darwinia_pc2_runtime::ParachainInfoConfig { parachain_id: id },
 	}

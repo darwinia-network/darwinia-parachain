@@ -1415,6 +1415,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "darwinia-ethereum-backing"
+version = "2.0.0"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
+dependencies = [
+ "array-bytes",
+ "darwinia-relay-primitives",
+ "darwinia-support",
+ "ethabi",
+ "ethereum-primitives",
+ "frame-support",
+ "frame-system",
+ "log",
+ "parity-scale-codec",
+ "serde",
+ "serde_json",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "darwinia-ethereum-relay"
 version = "2.0.0"
 source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
@@ -1487,9 +1508,11 @@ dependencies = [
  "darwinia-balances",
  "darwinia-democracy",
  "darwinia-elections-phragmen",
+ "darwinia-ethereum-backing",
  "darwinia-ethereum-relay",
  "darwinia-header-mmr",
  "darwinia-pc2-primitives",
+ "darwinia-relay-authorities",
  "darwinia-relay-primitives",
  "darwinia-relayer-game",
  "darwinia-support",
@@ -1528,6 +1551,21 @@ dependencies = [
  "xcm",
  "xcm-builder",
  "xcm-executor",
+]
+
+[[package]]
+name = "darwinia-relay-authorities"
+version = "2.0.0"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
+dependencies = [
+ "darwinia-relay-primitives",
+ "darwinia-support",
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "serde",
+ "sp-runtime",
+ "sp-std",
 ]
 
 [[package]]
@@ -1869,6 +1907,21 @@ checksum = "14ca354e36190500e1e1fb267c647932382b54053c50b14970856c0b00a35067"
 dependencies = [
  "gcc",
  "libc",
+]
+
+[[package]]
+name = "ethabi"
+version = "13.0.0"
+source = "git+https://github.com/darwinia-network/ethabi.git?branch=xavier-no-std#baacf174d5c2f12122c4ee3fe31506fb52069983"
+dependencies = [
+ "anyhow",
+ "ethereum-types",
+ "hex",
+ "serde",
+ "serde_json",
+ "sha3",
+ "thiserror",
+ "uint",
 ]
 
 [[package]]
