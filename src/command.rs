@@ -51,7 +51,7 @@ fn load_spec(
 ) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
 	match id {
 		"" | "darwinia-pc2" => Ok(Box::new(chain_spec::ChainSpec::from_json_bytes(
-			&include_bytes!("../res/darwinia-pc2.json")[..],
+			&include_bytes!("../res/darwinia-pc2/darwinia-pc2.json")[..],
 		)?)),
 		"darwinia-pc2-genesis" => Ok(Box::new(chain_spec::darwinia_pc2_build_spec_config_of(
 			para_id,

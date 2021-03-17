@@ -1415,6 +1415,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "darwinia-ethereum-relay"
+version = "2.0.0"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
+dependencies = [
+ "array-bytes",
+ "blake2-rfc",
+ "ckb-merkle-mountain-range",
+ "darwinia-relay-primitives",
+ "darwinia-relayer-game",
+ "darwinia-support",
+ "ethereum-primitives",
+ "ethereum-types",
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "rlp",
+ "serde",
+ "serde_json",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "darwinia-header-mmr"
 version = "2.0.0"
 source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
@@ -1463,15 +1487,20 @@ dependencies = [
  "darwinia-balances",
  "darwinia-democracy",
  "darwinia-elections-phragmen",
+ "darwinia-ethereum-relay",
  "darwinia-header-mmr",
  "darwinia-pc2-primitives",
+ "darwinia-relay-primitives",
+ "darwinia-relayer-game",
  "darwinia-support",
  "darwinia-treasury",
+ "ethereum-primitives",
  "frame-executive",
  "frame-support",
  "frame-system",
  "pallet-collective",
  "pallet-identity",
+ "pallet-membership",
  "pallet-proxy",
  "pallet-randomness-collective-flip",
  "pallet-scheduler",
@@ -1507,6 +1536,22 @@ source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-
 dependencies = [
  "frame-support",
  "parity-scale-codec",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "darwinia-relayer-game"
+version = "2.0.0"
+source = "git+https://github.com/darwinia-network/darwinia-common?branch=rococo-v1#1a5c335b3d09b545d259df3296f3c6c177a4abcb"
+dependencies = [
+ "darwinia-relay-primitives",
+ "darwinia-support",
+ "frame-support",
+ "frame-system",
+ "log",
+ "parity-scale-codec",
+ "serde",
  "sp-runtime",
  "sp-std",
 ]
@@ -1655,6 +1700,7 @@ dependencies = [
  "cumulus-client-network",
  "cumulus-client-service",
  "cumulus-primitives-core",
+ "darwinia-ethereum-relay",
  "darwinia-pc2-primitives",
  "darwinia-pc2-runtime",
  "jsonrpc-core",

@@ -42,7 +42,7 @@ impl InstanceFilter<Call> for ProxyType {
 							Call::Council(..) |
 							Call::TechnicalCommittee(..) |
 							Call::ElectionsPhragmen(..) |
-							// Call::TechnicalMembership(..) |
+							Call::TechnicalMembership(..) |
 							Call::Treasury(..) |
 							Call::Sudo(..) |
 							// Specifically omitting Vesting `vested_transfer`, and `force_vested_transfer`
@@ -61,14 +61,14 @@ impl InstanceFilter<Call> for ProxyType {
 							Call::Scheduler(..)|
 							Call::Proxy(..)|
 							// Call::Multisig(..)|
-							Call::HeaderMMR(..) // |
-				                       // Specifically omitting the entire CrabIssuing pallet
-				                       // Specifically omitting the entire CrabBacking pallet
-				                       // Call::EthereumRelay(..) |
-				                       // Specifically omitting the entire EthereumBacking pallet
-				                       // Call::EthereumRelayAuthorities(..) // Specifically omitting the entire TronBacking pallet
-				                       // Specifically omitting the entire EVM pallet
-				                       // Specifically omitting the entire Ethereum pallet
+							Call::HeaderMMR(..) |
+							// Specifically omitting the entire CrabIssuing pallet
+							// Specifically omitting the entire CrabBacking pallet
+							Call::EthereumRelay(..) // |
+				                           // Specifically omitting the entire EthereumBacking pallet
+				                           // Call::EthereumRelayAuthorities(..) // Specifically omitting the entire TronBacking pallet
+				                           // Specifically omitting the entire EVM pallet
+				                           // Specifically omitting the entire Ethereum pallet
 			),
 			ProxyType::Governance => matches!(
 				c,
@@ -78,12 +78,12 @@ impl InstanceFilter<Call> for ProxyType {
 					| Call::Treasury(..)
 			),
 			// ProxyType::Staking => matches!(c, Call::Staking(..)),
-			// ProxyType::EthereumBridge => matches!(
-			// c,
-			// Call::EthereumBacking(..)
-			// | Call::EthereumRelay(..)
-			// | Call::EthereumRelayAuthorities(..)
-			// ),
+			ProxyType::EthereumBridge => matches!(
+				c,
+				// Call::EthereumBacking(..)
+				// |
+				Call::EthereumRelay(..) // | Call::EthereumRelayAuthorities(..)
+			),
 			_ => false,
 		}
 	}

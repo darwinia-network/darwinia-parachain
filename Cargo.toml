@@ -15,12 +15,16 @@ name = "drml"
 path = "src/main.rs"
 
 [dependencies]
+# Crates
 array-bytes = { version = "1.1.0" }
 codec       = { package = "parity-scale-codec", version = "2.0.1" }
 log         = { version = "0.4.14" }
 serde       = { version = "1.0.124", features = ["derive"] }
 structopt   = { version = "0.3.21" }
 tempfile    = { version = "3.2.0" }
+
+# Darwinia
+darwinia-ethereum-relay = { git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
 
 # Parachain dependencies
 darwinia-pc2-primitives = { path = "primitives" }

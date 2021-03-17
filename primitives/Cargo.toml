@@ -10,7 +10,7 @@ repository  = "https://github.com/darwinia-network/parachain/"
 version     = "1.2.0"
 
 [dependencies]
-# substrate
+# Substrate
 sp-core    = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 sp-runtime = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
 

@@ -97,6 +97,9 @@ pub use collective::*;
 pub mod elections_phragmen;
 pub use elections_phragmen::*;
 
+pub mod membership;
+pub use membership::*;
+
 pub mod treasury;
 pub use treasury::*;
 
@@ -117,6 +120,12 @@ pub use scheduler::*;
 
 pub mod proxy;
 pub use proxy::*;
+
+pub mod ethereum_relay;
+pub use ethereum_relay::*;
+
+pub mod relayer_game;
+pub use relayer_game::*;
 
 pub mod parachain_system;
 pub use parachain_system::*;
@@ -220,7 +229,7 @@ frame_support::construct_runtime! {
 		Council: pallet_collective::<Instance0>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 7,
 		TechnicalCommittee: pallet_collective::<Instance1>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 8,
 		ElectionsPhragmen: darwinia_elections_phragmen::{Module, Call, Storage, Config<T>, Event<T>} = 9,
-		// TechnicalMembership: pallet_membership::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 10,
+		TechnicalMembership: pallet_membership::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 10,
 		Treasury: darwinia_treasury::{Module, Call, Storage, Event<T>} = 11,
 		HeaderMMR: darwinia_header_mmr::{Module, Call, Storage} = 12,
 
@@ -256,9 +265,9 @@ frame_support::construct_runtime! {
 		// CrabIssuing: darwinia_crab_issuing::{Module, Call, Storage, Config, Event<T>} = 23,
 		// CrabBacking: darwinia_crab_backing::{Module, Storage, Config<T>} = 24,
 
-		// EthereumRelay: darwinia_ethereum_relay::{Module, Call, Storage, Config<T>, Event<T>} = 25,
+		EthereumRelay: darwinia_ethereum_relay::{Module, Call, Storage, Config<T>, Event<T>} = 25,
 		// EthereumBacking: darwinia_ethereum_backing::{Module, Call, Storage, Config<T>, Event<T>} = 26,
-		// EthereumRelayerGame: darwinia_relayer_game::<Instance0>::{Module, Storage} = 27,
+		EthereumRelayerGame: darwinia_relayer_game::<Instance0>::{Module, Storage} = 27,
 		// EthereumRelayAuthorities: darwinia_relay_authorities::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 28,
 
 		// TronBacking: darwinia_tron_backing::{Module, Storage, Config<T>} = 29,
