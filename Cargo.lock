@@ -1501,6 +1501,7 @@ dependencies = [
  "pallet-collective",
  "pallet-identity",
  "pallet-membership",
+ "pallet-multisig",
  "pallet-proxy",
  "pallet-randomness-collective-flip",
  "pallet-scheduler",

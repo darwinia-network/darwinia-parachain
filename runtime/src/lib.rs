@@ -121,6 +121,9 @@ pub use scheduler::*;
 pub mod proxy;
 pub use proxy::*;
 
+pub mod multisig;
+pub use multisig::*;
+
 pub mod ethereum_relay;
 pub use ethereum_relay::*;
 
@@ -260,7 +263,7 @@ frame_support::construct_runtime! {
 		Proxy: pallet_proxy::{Module, Call, Storage, Event<T>} = 21,
 
 		// Multisig module. Late addition.
-		// Multisig: pallet_multisig::{Module, Call, Storage, Event<T>} = 22,
+		Multisig: pallet_multisig::{Module, Call, Storage, Event<T>} = 22,
 
 		// CrabIssuing: darwinia_crab_issuing::{Module, Call, Storage, Config, Event<T>} = 23,
 		// CrabBacking: darwinia_crab_backing::{Module, Storage, Config<T>} = 24,

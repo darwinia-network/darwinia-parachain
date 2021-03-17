@@ -60,7 +60,7 @@ impl InstanceFilter<Call> for ProxyType {
 							// Call::Recovery(pallet_recovery::Call::cancel_recovered(..)) |
 							Call::Scheduler(..)|
 							Call::Proxy(..)|
-							// Call::Multisig(..)|
+							Call::Multisig(..)|
 							Call::HeaderMMR(..) |
 							// Specifically omitting the entire CrabIssuing pallet
 							// Specifically omitting the entire CrabBacking pallet
