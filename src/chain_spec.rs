@@ -39,11 +39,12 @@ const DARWINIA_PC2_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
 const TOKEN_REDEEM_ADDRESS: &'static str = "0x49262B932E439271d05634c32978294C7Ea15d0C";
 const DEPOSIT_REDEEM_ADDRESS: &'static str = "0x6EF538314829EfA8386Fc43386cB13B4e0A67D1e";
-const SET_AUTHORITIES_ADDRESS: &'static str = "0xE4A2892599Ad9527D76Ce6E26F93620FA7396D85";
+const SET_AUTHORITIES_ADDRESS: &'static str = "0x524Fa00eBD22DE069553F72d15A1d064e9025713";
 const RING_TOKEN_ADDRESS: &'static str = "0xb52FBE2B925ab79a821b261C82c5Ba0814AAA5e0";
 const KTON_TOKEN_ADDRESS: &'static str = "0x1994100c58753793D52c6f457f189aa3ce9cEe94";
-const GENESIS_ETHEREUM_RELAY_AUTHORITY_SIGNER: &'static str =
-	"0x68898db1012808808c903f390909c52d9f706749";
+const ETHEREUM_RELAY_AUTHORITY: &'static str =
+	"0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d";
+const ETHEREUM_RELAY_AUTHORITY_SIGNER: &'static str = "0x68898db1012808808c903f390909c52d9f706749";
 
 /// The extensions for the [`ChainSpec`].
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ChainSpecGroup, ChainSpecExtension)]
@@ -124,8 +125,14 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 		},
 		darwinia_balances_Instance1: Default::default(),
 		darwinia_democracy: Default::default(),
-		pallet_collective_Instance0: Default::default(),
-		pallet_collective_Instance1: Default::default(),
+		pallet_collective_Instance0: pangolin_runtime::CouncilConfig {
+			phantom: PhantomData::<pangolin_runtime::CouncilCollective>,
+			members: vec![array_bytes::hex2array_unchecked!(COLLECTIVE_MEMBER, 32).into()]
+		},
+		pallet_collective_Instance1: pangolin_runtime::TechnicalCommitteeConfig {
+			phantom: PhantomData::<pangolin_runtime::TechnicalCollective>,
+			members: vec![array_bytes::hex2array_unchecked!(COLLECTIVE_MEMBER, 32).into()]
+		},
 		darwinia_elections_phragmen: Default::default(),
 		pallet_membership_Instance0: Default::default(),
 		pallet_sudo: darwinia_pc2_runtime::SudoConfig { key: root },
@@ -151,8 +158,8 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 		},
 		darwinia_relay_authorities_Instance0: darwinia_pc2_runtime::EthereumRelayAuthoritiesConfig {
 			authorities: vec![(
-				get_account_id_from_seed::<sr25519::Public>("Alice"),
-				array_bytes::hex2array_unchecked!(GENESIS_ETHEREUM_RELAY_AUTHORITY_SIGNER, 20).into(),
+				array_bytes::hex2array_unchecked!(ETHEREUM_RELAY_AUTHORITY, 32).into(),
+				array_bytes::hex2array_unchecked!(ETHEREUM_RELAY_AUTHORITY_SIGNER, 20).into(),
 				1
 			)]
 		},
@@ -214,8 +221,14 @@ fn darwinia_pc2_development_genesis(
 				.collect(),
 		},
 		darwinia_democracy: Default::default(),
-		pallet_collective_Instance0: Default::default(),
-		pallet_collective_Instance1: Default::default(),
+		pallet_collective_Instance0: pangolin_runtime::CouncilConfig {
+			phantom: PhantomData::<pangolin_runtime::CouncilCollective>,
+			members: vec![array_bytes::hex2array_unchecked!(COLLECTIVE_MEMBER, 32).into()]
+		},
+		pallet_collective_Instance1: pangolin_runtime::TechnicalCommitteeConfig {
+			phantom: PhantomData::<pangolin_runtime::TechnicalCollective>,
+			members: vec![array_bytes::hex2array_unchecked!(COLLECTIVE_MEMBER, 32).into()]
+		},
 		darwinia_elections_phragmen: Default::default(),
 		pallet_membership_Instance0: Default::default(),
 		pallet_sudo: darwinia_pc2_runtime::SudoConfig { key: root_key },
@@ -241,8 +254,8 @@ fn darwinia_pc2_development_genesis(
 		},
 		darwinia_relay_authorities_Instance0: darwinia_pc2_runtime::EthereumRelayAuthoritiesConfig {
 			authorities: vec![(
-				get_account_id_from_seed::<sr25519::Public>("Alice"),
-				array_bytes::hex2array_unchecked!(GENESIS_ETHEREUM_RELAY_AUTHORITY_SIGNER, 20).into(),
+				array_bytes::hex2array_unchecked!(ETHEREUM_RELAY_AUTHORITY, 32).into(),
+				array_bytes::hex2array_unchecked!(ETHEREUM_RELAY_AUTHORITY_SIGNER, 20).into(),
 				1
 			)]
 		},
