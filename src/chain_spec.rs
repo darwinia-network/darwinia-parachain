@@ -28,7 +28,7 @@ use sp_core::{sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 // --- darwinia ---
 use darwinia_ethereum_relay::DagsMerkleRootsLoader as DagsMerkleRootsLoaderR;
-use darwinia_pc2_primitives::{AccountId, Signature};
+use darwinia_pc2_primitives::{AccountId, Balance, Signature};
 
 /// Specialized `ChainSpec` for the normal parachain runtime.
 pub type ChainSpec = sc_service::GenericChainSpec<darwinia_pc2_runtime::GenesisConfig, Extensions>;
@@ -37,13 +37,15 @@ type AccountPublic = <Signature as Verify>::Signer;
 
 const DARWINIA_PC2_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
+const A_FEW_COINS: Balance = 1 << 44;
+const MANY_COINS: Balance = A_FEW_COINS << 6;
+const BUNCH_OF_COINS: Balance = MANY_COINS << 6;
+
 const TOKEN_REDEEM_ADDRESS: &'static str = "0x49262B932E439271d05634c32978294C7Ea15d0C";
 const DEPOSIT_REDEEM_ADDRESS: &'static str = "0x6EF538314829EfA8386Fc43386cB13B4e0A67D1e";
-const SET_AUTHORITIES_ADDRESS: &'static str = "0x524Fa00eBD22DE069553F72d15A1d064e9025713";
+const SET_AUTHORITIES_ADDRESS: &'static str = "0xD35Bb6F1bc1C84b53E0995c1830454AB7C4147f1";
 const RING_TOKEN_ADDRESS: &'static str = "0xb52FBE2B925ab79a821b261C82c5Ba0814AAA5e0";
 const KTON_TOKEN_ADDRESS: &'static str = "0x1994100c58753793D52c6f457f189aa3ce9cEe94";
-const ETHEREUM_RELAY_AUTHORITY: &'static str =
-	"0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d";
 const ETHEREUM_RELAY_AUTHORITY_SIGNER: &'static str = "0x68898db1012808808c903f390909c52d9f706749";
 
 /// The extensions for the [`ChainSpec`].
@@ -110,10 +112,12 @@ pub fn darwinia_pc2_build_spec_config_of(id: ParaId) -> ChainSpec {
 }
 
 fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisConfig {
-	const ROOT: &'static str = "0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c";
-
-	let root = AccountId::from(array_bytes::hex2array_unchecked!(ROOT, 32));
-	let endowed_accounts = vec![(root.clone(), 1 << 56)];
+	let root = AccountId::from(array_bytes::hex2array_unchecked!(
+		"0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
+		32
+	));
+	let endowed_accounts = vec![(root.clone(), BUNCH_OF_COINS)];
+	let collective_members = vec![get_account_id_from_seed::<sr25519::Public>("Alice")];
 
 	darwinia_pc2_runtime::GenesisConfig {
 		frame_system: darwinia_pc2_runtime::SystemConfig {
@@ -127,11 +131,11 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 		darwinia_democracy: Default::default(),
 		pallet_collective_Instance0: pangolin_runtime::CouncilConfig {
 			phantom: PhantomData::<pangolin_runtime::CouncilCollective>,
-			members: vec![array_bytes::hex2array_unchecked!(COLLECTIVE_MEMBER, 32).into()]
+			members: collective_members.clone(),
 		},
 		pallet_collective_Instance1: pangolin_runtime::TechnicalCommitteeConfig {
 			phantom: PhantomData::<pangolin_runtime::TechnicalCollective>,
-			members: vec![array_bytes::hex2array_unchecked!(COLLECTIVE_MEMBER, 32).into()]
+			members: collective_members
 		},
 		darwinia_elections_phragmen: Default::default(),
 		pallet_membership_Instance0: Default::default(),
@@ -153,12 +157,12 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 			set_authorities_address: array_bytes::hex2array_unchecked!(SET_AUTHORITIES_ADDRESS, 20).into(),
 			ring_token_address: array_bytes::hex2array_unchecked!(RING_TOKEN_ADDRESS, 20).into(),
 			kton_token_address: array_bytes::hex2array_unchecked!(KTON_TOKEN_ADDRESS, 20).into(),
-			ring_locked: 1 << 56,
-			kton_locked: 1 << 56,
+			ring_locked: BUNCH_OF_COINS,
+			kton_locked: BUNCH_OF_COINS,
 		},
 		darwinia_relay_authorities_Instance0: darwinia_pc2_runtime::EthereumRelayAuthoritiesConfig {
 			authorities: vec![(
-				array_bytes::hex2array_unchecked!(ETHEREUM_RELAY_AUTHORITY, 32).into(),
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
 				array_bytes::hex2array_unchecked!(ETHEREUM_RELAY_AUTHORITY_SIGNER, 20).into(),
 				1
 			)]
@@ -172,18 +176,7 @@ pub fn darwinia_pc2_development_config_of(id: ParaId) -> ChainSpec {
 		"Darwinia PC2",
 		"Darwinia PC2",
 		ChainType::Development,
-		move || {
-			darwinia_pc2_development_genesis(
-				get_account_id_from_seed::<sr25519::Public>("Alice"),
-				vec![
-					get_account_id_from_seed::<sr25519::Public>("Alice"),
-					get_account_id_from_seed::<sr25519::Public>("Bob"),
-					get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
-					get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
-				],
-				id,
-			)
-		},
+		move || darwinia_pc2_development_genesis(id),
 		vec![],
 		None,
 		None,
@@ -196,11 +189,16 @@ pub fn darwinia_pc2_development_config_of(id: ParaId) -> ChainSpec {
 	)
 }
 
-fn darwinia_pc2_development_genesis(
-	root_key: AccountId,
-	endowed_accounts: Vec<AccountId>,
-	id: ParaId,
-) -> darwinia_pc2_runtime::GenesisConfig {
+fn darwinia_pc2_development_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisConfig {
+	let root = get_account_id_from_seed::<sr25519::Public>("Alice");
+	let endowed_accounts = vec![
+		get_account_id_from_seed::<sr25519::Public>("Alice"),
+		get_account_id_from_seed::<sr25519::Public>("Bob"),
+		get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
+		get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
+	];
+	let collective_members = vec![get_account_id_from_seed::<sr25519::Public>("Alice")];
+
 	darwinia_pc2_runtime::GenesisConfig {
 		frame_system: darwinia_pc2_runtime::SystemConfig {
 			code: darwinia_pc2_runtime::wasm_binary_unwrap().into(),
@@ -210,24 +208,24 @@ fn darwinia_pc2_development_genesis(
 			balances: endowed_accounts
 				.iter()
 				.cloned()
-				.map(|k| (k, 1 << 56))
+				.map(|k| (k, BUNCH_OF_COINS))
 				.collect(),
 		},
 		darwinia_balances_Instance1: darwinia_pc2_runtime::KtonConfig {
 			balances: endowed_accounts
 				.iter()
 				.cloned()
-				.map(|k| (k, 1 << 56))
+				.map(|k| (k, BUNCH_OF_COINS))
 				.collect(),
 		},
 		darwinia_democracy: Default::default(),
 		pallet_collective_Instance0: pangolin_runtime::CouncilConfig {
 			phantom: PhantomData::<pangolin_runtime::CouncilCollective>,
-			members: vec![array_bytes::hex2array_unchecked!(COLLECTIVE_MEMBER, 32).into()]
+			members: collective_members.clone(),
 		},
 		pallet_collective_Instance1: pangolin_runtime::TechnicalCommitteeConfig {
 			phantom: PhantomData::<pangolin_runtime::TechnicalCollective>,
-			members: vec![array_bytes::hex2array_unchecked!(COLLECTIVE_MEMBER, 32).into()]
+			members: collective_members
 		},
 		darwinia_elections_phragmen: Default::default(),
 		pallet_membership_Instance0: Default::default(),
@@ -249,12 +247,12 @@ fn darwinia_pc2_development_genesis(
 			set_authorities_address: array_bytes::hex2array_unchecked!(SET_AUTHORITIES_ADDRESS, 20).into(),
 			ring_token_address: array_bytes::hex2array_unchecked!(RING_TOKEN_ADDRESS, 20).into(),
 			kton_token_address: array_bytes::hex2array_unchecked!(KTON_TOKEN_ADDRESS, 20).into(),
-			ring_locked: 1 << 56,
-			kton_locked: 1 << 56,
+			ring_locked: BUNCH_OF_COINS,
+			kton_locked: BUNCH_OF_COINS,
 		},
 		darwinia_relay_authorities_Instance0: darwinia_pc2_runtime::EthereumRelayAuthoritiesConfig {
 			authorities: vec![(
-				array_bytes::hex2array_unchecked!(ETHEREUM_RELAY_AUTHORITY, 32).into(),
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
 				array_bytes::hex2array_unchecked!(ETHEREUM_RELAY_AUTHORITY_SIGNER, 20).into(),
 				1
 			)]
