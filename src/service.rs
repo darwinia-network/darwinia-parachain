@@ -216,6 +216,7 @@ where
 			task_manager.spawn_handle(),
 			client.clone(),
 			transaction_pool,
+			prometheus_registry.as_ref(),
 			telemetry.as_ref().map(|x| x.handle()),
 		);
 		let spawner = task_manager.spawn_handle();
