@@ -24,7 +24,7 @@ structopt   = { version = "0.3.21" }
 tempfile    = { version = "3.2.0" }
 
 # Darwinia
-darwinia-ethereum-relay = { git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1" }
+darwinia-ethereum-relay = { git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1-external-substrate" }
 
 # Parachain dependencies
 darwinia-pc2-primitives = { path = "primitives" }
