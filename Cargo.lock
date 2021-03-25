@@ -1511,7 +1511,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-pc2-primitives"
-version = "1.2.0"
+version = "2.0.0"
 dependencies = [
  "sp-core",
  "sp-runtime",
@@ -1519,7 +1519,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-pc2-runtime"
-version = "1.2.0"
+version = "2.0.0"
 dependencies = [
  "cumulus-pallet-parachain-system",
  "cumulus-pallet-xcm-handler",
@@ -1751,7 +1751,7 @@ dependencies = [
 
 [[package]]
 name = "drml"
-version = "1.2.0"
+version = "2.0.0"
 dependencies = [
  "array-bytes",
  "cumulus-client-cli",
