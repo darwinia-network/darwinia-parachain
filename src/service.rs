@@ -31,7 +31,6 @@ use polkadot_primitives::v0::CollatorPair;
 use sc_executor::native_executor_instance;
 use sc_service::{Configuration, PartialComponents, Role, TFullBackend, TFullClient, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker, TelemetryWorkerHandle};
-use sp_core::Pair;
 use sp_runtime::traits::BlakeTwo256;
 use sp_trie::PrefixedMemoryDB;
 // --- darwinia ---
@@ -156,7 +155,7 @@ where
 
 	let polkadot_full_node = cumulus_client_service::build_polkadot_full_node(
 		polkadot_config,
-		collator_key.public(),
+		collator_key.clone(),
 		telemetry_worker_handle,
 	)
 	.map_err(|e| match e {
