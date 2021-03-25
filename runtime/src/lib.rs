@@ -188,7 +188,7 @@ pub type Executive = frame_executive::Executive<
 	Block,
 	frame_system::ChainContext<Runtime>,
 	Runtime,
-	AllModules,
+	AllPallets,
 >;
 
 type Ring = Balances;
@@ -225,65 +225,65 @@ frame_support::construct_runtime! {
 		UncheckedExtrinsic = UncheckedExtrinsic,
 	{
 		// Basic stuff; balances is uncallable initially.
-		System: frame_system::{Module, Call, Storage, Config, Event<T>} = 0,
-		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Module, Call, Storage} = 1,
+		System: frame_system::{Pallet, Call, Storage, Config, Event<T>} = 0,
+		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Pallet, Call, Storage} = 1,
 
-		Timestamp: pallet_timestamp::{Module, Call, Storage, Inherent} = 2,
-		Balances: darwinia_balances::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 3,
-		Kton: darwinia_balances::<Instance1>::{Module, Call, Storage, Config<T>, Event<T>} = 4,
-		TransactionPayment: pallet_transaction_payment::{Module, Storage} = 5,
+		Timestamp: pallet_timestamp::{Pallet, Call, Storage, Inherent} = 2,
+		Balances: darwinia_balances::<Instance0>::{Pallet, Call, Storage, Config<T>, Event<T>} = 3,
+		Kton: darwinia_balances::<Instance1>::{Pallet, Call, Storage, Config<T>, Event<T>} = 4,
+		TransactionPayment: pallet_transaction_payment::{Pallet, Storage} = 5,
 
 		// Governance stuff; uncallable initially.
-		Democracy: darwinia_democracy::{Module, Call, Storage, Config, Event<T>} = 6,
-		Council: pallet_collective::<Instance0>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 7,
-		TechnicalCommittee: pallet_collective::<Instance1>::{Module, Call, Storage, Origin<T>, Config<T>, Event<T>} = 8,
-		ElectionsPhragmen: darwinia_elections_phragmen::{Module, Call, Storage, Config<T>, Event<T>} = 9,
-		TechnicalMembership: pallet_membership::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 10,
-		Treasury: darwinia_treasury::{Module, Call, Storage, Event<T>} = 11,
-		HeaderMMR: darwinia_header_mmr::{Module, Call, Storage} = 12,
+		Democracy: darwinia_democracy::{Pallet, Call, Storage, Config, Event<T>} = 6,
+		Council: pallet_collective::<Instance0>::{Pallet, Call, Storage, Origin<T>, Config<T>, Event<T>} = 7,
+		TechnicalCommittee: pallet_collective::<Instance1>::{Pallet, Call, Storage, Origin<T>, Config<T>, Event<T>} = 8,
+		ElectionsPhragmen: darwinia_elections_phragmen::{Pallet, Call, Storage, Config<T>, Event<T>} = 9,
+		TechnicalMembership: pallet_membership::<Instance0>::{Pallet, Call, Storage, Config<T>, Event<T>} = 10,
+		Treasury: darwinia_treasury::{Pallet, Call, Storage, Event<T>} = 11,
+		HeaderMMR: darwinia_header_mmr::{Pallet, Call, Storage} = 12,
 
-		Sudo: pallet_sudo::{Module, Call, Storage, Config<T>, Event<T>} = 13,
+		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 13,
 
 		// Claims. Usable initially.
-		// Claims: darwinia_claims::{Module, Call, Storage, Config, Event<T>, ValidateUnsigned} = 14,
+		// Claims: darwinia_claims::{Pallet, Call, Storage, Config, Event<T>, ValidateUnsigned} = 14,
 
 		// Vesting. Usable initially, but removed once all vesting is finished.
-		// Vesting: darwinia_vesting::{Module, Call, Storage, Event<T>, Config<T>} = 15,
+		// Vesting: darwinia_vesting::{Pallet, Call, Storage, Event<T>, Config<T>} = 15,
 
 		// Utility module.
-		Utility: pallet_utility::{Module, Call, Event} = 16,
+		Utility: pallet_utility::{Pallet, Call, Event} = 16,
 
 		// Less simple identity module.
-		Identity: pallet_identity::{Module, Call, Storage, Event<T>} = 17,
+		Identity: pallet_identity::{Pallet, Call, Storage, Event<T>} = 17,
 
 		// Society module.
-		// Society: pallet_society::{Module, Call, Storage, Event<T>} = 18,
+		// Society: pallet_society::{Pallet, Call, Storage, Event<T>} = 18,
 
 		// Social recovery module.
-		// Recovery: pallet_recovery::{Module, Call, Storage, Event<T>} = 19,
+		// Recovery: pallet_recovery::{Pallet, Call, Storage, Event<T>} = 19,
 
 		// System scheduler.
-		Scheduler: pallet_scheduler::{Module, Call, Storage, Event<T>} = 20,
+		Scheduler: pallet_scheduler::{Pallet, Call, Storage, Event<T>} = 20,
 
 		// Proxy module. Late addition.
-		Proxy: pallet_proxy::{Module, Call, Storage, Event<T>} = 21,
+		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 21,
 
 		// Multisig module. Late addition.
-		Multisig: pallet_multisig::{Module, Call, Storage, Event<T>} = 22,
+		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 22,
 
-		// CrabIssuing: darwinia_crab_issuing::{Module, Call, Storage, Config, Event<T>} = 23,
-		// CrabBacking: darwinia_crab_backing::{Module, Storage, Config<T>} = 24,
+		// CrabIssuing: darwinia_crab_issuing::{Pallet, Call, Storage, Config, Event<T>} = 23,
+		// CrabBacking: darwinia_crab_backing::{Pallet, Storage, Config<T>} = 24,
 
-		EthereumRelay: darwinia_ethereum_relay::{Module, Call, Storage, Config<T>, Event<T>} = 25,
-		EthereumBacking: darwinia_ethereum_backing::{Module, Call, Storage, Config<T>, Event<T>} = 26,
-		EthereumRelayerGame: darwinia_relayer_game::<Instance0>::{Module, Storage} = 27,
-		EthereumRelayAuthorities: darwinia_relay_authorities::<Instance0>::{Module, Call, Storage, Config<T>, Event<T>} = 28,
+		EthereumRelay: darwinia_ethereum_relay::{Pallet, Call, Storage, Config<T>, Event<T>} = 25,
+		EthereumBacking: darwinia_ethereum_backing::{Pallet, Call, Storage, Config<T>, Event<T>} = 26,
+		EthereumRelayerGame: darwinia_relayer_game::<Instance0>::{Pallet, Storage} = 27,
+		EthereumRelayAuthorities: darwinia_relay_authorities::<Instance0>::{Pallet, Call, Storage, Config<T>, Event<T>} = 28,
 
-		// TronBacking: darwinia_tron_backing::{Module, Storage, Config<T>} = 29,
+		// TronBacking: darwinia_tron_backing::{Pallet, Storage, Config<T>} = 29,
 
-		ParachainSystem: cumulus_pallet_parachain_system::{Module, Call, Storage, Inherent, Event} = 30,
-		ParachainInfo: parachain_info::{Module, Storage, Config} = 31,
-		XcmHandler: cumulus_pallet_xcm_handler::{Module, Call, Event<T>, Origin} = 32,
+		ParachainSystem: cumulus_pallet_parachain_system::{Pallet, Call, Storage, Inherent, Event} = 30,
+		ParachainInfo: parachain_info::{Pallet, Storage, Config} = 31,
+		XcmHandler: cumulus_pallet_xcm_handler::{Pallet, Call, Event<T>, Origin} = 32,
 	}
 }
 
