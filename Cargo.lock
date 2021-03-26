@@ -1510,6 +1510,48 @@ dependencies = [
 ]
 
 [[package]]
+name = "darwinia-pc2"
+version = "2.0.0"
+dependencies = [
+ "array-bytes",
+ "cumulus-client-cli",
+ "cumulus-client-consensus-relay-chain",
+ "cumulus-client-network",
+ "cumulus-client-service",
+ "cumulus-primitives-core",
+ "darwinia-ethereum-relay",
+ "darwinia-pc2-primitives",
+ "darwinia-pc2-runtime",
+ "jsonrpc-core",
+ "log",
+ "parity-scale-codec",
+ "polkadot-cli",
+ "polkadot-parachain",
+ "polkadot-primitives",
+ "polkadot-service",
+ "sc-basic-authorship",
+ "sc-chain-spec",
+ "sc-cli",
+ "sc-executor",
+ "sc-rpc",
+ "sc-service",
+ "sc-telemetry",
+ "sc-tracing",
+ "sc-transaction-pool",
+ "serde",
+ "sp-block-builder",
+ "sp-consensus",
+ "sp-core",
+ "sp-inherents",
+ "sp-runtime",
+ "sp-timestamp",
+ "sp-trie",
+ "structopt",
+ "substrate-build-script-utils",
+ "tempfile",
+]
+
+[[package]]
 name = "darwinia-pc2-primitives"
 version = "2.0.0"
 dependencies = [
@@ -1747,48 +1789,6 @@ checksum = "c4d33be9473d06f75f58220f71f7a9317aca647dc061dbd3c361b0bef505fbea"
 dependencies = [
  "byteorder",
  "quick-error 1.2.3",
-]
-
-[[package]]
-name = "drml"
-version = "2.0.0"
-dependencies = [
- "array-bytes",
- "cumulus-client-cli",
- "cumulus-client-consensus-relay-chain",
- "cumulus-client-network",
- "cumulus-client-service",
- "cumulus-primitives-core",
- "darwinia-ethereum-relay",
- "darwinia-pc2-primitives",
- "darwinia-pc2-runtime",
- "jsonrpc-core",
- "log",
- "parity-scale-codec",
- "polkadot-cli",
- "polkadot-parachain",
- "polkadot-primitives",
- "polkadot-service",
- "sc-basic-authorship",
- "sc-chain-spec",
- "sc-cli",
- "sc-executor",
- "sc-rpc",
- "sc-service",
- "sc-telemetry",
- "sc-tracing",
- "sc-transaction-pool",
- "serde",
- "sp-block-builder",
- "sp-consensus",
- "sp-core",
- "sp-inherents",
- "sp-runtime",
- "sp-timestamp",
- "sp-trie",
- "structopt",
- "substrate-build-script-utils",
- "tempfile",
 ]
 
 [[package]]

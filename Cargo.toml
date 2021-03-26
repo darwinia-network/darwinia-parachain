@@ -5,14 +5,17 @@ description = "Darwinia Runtime Module Library Node"
 edition     = "2018"
 homepage    = "https://darwinia.network/"
 license     = "GPL-3.0"
-name        = "drml"
+name        = "darwinia-pc2"
 readme      = "README.md"
 repository  = "https://github.com/darwinia-network/darwinia-common/"
 version     = "2.0.0"
 
 [[bin]]
-name = "drml"
+name = "darwinia-pc2"
 path = "src/main.rs"
+
+[features]
+crab = ["darwinia-pc2-runtime/crab"]
 
 [dependencies]
 # Crates

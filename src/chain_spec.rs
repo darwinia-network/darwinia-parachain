@@ -68,15 +68,22 @@ where
 fn properties() -> Properties {
 	let mut properties = Properties::new();
 
+	#[cfg(not(feature = "crab"))]
 	properties.insert("ss58Format".into(), 18.into());
+	#[cfg(feature = "crab")]
+	properties.insert("ss58Format".into(), 42.into());
 	properties.insert("tokenDecimals".into(), vec![9, 9].into());
+	#[cfg(not(feature = "crab"))]
 	properties.insert("tokenSymbol".into(), vec!["RING", "KTON"].into());
+	#[cfg(feature = "crab")]
+	properties.insert("tokenSymbol".into(), vec!["CRING", "CKTON"].into());
 
 	properties
 }
 
 pub fn darwinia_pc2_build_spec_config_of(id: ParaId) -> ChainSpec {
-	ChainSpec::from_genesis(
+	#[cfg(not(feature = "crab"))]
+	return ChainSpec::from_genesis(
 		"Darwinia PC2",
 		"Darwinia PC2",
 		ChainType::Live,
@@ -94,7 +101,27 @@ pub fn darwinia_pc2_build_spec_config_of(id: ParaId) -> ChainSpec {
 			relay_chain: "rococo".into(),
 			para_id: id.into(),
 		},
-	)
+	);
+	#[cfg(feature = "crab")]
+	return ChainSpec::from_genesis(
+		"Darwinia Crab PC2",
+		"Darwinia Crab PC2",
+		ChainType::Live,
+		move || darwinia_pc2_build_spec_genesis(id),
+		vec![],
+		Some(
+			TelemetryEndpoints::new(vec![(DARWINIA_PC2_TELEMETRY_URL.to_string(), 0)])
+				.expect("Darwinia Crab PC2 telemetry url is valid; qed"),
+		),
+		// None,
+		None,
+		Some(properties()),
+		// None,
+		Extensions {
+			relay_chain: "rococo".into(),
+			para_id: id.into(),
+		},
+	);
 }
 
 fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisConfig {
@@ -158,7 +185,8 @@ fn darwinia_pc2_build_spec_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisC
 }
 
 pub fn darwinia_pc2_development_config_of(id: ParaId) -> ChainSpec {
-	ChainSpec::from_genesis(
+	#[cfg(not(feature = "crab"))]
+	return ChainSpec::from_genesis(
 		"Darwinia PC2",
 		"Darwinia PC2",
 		ChainType::Development,
@@ -172,7 +200,23 @@ pub fn darwinia_pc2_development_config_of(id: ParaId) -> ChainSpec {
 			relay_chain: "rococo".into(),
 			para_id: id.into(),
 		},
-	)
+	);
+	#[cfg(feature = "crab")]
+	return ChainSpec::from_genesis(
+		"Darwinia Crab PC2",
+		"Darwinia Crab PC2",
+		ChainType::Development,
+		move || darwinia_pc2_development_genesis(id),
+		vec![],
+		None,
+		None,
+		Some(properties()),
+		// None,
+		Extensions {
+			relay_chain: "rococo".into(),
+			para_id: id.into(),
+		},
+	);
 }
 
 fn darwinia_pc2_development_genesis(id: ParaId) -> darwinia_pc2_runtime::GenesisConfig {

@@ -45,13 +45,23 @@ use crate::{
 };
 use darwinia_pc2_runtime::Block;
 
+#[cfg(not(feature = "crab"))]
+const PARACHAIN_ID: u32 = 18;
+#[cfg(feature = "crab")]
+const PARACHAIN_ID: u32 = 9;
+
 fn load_spec(
 	id: &str,
 	para_id: ParaId,
 ) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
+	#[cfg(not(feature = "crab"))]
+	let genesis = include_bytes!("../res/darwinia-pc2/darwinia-pc2.json");
+	#[cfg(feature = "crab")]
+	let genesis = include_bytes!("../res/darwinia-crab-pc2/darwinia-crab-pc2.json");
+
 	match id {
 		"" | "darwinia-pc2" => Ok(Box::new(chain_spec::ChainSpec::from_json_bytes(
-			&include_bytes!("../res/darwinia-pc2/darwinia-pc2.json")[..],
+			&genesis[..],
 		)?)),
 		"darwinia-pc2-genesis" => Ok(Box::new(chain_spec::darwinia_pc2_build_spec_config_of(
 			para_id,
@@ -91,7 +101,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
-		load_spec(id, self.run.parachain_id.unwrap_or(18).into())
+		load_spec(id, self.run.parachain_id.unwrap_or(PARACHAIN_ID).into())
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
@@ -295,7 +305,7 @@ pub fn run() -> Result<()> {
 						.chain(cli.relaychain_args.iter()),
 				);
 
-				let id = ParaId::from(cli.run.parachain_id.or(para_id).unwrap_or(18));
+				let id = ParaId::from(cli.run.parachain_id.or(para_id).unwrap_or(PARACHAIN_ID));
 
 				let parachain_account =
 					AccountIdConversion::<polkadot_primitives::v0::AccountId>::into_account(&id);
@@ -305,12 +315,9 @@ pub fn run() -> Result<()> {
 				let genesis_state = format!("0x{:?}", HexDisplay::from(&block.header().encode()));
 
 				let task_executor = config.task_executor.clone();
-				let polkadot_config = SubstrateCli::create_configuration(
-					&polkadot_cli,
-					&polkadot_cli,
-					task_executor,
-				)
-				.map_err(|err| format!("Relay chain argument error: {}", err))?;
+				let polkadot_config =
+					SubstrateCli::create_configuration(&polkadot_cli, &polkadot_cli, task_executor)
+						.map_err(|err| format!("Relay chain argument error: {}", err))?;
 				let collator = cli.run.base.validator || cli.collator;
 
 				info!("Parachain id: {:?}", id);
