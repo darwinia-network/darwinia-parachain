@@ -2,12 +2,12 @@
 use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
 use frame_support::{
-	traits::{All, Contains},
+	traits::All,
 	weights::{IdentityFee, Weight},
 };
 use pallet_xcm::{Config, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
-use xcm::v0::{BodyId, Junction, MultiLocation, NetworkId};
+use xcm::v0::{BodyId, Junction, MultiLocation, NetworkId, Xcm};
 use xcm_builder::*;
 use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
 // --- darwinia ---
@@ -120,5 +120,6 @@ impl Config for Runtime {
 	type SendXcmOrigin = EnsureXcmOrigin<Origin, LocalOriginToLocation>;
 	type XcmRouter = XcmRouter;
 	type ExecuteXcmOrigin = EnsureXcmOrigin<Origin, LocalOriginToLocation>;
+	type XcmExecuteFilter = All<(MultiLocation, Xcm<Call>)>;
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 }
