@@ -1,9 +1,7 @@
 // --- parity ---
 use cumulus_pallet_parachain_system::Config;
-use cumulus_primitives_utility::UnqueuedDmpAsParent;
 use frame_support::weights::Weight;
 use parachain_info::Pallet as ParachainInfoPallet;
-use xcm_executor::XcmExecutor;
 // --- darwinia ---
 use crate::*;
 
@@ -15,8 +13,7 @@ impl Config for Runtime {
 	type Event = Event;
 	type OnValidationData = ();
 	type SelfParaId = ParachainInfoPallet<Runtime>;
-	type DownwardMessageHandlers =
-		UnqueuedDmpAsParent<MaxDownwardMessageWeight, XcmExecutor<XcmConfig>, Call>;
+	type DownwardMessageHandlers = CumulusXcm;
 	type OutboundXcmpMessageSource = XcmpQueue;
 	type XcmpMessageHandler = XcmpQueue;
 	type ReservedXcmpWeight = ReservedXcmpWeight;

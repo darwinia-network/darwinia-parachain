@@ -2,12 +2,12 @@
 use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
 use frame_support::{
-	traits::{All, IsInVec},
-	weights::Weight,
+	traits::{All, Contains},
+	weights::{IdentityFee, Weight},
 };
-use pallet_xcm::Config;
+use pallet_xcm::{Config, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
-use xcm::v0::{Junction, MultiLocation, NetworkId};
+use xcm::v0::{BodyId, Junction, MultiLocation, NetworkId};
 use xcm_builder::*;
 use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
 // --- darwinia ---
@@ -21,7 +21,7 @@ pub type LocalAssetTransactor = CurrencyAdapter<
 	// Use this currency:
 	Balances,
 	// Use this currency when it is a fungible asset matching the given location or name:
-	IsConcrete<RococoLocation>,
+	IsConcrete<RocLocation>,
 	// Do a simple punn to convert an AccountId32 MultiLocation into a native chain account ID:
 	LocationToAccountId,
 	// Our chain's account ID type (we can't get away without mentioning it explicitly):
@@ -40,7 +40,8 @@ pub type XcmRouter = (
 pub type Barrier = (
 	TakeWeightCredit,
 	AllowTopLevelPaidExecutionFrom<All<MultiLocation>>,
-	AllowUnpaidExecutionFrom<IsInVec<AllowUnpaidFrom>>, // <- Parent gets free execution
+	AllowUnpaidExecutionFrom<ParentOrParentsUnitPlurality>,
+	// ^^^ Parent & its unit plurality gets free execution
 );
 
 /// Type for specifying how a `MultiLocation` can be converted into an `AccountId`. This is used
@@ -74,20 +75,39 @@ pub type XcmOriginToTransactDispatchOrigin = (
 	// Native signed account converter; this just converts an `AccountId32` origin into a normal
 	// `Origin::Signed` origin of the same 32-byte value.
 	SignedAccountId32AsNative<RococoNetwork, Origin>,
+	// Xcm origins can be represented natively under the Xcm pallet's Xcm origin.
+	XcmPassthrough<Origin>,
 );
 
 frame_support::parameter_types! {
-	pub const RococoLocation: MultiLocation = MultiLocation::X1(Junction::Parent);
+	pub const RocLocation: MultiLocation = MultiLocation::X1(Junction::Parent);
 	pub const RococoNetwork: NetworkId = NetworkId::Polkadot;
-	// 1_000_000_000_000 => 1 unit of asset for 1 unit of Weight.
-	// TODO: Should take the actual weight price. This is just 1_000 ROC per second of weight.
+	// One ROC buys 1 second of weight.
 	pub const WeightPrice: (MultiLocation, u128) = (MultiLocation::X1(Junction::Parent), 1_000);
 	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
-	pub UnitWeightCost: Weight = 1_000;
+	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
+	pub UnitWeightCost: Weight = 1_000_000;
 	pub AllowUnpaidFrom: Vec<MultiLocation> = vec![MultiLocation::X1(Junction::Parent)];
-	pub Ancestry: MultiLocation = Junction::Parachain(
+	pub Ancestry: MultiLocation =MultiLocation::X1(Junction::Parachain(
 		ParachainInfo::parachain_id().into()
-	).into();
+	));
+}
+
+macro_rules! match_type {
+	( pub type $n:ident: impl Contains<$t:ty> = { $phead:pat $( | $ptail:pat )* } ; ) => {
+		pub struct $n;
+		impl Contains<$t> for $n {
+			fn contains(l: &$t) -> bool {
+				matches!(l, $phead $( | $ptail )* )
+			}
+		}
+	}
+}
+match_type! {
+	pub type ParentOrParentsUnitPlurality: impl Contains<MultiLocation> = {
+		MultiLocation::X1(Junction::Parent)
+			| MultiLocation::X2(Junction::Parent, Junction::Plurality { id: BodyId::Unit, .. })
+	};
 }
 
 pub struct XcmConfig;
@@ -101,7 +121,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type LocationInverter = LocationInverter<Ancestry>;
 	type Barrier = Barrier;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call>;
-	type Trader = FixedRateOfConcreteFungible<WeightPrice, ()>;
+	type Trader = UsingComponents<IdentityFee<Balance>, RocLocation, AccountId, Balances, ()>;
 	type ResponseHandler = ();
 }
 
