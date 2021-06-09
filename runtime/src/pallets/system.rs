@@ -1,4 +1,5 @@
 // --- substrate ---
+use cumulus_pallet_parachain_system::ParachainSetCode;
 use frame_support::weights::{
 	constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
 	DispatchClass, Weight,
@@ -74,4 +75,5 @@ impl Config for Runtime {
 	type OnKilledAccount = ();
 	type SystemWeightInfo = SubstrateWeight<Runtime>;
 	type SS58Prefix = SS58Prefix;
+	type OnSetCode = ParachainSetCode<Self>;
 }
