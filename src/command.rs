@@ -21,7 +21,7 @@ use std::{io::Write, net::SocketAddr};
 // --- crates ---
 use codec::Encode;
 use log::info;
-// --- substrate ---
+// --- parity ---
 use cumulus_client_service::genesis::generate_genesis_block;
 use cumulus_primitives_core::ParaId;
 use polkadot_parachain::primitives::AccountIdConversion;

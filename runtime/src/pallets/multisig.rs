@@ -1,4 +1,4 @@
-// --- substrate ---
+// --- parity ---
 use pallet_multisig::Config;
 // --- darwinia ---
 use crate::*;

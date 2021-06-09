@@ -1,8 +1,14 @@
 pub mod system;
 pub use system::*;
 
+pub mod parachain_system;
+pub use parachain_system::*;
+
 pub mod timestamp;
 pub use timestamp::*;
+
+pub mod parachain_info_;
+pub use parachain_info_::*;
 
 pub mod balances;
 pub use balances::*;
@@ -10,20 +16,23 @@ pub use balances::*;
 pub mod transaction_payment;
 pub use transaction_payment::*;
 
-pub mod sudo;
-pub use sudo::*;
+pub mod xcmp_queue;
+pub use xcmp_queue::*;
+
+pub mod polkadot_xcm;
+pub use polkadot_xcm::*;
+
+pub mod cumulus_xcm;
+pub use cumulus_xcm::*;
 
 pub mod utility;
 pub use utility::*;
 
-pub mod proxy;
-pub use proxy::*;
-
 pub mod multisig;
 pub use multisig::*;
 
-pub mod parachain_system;
-pub use parachain_system::*;
+pub mod proxy;
+pub use proxy::*;
 
-pub mod parachain_info_;
-pub use parachain_info_::*;
+pub mod sudo;
+pub use sudo::*;

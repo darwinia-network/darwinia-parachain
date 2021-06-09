@@ -18,9 +18,9 @@
 
 // --- crates ---
 use serde::{Deserialize, Serialize};
-// --- substrate ---
+// --- parity ---
 use cumulus_primitives_core::ParaId;
-// --- substrate ---
+// --- parity ---
 use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
 use sc_service::{ChainType, Properties};
 use sc_telemetry::TelemetryEndpoints;
@@ -112,7 +112,7 @@ pub fn crab_redirect_development_config_of(id: ParaId) -> ChainSpec {
 		Some(properties()),
 		// None,
 		Extensions {
-			relay_chain: "rococo".into(),
+			relay_chain: "kusama".into(),
 			para_id: id.into(),
 		},
 	);

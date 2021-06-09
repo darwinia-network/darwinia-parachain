@@ -1,6 +1,6 @@
 // --- crates.io ---
 use codec::{Decode, Encode};
-// --- substrate ---
+// --- parity ---
 use frame_support::traits::InstanceFilter;
 use pallet_proxy::{weights::SubstrateWeight, Config};
 use sp_runtime::{traits::BlakeTwo256, RuntimeDebug};

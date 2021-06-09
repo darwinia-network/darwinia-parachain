@@ -1,4 +1,4 @@
-// --- substrate ---
+// --- parity ---
 use pallet_sudo::Config;
 // --- darwinia ---
 use crate::*;

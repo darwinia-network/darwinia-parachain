@@ -20,7 +20,7 @@
 #![recursion_limit = "256"]
 
 pub mod constants {
-	// --- substrate ---
+	// --- parity ---
 	use sp_staking::SessionIndex;
 	// --- darwinia ---
 	use crate::*;
@@ -85,7 +85,7 @@ pub use wasm::*;
 
 pub use crab_redirect_primitives::*;
 
-// --- substrate ---
+// --- parity ---
 use frame_support::traits::Randomness;
 use sp_api::impl_runtime_apis;
 use sp_core::OpaqueMetadata;
@@ -177,9 +177,9 @@ frame_support::construct_runtime! {
 		// AuraExt: cumulus_pallet_aura_ext::{Pallet, Storage, Config} = 11,
 
 		// XCM helpers.
-		// XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Call, Storage, Event<T>} = 12,
-		// PolkadotXcm: pallet_xcm::{Pallet, Call, Event<T>, Origin} = 13,
-		// CumulusXcm: cumulus_pallet_xcm::{Pallet, Event<T>, Origin} = 14,
+		XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Call, Storage, Event<T>} = 12,
+		PolkadotXcm: pallet_xcm::{Pallet, Call, Event<T>, Origin} = 13,
+		CumulusXcm: cumulus_pallet_xcm::{Pallet, Event<T>, Origin} = 14,
 		// DmpQueue: cumulus_pallet_dmp_queue::{Pallet, Call, Storage, Event<T>} = 15,
 
 		// Handy utilities.

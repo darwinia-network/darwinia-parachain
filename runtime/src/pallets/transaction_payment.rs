@@ -1,4 +1,4 @@
-// --- substrate ---
+// --- parity ---
 use frame_support::weights::IdentityFee;
 use pallet_transaction_payment::{Config, CurrencyAdapter};
 // --- darwinia ---

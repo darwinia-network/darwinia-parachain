@@ -1,4 +1,4 @@
-// --- substrate ---
+// --- parity ---
 use cumulus_pallet_parachain_system::ParachainSetCode;
 use frame_support::weights::{
 	constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
@@ -20,13 +20,14 @@ use crate::*;
 
 /// We assume that an on-initialize consumes 2.5% of the weight on average, hence a single extrinsic
 /// will not be allowed to consume more than `AvailableBlockRatio - 2.5%`.
-const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(25);
+pub const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(25);
 /// We allow `Normal` extrinsics to fill up the block up to 75%, the rest can be used
 /// by  Operational  extrinsics.
-const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
+pub const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
 /// We allow for 2 seconds of compute with a 6 second average block time.
-const MAXIMUM_BLOCK_WEIGHT: Weight = 2 * WEIGHT_PER_SECOND;
-const SS58_PREFIX: u8 = 42;
+pub const MAXIMUM_BLOCK_WEIGHT: Weight = 2 * WEIGHT_PER_SECOND;
+pub const SS58_PREFIX: u8 = 42;
+
 frame_support::parameter_types! {
 	pub const BlockHashCount: BlockNumber = 250;
 	pub const Version: RuntimeVersion = VERSION;
@@ -52,6 +53,7 @@ frame_support::parameter_types! {
 		.build_or_panic();
 	pub const SS58Prefix: u8 = SS58_PREFIX;
 }
+
 impl Config for Runtime {
 	type BaseCallFilter = ();
 	type BlockWeights = RuntimeBlockWeights;

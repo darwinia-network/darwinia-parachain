@@ -1,4 +1,4 @@
-// --- substrate ---
+// --- parity ---
 use pallet_timestamp::Config;
 // --- darwinia ---
 use crate::*;

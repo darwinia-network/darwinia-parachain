@@ -1,5 +1,5 @@
 // --- parity ---
-use parachain_info::Config;
+use cumulus_pallet_xcm::Config;
 // --- darwinia ---
 use crate::*;
 
