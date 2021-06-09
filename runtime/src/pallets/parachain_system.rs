@@ -9,6 +9,7 @@ use crate::*;
 
 frame_support::parameter_types! {
 	pub const ReservedXcmpWeight: Weight = MAXIMUM_BLOCK_WEIGHT / 4;
+	pub const MaxDownwardMessageWeight: Weight = MAXIMUM_BLOCK_WEIGHT / 10;
 }
 impl Config for Runtime {
 	type Event = Event;
