@@ -8,6 +8,6 @@ impl Config for Runtime {
 	type Event = Event;
 	type OnValidationData = ();
 	type SelfParaId = ParachainInfoModule<Runtime>;
-	type DownwardMessageHandlers = ();
-	type HrmpMessageHandlers = ();
+	type DownwardMessageHandlers = XcmHandler;
+	type HrmpMessageHandlers = XcmHandler;
 }
