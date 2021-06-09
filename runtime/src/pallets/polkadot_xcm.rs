@@ -93,17 +93,7 @@ frame_support::parameter_types! {
 	));
 }
 
-macro_rules! match_type {
-	( pub type $n:ident: impl Contains<$t:ty> = { $phead:pat $( | $ptail:pat )* } ; ) => {
-		pub struct $n;
-		impl Contains<$t> for $n {
-			fn contains(l: &$t) -> bool {
-				matches!(l, $phead $( | $ptail )* )
-			}
-		}
-	}
-}
-match_type! {
+frame_support::match_type! {
 	pub type ParentOrParentsUnitPlurality: impl Contains<MultiLocation> = {
 		MultiLocation::X1(Junction::Parent)
 			| MultiLocation::X2(Junction::Parent, Junction::Plurality { id: BodyId::Unit, .. })

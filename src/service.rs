@@ -31,15 +31,15 @@ use polkadot_primitives::v0::CollatorPair;
 use sc_executor::native_executor_instance;
 use sc_service::{Configuration, PartialComponents, Role, TFullBackend, TFullClient, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker, TelemetryWorkerHandle};
+use sp_api::ConstructRuntimeApi;
 use sp_runtime::traits::BlakeTwo256;
 use sp_trie::PrefixedMemoryDB;
 // --- darwinia ---
 use crab_redirect_primitives::OpaqueBlock as Block;
-use crab_redirect_runtime::RuntimeApi;
 
 // Native executor instance.
 native_executor_instance!(
-	pub Executor,
+	pub CrabRedirectRuntimeExecutor,
 	crab_redirect_runtime::api::dispatch,
 	crab_redirect_runtime::native_version,
 );
@@ -48,7 +48,7 @@ native_executor_instance!(
 ///
 /// Use this macro if you don't actually need the full service, but just the builder in order to
 /// be able to perform chain operations.
-pub fn new_partial(
+pub fn new_partial<RuntimeApi, Executor>(
 	config: &Configuration,
 ) -> Result<
 	PartialComponents<
@@ -60,7 +60,23 @@ pub fn new_partial(
 		(Option<Telemetry>, Option<TelemetryWorkerHandle>),
 	>,
 	sc_service::Error,
-> {
+>
+where
+	RuntimeApi: 'static
+		+ Send
+		+ Sync
+		+ ConstructRuntimeApi<Block, TFullClient<Block, RuntimeApi, Executor>>,
+	RuntimeApi::RuntimeApi: sp_api::ApiExt<
+			Block,
+			StateBackend = sc_client_api::StateBackendFor<TFullBackend<Block>, Block>,
+		> + sp_api::Metadata<Block>
+		+ sp_block_builder::BlockBuilder<Block>
+		+ sp_offchain::OffchainWorkerApi<Block>
+		+ sp_session::SessionKeys<Block>
+		+ sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
+	sc_client_api::StateBackendFor<TFullBackend<Block>, Block>: sp_api::StateBackend<BlakeTwo256>,
+	Executor: 'static + sc_executor::NativeExecutionDispatch,
+{
 	let inherent_data_providers = sp_inherents::InherentDataProviders::new();
 
 	let telemetry = config
@@ -125,7 +141,7 @@ pub fn new_partial(
 ///
 /// This is the actual implementation that is abstract over the executor and the runtime api.
 #[sc_tracing::logging::prefix_logs_with("Parachain")]
-async fn start_node_impl<RB>(
+async fn start_node_impl<RuntimeApi, Executor, RB>(
 	parachain_config: Configuration,
 	collator_key: CollatorPair,
 	polkadot_config: Configuration,
@@ -134,11 +150,25 @@ async fn start_node_impl<RB>(
 	rpc_ext_builder: RB,
 ) -> sc_service::error::Result<(TaskManager, Arc<TFullClient<Block, RuntimeApi, Executor>>)>
 where
-	RB: Fn(
-			Arc<TFullClient<Block, RuntimeApi, Executor>>,
-		) -> jsonrpc_core::IoHandler<sc_rpc::Metadata>
+	RuntimeApi: 'static
 		+ Send
-		+ 'static,
+		+ Sync
+		+ ConstructRuntimeApi<Block, TFullClient<Block, RuntimeApi, Executor>>,
+	RuntimeApi::RuntimeApi: sp_api::ApiExt<
+			Block,
+			StateBackend = sc_client_api::StateBackendFor<TFullBackend<Block>, Block>,
+		> + sp_api::Metadata<Block>
+		+ sp_block_builder::BlockBuilder<Block>
+		+ sp_offchain::OffchainWorkerApi<Block>
+		+ sp_session::SessionKeys<Block>
+		+ sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
+	sc_client_api::StateBackendFor<TFullBackend<Block>, Block>: sp_api::StateBackend<BlakeTwo256>,
+	Executor: 'static + sc_executor::NativeExecutionDispatch,
+	RB: 'static
+		+ Send
+		+ Fn(
+			Arc<TFullClient<Block, RuntimeApi, Executor>>,
+		) -> jsonrpc_core::IoHandler<sc_rpc::Metadata>,
 {
 	if matches!(parachain_config.role, Role::Light) {
 		return Err("Light client not supported!".into());
@@ -146,7 +176,7 @@ where
 
 	let parachain_config = prepare_node_config(parachain_config);
 
-	let params = new_partial(&parachain_config)?;
+	let params = new_partial::<RuntimeApi, Executor>(&parachain_config)?;
 	params
 		.inherent_data_providers
 		.register_provider(sp_timestamp::InherentDataProvider)
@@ -261,15 +291,15 @@ where
 	Ok((task_manager, client))
 }
 
-/// Start a normal parachain node.
-pub async fn start_node(
+/// Start a `Crab Redirect` parachain node.
+pub async fn start_crab_redirect_node(
 	parachain_config: Configuration,
 	collator_key: CollatorPair,
 	polkadot_config: Configuration,
 	id: ParaId,
 	validator: bool,
 ) -> sc_service::error::Result<(TaskManager, Arc<TFullClient<Block, RuntimeApi, Executor>>)> {
-	start_node_impl(
+	start_node_impl::<crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor, _>(
 		parachain_config,
 		collator_key,
 		polkadot_config,

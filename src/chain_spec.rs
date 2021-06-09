@@ -29,8 +29,9 @@ use sp_runtime::traits::{IdentifyAccount, Verify};
 // --- darwinia ---
 use crab_redirect_primitives::{AccountId, Signature};
 
-/// Specialized `ChainSpec` for the normal parachain runtime.
-pub type ChainSpec = sc_service::GenericChainSpec<crab_redirect_runtime::GenesisConfig, Extensions>;
+/// Specialized `ChainSpec` for the `Crab Redirect` parachain runtime.
+pub type CrabRedirectChainSpec =
+	sc_service::GenericChainSpec<crab_redirect_runtime::GenesisConfig, Extensions>;
 
 type AccountPublic = <Signature as Verify>::Signer;
 
@@ -61,8 +62,8 @@ fn properties() -> Properties {
 	properties
 }
 
-pub fn crab_redirect_build_spec_config_of(id: ParaId) -> ChainSpec {
-	return ChainSpec::from_genesis(
+pub fn crab_redirect_build_spec_config_of(id: ParaId) -> CrabRedirectChainSpec {
+	return CrabRedirectChainSpec::from_genesis(
 		"Crab Redirect",
 		"Crab Redirect",
 		ChainType::Live,
@@ -72,10 +73,8 @@ pub fn crab_redirect_build_spec_config_of(id: ParaId) -> ChainSpec {
 			TelemetryEndpoints::new(vec![(CRAB_REDIRECT_TELEMETRY_URL.to_string(), 0)])
 				.expect("Crab Redirect telemetry url is valid; qed"),
 		),
-		// None,
 		None,
 		Some(properties()),
-		// None,
 		Extensions {
 			relay_chain: "kusama".into(),
 			para_id: id.into(),
@@ -100,8 +99,8 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 	}
 }
 
-pub fn crab_redirect_development_config_of(id: ParaId) -> ChainSpec {
-	return ChainSpec::from_genesis(
+pub fn crab_redirect_development_config_of(id: ParaId) -> CrabRedirectChainSpec {
+	return CrabRedirectChainSpec::from_genesis(
 		"Crab Redirect",
 		"Crab Redirect",
 		ChainType::Development,
@@ -110,7 +109,6 @@ pub fn crab_redirect_development_config_of(id: ParaId) -> ChainSpec {
 		None,
 		None,
 		Some(properties()),
-		// None,
 		Extensions {
 			relay_chain: "kusama".into(),
 			para_id: id.into(),

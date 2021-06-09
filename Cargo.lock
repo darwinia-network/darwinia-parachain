@@ -1142,6 +1142,7 @@ dependencies = [
  "sc-tracing",
  "sc-transaction-pool",
  "serde",
+ "sp-api",
  "sp-block-builder",
  "sp-consensus",
  "sp-core",

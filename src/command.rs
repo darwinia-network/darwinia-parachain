@@ -54,16 +54,16 @@ fn load_spec(
 	let genesis = include_bytes!("../res/crab-redirect.json");
 
 	match id {
-		"" | "crab-redirect" => Ok(Box::new(chain_spec::ChainSpec::from_json_bytes(
-			&genesis[..],
-		)?)),
+		"" | "crab-redirect" => Ok(Box::new(
+			chain_spec::CrabRedirectChainSpec::from_json_bytes(&genesis[..])?,
+		)),
 		"crab-redirect-genesis" => Ok(Box::new(chain_spec::crab_redirect_build_spec_config_of(
 			para_id,
 		))),
 		"dev" => Ok(Box::new(chain_spec::crab_redirect_development_config_of(
 			para_id,
 		))),
-		path => Ok(Box::new(chain_spec::ChainSpec::from_json_file(
+		path => Ok(Box::new(chain_spec::CrabRedirectChainSpec::from_json_file(
 			path.into(),
 		)?)),
 	}
@@ -149,6 +149,18 @@ fn extract_genesis_wasm(chain_spec: &Box<dyn sc_service::ChainSpec>) -> Result<V
 
 /// Parse command line arguments into service configuration.
 pub fn run() -> Result<()> {
+	macro_rules! construct_async_run {
+		(|$components:ident, $cli:ident, $cmd:ident, $config:ident| $( $code:tt )* ) => {{
+			let runner = $cli.create_runner($cmd)?;
+
+			runner.async_run(|$config| {
+				let $components = new_partial::<crab_redirect_runtime::RuntimeApi, RuntimeExecutor>(&$config)?;
+				let task_manager = $components.task_manager;
+				{ $( $code )* }.map(|v| (v, task_manager))
+			})
+		}}
+	}
+
 	let cli = Cli::from_args();
 
 	crypto::set_default_ss58_version(Ss58AddressFormat::DarwiniaAccount);
@@ -159,49 +171,23 @@ pub fn run() -> Result<()> {
 			runner.sync_run(|config| cmd.run(config.chain_spec, config.network))
 		}
 		Some(Subcommand::CheckBlock(cmd)) => {
-			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					import_queue,
-					..
-				} = crate::service::new_partial(&config)?;
-				Ok((cmd.run(client, import_queue), task_manager))
+			construct_async_run!(|components, cli, cmd, config| {
+				Ok(cmd.run(components.client, components.import_queue))
 			})
 		}
 		Some(Subcommand::ExportBlocks(cmd)) => {
-			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					..
-				} = crate::service::new_partial(&config)?;
-				Ok((cmd.run(client, config.database), task_manager))
+			construct_async_run!(|components, cli, cmd, config| {
+				Ok(cmd.run(components.client, config.database))
 			})
 		}
 		Some(Subcommand::ExportState(cmd)) => {
-			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					..
-				} = crate::service::new_partial(&config)?;
-				Ok((cmd.run(client, config.chain_spec), task_manager))
+			construct_async_run!(|components, cli, cmd, config| {
+				Ok(cmd.run(components.client, config.chain_spec))
 			})
 		}
 		Some(Subcommand::ImportBlocks(cmd)) => {
-			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					import_queue,
-					..
-				} = crate::service::new_partial(&config)?;
-				Ok((cmd.run(client, import_queue), task_manager))
+			construct_async_run!(|components, cli, cmd, config| {
+				Ok(cmd.run(components.client, components.import_queue))
 			})
 		}
 		Some(Subcommand::PurgeChain(cmd)) => {
@@ -225,18 +211,9 @@ pub fn run() -> Result<()> {
 				cmd.run(config, polkadot_config)
 			})
 		}
-		Some(Subcommand::Revert(cmd)) => {
-			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					backend,
-					..
-				} = crate::service::new_partial(&config)?;
-				Ok((cmd.run(client, backend), task_manager))
-			})
-		}
+		Some(Subcommand::Revert(cmd)) => construct_async_run!(|components, cli, cmd, config| {
+			Ok(cmd.run(components.client, components.backend))
+		}),
 		Some(Subcommand::ExportGenesisState(params)) => {
 			let mut builder = sc_cli::LoggerBuilder::new("");
 			builder.with_profiling(sc_tracing::TracingReceiver::Log, "");
@@ -319,7 +296,7 @@ pub fn run() -> Result<()> {
 				info!("Parachain genesis state: {}", genesis_state);
 				info!("Is collating: {}", if collator { "yes" } else { "no" });
 
-				crate::service::start_node(config, key, polkadot_config, id, collator)
+				crate::service::start_crab_redirect_node(config, key, polkadot_config, id, collator)
 					.await
 					.map(|r| r.0)
 					.map_err(Into::into)
