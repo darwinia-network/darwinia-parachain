@@ -64,11 +64,11 @@ pub struct ExportGenesisStateCommand {
 	pub output: Option<PathBuf>,
 
 	/// Id of the parachain this state is for.
-	#[structopt(long, default_value = "100")]
+	#[structopt(long, default_value = "100", conflicts_with = "chain")]
 	pub parachain_id: u32,
 
 	/// Write output in binary. Default is to write in hex.
-	#[structopt(short, long)]
+	#[structopt(long, conflicts_with = "parachain-id")]
 	pub raw: bool,
 
 	/// The name of the chain for that the genesis state should be exported.
