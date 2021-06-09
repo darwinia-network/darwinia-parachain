@@ -43,30 +43,24 @@ use crate::{
 	chain_spec,
 	cli::{Cli, RelayChainCli, Subcommand},
 };
-use darwinia_pc2_runtime::Block;
+use crab_redirect_runtime::Block;
 
-#[cfg(not(feature = "crab"))]
-const PARACHAIN_ID: u32 = 18;
-#[cfg(feature = "crab")]
-const PARACHAIN_ID: u32 = 9;
+const PARACHAIN_ID: u32 = 2006;
 
 fn load_spec(
 	id: &str,
 	para_id: ParaId,
 ) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
-	#[cfg(not(feature = "crab"))]
-	let genesis = include_bytes!("../res/darwinia-pc2/darwinia-pc2.json");
-	#[cfg(feature = "crab")]
-	let genesis = include_bytes!("../res/darwinia-crab-pc2/darwinia-crab-pc2.json");
+	let genesis = include_bytes!("../res/crab-redirect.json");
 
 	match id {
-		"" | "darwinia-pc2" => Ok(Box::new(chain_spec::ChainSpec::from_json_bytes(
+		"" | "crab-redirect" => Ok(Box::new(chain_spec::ChainSpec::from_json_bytes(
 			&genesis[..],
 		)?)),
-		"darwinia-pc2-genesis" => Ok(Box::new(chain_spec::darwinia_pc2_build_spec_config_of(
+		"crab-redirect-genesis" => Ok(Box::new(chain_spec::crab_redirect_build_spec_config_of(
 			para_id,
 		))),
-		"dev" => Ok(Box::new(chain_spec::darwinia_pc2_development_config_of(
+		"dev" => Ok(Box::new(chain_spec::crab_redirect_development_config_of(
 			para_id,
 		))),
 		path => Ok(Box::new(chain_spec::ChainSpec::from_json_file(
@@ -105,7 +99,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		&darwinia_pc2_runtime::VERSION
+		&crab_redirect_runtime::VERSION
 	}
 }
 

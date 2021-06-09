@@ -50,6 +50,12 @@ pub mod constants {
 		items as Balance * 20 * COIN + (bytes as Balance) * 100 * MICRO
 	}
 }
+pub use constants::*;
+
+pub mod pallets;
+pub use pallets::*;
+
+pub mod weights;
 
 pub mod wasm {
 	//! Make the WASM binary available.
@@ -57,30 +63,10 @@ pub mod wasm {
 	#[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "x86")))]
 	include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
-	#[cfg(all(
-		feature = "std",
-		not(feature = "crab"),
-		not(any(target_arch = "x86_64", target_arch = "x86"))
-	))]
-	pub const WASM_BINARY: &[u8] = include_bytes!("../wasm/darwinia_pc2_runtime.compact.wasm");
-	#[cfg(all(
-		feature = "std",
-		feature = "crab",
-		not(any(target_arch = "x86_64", target_arch = "x86"))
-	))]
-	pub const WASM_BINARY: &[u8] = include_bytes!("../wasm/darwinia_crab_pc2_runtime.compact.wasm");
-	#[cfg(all(
-		feature = "std",
-		not(feature = "crab"),
-		not(any(target_arch = "x86_64", target_arch = "x86"))
-	))]
-	pub const WASM_BINARY_BLOATY: &[u8] = include_bytes!("../wasm/darwinia_pc2_runtime.wasm");
-	#[cfg(all(
-		feature = "std",
-		feature = "crab",
-		not(any(target_arch = "x86_64", target_arch = "x86"))
-	))]
-	pub const WASM_BINARY_BLOATY: &[u8] = include_bytes!("../wasm/darwinia_crab_pc2_runtime.wasm");
+	#[cfg(all(feature = "std", not(any(target_arch = "x86_64", target_arch = "x86"))))]
+	pub const WASM_BINARY: &[u8] = include_bytes!("../wasm/crab_redirect_runtime.compact.wasm");
+	#[cfg(all(feature = "std", not(any(target_arch = "x86_64", target_arch = "x86"))))]
+	pub const WASM_BINARY_BLOATY: &[u8] = include_bytes!("../wasm/crab_redirect_runtime.wasm");
 
 	#[cfg(feature = "std")]
 	/// Wasm binary unwrapped. If built with `BUILD_DUMMY_WASM_BINARY`, the function panics.
@@ -95,80 +81,9 @@ pub mod wasm {
 		return WASM_BINARY;
 	}
 }
-
-pub mod system;
-pub use system::*;
-
-pub mod timestamp;
-pub use timestamp::*;
-
-pub mod balances;
-pub use balances::*;
-
-pub mod transaction_payment;
-pub use transaction_payment::*;
-
-pub mod democracy;
-pub use democracy::*;
-
-pub mod collective;
-pub use collective::*;
-
-pub mod elections_phragmen;
-pub use elections_phragmen::*;
-
-pub mod membership;
-pub use membership::*;
-
-pub mod treasury;
-pub use treasury::*;
-
-pub mod header_mmr;
-pub use header_mmr::*;
-
-pub mod sudo;
-pub use sudo::*;
-
-pub mod utility;
-pub use utility::*;
-
-pub mod identity;
-pub use identity::*;
-
-pub mod scheduler;
-pub use scheduler::*;
-
-pub mod proxy;
-pub use proxy::*;
-
-pub mod multisig;
-pub use multisig::*;
-
-pub mod ethereum_relay;
-pub use ethereum_relay::*;
-
-pub mod ethereum_backing;
-pub use ethereum_backing::*;
-
-pub mod relayer_game;
-pub use relayer_game::*;
-
-pub mod relay_authorities;
-pub use relay_authorities::*;
-
-pub mod parachain_system;
-pub use parachain_system::*;
-
-pub mod parachain_info_;
-pub use parachain_info_::*;
-
-pub mod xcm_handler;
-pub use xcm_handler::*;
-
-// --- darwinia ---
-use constants::*;
-use darwinia_pc2_primitives::*;
 pub use wasm::*;
+
+pub use crab_redirect_primitives::*;
 
 // --- substrate ---
 use frame_support::traits::Randomness;
@@ -213,21 +128,9 @@ pub type Executive = frame_executive::Executive<
 
 type Ring = Balances;
 
-/// This runtime version.
-#[cfg(not(feature = "crab"))]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: create_runtime_str!("Darwinia PC2"),
-	impl_name: create_runtime_str!("Darwinia PC2"),
-	authoring_version: 1,
-	spec_version: 1,
-	impl_version: 1,
-	apis: RUNTIME_API_VERSIONS,
-	transaction_version: 1,
-};
-#[cfg(feature = "crab")]
-pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: create_runtime_str!("Darwinia Crab PC2"),
-	impl_name: create_runtime_str!("Darwinia Crab PC2"),
+	spec_name: create_runtime_str!("Crab Redirect"),
+	impl_name: create_runtime_str!("Darwinia Crab Redirect"),
 	authoring_version: 1,
 	spec_version: 1,
 	impl_version: 1,
@@ -255,66 +158,35 @@ frame_support::construct_runtime! {
 		NodeBlock = OpaqueBlock,
 		UncheckedExtrinsic = UncheckedExtrinsic,
 	{
-		// Basic stuff; balances is uncallable initially.
+		// System support stuff.
 		System: frame_system::{Pallet, Call, Storage, Config, Event<T>} = 0,
-		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Pallet, Call, Storage} = 1,
+		ParachainSystem: cumulus_pallet_parachain_system::{Pallet, Call, Inherent, Storage, Event} = 1,
+		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Pallet, Call, Storage} = 2,
+		Timestamp: pallet_timestamp::{Pallet, Call, Inherent, Storage} = 3,
+		ParachainInfo: parachain_info::{Pallet, Storage, Config} = 4,
 
-		Timestamp: pallet_timestamp::{Pallet, Call, Storage, Inherent} = 2,
-		Balances: darwinia_balances::<Instance0>::{Pallet, Call, Storage, Config<T>, Event<T>} = 3,
-		Kton: darwinia_balances::<Instance1>::{Pallet, Call, Storage, Config<T>, Event<T>} = 4,
-		TransactionPayment: pallet_transaction_payment::{Pallet, Storage} = 5,
+		// Monetary stuff.
+		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>} = 5,
+		TransactionPayment: pallet_transaction_payment::{Pallet, Storage} = 6,
 
-		// Governance stuff; uncallable initially.
-		Democracy: darwinia_democracy::{Pallet, Call, Storage, Config, Event<T>} = 6,
-		Council: pallet_collective::<Instance0>::{Pallet, Call, Storage, Origin<T>, Config<T>, Event<T>} = 7,
-		TechnicalCommittee: pallet_collective::<Instance1>::{Pallet, Call, Storage, Origin<T>, Config<T>, Event<T>} = 8,
-		ElectionsPhragmen: darwinia_elections_phragmen::{Pallet, Call, Storage, Config<T>, Event<T>} = 9,
-		TechnicalMembership: pallet_membership::<Instance0>::{Pallet, Call, Storage, Config<T>, Event<T>} = 10,
-		Treasury: darwinia_treasury::{Pallet, Call, Storage, Event<T>} = 11,
-		HeaderMMR: darwinia_header_mmr::{Pallet, Call, Storage} = 12,
+		// Collator support. the order of these 4 are important and shall not change.
+		// Authorship: pallet_authorship::{Pallet, Call, Storage} = 7,
+		// CollatorSelection: pallet_collator_selection::{Pallet, Call, Storage, Event<T>, Config<T>} = 8,
+		// Session: pallet_session::{Pallet, Call, Storage, Event, Config<T>} = 9,
+		// Aura: pallet_aura::{Pallet, Storage, Config<T>} = 10,
+		// AuraExt: cumulus_pallet_aura_ext::{Pallet, Storage, Config} = 11,
 
-		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 13,
+		// XCM helpers.
+		// XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Call, Storage, Event<T>} = 12,
+		// PolkadotXcm: pallet_xcm::{Pallet, Call, Event<T>, Origin} = 13,
+		// CumulusXcm: cumulus_pallet_xcm::{Pallet, Event<T>, Origin} = 14,
+		// DmpQueue: cumulus_pallet_dmp_queue::{Pallet, Call, Storage, Event<T>} = 15,
 
-		// Claims. Usable initially.
-		// Claims: darwinia_claims::{Pallet, Call, Storage, Config, Event<T>, ValidateUnsigned} = 14,
-
-		// Vesting. Usable initially, but removed once all vesting is finished.
-		// Vesting: darwinia_vesting::{Pallet, Call, Storage, Event<T>, Config<T>} = 15,
-
-		// Utility module.
+		// Handy utilities.
 		Utility: pallet_utility::{Pallet, Call, Event} = 16,
-
-		// Less simple identity module.
-		Identity: pallet_identity::{Pallet, Call, Storage, Event<T>} = 17,
-
-		// Society module.
-		// Society: pallet_society::{Pallet, Call, Storage, Event<T>} = 18,
-
-		// Social recovery module.
-		// Recovery: pallet_recovery::{Pallet, Call, Storage, Event<T>} = 19,
-
-		// System scheduler.
-		Scheduler: pallet_scheduler::{Pallet, Call, Storage, Event<T>} = 20,
-
-		// Proxy module. Late addition.
-		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 21,
-
-		// Multisig module. Late addition.
-		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 22,
-
-		// CrabIssuing: darwinia_crab_issuing::{Pallet, Call, Storage, Config, Event<T>} = 23,
-		// CrabBacking: darwinia_crab_backing::{Pallet, Storage, Config<T>} = 24,
-
-		EthereumRelay: darwinia_ethereum_relay::{Pallet, Call, Storage, Config<T>, Event<T>} = 25,
-		EthereumBacking: darwinia_ethereum_backing::{Pallet, Call, Storage, Config<T>, Event<T>} = 26,
-		EthereumRelayerGame: darwinia_relayer_game::<Instance0>::{Pallet, Storage} = 27,
-		EthereumRelayAuthorities: darwinia_relay_authorities::<Instance0>::{Pallet, Call, Storage, Config<T>, Event<T>} = 28,
-
-		// TronBacking: darwinia_tron_backing::{Pallet, Storage, Config<T>} = 29,
-
-		ParachainSystem: cumulus_pallet_parachain_system::{Pallet, Call, Storage, Inherent, Event} = 30,
-		ParachainInfo: parachain_info::{Pallet, Storage, Config} = 31,
-		XcmHandler: cumulus_pallet_xcm_handler::{Pallet, Call, Event<T>, Origin} = 32,
+		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
+		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,
+		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
 	}
 }
 

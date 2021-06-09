@@ -34,14 +34,14 @@ use sc_telemetry::{Telemetry, TelemetryWorker, TelemetryWorkerHandle};
 use sp_runtime::traits::BlakeTwo256;
 use sp_trie::PrefixedMemoryDB;
 // --- darwinia ---
-use darwinia_pc2_primitives::OpaqueBlock as Block;
-use darwinia_pc2_runtime::RuntimeApi;
+use crab_redirect_primitives::OpaqueBlock as Block;
+use crab_redirect_runtime::RuntimeApi;
 
 // Native executor instance.
 native_executor_instance!(
 	pub Executor,
-	darwinia_pc2_runtime::api::dispatch,
-	darwinia_pc2_runtime::native_version,
+	crab_redirect_runtime::api::dispatch,
+	crab_redirect_runtime::native_version,
 );
 
 /// Starts a `ServiceBuilder` for a full service.

@@ -5,17 +5,14 @@ description = "Darwinia Runtime Module Library Node"
 edition     = "2018"
 homepage    = "https://darwinia.network/"
 license     = "GPL-3.0"
-name        = "darwinia-pc2"
+name        = "crab-redirect"
 readme      = "README.md"
 repository  = "https://github.com/darwinia-network/darwinia-common/"
 version     = "2.0.0"
 
 [[bin]]
-name = "darwinia-pc2"
+name = "crab-redirect"
 path = "src/main.rs"
-
-[features]
-crab = ["darwinia-pc2-runtime/crab"]
 
 [dependencies]
 # Crates
@@ -26,12 +23,9 @@ serde       = { version = "1.0.124", features = ["derive"] }
 structopt   = { version = "0.3.21" }
 tempfile    = { version = "3.2.0" }
 
-# Darwinia
-darwinia-ethereum-relay = { git = "https://github.com/darwinia-network/darwinia-common", branch = "rococo-v1-external-substrate" }
-
 # Parachain dependencies
-darwinia-pc2-primitives = { path = "primitives" }
-darwinia-pc2-runtime    = { path = "runtime" }
+crab-redirect-primitives = { path = "primitives" }
+crab-redirect-runtime    = { path = "runtime" }
 
 # Substrate dependencies
 sc-basic-authorship = { git = "https://github.com/paritytech/substrate", branch = "rococo-v1" }
