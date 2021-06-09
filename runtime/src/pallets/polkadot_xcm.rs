@@ -85,9 +85,9 @@ frame_support::parameter_types! {
 	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
 	pub UnitWeightCost: Weight = 1_000;
 	pub AllowUnpaidFrom: Vec<MultiLocation> = vec![MultiLocation::X1(Junction::Parent)];
-	pub Ancestry: MultiLocation = Junction::Parachain {
-		id: ParachainInfo::parachain_id().into()
-	}.into();
+	pub Ancestry: MultiLocation = Junction::Parachain(
+		ParachainInfo::parachain_id().into()
+	).into();
 }
 
 pub struct XcmConfig;
@@ -101,7 +101,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type LocationInverter = LocationInverter<Ancestry>;
 	type Barrier = Barrier;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call>;
-	type Trader = FixedRateOfConcreteFungible<WeightPrice>;
+	type Trader = FixedRateOfConcreteFungible<WeightPrice, ()>;
 	type ResponseHandler = ();
 }
 
