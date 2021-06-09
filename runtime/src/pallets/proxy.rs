@@ -24,13 +24,10 @@ impl InstanceFilter<Call> for ProxyType {
 			ProxyType::Any => true,
 			ProxyType::NonTransfer => matches!(
 				c,
-				Call::System(..) |
-							// Call::Babe(..) |
-							Call::Timestamp(..) |
-							Call::Sudo(..) |
-							Call::Utility(..)|
-							Call::Proxy(..)|
-							Call::Multisig(..)
+				Call::System(..)
+					| Call::Timestamp(..)
+					| Call::Sudo(..) | Call::Utility(..)
+					| Call::Proxy(..) | Call::Multisig(..)
 			),
 		}
 	}

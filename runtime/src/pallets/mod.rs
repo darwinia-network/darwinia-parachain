@@ -27,6 +27,3 @@ pub use parachain_system::*;
 
 pub mod parachain_info_;
 pub use parachain_info_::*;
-
-// pub mod xcm_handler;
-// pub use xcm_handler::*;
