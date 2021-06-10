@@ -173,9 +173,9 @@ frame_support::construct_runtime! {
 		TransactionPayment: pallet_transaction_payment::{Pallet, Storage} = 6,
 
 		// Collator support. the order of these 4 are important and shall not change.
-		// Authorship: pallet_authorship::{Pallet, Call, Storage} = 7,
-		// CollatorSelection: pallet_collator_selection::{Pallet, Call, Storage, Event<T>, Config<T>} = 8,
-		// Session: pallet_session::{Pallet, Call, Storage, Event, Config<T>} = 9,
+		Authorship: pallet_authorship::{Pallet, Call, Storage} = 7,
+		CollatorSelection: pallet_collator_selection::{Pallet, Call, Storage, Event<T>, Config<T>} = 8,
+		Session: pallet_session::{Pallet, Call, Storage, Event, Config<T>} = 9,
 		Aura: pallet_aura::{Pallet, Storage, Config<T>} = 10,
 		AuraExt: cumulus_pallet_aura_ext::{Pallet, Storage, Config} = 11,
 

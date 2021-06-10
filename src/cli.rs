@@ -123,7 +123,6 @@ pub struct RelayChainCli {
 	/// The base path that should be used by the relay chain.
 	pub base_path: Option<PathBuf>,
 }
-
 impl RelayChainCli {
 	/// Parse the relay chain CLI parameters using the para chain `Configuration`.
 	pub fn new<'a>(

@@ -16,6 +16,15 @@ pub use balances::*;
 pub mod transaction_payment;
 pub use transaction_payment::*;
 
+pub mod authorship;
+pub use authorship::*;
+
+pub mod collator_selection;
+pub use collator_selection::*;
+
+pub mod session;
+pub use session::*;
+
 pub mod aura;
 pub use aura::*;
 
