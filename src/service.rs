@@ -166,7 +166,8 @@ where
 		+ Send
 		+ Sync
 		+ ConstructRuntimeApi<Block, TFullClient<Block, RuntimeApi, Executor>>,
-	RuntimeApi::RuntimeApi: sp_api::ApiExt<
+	RuntimeApi::RuntimeApi: cumulus_primitives_core::CollectCollationInfo<Block>
+		+ sp_api::ApiExt<
 			Block,
 			StateBackend = sc_client_api::StateBackendFor<TFullBackend<Block>, Block>,
 		> + sp_api::Metadata<Block>
