@@ -20,35 +20,34 @@
 #![recursion_limit = "256"]
 
 pub mod constants {
-	// --- parity ---
-	use sp_staking::SessionIndex;
-	// --- darwinia ---
-	use crate::*;
+	pub mod currency {
+		// --- darwinia ---
+		use crab_redirect_primitives::*;
 
-	pub const NANO: Balance = 1;
-	pub const MICRO: Balance = 1_000 * NANO;
-	pub const MILLI: Balance = 1_000 * MICRO;
-	pub const COIN: Balance = 1_000 * MILLI;
+		pub const NANO: Balance = 1;
+		pub const MICRO: Balance = 1_000 * NANO;
+		pub const MILLI: Balance = 1_000 * MICRO;
+		pub const COIN: Balance = 1_000 * MILLI;
 
-	pub const CAP: Balance = 10_000_000_000 * COIN;
-	pub const TOTAL_POWER: Power = 1_000_000_000;
-
-	pub const MILLISECS_PER_BLOCK: Moment = 12000;
-	pub const SLOT_DURATION: Moment = MILLISECS_PER_BLOCK;
-	pub const BLOCKS_PER_SESSION: BlockNumber = 10 * MINUTES;
-	pub const SESSIONS_PER_ERA: SessionIndex = 6;
-
-	// Time is measured by number of blocks.
-	pub const MINUTES: BlockNumber = 60_000 / (MILLISECS_PER_BLOCK as BlockNumber);
-	pub const HOURS: BlockNumber = 60 * MINUTES;
-	pub const DAYS: BlockNumber = 24 * HOURS;
-
-	// 1 in 4 blocks (on average, not counting collisions) will be primary babe blocks.
-	pub const PRIMARY_PROBABILITY: (u64, u64) = (1, 4);
-
-	pub const fn deposit(items: u32, bytes: u32) -> Balance {
-		items as Balance * 20 * COIN + (bytes as Balance) * 100 * MICRO
+		pub const fn deposit(items: u32, bytes: u32) -> Balance {
+			items as Balance * 20 * COIN + (bytes as Balance) * 100 * MICRO
+		}
 	}
+	pub use currency::*;
+
+	pub mod time {
+		// --- darwinia ---
+		use crab_redirect_primitives::*;
+
+		pub const MILLISECS_PER_BLOCK: Moment = 12000;
+		pub const SLOT_DURATION: Moment = MILLISECS_PER_BLOCK;
+
+		// Time is measured by number of blocks.
+		pub const MINUTES: BlockNumber = 60_000 / (MILLISECS_PER_BLOCK as BlockNumber);
+		pub const HOURS: BlockNumber = 60 * MINUTES;
+		pub const DAYS: BlockNumber = 24 * HOURS;
+	}
+	pub use time::*;
 }
 pub use constants::*;
 
@@ -89,7 +88,7 @@ pub use crab_redirect_primitives::*;
 use sp_api::impl_runtime_apis;
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
-	create_runtime_str, generic, impl_opaque_keys,
+	create_runtime_str, generic,
 	traits::Block as BlockT,
 	transaction_validity::{TransactionSource, TransactionValidity},
 	ApplyExtrinsicResult, MultiAddress,
@@ -108,6 +107,7 @@ pub type SignedBlock = generic::SignedBlock<Block>;
 /// The SignedExtension to the basic transaction logic.
 pub type SignedExtra = (
 	frame_system::CheckSpecVersion<Runtime>,
+	frame_system::CheckTxVersion<Runtime>,
 	frame_system::CheckGenesis<Runtime>,
 	frame_system::CheckEra<Runtime>,
 	frame_system::CheckNonce<Runtime>,
@@ -138,12 +138,6 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
 };
-
-impl_opaque_keys! {
-	pub struct SessionKeys {
-		pub aura: Aura,
-	}
-}
 
 /// The version information used to identify this runtime when compiled natively.
 #[cfg(feature = "std")]

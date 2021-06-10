@@ -6,6 +6,12 @@ use sp_runtime::{traits::OpaqueKeys, Perbill};
 // --- darwinia ---
 use crate::*;
 
+sp_runtime::impl_opaque_keys! {
+	pub struct SessionKeys {
+		pub aura: Aura,
+	}
+}
+
 frame_support::parameter_types! {
 	pub const DisabledValidatorsThreshold: Perbill = Perbill::from_percent(33);
 	pub const Period: u32 = 6 * HOURS;

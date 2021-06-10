@@ -18,14 +18,15 @@ use sp_version::RuntimeVersion;
 // --- darwinia ---
 use crate::*;
 
-/// We assume that an on-initialize consumes 2.5% of the weight on average, hence a single extrinsic
-/// will not be allowed to consume more than `AvailableBlockRatio - 2.5%`.
-pub const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(25);
-/// We allow `Normal` extrinsics to fill up the block up to 75%, the rest can be used
-/// by  Operational  extrinsics.
+/// We assume that ~5% of the block weight is consumed by `on_initialize` handlers. This is
+/// used to limit the maximal weight of a single extrinsic.
+pub const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(5);
+/// We allow `Normal` extrinsics to fill up the block up to 75%, the rest can be used by
+/// Operational  extrinsics.
 pub const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
-/// We allow for 2 seconds of compute with a 6 second average block time.
-pub const MAXIMUM_BLOCK_WEIGHT: Weight = 2 * WEIGHT_PER_SECOND;
+
+/// We allow for 0.5 seconds of compute with a 6 second average block time.
+pub const MAXIMUM_BLOCK_WEIGHT: Weight = WEIGHT_PER_SECOND / 2;
 pub const SS58_PREFIX: u8 = 42;
 
 frame_support::parameter_types! {

@@ -155,8 +155,8 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 
 pub fn crab_redirect_development_config_of(id: ParaId) -> CrabRedirectChainSpec {
 	return CrabRedirectChainSpec::from_genesis(
-		"Crab Redirect",
-		"Crab Redirect",
+		"Crab Redirect Dev",
+		"Crab Redirect Dev",
 		ChainType::Development,
 		move || crab_redirect_development_genesis(id),
 		vec![],
