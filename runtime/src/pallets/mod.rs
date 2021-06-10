@@ -25,6 +25,9 @@ pub use polkadot_xcm::*;
 pub mod cumulus_xcm;
 pub use cumulus_xcm::*;
 
+pub mod dmp_queue;
+pub use dmp_queue::*;
+
 pub mod utility;
 pub use utility::*;
 

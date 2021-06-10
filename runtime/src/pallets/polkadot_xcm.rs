@@ -2,7 +2,7 @@
 use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
 use frame_support::{
-	traits::All,
+	traits::Contains,
 	weights::{IdentityFee, Weight},
 };
 use pallet_xcm::{Config, XcmPassthrough};
@@ -78,6 +78,15 @@ pub type XcmOriginToTransactDispatchOrigin = (
 	// Xcm origins can be represented natively under the Xcm pallet's Xcm origin.
 	XcmPassthrough<Origin>,
 );
+
+// TODO: Remove to frame_support::traits::All once substrate/8691 merged and bumped
+/// A `Contains` implementation which always returns `true`.
+pub struct All<T>(sp_std::marker::PhantomData<T>);
+impl<T> Contains<T> for All<T> {
+	fn contains(_: &T) -> bool {
+		true
+	}
+}
 
 frame_support::parameter_types! {
 	pub const RocLocation: MultiLocation = MultiLocation::X1(Junction::Parent);
