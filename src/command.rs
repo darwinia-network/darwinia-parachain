@@ -154,7 +154,10 @@ pub fn run() -> Result<()> {
 			let runner = $cli.create_runner($cmd)?;
 
 			runner.async_run(|$config| {
-				let $components = new_partial::<crab_redirect_runtime::RuntimeApi, RuntimeExecutor>(&$config)?;
+				let $components = new_partial::<crab_redirect_runtime::RuntimeApi, RuntimeExecutor, _>(
+					&$config,
+					crate::service::crab_redirect_build_import_queue,
+				)?;
 				let task_manager = $components.task_manager;
 				{ $( $code )* }.map(|v| (v, task_manager))
 			})

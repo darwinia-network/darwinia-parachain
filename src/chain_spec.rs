@@ -24,10 +24,11 @@ use cumulus_primitives_core::ParaId;
 use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
 use sc_service::{ChainType, Properties};
 use sc_telemetry::TelemetryEndpoints;
-use sp_core::{sr25519, Pair, Public};
+use sp_core::{crypto::UncheckedInto, sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 // --- darwinia ---
 use crab_redirect_primitives::{AccountId, Signature};
+use crab_redirect_runtime::AuraId;
 
 /// Specialized `ChainSpec` for the `Crab Redirect` parachain runtime.
 pub type CrabRedirectChainSpec =
@@ -87,6 +88,11 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 		"0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
 		32
 	));
+	let initial_authorities = vec![array_bytes::hex2array_unchecked!(
+		"0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
+		32
+	)
+	.unchecked_into()];
 
 	crab_redirect_runtime::GenesisConfig {
 		frame_system: crab_redirect_runtime::SystemConfig {
@@ -95,6 +101,10 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 		},
 		pallet_balances: Default::default(),
 		parachain_info: crab_redirect_runtime::ParachainInfoConfig { parachain_id: id },
+		pallet_aura: parachain_runtime::AuraConfig {
+			authorities: initial_authorities,
+		},
+		cumulus_pallet_aura_ext: Default::default(),
 		pallet_sudo: crab_redirect_runtime::SudoConfig { key: root },
 	}
 }
@@ -118,6 +128,7 @@ pub fn crab_redirect_development_config_of(id: ParaId) -> CrabRedirectChainSpec 
 
 fn crab_redirect_development_genesis(id: ParaId) -> crab_redirect_runtime::GenesisConfig {
 	let root = get_account_id_from_seed::<sr25519::Public>("Alice");
+	let initial_authorities = vec![get_from_seed::<AuraId>("Alice")];
 
 	crab_redirect_runtime::GenesisConfig {
 		frame_system: crab_redirect_runtime::SystemConfig {
@@ -126,6 +137,10 @@ fn crab_redirect_development_genesis(id: ParaId) -> crab_redirect_runtime::Genes
 		},
 		pallet_balances: Default::default(),
 		parachain_info: crab_redirect_runtime::ParachainInfoConfig { parachain_id: id },
+		pallet_aura: parachain_runtime::AuraConfig {
+			authorities: initial_authorities,
+		},
+		cumulus_pallet_aura_ext: Default::default(),
 		pallet_sudo: crab_redirect_runtime::SudoConfig { key: root },
 	}
 }

@@ -33,7 +33,7 @@ pub mod constants {
 	pub const CAP: Balance = 10_000_000_000 * COIN;
 	pub const TOTAL_POWER: Power = 1_000_000_000;
 
-	pub const MILLISECS_PER_BLOCK: Moment = 6000;
+	pub const MILLISECS_PER_BLOCK: Moment = 12000;
 	pub const SLOT_DURATION: Moment = MILLISECS_PER_BLOCK;
 	pub const BLOCKS_PER_SESSION: BlockNumber = 10 * MINUTES;
 	pub const SESSIONS_PER_ERA: SessionIndex = 6;
@@ -86,7 +86,6 @@ pub use wasm::*;
 pub use crab_redirect_primitives::*;
 
 // --- parity ---
-use frame_support::traits::Randomness;
 use sp_api::impl_runtime_apis;
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
@@ -139,7 +138,9 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 };
 
 impl_opaque_keys! {
-	pub struct SessionKeys {}
+	pub struct SessionKeys {
+		pub aura: Aura,
+	}
 }
 
 /// The version information used to identify this runtime when compiled natively.
@@ -173,8 +174,8 @@ frame_support::construct_runtime! {
 		// Authorship: pallet_authorship::{Pallet, Call, Storage} = 7,
 		// CollatorSelection: pallet_collator_selection::{Pallet, Call, Storage, Event<T>, Config<T>} = 8,
 		// Session: pallet_session::{Pallet, Call, Storage, Event, Config<T>} = 9,
-		// Aura: pallet_aura::{Pallet, Storage, Config<T>} = 10,
-		// AuraExt: cumulus_pallet_aura_ext::{Pallet, Storage, Config} = 11,
+		Aura: pallet_aura::{Pallet, Storage, Config<T>} = 10,
+		AuraExt: cumulus_pallet_aura_ext::{Pallet, Storage, Config} = 11,
 
 		// XCM helpers.
 		XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Call, Storage, Event<T>} = 12,
@@ -197,7 +198,7 @@ impl_runtime_apis! {
 		}
 
 		fn execute_block(block: Block) {
-			Executive::execute_block(block)
+			Executive::execute_block(block);
 		}
 
 		fn initialize_block(header: &<Block as BlockT>::Header) {
@@ -257,6 +258,19 @@ impl_runtime_apis! {
 			SessionKeys::generate(seed)
 		}
 	}
+
+	impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
+		fn slot_duration() -> sp_consensus_aura::SlotDuration {
+			sp_consensus_aura::SlotDuration::from_millis(Aura::slot_duration())
+		}
+
+		fn authorities() -> Vec<AuraId> {
+			Aura::authorities()
+		}
+	}
 }
 
-cumulus_pallet_parachain_system::register_validate_block!(Runtime, Executive);
+cumulus_pallet_parachain_system::register_validate_block!(
+	Runtime,
+	cumulus_pallet_aura_ext::BlockExecutor::<Runtime, Executive>,
+);
