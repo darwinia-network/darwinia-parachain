@@ -18,28 +18,40 @@
 
 // --- std ---
 use std::sync::Arc;
+// --- crates.io ---
+use futures::lock::Mutex;
 // --- parity ---
 use cumulus_client_consensus_aura::{
 	build_aura_consensus, BuildAuraConsensusParams, SlotProportion,
 };
-use cumulus_client_consensus_common::ParachainConsensus;
+use cumulus_client_consensus_common::{
+	ParachainBlockImport, ParachainCandidate, ParachainConsensus,
+};
+use cumulus_client_consensus_relay_chain::Verifier as RelayChainVerifier;
 use cumulus_client_network::build_block_announce_validator;
 use cumulus_client_service::{
 	prepare_node_config, start_collator, start_full_node, StartCollatorParams, StartFullNodeParams,
 };
-use cumulus_primitives_core::ParaId;
+use cumulus_primitives_core::{
+	relay_chain::v1::{Hash as PHash, PersistedValidationData},
+	ParaId,
+};
 use sc_client_api::ExecutorProvider;
 use sc_executor::native_executor_instance;
 use sc_network::NetworkService;
 use sc_service::{Configuration, PartialComponents, Role, TFullBackend, TFullClient, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
-use sp_api::ConstructRuntimeApi;
-use sp_consensus::SlotData;
+use sp_api::{ApiExt, ConstructRuntimeApi, HeaderT};
+use sp_consensus::{
+	import_queue::{BasicQueue, CacheKeyId, Verifier as VerifierT},
+	BlockImportParams, BlockOrigin, SlotData,
+};
+use sp_consensus_aura::{sr25519::AuthorityId as AuraId, AuraApi};
 use sp_keystore::SyncCryptoStorePtr;
-use sp_runtime::traits::BlakeTwo256;
+use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
 use substrate_prometheus_endpoint::Registry;
 // --- darwinia ---
-use crab_redirect_primitives::{Hash, OpaqueBlock as Block};
+use crab_redirect_primitives::{Hash, Header, OpaqueBlock as Block};
 
 // Native executor instance.
 native_executor_instance!(
@@ -47,6 +59,118 @@ native_executor_instance!(
 	crab_redirect_runtime::api::dispatch,
 	crab_redirect_runtime::native_version,
 );
+
+enum BuildOnAccess<R> {
+	Uninitialized(Option<Box<dyn FnOnce() -> R + Send + Sync>>),
+	Initialized(R),
+}
+impl<R> BuildOnAccess<R> {
+	fn get_mut(&mut self) -> &mut R {
+		loop {
+			match self {
+				Self::Uninitialized(f) => {
+					*self = Self::Initialized((f.take().unwrap())());
+				}
+				Self::Initialized(ref mut r) => return r,
+			}
+		}
+	}
+}
+
+struct Verifier<Client> {
+	client: Arc<Client>,
+	aura_verifier: BuildOnAccess<Box<dyn VerifierT<Block>>>,
+	relay_chain_verifier: Box<dyn VerifierT<Block>>,
+}
+#[async_trait::async_trait]
+impl<Client> VerifierT<Block> for Verifier<Client>
+where
+	Client: sp_api::ProvideRuntimeApi<Block> + Send + Sync,
+	Client::Api: AuraApi<Block, AuraId>,
+{
+	async fn verify(
+		&mut self,
+		origin: BlockOrigin,
+		header: Header,
+		justifications: Option<sp_runtime::Justifications>,
+		body: Option<Vec<<Block as sp_runtime::traits::Block>::Extrinsic>>,
+	) -> Result<
+		(
+			BlockImportParams<Block, ()>,
+			Option<Vec<(CacheKeyId, Vec<u8>)>>,
+		),
+		String,
+	> {
+		let block_id = BlockId::hash(*header.parent_hash());
+
+		if self
+			.client
+			.runtime_api()
+			.has_api::<dyn AuraApi<Block, AuraId>>(&block_id)
+			.unwrap_or(false)
+		{
+			self.aura_verifier
+				.get_mut()
+				.verify(origin, header, justifications, body)
+				.await
+		} else {
+			self.relay_chain_verifier
+				.verify(origin, header, justifications, body)
+				.await
+		}
+	}
+}
+
+/// Special [`ParachainConsensus`] implementation that waits for the upgrade from
+/// shell to a parachain runtime that implements Aura.
+struct WaitForAuraConsensus<Client> {
+	client: Arc<Client>,
+	aura_consensus: Arc<Mutex<BuildOnAccess<Box<dyn ParachainConsensus<Block>>>>>,
+	relay_chain_consensus: Arc<Mutex<Box<dyn ParachainConsensus<Block>>>>,
+}
+impl<Client> Clone for WaitForAuraConsensus<Client> {
+	fn clone(&self) -> Self {
+		Self {
+			client: self.client.clone(),
+			aura_consensus: self.aura_consensus.clone(),
+			relay_chain_consensus: self.relay_chain_consensus.clone(),
+		}
+	}
+}
+#[async_trait::async_trait]
+impl<Client> ParachainConsensus<Block> for WaitForAuraConsensus<Client>
+where
+	Client: sp_api::ProvideRuntimeApi<Block> + Send + Sync,
+	Client::Api: AuraApi<Block, AuraId>,
+{
+	async fn produce_candidate(
+		&mut self,
+		parent: &Header,
+		relay_parent: PHash,
+		validation_data: &PersistedValidationData,
+	) -> Option<ParachainCandidate<Block>> {
+		let block_id = BlockId::hash(parent.hash());
+		if self
+			.client
+			.runtime_api()
+			.has_api::<dyn AuraApi<Block, AuraId>>(&block_id)
+			.unwrap_or(false)
+		{
+			self.aura_consensus
+				.lock()
+				.await
+				.get_mut()
+				.produce_candidate(parent, relay_parent, validation_data)
+				.await
+		} else {
+			self.relay_chain_consensus
+				.lock()
+				.await
+				.produce_candidate(parent, relay_parent, validation_data)
+				.await
+		}
+	}
+}
 
 /// Starts a `ServiceBuilder` for a full service.
 ///
@@ -208,14 +332,12 @@ where
 	let params = new_partial::<RuntimeApi, Executor, BIQ>(&parachain_config, build_import_queue)?;
 	let (mut telemetry, telemetry_worker_handle) = params.other;
 
-	let relay_chain_full_node = cumulus_client_service::build_polkadot_full_node(
-		polkadot_config,
-		telemetry_worker_handle,
-	)
-	.map_err(|e| match e {
-		polkadot_service::Error::Sub(x) => x,
-		s => format!("{}", s).into(),
-	})?;
+	let relay_chain_full_node =
+		cumulus_client_service::build_polkadot_full_node(polkadot_config, telemetry_worker_handle)
+			.map_err(|e| match e {
+				polkadot_service::Error::Sub(x) => x,
+				s => format!("{}", s).into(),
+			})?;
 
 	let client = params.client.clone();
 	let backend = params.backend.clone();
@@ -324,36 +446,56 @@ pub fn crab_redirect_build_import_queue(
 	>,
 	sc_service::Error,
 > {
-	let slot_duration = cumulus_client_consensus_aura::slot_duration(&*client)?;
+	let client2 = client.clone();
 
-	cumulus_client_consensus_aura::import_queue::<
-		sp_consensus_aura::sr25519::AuthorityPair,
-		_,
-		_,
-		_,
-		_,
-		_,
-		_,
-	>(cumulus_client_consensus_aura::ImportQueueParams {
-		block_import: client.clone(),
+	let aura_verifier = move || {
+		let slot_duration = cumulus_client_consensus_aura::slot_duration(&*client2).unwrap();
+
+		Box::new(cumulus_client_consensus_aura::build_verifier::<
+			sp_consensus_aura::sr25519::AuthorityPair,
+			_,
+			_,
+			_,
+		>(cumulus_client_consensus_aura::BuildVerifierParams {
+			client: client2.clone(),
+			create_inherent_data_providers: move |_, _| async move {
+				let time = sp_timestamp::InherentDataProvider::from_system_time();
+
+				let slot =
+					sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
+						*time,
+						slot_duration.slot_duration(),
+					);
+
+				Ok((time, slot))
+			},
+			can_author_with: sp_consensus::CanAuthorWithNativeVersion::new(
+				client2.executor().clone(),
+			),
+			telemetry,
+		})) as Box<_>
+	};
+
+	let relay_chain_verifier = Box::new(RelayChainVerifier::new(client.clone(), |_, _| async {
+		Ok(())
+	})) as Box<_>;
+
+	let verifier = Verifier {
 		client: client.clone(),
-		create_inherent_data_providers: move |_, _| async move {
-			let time = sp_timestamp::InherentDataProvider::from_system_time();
+		relay_chain_verifier,
+		aura_verifier: BuildOnAccess::Uninitialized(Some(Box::new(aura_verifier))),
+	};
 
-			let slot =
-				sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
-					*time,
-					slot_duration.slot_duration(),
-				);
+	let registry = config.prometheus_registry().clone();
+	let spawner = task_manager.spawn_essential_handle();
 
-			Ok((time, slot))
-		},
-		registry: config.prometheus_registry().clone(),
-		can_author_with: sp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone()),
-		spawner: &task_manager.spawn_essential_handle(),
-		telemetry,
-	})
-	.map_err(Into::into)
+	Ok(BasicQueue::new(
+		verifier,
+		Box::new(ParachainBlockImport::new(client.clone())),
+		None,
+		&spawner,
+		registry,
+	))
 }
 
 /// Start a `Crab Redirect` parachain node.
@@ -380,7 +522,82 @@ pub async fn start_crab_redirect_node(
 		 sync_oracle,
 		 keystore,
 		 force_authoring| {
-			let slot_duration = cumulus_client_consensus_aura::slot_duration(&*client)?;
+			let client2 = client.clone();
+			let relay_chain_backend = relay_chain_node.backend.clone();
+			let relay_chain_client = relay_chain_node.client.clone();
+			let spawn_handle = task_manager.spawn_handle();
+			let transaction_pool2 = transaction_pool.clone();
+			let telemetry2 = telemetry.clone();
+			let prometheus_registry2 = prometheus_registry.map(|r| (*r).clone());
+
+			let aura_consensus = BuildOnAccess::Uninitialized(Some(Box::new(move || {
+				let slot_duration =
+					cumulus_client_consensus_aura::slot_duration(&*client2).unwrap();
+
+				let proposer_factory = sc_basic_authorship::ProposerFactory::with_proof_recording(
+					spawn_handle,
+					client2.clone(),
+					transaction_pool2,
+					prometheus_registry2.as_ref(),
+					telemetry2.clone(),
+				);
+
+				let relay_chain_backend2 = relay_chain_backend.clone();
+				let relay_chain_client2 = relay_chain_client.clone();
+
+				build_aura_consensus::<
+					sp_consensus_aura::sr25519::AuthorityPair,
+					_,
+					_,
+					_,
+					_,
+					_,
+					_,
+					_,
+					_,
+					_,
+				>(BuildAuraConsensusParams {
+					proposer_factory,
+					create_inherent_data_providers: move |_, (relay_parent, validation_data)| {
+						let parachain_inherent =
+								cumulus_primitives_parachain_inherent::ParachainInherentData::create_at_with_client(
+									relay_parent,
+									&relay_chain_client,
+									&*relay_chain_backend,
+									&validation_data,
+									id,
+								);
+						async move {
+							let time = sp_timestamp::InherentDataProvider::from_system_time();
+
+							let slot =
+									sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
+										*time,
+										slot_duration.slot_duration(),
+									);
+
+							let parachain_inherent = parachain_inherent.ok_or_else(|| {
+								Box::<dyn std::error::Error + Send + Sync>::from(
+									"Failed to create parachain inherent",
+								)
+							})?;
+							Ok((time, slot, parachain_inherent))
+						}
+					},
+					block_import: client2.clone(),
+					relay_chain_client: relay_chain_client2,
+					relay_chain_backend: relay_chain_backend2,
+					para_client: client2.clone(),
+					backoff_authoring_blocks: Option::<()>::None,
+					sync_oracle,
+					keystore,
+					force_authoring,
+					slot_duration,
+					// We got around 500ms for proposing
+					block_proposal_slot_portion: SlotProportion::new(1f32 / 24f32),
+					telemetry: telemetry2,
+				})
+			})));
 
 			let proposer_factory = sc_basic_authorship::ProposerFactory::with_proof_recording(
 				task_manager.spawn_handle(),
@@ -392,58 +609,45 @@ pub async fn start_crab_redirect_node(
 
 			let relay_chain_backend = relay_chain_node.backend.clone();
 			let relay_chain_client = relay_chain_node.client.clone();
-			Ok(build_aura_consensus::<
-				sp_consensus_aura::sr25519::AuthorityPair,
-				_,
-				_,
-				_,
-				_,
-				_,
-				_,
-				_,
-				_,
-				_,
-			>(BuildAuraConsensusParams {
-				proposer_factory,
-				create_inherent_data_providers: move |_, (relay_parent, validation_data)| {
-					let parachain_inherent =
-					cumulus_primitives_parachain_inherent::ParachainInherentData::create_at_with_client(
-						relay_parent,
-						&relay_chain_client,
-						&*relay_chain_backend,
-						&validation_data,
-						id,
-					);
-					async move {
-						let time = sp_timestamp::InherentDataProvider::from_system_time();
 
-						let slot =
-						sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
-							*time,
-							slot_duration.slot_duration(),
-						);
+			let relay_chain_consensus =
+				cumulus_client_consensus_relay_chain::build_relay_chain_consensus(
+					cumulus_client_consensus_relay_chain::BuildRelayChainConsensusParams {
+						para_id: id,
+						proposer_factory,
+						block_import: client.clone(),
+						relay_chain_client: relay_chain_node.client.clone(),
+						relay_chain_backend: relay_chain_node.backend.clone(),
+						create_inherent_data_providers:
+							move |_, (relay_parent, validation_data)| {
+								let parachain_inherent =
+									cumulus_primitives_parachain_inherent::ParachainInherentData::create_at_with_client(
+										relay_parent,
+										&relay_chain_client,
+										&*relay_chain_backend,
+										&validation_data,
+										id,
+									);
+								async move {
+									let parachain_inherent =
+										parachain_inherent.ok_or_else(|| {
+											Box::<dyn std::error::Error + Send + Sync>::from(
+												"Failed to create parachain inherent",
+											)
+										})?;
+									Ok(parachain_inherent)
+								}
+							},
+					},
+				);
 
-						let parachain_inherent = parachain_inherent.ok_or_else(|| {
-							Box::<dyn std::error::Error + Send + Sync>::from(
-								"Failed to create parachain inherent",
-							)
-						})?;
-						Ok((time, slot, parachain_inherent))
-					}
-				},
-				block_import: client.clone(),
-				relay_chain_client: relay_chain_node.client.clone(),
-				relay_chain_backend: relay_chain_node.backend.clone(),
-				para_client: client.clone(),
-				backoff_authoring_blocks: Option::<()>::None,
-				sync_oracle,
-				keystore,
-				force_authoring,
-				slot_duration,
-				// We got around 500ms for proposing
-				block_proposal_slot_portion: SlotProportion::new(1f32 / 24f32),
-				telemetry,
-			}))
+			let parachain_consensus = Box::new(WaitForAuraConsensus {
+				client: client.clone(),
+				aura_consensus: Arc::new(Mutex::new(aura_consensus)),
+				relay_chain_consensus: Arc::new(Mutex::new(relay_chain_consensus)),
+			});
+
+			Ok(parachain_consensus)
 		},
 	)
 	.await

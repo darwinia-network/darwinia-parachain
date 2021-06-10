@@ -1138,18 +1138,21 @@ checksum = "dcb25d077389e53838a8158c8e99174c5a9d902dee4904320db714f3c653ffba"
 
 [[package]]
 name = "crab-redirect"
-version = "2.0.0"
+version = "3.0.0"
 dependencies = [
  "array-bytes",
+ "async-trait",
  "crab-redirect-primitives",
  "crab-redirect-runtime",
  "cumulus-client-cli",
  "cumulus-client-consensus-aura",
  "cumulus-client-consensus-common",
+ "cumulus-client-consensus-relay-chain",
  "cumulus-client-network",
  "cumulus-client-service",
  "cumulus-primitives-core",
  "cumulus-primitives-parachain-inherent",
+ "futures 0.3.15",
  "jsonrpc-core",
  "log",
  "parity-scale-codec",
@@ -1190,7 +1193,7 @@ dependencies = [
 
 [[package]]
 name = "crab-redirect-primitives"
-version = "2.0.0"
+version = "3.0.0"
 dependencies = [
  "sp-core",
  "sp-runtime",
@@ -1198,7 +1201,7 @@ dependencies = [
 
 [[package]]
 name = "crab-redirect-runtime"
-version = "2.0.0"
+version = "3.0.0"
 dependencies = [
  "crab-redirect-primitives",
  "cumulus-pallet-aura-ext",
@@ -1581,6 +1584,30 @@ dependencies = [
  "sp-inherents",
  "sp-runtime",
  "sp-trie",
+ "substrate-prometheus-endpoint",
+ "tracing",
+]
+
+[[package]]
+name = "cumulus-client-consensus-relay-chain"
+version = "0.1.0"
+source = "git+https://github.com/paritytech/cumulus?branch=polkadot-v0.9.4#08b7bcfe21b2ce2a26dcdaa664bf8c016f7c93ae"
+dependencies = [
+ "async-trait",
+ "cumulus-client-consensus-common",
+ "cumulus-primitives-core",
+ "futures 0.3.15",
+ "parity-scale-codec",
+ "parking_lot 0.10.2",
+ "polkadot-service",
+ "sc-client-api",
+ "sp-api",
+ "sp-block-builder",
+ "sp-blockchain",
+ "sp-consensus",
+ "sp-core",
+ "sp-inherents",
+ "sp-runtime",
  "substrate-prometheus-endpoint",
  "tracing",
 ]

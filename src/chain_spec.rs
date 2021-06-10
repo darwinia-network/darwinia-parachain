@@ -28,7 +28,7 @@ use sp_core::{crypto::UncheckedInto, sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 // --- darwinia ---
 use crab_redirect_primitives::{AccountId, Signature};
-use crab_redirect_runtime::{AuraId, SessionKeys};
+use crab_redirect_runtime::{AuraId, SessionKeys, COIN};
 
 /// Specialized `ChainSpec` for the `Crab Redirect` parachain runtime.
 pub type CrabRedirectChainSpec =
@@ -98,7 +98,7 @@ pub fn crab_redirect_build_spec_config_of(id: ParaId) -> CrabRedirectChainSpec {
 }
 
 fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::GenesisConfig {
-	let root = array_bytes::hex_into_unchecked(
+	let root: AccountId = array_bytes::hex_into_unchecked(
 		"0x129d025b24257aabdefac93d00419f06a38e3a5e2314dd6866b16e8f205ce074",
 	);
 	let invulnerables = [
@@ -124,7 +124,19 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 			code: crab_redirect_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		},
-		pallet_balances: Default::default(),
+		pallet_balances: crab_redirect_runtime::BalancesConfig {
+			balances: vec![
+				// Root
+				(root.clone(), 100_000 * COIN),
+				// Denny
+				(
+					array_bytes::hex_into_unchecked(
+						"0x0a66532a23c418cca12183fee5f6afece770a0bb8725f459d7d1b1b598f91c49",
+					),
+					100_000 * COIN,
+				),
+			],
+		},
 		parachain_info: crab_redirect_runtime::ParachainInfoConfig { parachain_id: id },
 		pallet_collator_selection: crab_redirect_runtime::CollatorSelectionConfig {
 			invulnerables: invulnerables.iter().cloned().map(|(acc, _)| acc).collect(),
@@ -182,7 +194,13 @@ fn crab_redirect_development_genesis(id: ParaId) -> crab_redirect_runtime::Genes
 			code: crab_redirect_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		},
-		pallet_balances: Default::default(),
+		pallet_balances: crab_redirect_runtime::BalancesConfig {
+			balances: invulnerables
+				.iter()
+				.cloned()
+				.map(|(acc, _)| (acc, 100_000 * COIN))
+				.collect(),
+		},
 		parachain_info: crab_redirect_runtime::ParachainInfoConfig { parachain_id: id },
 		pallet_collator_selection: crab_redirect_runtime::CollatorSelectionConfig {
 			invulnerables: invulnerables.iter().cloned().map(|(acc, _)| acc).collect(),
