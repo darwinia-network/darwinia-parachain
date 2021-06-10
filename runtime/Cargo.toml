@@ -55,7 +55,7 @@ sp-transaction-pool               = { default-features = false, git = "https://g
 sp-version                        = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.4" }
 
 [build-dependencies]
-substrate-wasm-builder = { version = "4.0.0" }
+substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.4" }
 
 [features]
 default = ["std"]

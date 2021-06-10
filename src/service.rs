@@ -117,7 +117,7 @@ where
 	let import_queue = cumulus_client_consensus_relay_chain::import_queue(
 		client.clone(),
 		client.clone(),
-		inherent_data_providers.clone(),
+		|_, _| async { Ok(sp_timestamp::InherentDataProvider::from_system_time()) },
 		&task_manager.spawn_essential_handle(),
 		registry.clone(),
 	)?;
@@ -129,7 +129,6 @@ where
 		keystore_container,
 		task_manager,
 		transaction_pool,
-		inherent_data_providers,
 		select_chain: (),
 		other: (telemetry, telemetry_worker_handle),
 	};
@@ -177,10 +176,6 @@ where
 	let parachain_config = prepare_node_config(parachain_config);
 
 	let params = new_partial::<RuntimeApi, Executor>(&parachain_config)?;
-	params
-		.inherent_data_providers
-		.register_provider(sp_timestamp::InherentDataProvider)
-		.unwrap();
 	let (mut telemetry, telemetry_worker_handle) = params.other;
 
 	let polkadot_full_node = cumulus_client_service::build_polkadot_full_node(
@@ -254,7 +249,9 @@ where
 		let parachain_consensus = build_relay_chain_consensus(BuildRelayChainConsensusParams {
 			para_id: id,
 			proposer_factory,
-			inherent_data_providers: params.inherent_data_providers,
+			create_inherent_data_providers: |_, _| async {
+				Ok(sp_timestamp::InherentDataProvider::from_system_time())
+			},
 			block_import: client.clone(),
 			relay_chain_client: polkadot_full_node.client.clone(),
 			relay_chain_backend: polkadot_full_node.backend.clone(),
