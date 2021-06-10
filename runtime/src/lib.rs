@@ -24,11 +24,6 @@ pub mod constants {
 		// --- darwinia ---
 		use crab_redirect_primitives::*;
 
-		pub const UNITS: Balance = 1_000_000_000_000;
-		pub const CENTS: Balance = UNITS / 30_000;
-		pub const GRAND: Balance = CENTS * 100_000;
-		pub const MILLICENTS: Balance = CENTS / 1_000;
-
 		pub const NANO: Balance = 1;
 		pub const MICRO: Balance = 1_000 * NANO;
 		pub const MILLI: Balance = 1_000 * MICRO;
@@ -96,10 +91,9 @@ pub mod constants {
 		impl WeightToFeePolynomial for WeightToFee {
 			type Balance = Balance;
 			fn polynomial() -> WeightToFeeCoefficients<Self::Balance> {
-				// in Kusama, extrinsic base weight (smallest non-zero weight) is mapped to 1/10 CENT:
-				// in `Crab Redirect`, we map to 1/10 of that, or 1/100 CENT
-				let p = CENTS;
-				let q = 100 * Balance::from(ExtrinsicBaseWeight::get());
+				// in `Crab Redirect`, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
+				let p = 100 * MILLI;
+				let q = Balance::from(ExtrinsicBaseWeight::get());
 
 				smallvec::smallvec![WeightToFeeCoefficient {
 					degree: 1,
@@ -122,6 +116,7 @@ pub mod constants {
 			fn on_nonzero_unbalanced(amount: NegativeImbalance<R>) {
 				let numeric_amount = amount.peek();
 				let staking_pot = <pallet_collator_selection::Pallet<R>>::account_id();
+
 				<pallet_balances::Pallet<R>>::resolve_creating(&staking_pot, amount);
 				<frame_system::Pallet<R>>::deposit_event(pallet_balances::Event::Deposit(
 					staking_pot,
