@@ -42,6 +42,7 @@ use sp_runtime::traits::Block as BlockT;
 use crate::{
 	chain_spec,
 	cli::{Cli, RelayChainCli, Subcommand},
+	service::{CrabRedirectRuntimeExecutor, new_partial}
 };
 use crab_redirect_runtime::Block;
 

@@ -366,7 +366,7 @@ pub async fn start_crab_redirect_node(
 	id: ParaId,
 ) -> sc_service::error::Result<(
 	TaskManager,
-	Arc<TFullClient<Block, crab_redirect_runtime::RuntimeApi, Executor>>,
+	Arc<TFullClient<Block, crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor>>,
 )> {
 	start_node_impl::<crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor, _, _, _>(
 		parachain_config,

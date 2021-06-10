@@ -57,8 +57,8 @@ fn properties() -> Properties {
 	let mut properties = Properties::new();
 
 	properties.insert("ss58Format".into(), 42.into());
-	properties.insert("tokenDecimals".into(), vec![9, 9].into());
-	properties.insert("tokenSymbol".into(), vec!["CRING", "CKTON"].into());
+	properties.insert("tokenDecimals".into(), 9.into());
+	properties.insert("tokenSymbol".into(), "CRING".into());
 
 	properties
 }
@@ -101,9 +101,7 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 		},
 		pallet_balances: Default::default(),
 		parachain_info: crab_redirect_runtime::ParachainInfoConfig { parachain_id: id },
-		pallet_aura: parachain_runtime::AuraConfig {
-			authorities: initial_authorities,
-		},
+		pallet_aura: Default::default(),
 		cumulus_pallet_aura_ext: Default::default(),
 		pallet_sudo: crab_redirect_runtime::SudoConfig { key: root },
 		cumulus_pallet_parachain_system: Default::default(),
@@ -138,9 +136,7 @@ fn crab_redirect_development_genesis(id: ParaId) -> crab_redirect_runtime::Genes
 		},
 		pallet_balances: Default::default(),
 		parachain_info: crab_redirect_runtime::ParachainInfoConfig { parachain_id: id },
-		pallet_aura: parachain_runtime::AuraConfig {
-			authorities: initial_authorities,
-		},
+		pallet_aura: Default::default(),
 		cumulus_pallet_aura_ext: Default::default(),
 		pallet_sudo: crab_redirect_runtime::SudoConfig { key: root },
 		cumulus_pallet_parachain_system: Default::default(),

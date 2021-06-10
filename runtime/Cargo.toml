@@ -56,6 +56,8 @@ sp-staking                        = { default-features = false, git = "https://g
 sp-std                            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.4" }
 sp-transaction-pool               = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.4" }
 sp-version                        = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.4" }
+max-encoded-len                   = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.4" }
+
 
 [build-dependencies]
 substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.4" }
