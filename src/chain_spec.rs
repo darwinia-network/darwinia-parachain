@@ -99,16 +99,16 @@ pub fn crab_redirect_build_spec_config_of(id: ParaId) -> CrabRedirectChainSpec {
 
 fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::GenesisConfig {
 	let root = array_bytes::hex_into_unchecked(
-		"0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
+		"0x129d025b24257aabdefac93d00419f06a38e3a5e2314dd6866b16e8f205ce074",
 	);
 	let invulnerables = [
 		// Denny
 		"0x7e8672b2c2ad0904ba6137de480eaa3b9476042f3f2ae08da033c4ccf2272d5a",
 		"0xbe7e6c55feca7ffbfd961c93acdf1bc68bea91d758fb8da92f65c66bbf12ea74",
-		// Xavier
-		"0xb4f7f03bebc56ebe96bc52ea5ed3159d45a0ce3a8d7f082983c33ef133274747",
 		// Way
 		"0xea0f4185dd32c1278d7bbd3cdd2fbaec3ca29921a88c04c175401a0668d88e66",
+		// Xavier
+		"0xb4f7f03bebc56ebe96bc52ea5ed3159d45a0ce3a8d7f082983c33ef133274747",
 	]
 	.iter()
 	.map(|hex| {

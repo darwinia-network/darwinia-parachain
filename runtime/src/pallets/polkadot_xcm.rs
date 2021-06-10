@@ -42,8 +42,8 @@ pub type XcmRouter = (
 pub type Barrier = (
 	TakeWeightCredit,
 	AllowTopLevelPaidExecutionFrom<All<MultiLocation>>,
-	AllowUnpaidExecutionFrom<ParentOrParentsUnitPlurality>,
-	// ^^^ Parent & its unit plurality gets free execution
+	AllowUnpaidExecutionFrom<ParentOrParentsExecutivePlurality>,
+	// ^^^ Parent and its exec plurality get free execution
 );
 
 /// Type for specifying how a `MultiLocation` can be converted into an `AccountId`. This is used
@@ -57,6 +57,7 @@ pub type LocationToAccountId = (
 	// Straight up local `AccountId32` origins just alias directly to `AccountId`.
 	AccountId32Aliases<RelayNetwork, AccountId>,
 );
+
 /// This is the type we use to convert an (incoming) XCM origin into a local `Origin` instance,
 /// ready for dispatching a transaction with Xcm's `Transact`. There is an `OriginKind` which can
 /// biases the kind of local `Origin` it will become.
@@ -84,21 +85,18 @@ pub type XcmOriginToTransactDispatchOrigin = (
 frame_support::parameter_types! {
 	pub const KsmLocation: MultiLocation = MultiLocation::X1(Junction::Parent);
 	pub const RelayNetwork: NetworkId = NetworkId::Kusama;
-	// One ROC buys 1 second of weight.
-	pub const WeightPrice: (MultiLocation, u128) = (MultiLocation::X1(Junction::Parent), 1_000);
 	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
 	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
 	pub UnitWeightCost: Weight = 1_000_000_000;
-	pub AllowUnpaidFrom: Vec<MultiLocation> = vec![MultiLocation::X1(Junction::Parent)];
 	pub Ancestry: MultiLocation =MultiLocation::X1(Junction::Parachain(
 		ParachainInfo::parachain_id().into()
 	));
 }
 
 frame_support::match_type! {
-	pub type ParentOrParentsUnitPlurality: impl Contains<MultiLocation> = {
-		MultiLocation::X1(Junction::Parent)
-			| MultiLocation::X2(Junction::Parent, Junction::Plurality { id: BodyId::Unit, .. })
+	pub type ParentOrParentsExecutivePlurality: impl Contains<MultiLocation> = {
+		MultiLocation::X1(Junction::Parent) |
+		MultiLocation::X2(Junction::Parent, Junction::Plurality { id: BodyId::Executive, .. })
 	};
 }
 
@@ -106,15 +104,16 @@ pub struct XcmConfig;
 impl XcmCExecutorConfig for XcmConfig {
 	type Call = Call;
 	type XcmSender = XcmRouter;
+	// How to withdraw and deposit an asset.
 	type AssetTransactor = LocalAssetTransactor;
 	type OriginConverter = XcmOriginToTransactDispatchOrigin;
 	type IsReserve = NativeAsset;
-	type IsTeleporter = NativeAsset;
+	type IsTeleporter = NativeAsset; // <- should be enough to allow teleportation of KSM
 	type LocationInverter = LocationInverter<Ancestry>;
 	type Barrier = Barrier;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call>;
 	type Trader = UsingComponents<IdentityFee<Balance>, KsmLocation, AccountId, Balances, ()>;
-	type ResponseHandler = ();
+	type ResponseHandler = (); // Don't handle responses for now.
 }
 
 impl Config for Runtime {
@@ -125,6 +124,6 @@ impl Config for Runtime {
 	type XcmExecuteFilter = All<(MultiLocation, Xcm<Call>)>;
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 	type XcmTeleportFilter = All<(MultiLocation, Vec<MultiAsset>)>;
-	type XcmReserveTransferFilter = ();
+	type XcmReserveTransferFilter = All<(MultiLocation, Vec<MultiAsset>)>;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call>;
 }

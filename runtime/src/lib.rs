@@ -24,13 +24,18 @@ pub mod constants {
 		// --- darwinia ---
 		use crab_redirect_primitives::*;
 
+		pub const UNITS: Balance = 1_000_000_000_000;
+		pub const CENTS: Balance = UNITS / 30_000;
+		pub const GRAND: Balance = CENTS * 100_000;
+		pub const MILLICENTS: Balance = CENTS / 1_000;
+
 		pub const NANO: Balance = 1;
 		pub const MICRO: Balance = 1_000 * NANO;
 		pub const MILLI: Balance = 1_000 * MICRO;
 		pub const COIN: Balance = 1_000 * MILLI;
 
 		pub const fn deposit(items: u32, bytes: u32) -> Balance {
-			items as Balance * 20 * COIN + (bytes as Balance) * 100 * MICRO
+			(items as Balance) * 20 * COIN + (bytes as Balance) * 100 * MICRO
 		}
 	}
 	pub use currency::*;
@@ -48,6 +53,102 @@ pub mod constants {
 		pub const DAYS: BlockNumber = 24 * HOURS;
 	}
 	pub use time::*;
+
+	pub mod fee {
+		// --- parity ---
+		use frame_support::{
+			traits::{Currency, Imbalance, OnUnbalanced},
+			weights::{
+				constants::ExtrinsicBaseWeight, WeightToFeeCoefficient, WeightToFeeCoefficients,
+				WeightToFeePolynomial,
+			},
+		};
+		use pallet_transaction_payment::Multiplier;
+		use sp_runtime::{FixedPointNumber, Perbill, Perquintill};
+		// --- darwinia ---
+		use crate::*;
+		use crab_redirect_primitives::*;
+
+		frame_support::parameter_types! {
+			/// The portion of the `NORMAL_DISPATCH_RATIO` that we adjust the fees with. Blocks filled less
+			/// than this will decrease the weight and more will increase.
+			pub const TargetBlockFullness: Perquintill = Perquintill::from_percent(25);
+			/// The adjustment variable of the runtime. Higher values will cause `TargetBlockFullness` to
+			/// change the fees more rapidly.
+			pub AdjustmentVariable: Multiplier = Multiplier::saturating_from_rational(3, 100_000);
+			/// Minimum amount of the multiplier. This value cannot be too low. A test case should ensure
+			/// that combined with `AdjustmentVariable`, we can recover from the minimum.
+			/// See `multiplier_can_grow_from_zero`.
+			pub MinimumMultiplier: Multiplier = Multiplier::saturating_from_rational(1, 1_000_000_000u128);
+		}
+
+		/// Handles converting a weight scalar to a fee value, based on the scale and granularity of the
+		/// node's balance type.
+		///
+		/// This should typically create a mapping between the following ranges:
+		///   - [0, MAXIMUM_BLOCK_WEIGHT]
+		///   - [Balance::min, Balance::max]
+		///
+		/// Yet, it can be used for any other sort of change to weight-fee. Some examples being:
+		///   - Setting it to `0` will essentially disable the weight fee.
+		///   - Setting it to `1` will cause the literal `#[weight = x]` values to be charged.
+		pub struct WeightToFee;
+		impl WeightToFeePolynomial for WeightToFee {
+			type Balance = Balance;
+			fn polynomial() -> WeightToFeeCoefficients<Self::Balance> {
+				// in Kusama, extrinsic base weight (smallest non-zero weight) is mapped to 1/10 CENT:
+				// in `Crab Redirect`, we map to 1/10 of that, or 1/100 CENT
+				let p = CENTS;
+				let q = 100 * Balance::from(ExtrinsicBaseWeight::get());
+
+				smallvec::smallvec![WeightToFeeCoefficient {
+					degree: 1,
+					negative: false,
+					coeff_frac: Perbill::from_rational(p % q, q),
+					coeff_integer: p / q,
+				}]
+			}
+		}
+
+		/// Logic for the author to get a portion of fees.
+		pub struct ToStakingPot<R>(sp_std::marker::PhantomData<R>);
+		impl<R> OnUnbalanced<NegativeImbalance<R>> for ToStakingPot<R>
+		where
+			R: pallet_balances::Config + pallet_collator_selection::Config,
+			<R as frame_system::Config>::AccountId: From<AccountId>,
+			<R as frame_system::Config>::AccountId: Into<AccountId>,
+			<R as frame_system::Config>::Event: From<pallet_balances::Event<R>>,
+		{
+			fn on_nonzero_unbalanced(amount: NegativeImbalance<R>) {
+				let numeric_amount = amount.peek();
+				let staking_pot = <pallet_collator_selection::Pallet<R>>::account_id();
+				<pallet_balances::Pallet<R>>::resolve_creating(&staking_pot, amount);
+				<frame_system::Pallet<R>>::deposit_event(pallet_balances::Event::Deposit(
+					staking_pot,
+					numeric_amount,
+				));
+			}
+		}
+
+		pub struct DealWithFees<R>(sp_std::marker::PhantomData<R>);
+		impl<R> OnUnbalanced<NegativeImbalance<R>> for DealWithFees<R>
+		where
+			R: pallet_balances::Config + pallet_collator_selection::Config,
+			<R as frame_system::Config>::AccountId: From<AccountId>,
+			<R as frame_system::Config>::AccountId: Into<AccountId>,
+			<R as frame_system::Config>::Event: From<pallet_balances::Event<R>>,
+		{
+			fn on_unbalanceds<B>(mut fees_then_tips: impl Iterator<Item = NegativeImbalance<R>>) {
+				if let Some(mut fees) = fees_then_tips.next() {
+					if let Some(tips) = fees_then_tips.next() {
+						tips.merge_into(&mut fees);
+					}
+					<ToStakingPot<R> as OnUnbalanced<_>>::on_unbalanced(fees);
+				}
+			}
+		}
+	}
+	pub use fee::*;
 }
 pub use constants::*;
 
@@ -85,7 +186,6 @@ pub use wasm::*;
 pub use crab_redirect_primitives::*;
 
 // --- parity ---
-use sp_api::impl_runtime_apis;
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
 	create_runtime_str, generic,
@@ -187,7 +287,7 @@ frame_support::construct_runtime! {
 	}
 }
 
-impl_runtime_apis! {
+sp_api::impl_runtime_apis! {
 	impl sp_api::Core<Block> for Runtime {
 		fn version() -> RuntimeVersion {
 			VERSION

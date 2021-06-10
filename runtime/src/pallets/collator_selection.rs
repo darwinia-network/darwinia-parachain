@@ -23,7 +23,7 @@ pub type CollatorSelectionUpdateOrigin = EnsureOneOf<
 
 impl Config for Runtime {
 	type Event = Event;
-	type Currency = Balances;
+	type Currency = Ring;
 	type UpdateOrigin = CollatorSelectionUpdateOrigin;
 	type PotId = PotId;
 	type MaxCandidates = MaxCandidates;

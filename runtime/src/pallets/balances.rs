@@ -5,8 +5,8 @@ use pallet_balances::{Config, Pallet};
 // --- darwinia ---
 use crate::{weights::pallet_balances::WeightInfo, *};
 
-pub type NegativeImbalance =
-	<Pallet<Runtime> as Currency<<Runtime as SystemConfig>::AccountId>>::NegativeImbalance;
+pub type NegativeImbalance<R> =
+	<Pallet<R> as Currency<<R as SystemConfig>::AccountId>>::NegativeImbalance;
 
 frame_support::parameter_types! {
 	pub const ExistentialDeposit: Balance = 0;

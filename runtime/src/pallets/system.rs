@@ -6,7 +6,6 @@ use frame_support::weights::{
 };
 use frame_system::{
 	limits::{BlockLength, BlockWeights},
-	weights::SubstrateWeight,
 	Config,
 };
 use pallet_balances::AccountData;
@@ -27,10 +26,9 @@ pub const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
 
 /// We allow for 0.5 seconds of compute with a 6 second average block time.
 pub const MAXIMUM_BLOCK_WEIGHT: Weight = WEIGHT_PER_SECOND / 2;
-pub const SS58_PREFIX: u8 = 42;
 
 frame_support::parameter_types! {
-	pub const BlockHashCount: BlockNumber = 250;
+	pub const BlockHashCount: BlockNumber = 2400;
 	pub const Version: RuntimeVersion = VERSION;
 	pub RuntimeBlockLength: BlockLength =
 		BlockLength::max_with_normal_ratio(5 * 1024 * 1024, NORMAL_DISPATCH_RATIO);
@@ -52,7 +50,7 @@ frame_support::parameter_types! {
 		})
 		.avg_block_initialization(AVERAGE_ON_INITIALIZE_RATIO)
 		.build_or_panic();
-	pub const SS58Prefix: u8 = SS58_PREFIX;
+	pub const SS58Prefix: u8 = 42;
 }
 
 impl Config for Runtime {
@@ -76,7 +74,7 @@ impl Config for Runtime {
 	type AccountData = AccountData<Balance>;
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
-	type SystemWeightInfo = SubstrateWeight<Runtime>;
+	type SystemWeightInfo = ();
 	type SS58Prefix = SS58Prefix;
 	type OnSetCode = ParachainSetCode<Self>;
 }
