@@ -29,10 +29,7 @@ use sc_cli::{
 	ChainSpec, CliConfiguration, DefaultConfigurationValues, ImportParams, KeystoreParams,
 	NetworkParams, Result, RuntimeVersion, SharedParams, SubstrateCli,
 };
-use sc_service::{
-	config::{BasePath, PrometheusConfig},
-	PartialComponents,
-};
+use sc_service::config::{BasePath, PrometheusConfig};
 use sp_core::{
 	crypto::{self, Ss58AddressFormat},
 	hexdisplay::HexDisplay,
@@ -42,7 +39,7 @@ use sp_runtime::traits::Block as BlockT;
 use crate::{
 	chain_spec,
 	cli::{Cli, RelayChainCli, Subcommand},
-	service::{CrabRedirectRuntimeExecutor, new_partial}
+	service::{new_partial, CrabRedirectRuntimeExecutor},
 };
 use crab_redirect_runtime::Block;
 
@@ -268,7 +265,7 @@ pub fn run() -> Result<()> {
 			Ok(())
 		}
 		None => {
-			let runner = cli.create_runner(&*cli.run.normalize())?;
+			let runner = cli.create_runner(&cli.run.normalize())?;
 
 			runner.run_node_until_exit(|config| async move {
 				let para_id =

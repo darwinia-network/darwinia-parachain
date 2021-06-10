@@ -104,6 +104,7 @@ pub struct Cli {
 	#[structopt(subcommand)]
 	pub subcommand: Option<Subcommand>,
 
+	#[structopt(flatten)]
 	pub run: cumulus_client_cli::RunCmd,
 
 	/// Relaychain arguments

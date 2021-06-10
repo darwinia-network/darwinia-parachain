@@ -91,8 +91,6 @@ where
 		sc_service::Error,
 	>,
 {
-	let inherent_data_providers = sp_inherents::InherentDataProviders::new();
-
 	let telemetry = config
 		.telemetry_endpoints
 		.clone()
@@ -291,7 +289,6 @@ where
 			task_manager: &mut task_manager,
 			relay_chain_full_node,
 			spawner,
-			backend,
 			parachain_consensus,
 			import_queue,
 		};

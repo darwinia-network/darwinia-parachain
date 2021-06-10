@@ -84,15 +84,13 @@ pub fn crab_redirect_build_spec_config_of(id: ParaId) -> CrabRedirectChainSpec {
 }
 
 fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::GenesisConfig {
-	let root = AccountId::from(array_bytes::hex2array_unchecked!(
+	let root = array_bytes::hex_into_unchecked(
 		"0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
-		32
-	));
-	let initial_authorities = vec![array_bytes::hex2array_unchecked!(
-		"0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
-		32
-	)
-	.unchecked_into()];
+	);
+	// let initial_authorities = vec![array_bytes::hex2array_unchecked(
+	// "0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
+	// )
+	// .unchecked_into()];
 
 	crab_redirect_runtime::GenesisConfig {
 		frame_system: crab_redirect_runtime::SystemConfig {
