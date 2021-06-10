@@ -88,7 +88,7 @@ frame_support::parameter_types! {
 	pub const WeightPrice: (MultiLocation, u128) = (MultiLocation::X1(Junction::Parent), 1_000);
 	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
 	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
-	pub UnitWeightCost: Weight = 1_000_000;
+	pub UnitWeightCost: Weight = 1_000_000_000;
 	pub AllowUnpaidFrom: Vec<MultiLocation> = vec![MultiLocation::X1(Junction::Parent)];
 	pub Ancestry: MultiLocation =MultiLocation::X1(Junction::Parachain(
 		ParachainInfo::parachain_id().into()
