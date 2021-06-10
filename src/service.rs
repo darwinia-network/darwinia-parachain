@@ -28,7 +28,7 @@ use cumulus_client_service::{
 	prepare_node_config, start_collator, start_full_node, StartCollatorParams, StartFullNodeParams,
 };
 use cumulus_primitives_core::ParaId;
-use polkadot_primitives::v0::CollatorPair;
+use polkadot_primitives::v1::CollatorPair;
 use sc_client_api::ExecutorProvider;
 use sc_executor::native_executor_instance;
 use sc_network::NetworkService;
@@ -319,14 +319,14 @@ where
 
 /// Build the import queue for the `Crab Redirect` runtime.
 pub fn crab_redirect_build_import_queue(
-	client: Arc<TFullClient<Block, parachain_runtime::RuntimeApi, RuntimeExecutor>>,
+	client: Arc<TFullClient<Block, crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor>>,
 	config: &Configuration,
 	telemetry: Option<TelemetryHandle>,
 	task_manager: &TaskManager,
 ) -> Result<
 	sp_consensus::DefaultImportQueue<
 		Block,
-		TFullClient<Block, shell_runtime::RuntimeApi, ShellRuntimeExecutor>,
+		TFullClient<Block, crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor>,
 	>,
 	sc_service::Error,
 > {
@@ -375,14 +375,17 @@ pub async fn start_crab_redirect_node(
 	collator_key: CollatorPair,
 	polkadot_config: Configuration,
 	id: ParaId,
-) -> sc_service::error::Result<(TaskManager, Arc<TFullClient<Block, RuntimeApi, Executor>>)> {
+) -> sc_service::error::Result<(
+	TaskManager,
+	Arc<TFullClient<Block, crab_redirect_runtime::RuntimeApi, Executor>>,
+)> {
 	start_node_impl::<crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor, _, _, _>(
 		parachain_config,
 		collator_key,
 		polkadot_config,
 		id,
 		|_| Default::default(),
-		build_import_queue,
+		crab_redirect_build_import_queue,
 		|client,
 		 prometheus_registry,
 		 telemetry,

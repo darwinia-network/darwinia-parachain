@@ -71,7 +71,7 @@ fn load_spec(
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Darwinia Runtime Module Library".into()
+		"Crab redirect collator".into()
 	}
 
 	fn impl_version() -> String {
@@ -105,7 +105,7 @@ impl SubstrateCli for Cli {
 
 impl SubstrateCli for RelayChainCli {
 	fn impl_name() -> String {
-		"Darwinia Runtime Module Library".into()
+		"Crab redirect collator".into()
 	}
 
 	fn impl_version() -> String {
@@ -154,7 +154,11 @@ pub fn run() -> Result<()> {
 			let runner = $cli.create_runner($cmd)?;
 
 			runner.async_run(|$config| {
-				let $components = new_partial::<crab_redirect_runtime::RuntimeApi, RuntimeExecutor, _>(
+				let $components = new_partial::<
+					crab_redirect_runtime::RuntimeApi,
+					CrabRedirectRuntimeExecutor,
+					_
+				>(
 					&$config,
 					crate::service::crab_redirect_build_import_queue,
 				)?;

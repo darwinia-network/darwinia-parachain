@@ -11,7 +11,7 @@ repository  = "https://github.com/darwinia-network/darwinia-common/"
 version     = "2.0.0"
 
 [[bin]]
-name = "crab-redirect"
+name = "crab-redirect-collator"
 path = "src/main.rs"
 
 [dependencies]
