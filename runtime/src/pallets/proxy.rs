@@ -1,14 +1,16 @@
 // --- crates.io ---
 use codec::{Decode, Encode};
 // --- parity ---
-use frame_support::traits::InstanceFilter;
+use frame_support::traits::{InstanceFilter, MaxEncodedLen};
 use pallet_proxy::{weights::SubstrateWeight, Config};
 use sp_runtime::{traits::BlakeTwo256, RuntimeDebug};
 // --- darwinia ---
 use crate::*;
 
 /// The type used to represent the kinds of proxying allowed.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Encode, Decode, RuntimeDebug)]
+#[derive(
+	Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Encode, Decode, RuntimeDebug, MaxEncodedLen,
+)]
 pub enum ProxyType {
 	Any,
 	NonTransfer,
