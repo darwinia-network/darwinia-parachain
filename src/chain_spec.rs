@@ -106,6 +106,7 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 		},
 		cumulus_pallet_aura_ext: Default::default(),
 		pallet_sudo: crab_redirect_runtime::SudoConfig { key: root },
+		cumulus_pallet_parachain_system: Default::default(),
 	}
 }
 
@@ -142,6 +143,7 @@ fn crab_redirect_development_genesis(id: ParaId) -> crab_redirect_runtime::Genes
 		},
 		cumulus_pallet_aura_ext: Default::default(),
 		pallet_sudo: crab_redirect_runtime::SudoConfig { key: root },
+		cumulus_pallet_parachain_system: Default::default(),
 	}
 }
 
