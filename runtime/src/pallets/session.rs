@@ -4,7 +4,7 @@ use pallet_collator_selection::IdentityCollator;
 use pallet_session::{Config, PeriodicSessions};
 use sp_runtime::{traits::OpaqueKeys, Perbill};
 // --- darwinia ---
-use crate::*;
+use crate::{weights::pallet_session::WeightInfo, *};
 
 sp_runtime::impl_opaque_keys! {
 	pub struct SessionKeys {
@@ -30,5 +30,5 @@ impl Config for Runtime {
 	type SessionHandler = <SessionKeys as OpaqueKeys>::KeyTypeIdProviders;
 	type Keys = SessionKeys;
 	type DisabledValidatorsThreshold = DisabledValidatorsThreshold;
-	type WeightInfo = ();
+	type WeightInfo = WeightInfo<Runtime>;
 }
