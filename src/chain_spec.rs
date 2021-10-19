@@ -120,11 +120,11 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 	.collect::<Vec<_>>();
 
 	crab_redirect_runtime::GenesisConfig {
-		frame_system: crab_redirect_runtime::SystemConfig {
+		system: crab_redirect_runtime::SystemConfig {
 			code: crab_redirect_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		},
-		pallet_balances: crab_redirect_runtime::BalancesConfig {
+		balances: crab_redirect_runtime::BalancesConfig {
 			balances: vec![
 				// Root
 				(root.clone(), 100_000 * COIN),
@@ -138,12 +138,12 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 			],
 		},
 		parachain_info: crab_redirect_runtime::ParachainInfoConfig { parachain_id: id },
-		pallet_collator_selection: crab_redirect_runtime::CollatorSelectionConfig {
+		collator_selection: crab_redirect_runtime::CollatorSelectionConfig {
 			invulnerables: invulnerables.iter().cloned().map(|(acc, _)| acc).collect(),
 			candidacy_bond: 0,
 			..Default::default()
 		},
-		pallet_session: crab_redirect_runtime::SessionConfig {
+		session: crab_redirect_runtime::SessionConfig {
 			keys: invulnerables
 				.iter()
 				.cloned()
@@ -158,10 +158,10 @@ fn crab_redirect_build_spec_genesis(id: ParaId) -> crab_redirect_runtime::Genesi
 		},
 		// no need to pass anything to aura, in fact it will panic if we do. Session will take care
 		// of this.
-		pallet_aura: Default::default(),
-		cumulus_pallet_aura_ext: Default::default(),
-		pallet_sudo: crab_redirect_runtime::SudoConfig { key: root },
-		cumulus_pallet_parachain_system: Default::default(),
+		aura: Default::default(),
+		aura_ext: Default::default(),
+		sudo: crab_redirect_runtime::SudoConfig { key: root },
+		parachain_system: Default::default(),
 	}
 }
 
@@ -190,11 +190,11 @@ fn crab_redirect_development_genesis(id: ParaId) -> crab_redirect_runtime::Genes
 	)];
 
 	crab_redirect_runtime::GenesisConfig {
-		frame_system: crab_redirect_runtime::SystemConfig {
+		system: crab_redirect_runtime::SystemConfig {
 			code: crab_redirect_runtime::wasm_binary_unwrap().into(),
 			changes_trie_config: Default::default(),
 		},
-		pallet_balances: crab_redirect_runtime::BalancesConfig {
+		balances: crab_redirect_runtime::BalancesConfig {
 			balances: invulnerables
 				.iter()
 				.cloned()
@@ -202,12 +202,12 @@ fn crab_redirect_development_genesis(id: ParaId) -> crab_redirect_runtime::Genes
 				.collect(),
 		},
 		parachain_info: crab_redirect_runtime::ParachainInfoConfig { parachain_id: id },
-		pallet_collator_selection: crab_redirect_runtime::CollatorSelectionConfig {
+		collator_selection: crab_redirect_runtime::CollatorSelectionConfig {
 			invulnerables: invulnerables.iter().cloned().map(|(acc, _)| acc).collect(),
 			candidacy_bond: 0,
 			..Default::default()
 		},
-		pallet_session: crab_redirect_runtime::SessionConfig {
+		session: crab_redirect_runtime::SessionConfig {
 			keys: invulnerables
 				.iter()
 				.cloned()
@@ -222,10 +222,10 @@ fn crab_redirect_development_genesis(id: ParaId) -> crab_redirect_runtime::Genes
 		},
 		// no need to pass anything to aura, in fact it will panic if we do. Session will take care
 		// of this.
-		pallet_aura: Default::default(),
-		cumulus_pallet_aura_ext: Default::default(),
-		pallet_sudo: crab_redirect_runtime::SudoConfig { key: root },
-		cumulus_pallet_parachain_system: Default::default(),
+		aura: Default::default(),
+		aura_ext: Default::default(),
+		sudo: crab_redirect_runtime::SudoConfig { key: root },
+		parachain_system: Default::default(),
 	}
 }
 
