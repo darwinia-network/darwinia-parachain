@@ -252,7 +252,7 @@ frame_support::construct_runtime! {
 	{
 		// System support stuff.
 		System: frame_system::{Pallet, Call, Storage, Config, Event<T>} = 0,
-		ParachainSystem: cumulus_pallet_parachain_system::{Pallet, Call, Inherent, Storage, Config, Event<T>} = 1,
+		ParachainSystem: cumulus_pallet_parachain_system::{Pallet, Call, Inherent, Storage, Config, Event<T>, ValidateUnsigned} = 1,
 		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Pallet, Storage} = 2,
 		Timestamp: pallet_timestamp::{Pallet, Call, Inherent, Storage} = 3,
 		ParachainInfo: parachain_info::{Pallet, Storage, Config} = 4,
