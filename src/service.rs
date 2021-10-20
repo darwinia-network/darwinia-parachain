@@ -36,12 +36,13 @@ use cumulus_primitives_core::{
 	relay_chain::v1::{Hash as PHash, PersistedValidationData},
 	ParaId,
 };
+use polkadot_service::NativeExecutionDispatch;
 use sc_client_api::ExecutorProvider;
 use sc_consensus::{
 	import_queue::{BasicQueue, Verifier as VerifierT},
 	BlockImportParams,
 };
-use sc_executor::native_executor_instance;
+use sc_executor::NativeElseWasmExecutor;
 use sc_network::NetworkService;
 use sc_service::{Configuration, PartialComponents, Role, TFullBackend, TFullClient, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
@@ -54,12 +55,19 @@ use substrate_prometheus_endpoint::Registry;
 // --- darwinia-network ---
 use crab_redirect_primitives::{Hash, Header, OpaqueBlock as Block};
 
-// Native executor instance.
-native_executor_instance!(
-	pub CrabRedirectRuntimeExecutor,
-	crab_redirect_runtime::api::dispatch,
-	crab_redirect_runtime::native_version,
-);
+/// Native executor instance.
+pub struct CrabRedirectRuntimeExecutor;
+impl sc_executor::NativeExecutionDispatch for CrabRedirectRuntimeExecutor {
+	type ExtendHostFunctions = ();
+
+	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
+		crab_redirect_runtime::api::dispatch(method, data)
+	}
+
+	fn native_version() -> sc_executor::NativeVersion {
+		crab_redirect_runtime::native_version()
+	}
+}
 
 enum BuildOnAccess<R> {
 	Uninitialized(Option<Box<dyn FnOnce() -> R + Send + Sync>>),
@@ -182,11 +190,17 @@ pub fn new_partial<RuntimeApi, Executor, BIQ>(
 	build_import_queue: BIQ,
 ) -> Result<
 	PartialComponents<
-		TFullClient<Block, RuntimeApi, Executor>,
+		TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>,
 		TFullBackend<Block>,
 		(),
-		sc_consensus::DefaultImportQueue<Block, TFullClient<Block, RuntimeApi, Executor>>,
-		sc_transaction_pool::FullPool<Block, TFullClient<Block, RuntimeApi, Executor>>,
+		sc_consensus::DefaultImportQueue<
+			Block,
+			TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>,
+		>,
+		sc_transaction_pool::FullPool<
+			Block,
+			TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>,
+		>,
 		(Option<Telemetry>, Option<TelemetryWorkerHandle>),
 	>,
 	sc_service::Error,
@@ -195,7 +209,7 @@ where
 	RuntimeApi: 'static
 		+ Send
 		+ Sync
-		+ ConstructRuntimeApi<Block, TFullClient<Block, RuntimeApi, Executor>>,
+		+ ConstructRuntimeApi<Block, TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>>,
 	RuntimeApi::RuntimeApi: sp_api::ApiExt<
 			Block,
 			StateBackend = sc_client_api::StateBackendFor<TFullBackend<Block>, Block>,
@@ -205,14 +219,17 @@ where
 		+ sp_session::SessionKeys<Block>
 		+ sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
 	sc_client_api::StateBackendFor<TFullBackend<Block>, Block>: sp_api::StateBackend<BlakeTwo256>,
-	Executor: 'static + sc_executor::NativeExecutionDispatch,
+	Executor: 'static + NativeExecutionDispatch,
 	BIQ: FnOnce(
-		Arc<TFullClient<Block, RuntimeApi, Executor>>,
+		Arc<TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>>,
 		&Configuration,
 		Option<TelemetryHandle>,
 		&TaskManager,
 	) -> Result<
-		sc_consensus::DefaultImportQueue<Block, TFullClient<Block, RuntimeApi, Executor>>,
+		sc_consensus::DefaultImportQueue<
+			Block,
+			TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>,
+		>,
 		sc_service::Error,
 	>,
 {
@@ -227,10 +244,17 @@ where
 		})
 		.transpose()?;
 
+	let executor = sc_executor::NativeElseWasmExecutor::<Executor>::new(
+		config.wasm_method,
+		config.default_heap_pages,
+		config.max_runtime_instances,
+	);
+
 	let (client, backend, keystore_container, task_manager) =
-		sc_service::new_full_parts::<Block, RuntimeApi, Executor>(
+		sc_service::new_full_parts::<Block, RuntimeApi, _>(
 			&config,
 			telemetry.as_ref().map(|(_, telemetry)| telemetry.handle()),
+			executor,
 		)?;
 	let client = Arc::new(client);
 
@@ -281,12 +305,15 @@ async fn start_node_impl<RuntimeApi, Executor, RB, BIQ, BIC>(
 	rpc_ext_builder: RB,
 	build_import_queue: BIQ,
 	build_consensus: BIC,
-) -> sc_service::error::Result<(TaskManager, Arc<TFullClient<Block, RuntimeApi, Executor>>)>
+) -> sc_service::error::Result<(
+	TaskManager,
+	Arc<TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>>,
+)>
 where
 	RuntimeApi: 'static
 		+ Send
 		+ Sync
-		+ ConstructRuntimeApi<Block, TFullClient<Block, RuntimeApi, Executor>>,
+		+ ConstructRuntimeApi<Block, TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>>,
 	RuntimeApi::RuntimeApi: cumulus_primitives_core::CollectCollationInfo<Block>
 		+ sp_api::ApiExt<
 			Block,
@@ -301,24 +328,32 @@ where
 	RB: 'static
 		+ Send
 		+ Fn(
-			Arc<TFullClient<Block, RuntimeApi, Executor>>,
+			Arc<TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>>,
 		) -> Result<jsonrpc_core::IoHandler<sc_rpc::Metadata>, sc_service::Error>,
 	BIQ: FnOnce(
-		Arc<TFullClient<Block, RuntimeApi, Executor>>,
+		Arc<TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>>,
 		&Configuration,
 		Option<TelemetryHandle>,
 		&TaskManager,
 	) -> Result<
-		sc_consensus::DefaultImportQueue<Block, TFullClient<Block, RuntimeApi, Executor>>,
+		sc_consensus::DefaultImportQueue<
+			Block,
+			TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>,
+		>,
 		sc_service::Error,
 	>,
 	BIC: FnOnce(
-		Arc<TFullClient<Block, RuntimeApi, Executor>>,
+		Arc<TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>>,
 		Option<&Registry>,
 		Option<TelemetryHandle>,
 		&TaskManager,
 		&polkadot_service::NewFull<polkadot_service::Client>,
-		Arc<sc_transaction_pool::FullPool<Block, TFullClient<Block, RuntimeApi, Executor>>>,
+		Arc<
+			sc_transaction_pool::FullPool<
+				Block,
+				TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>,
+			>,
+		>,
 		Arc<NetworkService<Block, Hash>>,
 		SyncCryptoStorePtr,
 		bool,
@@ -437,14 +472,24 @@ where
 
 /// Build the import queue for the `Crab Redirect` runtime.
 pub fn crab_redirect_build_import_queue(
-	client: Arc<TFullClient<Block, crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor>>,
+	client: Arc<
+		TFullClient<
+			Block,
+			crab_redirect_runtime::RuntimeApi,
+			NativeElseWasmExecutor<CrabRedirectRuntimeExecutor>,
+		>,
+	>,
 	config: &Configuration,
 	telemetry: Option<TelemetryHandle>,
 	task_manager: &TaskManager,
 ) -> Result<
 	sc_consensus::DefaultImportQueue<
 		Block,
-		TFullClient<Block, crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor>,
+		TFullClient<
+			Block,
+			crab_redirect_runtime::RuntimeApi,
+			NativeElseWasmExecutor<CrabRedirectRuntimeExecutor>,
+		>,
 	>,
 	sc_service::Error,
 > {
@@ -507,7 +552,13 @@ pub async fn start_crab_redirect_node(
 	id: ParaId,
 ) -> sc_service::error::Result<(
 	TaskManager,
-	Arc<TFullClient<Block, crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor>>,
+	Arc<
+		TFullClient<
+			Block,
+			crab_redirect_runtime::RuntimeApi,
+			NativeElseWasmExecutor<CrabRedirectRuntimeExecutor>,
+		>,
+	>,
 )> {
 	start_node_impl::<crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor, _, _, _>(
 		parachain_config,
