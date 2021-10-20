@@ -114,10 +114,15 @@ impl XcmCExecutorConfig for XcmConfig {
 	type Barrier = Barrier;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
 	type Trader = UsingComponents<IdentityFee<Balance>, KsmLocation, AccountId, Balances, ()>;
-	type ResponseHandler = (); // Don't handle responses for now.
+	type ResponseHandler = PolkadotXcm;
+	type AssetTrap = PolkadotXcm;
+	type AssetClaims = PolkadotXcm;
+	type SubscriptionService = PolkadotXcm;
 }
 
 impl Config for Runtime {
+	const VERSION_DISCOVERY_QUEUE_SIZE: u32 = 100;
+
 	type Event = Event;
 	type SendXcmOrigin = EnsureXcmOrigin<Origin, LocalOriginToLocation>;
 	type XcmRouter = XcmRouter;
@@ -130,4 +135,5 @@ impl Config for Runtime {
 	type LocationInverter = LocationInverter<Ancestry>;
 	type Origin = Origin;
 	type Call = Call;
+	type AdvertisedXcmVersion = pallet_xcm::CurrentXcmVersion;
 }
