@@ -37,15 +37,16 @@ use cumulus_primitives_core::{
 	ParaId,
 };
 use sc_client_api::ExecutorProvider;
+use sc_consensus::{
+	import_queue::{BasicQueue, Verifier as VerifierT},
+	BlockImportParams,
+};
 use sc_executor::native_executor_instance;
 use sc_network::NetworkService;
 use sc_service::{Configuration, PartialComponents, Role, TFullBackend, TFullClient, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
 use sp_api::{ApiExt, ConstructRuntimeApi, HeaderT};
-use sp_consensus::{
-	import_queue::{BasicQueue, CacheKeyId, Verifier as VerifierT},
-	BlockImportParams, BlockOrigin, SlotData,
-};
+use sp_consensus::{CacheKeyId, SlotData};
 use sp_consensus_aura::{sr25519::AuthorityId as AuraId, AuraApi};
 use sp_keystore::SyncCryptoStorePtr;
 use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
@@ -184,7 +185,7 @@ pub fn new_partial<RuntimeApi, Executor, BIQ>(
 		TFullClient<Block, RuntimeApi, Executor>,
 		TFullBackend<Block>,
 		(),
-		sp_consensus::DefaultImportQueue<Block, TFullClient<Block, RuntimeApi, Executor>>,
+		sc_consensus::DefaultImportQueue<Block, TFullClient<Block, RuntimeApi, Executor>>,
 		sc_transaction_pool::FullPool<Block, TFullClient<Block, RuntimeApi, Executor>>,
 		(Option<Telemetry>, Option<TelemetryWorkerHandle>),
 	>,
@@ -211,7 +212,7 @@ where
 		Option<TelemetryHandle>,
 		&TaskManager,
 	) -> Result<
-		sp_consensus::DefaultImportQueue<Block, TFullClient<Block, RuntimeApi, Executor>>,
+		sc_consensus::DefaultImportQueue<Block, TFullClient<Block, RuntimeApi, Executor>>,
 		sc_service::Error,
 	>,
 {
@@ -308,7 +309,7 @@ where
 		Option<TelemetryHandle>,
 		&TaskManager,
 	) -> Result<
-		sp_consensus::DefaultImportQueue<Block, TFullClient<Block, RuntimeApi, Executor>>,
+		sc_consensus::DefaultImportQueue<Block, TFullClient<Block, RuntimeApi, Executor>>,
 		sc_service::Error,
 	>,
 	BIC: FnOnce(
@@ -363,6 +364,7 @@ where
 			import_queue: import_queue.clone(),
 			on_demand: None,
 			block_announce_validator_builder: Some(Box::new(|_| block_announce_validator)),
+			warp_sync: None,
 		})?;
 
 	let rpc_client = client.clone();
@@ -440,7 +442,7 @@ pub fn crab_redirect_build_import_queue(
 	telemetry: Option<TelemetryHandle>,
 	task_manager: &TaskManager,
 ) -> Result<
-	sp_consensus::DefaultImportQueue<
+	sc_consensus::DefaultImportQueue<
 		Block,
 		TFullClient<Block, crab_redirect_runtime::RuntimeApi, CrabRedirectRuntimeExecutor>,
 	>,

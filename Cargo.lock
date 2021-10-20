@@ -1031,6 +1031,7 @@ dependencies = [
  "sc-chain-spec",
  "sc-cli",
  "sc-client-api",
+ "sc-consensus",
  "sc-executor",
  "sc-keystore",
  "sc-network",
