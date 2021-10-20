@@ -1,9 +1,9 @@
-// --- parity ---
+// --- paritytech ---
 use frame_system::Config as SystemConfig;
 use pallet_collator_selection::IdentityCollator;
 use pallet_session::{Config, PeriodicSessions};
 use sp_runtime::{traits::OpaqueKeys, Perbill};
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::{weights::pallet_session::WeightInfo, *};
 
 sp_runtime::impl_opaque_keys! {

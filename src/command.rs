@@ -21,7 +21,7 @@ use std::{io::Write, net::SocketAddr};
 // --- crates ---
 use codec::Encode;
 use log::info;
-// --- parity ---
+// --- paritytech ---
 use cumulus_client_service::genesis::generate_genesis_block;
 use cumulus_primitives_core::ParaId;
 use polkadot_parachain::primitives::AccountIdConversion;
@@ -35,7 +35,7 @@ use sp_core::{
 	hexdisplay::HexDisplay,
 };
 use sp_runtime::traits::Block as BlockT;
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::{
 	chain_spec,
 	cli::{Cli, RelayChainCli, Subcommand},

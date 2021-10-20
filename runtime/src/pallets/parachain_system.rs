@@ -1,8 +1,8 @@
-// --- parity ---
+// --- paritytech ---
 use cumulus_pallet_parachain_system::Config;
 use frame_support::weights::Weight;
 use parachain_info::Pallet as ParachainInfoPallet;
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::*;
 
 frame_support::parameter_types! {

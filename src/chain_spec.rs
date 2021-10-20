@@ -18,15 +18,15 @@
 
 // --- crates ---
 use serde::{Deserialize, Serialize};
-// --- parity ---
+// --- paritytech ---
 use cumulus_primitives_core::ParaId;
-// --- parity ---
+// --- paritytech ---
 use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
 use sc_service::{ChainType, Properties};
 use sc_telemetry::TelemetryEndpoints;
 use sp_core::{crypto::UncheckedInto, sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
-// --- darwinia ---
+// --- darwinia-network ---
 use crab_redirect_primitives::{AccountId, Signature};
 use crab_redirect_runtime::{AuraId, SessionKeys, COIN};
 

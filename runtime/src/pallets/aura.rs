@@ -1,8 +1,8 @@
 pub use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 
-// --- parity ---
+// --- paritytech ---
 use pallet_aura::Config;
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::*;
 
 impl Config for Runtime {

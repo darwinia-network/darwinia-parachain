@@ -21,7 +21,7 @@
 
 pub mod constants {
 	pub mod currency {
-		// --- darwinia ---
+		// --- darwinia-network ---
 		use crab_redirect_primitives::*;
 
 		pub const NANO: Balance = 1;
@@ -36,7 +36,7 @@ pub mod constants {
 	pub use currency::*;
 
 	pub mod time {
-		// --- darwinia ---
+		// --- darwinia-network ---
 		use crab_redirect_primitives::*;
 
 		pub const MILLISECS_PER_BLOCK: Moment = 12000;
@@ -50,7 +50,7 @@ pub mod constants {
 	pub use time::*;
 
 	pub mod fee {
-		// --- parity ---
+		// --- paritytech ---
 		use frame_support::{
 			traits::{Currency, Imbalance, OnUnbalanced},
 			weights::{
@@ -60,7 +60,7 @@ pub mod constants {
 		};
 		use pallet_transaction_payment::Multiplier;
 		use sp_runtime::{FixedPointNumber, Perbill, Perquintill};
-		// --- darwinia ---
+		// --- darwinia-network ---
 		use crate::*;
 		use crab_redirect_primitives::*;
 
@@ -180,7 +180,7 @@ pub use wasm::*;
 
 pub use crab_redirect_primitives::*;
 
-// --- parity ---
+// --- paritytech ---
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
 	create_runtime_str, generic,

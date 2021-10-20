@@ -1,6 +1,6 @@
-// --- parity ---
+// --- paritytech ---
 use pallet_transaction_payment::{Config, CurrencyAdapter, TargetedFeeAdjustment};
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::*;
 
 pub type SlowAdjustingFeeUpdate<R> =

@@ -1,6 +1,6 @@
-// --- parity ---
+// --- paritytech ---
 use parachain_info::Config;
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::*;
 
 impl Config for Runtime {}

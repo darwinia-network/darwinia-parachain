@@ -1,8 +1,8 @@
-// --- parity ---
+// --- paritytech ---
 use frame_support::traits::Currency;
 use frame_system::Config as SystemConfig;
 use pallet_balances::{Config, Pallet};
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::{weights::pallet_balances::WeightInfo, *};
 
 pub type NegativeImbalance<R> =

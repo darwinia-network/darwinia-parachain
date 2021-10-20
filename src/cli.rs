@@ -20,7 +20,7 @@
 use std::path::PathBuf;
 // --- crates ---
 use structopt::StructOpt;
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::chain_spec;
 
 /// Sub-commands supported by the collator.

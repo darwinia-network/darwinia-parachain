@@ -20,7 +20,7 @@
 use std::sync::Arc;
 // --- crates.io ---
 use futures::lock::Mutex;
-// --- parity ---
+// --- paritytech ---
 use cumulus_client_consensus_aura::{
 	build_aura_consensus, BuildAuraConsensusParams, SlotProportion,
 };
@@ -51,7 +51,7 @@ use sp_consensus_aura::{sr25519::AuthorityId as AuraId, AuraApi};
 use sp_keystore::SyncCryptoStorePtr;
 use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
 use substrate_prometheus_endpoint::Registry;
-// --- darwinia ---
+// --- darwinia-network ---
 use crab_redirect_primitives::{Hash, Header, OpaqueBlock as Block};
 
 // Native executor instance.

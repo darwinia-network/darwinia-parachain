@@ -1,6 +1,6 @@
-// --- parity ---
+// --- paritytech ---
 use pallet_randomness_collective_flip::Config;
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::*;
 
 impl pallet_randomness_collective_flip::Config for Runtime {}

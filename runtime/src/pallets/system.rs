@@ -1,4 +1,4 @@
-// --- parity ---
+// --- paritytech ---
 use cumulus_pallet_parachain_system::ParachainSetCode;
 use frame_support::{
 	traits::Everything,
@@ -17,7 +17,7 @@ use sp_runtime::{
 	Perbill,
 };
 use sp_version::RuntimeVersion;
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::*;
 
 /// We assume that ~5% of the block weight is consumed by `on_initialize` handlers. This is

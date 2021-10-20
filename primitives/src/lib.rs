@@ -21,7 +21,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![warn(missing_docs)]
 
-// --- parity ---
+// --- paritytech ---
 use sp_core::H256;
 use sp_runtime::{
 	generic,

@@ -1,10 +1,10 @@
-// --- parity ---
+// --- paritytech ---
 use frame_support::PalletId;
 use frame_system::{EnsureOneOf, EnsureRoot};
 use pallet_collator_selection::Config;
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
 use xcm::v0::BodyId;
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::{weights::pallet_collator_selection::WeightInfo, *};
 
 frame_support::parameter_types! {

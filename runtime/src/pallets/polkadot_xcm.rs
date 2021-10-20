@@ -1,4 +1,4 @@
-// --- parity ---
+// --- paritytech ---
 use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
 use frame_support::{
@@ -10,7 +10,7 @@ use polkadot_parachain::primitives::Sibling;
 use xcm::latest::prelude::*;
 use xcm_builder::*;
 use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::*;
 
 /// No local origins on this chain are allowed to dispatch XCM sends/executions.

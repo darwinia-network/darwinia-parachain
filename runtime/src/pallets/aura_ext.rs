@@ -1,6 +1,6 @@
-// --- parity ---
+// --- paritytech ---
 use cumulus_pallet_aura_ext::Config;
-// --- darwinia ---
+// --- darwinia-network ---
 use crate::*;
 
 impl Config for Runtime {}
