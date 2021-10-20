@@ -1,8 +1,11 @@
 // --- parity ---
 use cumulus_pallet_parachain_system::ParachainSetCode;
-use frame_support::weights::{
-	constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
-	DispatchClass, Weight,
+use frame_support::{
+	traits::AllowAll,
+	weights::{
+		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
+		DispatchClass, Weight,
+	},
 };
 use frame_system::{
 	limits::{BlockLength, BlockWeights},
@@ -54,7 +57,7 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type BaseCallFilter = ();
+	type BaseCallFilter = AllowAll;
 	type BlockWeights = RuntimeBlockWeights;
 	type BlockLength = RuntimeBlockLength;
 	type DbWeight = RocksDbWeight;
