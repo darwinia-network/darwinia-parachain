@@ -1,7 +1,7 @@
 // --- crates.io ---
-use codec::{Decode, Encode};
+use codec::{Decode, Encode, MaxEncodedLen};
 // --- parity ---
-use frame_support::traits::{InstanceFilter, MaxEncodedLen};
+use frame_support::traits::InstanceFilter;
 use pallet_proxy::{Call as ProxyCall, Config};
 use sp_runtime::{traits::BlakeTwo256, RuntimeDebug};
 // --- darwinia ---
