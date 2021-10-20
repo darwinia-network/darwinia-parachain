@@ -7,4 +7,5 @@ use crate::*;
 
 impl Config for Runtime {
 	type AuthorityId = AuraId;
+	type DisabledValidators = ();
 }

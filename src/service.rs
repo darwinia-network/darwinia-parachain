@@ -302,7 +302,7 @@ where
 		+ Send
 		+ Fn(
 			Arc<TFullClient<Block, RuntimeApi, Executor>>,
-		) -> jsonrpc_core::IoHandler<sc_rpc::Metadata>,
+		) -> Result<jsonrpc_core::IoHandler<sc_rpc::Metadata>, sc_service::Error>,
 	BIQ: FnOnce(
 		Arc<TFullClient<Block, RuntimeApi, Executor>>,
 		&Configuration,
@@ -513,7 +513,7 @@ pub async fn start_crab_redirect_node(
 		parachain_config,
 		polkadot_config,
 		id,
-		|_| Default::default(),
+		|_| Ok(Default::default()),
 		crab_redirect_build_import_queue,
 		|client,
 		 prometheus_registry,
