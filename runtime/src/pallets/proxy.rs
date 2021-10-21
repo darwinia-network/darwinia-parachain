@@ -1,5 +1,6 @@
 // --- crates.io ---
 use codec::{Decode, Encode, MaxEncodedLen};
+use scale_info::TypeInfo;
 // --- paritytech ---
 use frame_support::traits::InstanceFilter;
 use pallet_proxy::{Call as ProxyCall, Config};
@@ -9,7 +10,17 @@ use crate::{weights::pallet_proxy::WeightInfo, *};
 
 /// The type used to represent the kinds of proxying allowed.
 #[derive(
-	Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Encode, Decode, RuntimeDebug, MaxEncodedLen,
+	Copy,
+	Clone,
+	Eq,
+	PartialEq,
+	Ord,
+	PartialOrd,
+	Encode,
+	Decode,
+	RuntimeDebug,
+	MaxEncodedLen,
+	TypeInfo,
 )]
 pub enum ProxyType {
 	/// Fully permissioned proxy. Can execute any call on behalf of _proxied_.
@@ -30,15 +41,16 @@ impl InstanceFilter<Call> for ProxyType {
 	fn filter(&self, c: &Call) -> bool {
 		match self {
 			ProxyType::Any => true,
-			ProxyType::NonTransfer => !matches!(c, Call::Balances(..)),
+			ProxyType::NonTransfer => !matches!(c, Call::Balances { .. }),
 			ProxyType::CancelProxy => matches!(
 				c,
-				Call::Proxy(ProxyCall::reject_announcement(..))
-					| Call::Utility(..) | Call::Multisig(..)
+				Call::Proxy(ProxyCall::reject_announcement { .. })
+					| Call::Utility { .. }
+					| Call::Multisig { .. }
 			),
 			ProxyType::Collator => matches!(
 				c,
-				Call::CollatorSelection(..) | Call::Utility(..) | Call::Multisig(..)
+				Call::CollatorSelection { .. } | Call::Utility { .. } | Call::Multisig { .. }
 			),
 		}
 	}

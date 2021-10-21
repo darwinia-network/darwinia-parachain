@@ -1099,6 +1099,7 @@ dependencies = [
  "parachain-info",
  "parity-scale-codec",
  "polkadot-parachain",
+ "scale-info",
  "smallvec",
  "sp-api",
  "sp-block-builder",
