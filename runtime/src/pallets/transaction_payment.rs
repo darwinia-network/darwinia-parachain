@@ -8,6 +8,7 @@ pub type SlowAdjustingFeeUpdate<R> =
 
 frame_support::parameter_types! {
 	pub const TransactionByteFee: Balance = 5 * MILLI;
+	pub const OperationalFeeMultiplier: u8 = 5;
 }
 
 impl Config for Runtime {
@@ -15,4 +16,5 @@ impl Config for Runtime {
 	type TransactionByteFee = TransactionByteFee;
 	type WeightToFee = WeightToFee;
 	type FeeMultiplierUpdate = SlowAdjustingFeeUpdate<Self>;
+	type OperationalFeeMultiplier = OperationalFeeMultiplier;
 }
