@@ -89,9 +89,7 @@ frame_support::parameter_types! {
 	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
 	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
 	pub UnitWeightCost: Weight = 1_000_000_000;
-	pub Ancestry: MultiLocation =MultiLocation::X1(Parachain(
-		ParachainInfo::parachain_id().into()
-	));
+	pub Ancestry: MultiLocation = Parachain(ParachainInfo::parachain_id().into()).into();
 }
 
 frame_support::match_type! {

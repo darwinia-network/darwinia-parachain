@@ -99,10 +99,7 @@ where
 {
 	async fn verify(
 		&mut self,
-		origin: BlockOrigin,
-		header: Header,
-		justifications: Option<sp_runtime::Justifications>,
-		body: Option<Vec<<Block as sp_runtime::traits::Block>::Extrinsic>>,
+		block_import: BlockImportParams<Block, ()>,
 	) -> Result<
 		(
 			BlockImportParams<Block, ()>,
@@ -110,7 +107,7 @@ where
 		),
 		String,
 	> {
-		let block_id = BlockId::hash(*header.parent_hash());
+		let block_id = BlockId::hash(*block_import.header.parent_hash());
 
 		if self
 			.client
@@ -118,14 +115,9 @@ where
 			.has_api::<dyn AuraApi<Block, AuraId>>(&block_id)
 			.unwrap_or(false)
 		{
-			self.aura_verifier
-				.get_mut()
-				.verify(origin, header, justifications, body)
-				.await
+			self.aura_verifier.get_mut().verify(block_import).await
 		} else {
-			self.relay_chain_verifier
-				.verify(origin, header, justifications, body)
-				.await
+			self.relay_chain_verifier.verify(block_import).await
 		}
 	}
 }
