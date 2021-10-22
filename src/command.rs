@@ -58,7 +58,7 @@ fn load_spec(
 		"crab-redirect-genesis" => Ok(Box::new(chain_spec::crab_redirect_build_spec_config_of(
 			para_id,
 		))),
-		"dev" => Ok(Box::new(chain_spec::crab_redirect_development_config_of(
+		"crab-redirect-dev" => Ok(Box::new(chain_spec::crab_redirect_development_config_of(
 			para_id,
 		))),
 		path => Ok(Box::new(chain_spec::CrabRedirectChainSpec::from_json_file(
