@@ -1,67 +1,73 @@
-./polkadot \
+c rr -- \
 	--ws-port 9944 \
 	--unsafe-ws-external \
 	--rpc-cors all \
 	--port 31333 \
-	--chain kusama-local.json \
+	--chain rococo-local.json \
 	--tmp \
 	--alice \
 	--node-key 0000000000000000000000000000000000000000000000000000000000000001 \
 	-lparachain::candidate-backing=trace,parachain::candidate-selection=trace,parachain::pvf=trace,parachain::collator-protocol=trace,parachain::provisioner=trace
 
-./polkadot \
+c rr -- \
 	--port 32333 \
-	--chain kusama-local.json \
+	--chain rococo-local.json \
 	--tmp \
 	--bob \
 	--bootnodes /ip4/127.0.0.1/tcp/31333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
 
-./polkadot \
+c rr -- \
 	--port 33333 \
-	--chain kusama-local.json \
+	--chain rococo-local.json \
 	--tmp \
 	--charlie \
 	--bootnodes /ip4/127.0.0.1/tcp/31333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
 
-./polkadot \
+c rr -- \
 	--port 34333 \
-	--chain kusama-local.json \
+	--chain rococo-local.json \
 	--tmp \
 	--dave \
 	--bootnodes /ip4/127.0.0.1/tcp/31333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
 
-./crab-redirect-collator \
+c rr -- \
 	--ws-port 10000 \
 	--unsafe-ws-external \
 	--rpc-port 9998 \
 	--rpc-methods unsafe \
 	--rpc-cors all \
 	--port 35333 \
-	--execution wasm \
-	--wasm-execution Compiled \
+	--chain res/crab-redirect-dev.json \
 	--tmp \
-	--pruning archive \
+	--alice \
 	--collator \
 	--node-key 0000000000000000000000000000000000000000000000000000000000000002 \
 	-- \
-	--execution wasm \
-	--wasm-execution Compiled \
-	--chain kusama-local.json \
+	--chain ../../self/polkadot/rococo-local.json \
 	--bootnodes /ip4/127.0.0.1/tcp/31333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
 
-./crab-redirect-collator \
+c rr -- \
 	--rpc-port 9999 \
 	--rpc-methods unsafe \
 	--rpc-cors all \
 	--port 36333 \
-	--execution wasm \
-	--wasm-execution Compiled \
+	--chain res/crab-redirect-dev.json \
 	--tmp \
-	--pruning archive \
+	--bob \
 	--collator \
 	--bootnodes /ip4/127.0.0.1/tcp/35333/p2p/12D3KooWHdiAxVd8uMQR1hGWXccidmfCwLqcMpGwR6QcTP6QRMuD \
 	-- \
-	--execution wasm \
-	--wasm-execution Compiled \
-	--chain kusama-local.json \
+	--chain ../../self/polkadot/rococo-local.json \
 	--bootnodes /ip4/127.0.0.1/tcp/31333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
+
+curl http://localhost:9998 -H "Content-Type:application/json;charset=utf-8" -d \
+	'{
+			"jsonrpc":"2.0",
+			"id":1,
+			"method":"author_insertKey",
+			"params": [
+				"aura",
+				"",
+				""
+			]
+	}'
