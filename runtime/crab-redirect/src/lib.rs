@@ -22,7 +22,7 @@
 pub mod constants {
 	pub mod currency {
 		// --- darwinia-network ---
-		use crab_redirect_primitives::*;
+		use darwinia_redirect_primitives::*;
 
 		pub const NANO: Balance = 1;
 		pub const MICRO: Balance = 1_000 * NANO;
@@ -37,7 +37,7 @@ pub mod constants {
 
 	pub mod time {
 		// --- darwinia-network ---
-		use crab_redirect_primitives::*;
+		use darwinia_redirect_primitives::*;
 
 		pub const MILLISECS_PER_BLOCK: Moment = 12000;
 		pub const SLOT_DURATION: Moment = MILLISECS_PER_BLOCK;
@@ -62,7 +62,7 @@ pub mod constants {
 		use sp_runtime::{FixedPointNumber, Perbill, Perquintill};
 		// --- darwinia-network ---
 		use crate::*;
-		use crab_redirect_primitives::*;
+		use darwinia_redirect_primitives::*;
 
 		frame_support::parameter_types! {
 			/// The portion of the `NORMAL_DISPATCH_RATIO` that we adjust the fees with. Blocks filled less
@@ -178,7 +178,7 @@ pub mod wasm {
 }
 pub use wasm::*;
 
-pub use crab_redirect_primitives::*;
+pub use darwinia_redirect_primitives::*;
 
 // --- paritytech ---
 use sp_core::OpaqueMetadata;

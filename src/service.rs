@@ -53,7 +53,7 @@ use sp_keystore::SyncCryptoStorePtr;
 use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
 use substrate_prometheus_endpoint::Registry;
 // --- darwinia-network ---
-use crab_redirect_primitives::{Hash, Header, OpaqueBlock as Block};
+use darwinia_redirect_primitives::{Hash, Header, OpaqueBlock as Block};
 
 /// Native executor instance.
 pub struct CrabRedirectRuntimeExecutor;

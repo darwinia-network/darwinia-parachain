@@ -27,8 +27,8 @@ use sc_telemetry::TelemetryEndpoints;
 use sp_core::{crypto::UncheckedInto, sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 // --- darwinia-network ---
-use crab_redirect_primitives::{AccountId, Signature};
 use crab_redirect_runtime::{AuraId, SessionKeys, COIN};
+use darwinia_redirect_primitives::{AccountId, Signature};
 
 /// Specialized `ChainSpec` for the `Crab Redirect` parachain runtime.
 pub type CrabRedirectChainSpec =
