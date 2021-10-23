@@ -69,7 +69,7 @@ fn load_spec(
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Crab redirect collator".into()
+		"Darwinia Collator".into()
 	}
 
 	fn impl_version() -> String {
@@ -85,7 +85,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn support_url() -> String {
-		"https://github.com/darwinia-network/darwinia-common/issues/new".into()
+		"https://github.com/darwinia-network/parachain/issues/new".into()
 	}
 
 	fn copyright_start_year() -> i32 {
@@ -103,7 +103,7 @@ impl SubstrateCli for Cli {
 
 impl SubstrateCli for RelayChainCli {
 	fn impl_name() -> String {
-		"Crab redirect collator".into()
+		"Darwinia Collator".into()
 	}
 
 	fn impl_version() -> String {
@@ -119,7 +119,7 @@ impl SubstrateCli for RelayChainCli {
 	}
 
 	fn support_url() -> String {
-		"https://github.com/darwinia-network/darwinia-common/issues/new".into()
+		"https://github.com/darwinia-network/parachain/issues/new".into()
 	}
 
 	fn copyright_start_year() -> i32 {
