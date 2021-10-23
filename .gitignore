@@ -1,26 +1,19 @@
-# Cross Compile
-wasm
-
-# IDE
-.idea
-.vscode
-.ignore
-
-# macOS
+# System
 .DS_Store
 
-# PM2
-.pm2.json
+# Integrated Development Environment
+.idea
+.vscode
 
-# Release
-release/
+# Package Manager
+## Cargo
+target
+## Npm
+node_modules
 
-# Rust
-**/*.rs.bk
-**/target/
-.cargo-ok
-Cargo.toml.bak
-expand.rs
-
-# Js
-node_modules/
+# Test Data
+## Rococo Local Testnet
+tests/bin
+tests/deploy.bin
+tests/local-testnet/data
+tests/local-testnet/log
