@@ -176,7 +176,7 @@ pub fn crab_redirect_development_config_of(id: ParaId) -> CrabRedirectChainSpec 
 		None,
 		Some(properties()),
 		Extensions {
-			relay_chain: "kusama-dev".into(),
+			relay_chain: "rococo-local".into(),
 			para_id: id.into(),
 		},
 	);
