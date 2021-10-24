@@ -91,7 +91,7 @@ pub mod constants {
 		impl WeightToFeePolynomial for WeightToFee {
 			type Balance = Balance;
 			fn polynomial() -> WeightToFeeCoefficients<Self::Balance> {
-				// in `Crab Redirect`, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
+				// in `Darwinia Redirect`, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
 				let p = 100 * MILLI;
 				let q = Balance::from(ExtrinsicBaseWeight::get());
 

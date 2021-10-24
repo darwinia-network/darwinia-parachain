@@ -76,8 +76,12 @@ impl SubstrateCli for Cli {
 		load_spec(id, self.run.parachain_id)
 	}
 
-	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		&crab_redirect_runtime::VERSION
+	fn native_runtime_version(spec: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
+		if spec.is_crab_redirect() {
+			&crab_redirect_runtime::VERSION
+		} else {
+			&darwinia_redirect_runtime::VERSION
+		}
 	}
 }
 
