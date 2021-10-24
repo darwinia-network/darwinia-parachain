@@ -13,6 +13,8 @@ node_modules
 
 # Test Data
 ## Rococo Local Testnet
+res/crab-redirect-dev.*
+res/darwinia-redirect-dev.*
 tests/bin
 tests/deploy.bin
 tests/local-testnet/data
