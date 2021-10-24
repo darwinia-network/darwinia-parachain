@@ -1015,7 +1015,7 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
- "darwinia-redirect-primitives",
+ "darwinia-collator-primitives",
  "frame-executive",
  "frame-support",
  "frame-system",
@@ -1681,7 +1681,8 @@ dependencies = [
  "cumulus-client-service",
  "cumulus-primitives-core",
  "cumulus-primitives-parachain-inherent",
- "darwinia-redirect-primitives",
+ "darwinia-collator-primitives",
+ "darwinia-redirect-runtime",
  "futures 0.3.17",
  "jsonrpc-core",
  "log",
@@ -1723,11 +1724,62 @@ dependencies = [
 ]
 
 [[package]]
-name = "darwinia-redirect-primitives"
+name = "darwinia-collator-primitives"
 version = "3.0.0"
 dependencies = [
  "sp-core",
  "sp-runtime",
+]
+
+[[package]]
+name = "darwinia-redirect-runtime"
+version = "3.0.0"
+dependencies = [
+ "cumulus-pallet-aura-ext",
+ "cumulus-pallet-dmp-queue",
+ "cumulus-pallet-parachain-system",
+ "cumulus-pallet-xcm",
+ "cumulus-pallet-xcmp-queue",
+ "cumulus-primitives-core",
+ "cumulus-primitives-timestamp",
+ "cumulus-primitives-utility",
+ "darwinia-collator-primitives",
+ "frame-executive",
+ "frame-support",
+ "frame-system",
+ "pallet-aura",
+ "pallet-authorship",
+ "pallet-balances",
+ "pallet-collator-selection",
+ "pallet-multisig",
+ "pallet-proxy",
+ "pallet-randomness-collective-flip",
+ "pallet-session",
+ "pallet-sudo",
+ "pallet-timestamp",
+ "pallet-transaction-payment",
+ "pallet-utility",
+ "pallet-xcm",
+ "parachain-info",
+ "parity-scale-codec",
+ "polkadot-parachain",
+ "scale-info",
+ "smallvec",
+ "sp-api",
+ "sp-block-builder",
+ "sp-consensus-aura",
+ "sp-core",
+ "sp-inherents",
+ "sp-offchain",
+ "sp-runtime",
+ "sp-session",
+ "sp-std",
+ "sp-transaction-pool",
+ "sp-version",
+ "substrate-wasm-builder",
+ "xcm",
+ "xcm-builder",
+ "xcm-executor",
 ]
 
 [[package]]

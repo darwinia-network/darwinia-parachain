@@ -17,8 +17,8 @@
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
 // --- std ---
-use std::{io::Write, net::SocketAddr};
-// --- crates ---
+use std::{env, io::Write, net::SocketAddr, path::PathBuf};
+// --- crates.io ---
 use codec::Encode;
 use log::info;
 // --- paritytech ---
@@ -30,42 +30,22 @@ use sc_cli::{
 	NetworkParams, Result, RuntimeVersion, SharedParams, SubstrateCli,
 };
 use sc_service::config::{BasePath, PrometheusConfig};
-use sp_core::{
-	crypto::{self, Ss58AddressFormat},
-	hexdisplay::HexDisplay,
-};
+use sp_core::{crypto::Ss58AddressFormat, hexdisplay::HexDisplay};
 use sp_runtime::traits::Block as BlockT;
 // --- darwinia-network ---
 use crate::{
-	chain_spec,
+	chain_spec::{
+		crab_redirect_chain_spec, darwinia_redirect_chain_spec, CrabRedirectChainSpec,
+		DarwiniaRedirectChainSpec, Extensions,
+	},
 	cli::{Cli, RelayChainCli, Subcommand},
-	service::{new_partial, CrabRedirectRuntimeExecutor},
+	service::{
+		crab_redirect_runtime, crab_redirect_service, darwinia_redirect_runtime,
+		darwinia_redirect_service, new_partial, CrabRedirectRuntimeExecutor,
+		DarwiniaRedirectRuntimeExecutor, IdentifyVariant,
+	},
 };
 use crab_redirect_runtime::Block;
-
-const PARACHAIN_ID: u32 = 2006;
-
-fn load_spec(
-	id: &str,
-	para_id: ParaId,
-) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
-	let genesis = include_bytes!("../res/crab-redirect.json");
-
-	match id {
-		"" | "crab-redirect" => Ok(Box::new(
-			chain_spec::CrabRedirectChainSpec::from_json_bytes(&genesis[..])?,
-		)),
-		"crab-redirect-genesis" => Ok(Box::new(chain_spec::crab_redirect_build_spec_config_of(
-			para_id,
-		))),
-		"crab-redirect-dev" => Ok(Box::new(chain_spec::crab_redirect_development_config_of(
-			para_id,
-		))),
-		path => Ok(Box::new(chain_spec::CrabRedirectChainSpec::from_json_file(
-			path.into(),
-		)?)),
-	}
-}
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
@@ -93,7 +73,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
-		load_spec(id, self.run.parachain_id.unwrap_or(PARACHAIN_ID).into())
+		load_spec(id, self.run.parachain_id)
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
@@ -136,6 +116,59 @@ impl SubstrateCli for RelayChainCli {
 	}
 }
 
+fn load_spec(
+	id: &str,
+	_para_id: Option<u32>,
+) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
+	let id = if id == "" {
+		let n = get_exec_name().unwrap_or_default();
+		["darwinia-redirect", "crab-redirect"]
+			.iter()
+			.cloned()
+			.find(|&chain| n.starts_with(chain))
+			.unwrap_or("darwinia-redirect")
+	} else {
+		id
+	};
+
+	Ok(match id.to_lowercase().as_ref() {
+		"darwinia-redirect" => Box::new(darwinia_redirect_chain_spec::config()?),
+		"darwinia-redirect-genesis" => Box::new(darwinia_redirect_chain_spec::genesis_config()),
+		"darwinia-redirect-dev" => Box::new(darwinia_redirect_chain_spec::development_config()),
+		"crab-redirect" => Box::new(crab_redirect_chain_spec::config()?),
+		"crab-redirect-genesis" => Box::new(crab_redirect_chain_spec::genesis_config()),
+		"crab-redirect-dev" => Box::new(crab_redirect_chain_spec::development_config()),
+		path => {
+			let path = PathBuf::from(path);
+			let chain_spec = Box::new(DarwiniaRedirectChainSpec::from_json_file(path.clone())?)
+				as Box<dyn ChainSpec>;
+
+			if chain_spec.is_crab_redirect() {
+				Box::new(CrabRedirectChainSpec::from_json_file(path)?)
+			} else {
+				chain_spec
+			}
+		}
+	})
+}
+
+fn get_exec_name() -> Option<String> {
+	env::current_exe()
+		.ok()
+		.and_then(|pb| pb.file_name().map(|s| s.to_os_string()))
+		.and_then(|s| s.into_string().ok())
+}
+
+fn set_default_ss58_version(spec: &Box<dyn ChainSpec>) {
+	let ss58_version = if spec.is_crab_redirect() {
+		Ss58AddressFormat::SubstrateAccount
+	} else {
+		Ss58AddressFormat::DarwiniaAccount
+	};
+
+	sp_core::crypto::set_default_ss58_version(ss58_version);
+}
+
 fn extract_genesis_wasm(chain_spec: &Box<dyn sc_service::ChainSpec>) -> Result<Vec<u8>> {
 	let mut storage = chain_spec.build_storage()?;
 
@@ -150,27 +183,103 @@ pub fn run() -> Result<()> {
 	macro_rules! construct_async_run {
 		(|$components:ident, $cli:ident, $cmd:ident, $config:ident| $( $code:tt )* ) => {{
 			let runner = $cli.create_runner($cmd)?;
+			let chain_spec = &runner.config().chain_spec;
 
-			runner.async_run(|$config| {
-				let $components = new_partial::<
-					crab_redirect_runtime::RuntimeApi,
-					CrabRedirectRuntimeExecutor,
-					_
-				>(
-					&$config,
-					crate::service::crab_redirect_build_import_queue,
-				)?;
-				let task_manager = $components.task_manager;
-				{ $( $code )* }.map(|v| (v, task_manager))
-			})
+			set_default_ss58_version(chain_spec);
+
+			if chain_spec.is_crab_redirect() {
+				runner.async_run(|$config| {
+					let $components = new_partial::<
+						crab_redirect_runtime::RuntimeApi,
+						CrabRedirectRuntimeExecutor,
+						_
+					>(
+						&$config,
+						crab_redirect_service::build_import_queue,
+					)?;
+					let task_manager = $components.task_manager;
+					{ $( $code )* }.map(|v| (v, task_manager))
+				})
+			} else {
+				runner.async_run(|$config| {
+					let $components = new_partial::<
+						darwinia_redirect_runtime::RuntimeApi,
+						DarwiniaRedirectRuntimeExecutor,
+						_
+					>(
+						&$config,
+						darwinia_redirect_service::build_import_queue,
+					)?;
+					let task_manager = $components.task_manager;
+					{ $( $code )* }.map(|v| (v, task_manager))
+				})
+			}
+
 		}}
 	}
 
 	let cli = Cli::from_args();
 
-	crypto::set_default_ss58_version(Ss58AddressFormat::DarwiniaAccount);
-
 	match &cli.subcommand {
+		None => {
+			let runner = cli.create_runner(&cli.run.normalize())?;
+			let is_crab_redirect = {
+				let chain_spec = &runner.config().chain_spec;
+
+				set_default_ss58_version(chain_spec);
+
+				chain_spec.is_crab_redirect()
+			};
+
+			runner.run_node_until_exit(|config| async move {
+				let para_id = Extensions::try_get(&*config.chain_spec).map(|e| e.para_id);
+
+				let polkadot_cli = RelayChainCli::new(
+					&config,
+					[RelayChainCli::executable_name().to_string()]
+						.iter()
+						.chain(cli.relaychain_args.iter()),
+				);
+
+				let id = ParaId::from(cli.run.parachain_id.or(para_id).unwrap_or_default());
+
+				let parachain_account =
+					AccountIdConversion::<polkadot_primitives::v0::AccountId>::into_account(&id);
+
+				let block: Block =
+					generate_genesis_block(&config.chain_spec).map_err(|e| format!("{:?}", e))?;
+				let genesis_state = format!("0x{:?}", HexDisplay::from(&block.header().encode()));
+
+				let tokio_handle = config.tokio_handle.clone();
+				let polkadot_config =
+					SubstrateCli::create_configuration(&polkadot_cli, &polkadot_cli, tokio_handle)
+						.map_err(|err| format!("Relay chain argument error: {}", err))?;
+
+				info!("Parachain id: {:?}", id);
+				info!("Parachain Account: {}", parachain_account);
+				info!("Parachain genesis state: {}", genesis_state);
+				info!(
+					"Is collating: {}",
+					if config.role.is_authority() {
+						"yes"
+					} else {
+						"no"
+					}
+				);
+
+				if is_crab_redirect {
+					crab_redirect_service::start_node(config, polkadot_config, id)
+						.await
+						.map(|r| r.0)
+						.map_err(Into::into)
+				} else {
+					darwinia_redirect_service::start_node(config, polkadot_config, id)
+						.await
+						.map(|r| r.0)
+						.map_err(Into::into)
+				}
+			})
+		}
 		Some(Subcommand::BuildSpec(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.sync_run(|config| cmd.run(config.chain_spec, config.network))
@@ -226,7 +335,7 @@ pub fn run() -> Result<()> {
 
 			let block: Block = generate_genesis_block(&load_spec(
 				&params.chain.clone().unwrap_or_default(),
-				params.parachain_id.unwrap_or(2006).into(),
+				params.parachain_id.unwrap_or_default().into(),
 			)?)?;
 			let raw_header = block.header().encode();
 			let output_buf = if params.raw {
@@ -263,52 +372,6 @@ pub fn run() -> Result<()> {
 			}
 
 			Ok(())
-		}
-		None => {
-			let runner = cli.create_runner(&cli.run.normalize())?;
-
-			runner.run_node_until_exit(|config| async move {
-				let para_id =
-					chain_spec::Extensions::try_get(&*config.chain_spec).map(|e| e.para_id);
-
-				let polkadot_cli = RelayChainCli::new(
-					&config,
-					[RelayChainCli::executable_name().to_string()]
-						.iter()
-						.chain(cli.relaychain_args.iter()),
-				);
-
-				let id = ParaId::from(cli.run.parachain_id.or(para_id).unwrap_or(PARACHAIN_ID));
-
-				let parachain_account =
-					AccountIdConversion::<polkadot_primitives::v0::AccountId>::into_account(&id);
-
-				let block: Block =
-					generate_genesis_block(&config.chain_spec).map_err(|e| format!("{:?}", e))?;
-				let genesis_state = format!("0x{:?}", HexDisplay::from(&block.header().encode()));
-
-				let tokio_handle = config.tokio_handle.clone();
-				let polkadot_config =
-					SubstrateCli::create_configuration(&polkadot_cli, &polkadot_cli, tokio_handle)
-						.map_err(|err| format!("Relay chain argument error: {}", err))?;
-
-				info!("Parachain id: {:?}", id);
-				info!("Parachain Account: {}", parachain_account);
-				info!("Parachain genesis state: {}", genesis_state);
-				info!(
-					"Is collating: {}",
-					if config.role.is_authority() {
-						"yes"
-					} else {
-						"no"
-					}
-				);
-
-				crate::service::start_crab_redirect_node(config, polkadot_config, id)
-					.await
-					.map(|r| r.0)
-					.map_err(Into::into)
-			})
 		}
 	}
 }

@@ -28,7 +28,8 @@ tempfile     = { version = "3.2" }
 
 # parachain
 crab-redirect-runtime        = { path = "runtime/crab-redirect" }
-darwinia-redirect-primitives = { path = "primitives" }
+darwinia-collator-primitives = { path = "primitives" }
+darwinia-redirect-runtime    = { path = "runtime/darwinia-redirect" }
 
 # substrate
 sc-basic-authorship           = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
@@ -81,4 +82,5 @@ substrate-build-script-utils = { git = "https://github.com/paritytech/substrate"
 members = [
 	"primitives",
 	"runtime/crab-redirect",
+	"runtime/darwinia-redirect",
 ]

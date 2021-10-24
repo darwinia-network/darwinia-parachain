@@ -18,7 +18,7 @@
 
 // --- std ---
 use std::path::PathBuf;
-// --- crates ---
+// --- crates.io ---
 use structopt::StructOpt;
 // --- darwinia-network ---
 use crate::chain_spec;

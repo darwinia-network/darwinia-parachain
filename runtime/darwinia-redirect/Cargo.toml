@@ -1,11 +1,11 @@
 [package]
 authors     = ["Darwinia Network <hello@darwinia.network>"]
 build       = "build.rs"
-description = "Crab Redirect Runtime"
+description = "Darwinia Redirect Runtime"
 edition     = "2018"
 homepage    = "https://darwinia.network/"
 license     = "GPL-3.0"
-name        = "crab-redirect-runtime"
+name        = "darwinia-redirect-runtime"
 readme      = "README.md"
 repository  = "https://github.com/darwinia-network/darwinia-common/"
 version     = "3.0.0"
