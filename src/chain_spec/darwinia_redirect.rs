@@ -28,7 +28,7 @@ use darwinia_redirect_runtime::*;
 /// Specialized `ChainSpec` for the `Darwinia Redirect` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
 
-pub const PARA_ID: u32 = 2000;
+pub const PARA_ID: u32 = 2003;
 
 const TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
