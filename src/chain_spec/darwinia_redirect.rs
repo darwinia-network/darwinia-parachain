@@ -64,8 +64,10 @@ pub fn genesis_config() -> ChainSpec {
 			"0xbe7e6c55feca7ffbfd961c93acdf1bc68bea91d758fb8da92f65c66bbf12ea74",
 			// Way
 			"0xea0f4185dd32c1278d7bbd3cdd2fbaec3ca29921a88c04c175401a0668d88e66",
+			"0x56695000227fee2b4e2b15e892527250e47d4671e17f6e604cd67fb7213bbc19",
 			// Xavier
 			"0xb4f7f03bebc56ebe96bc52ea5ed3159d45a0ce3a8d7f082983c33ef133274747",
+			"0x28b4a5e67767ec4aba8e8d99ac58481ec74e48185507f1552b1f8ba00994cf59",
 		]
 		.iter()
 		.map(|hex| {
