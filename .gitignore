@@ -12,6 +12,8 @@ target
 node_modules
 
 # Test Data
+## Chain data
+data
 ## Rococo Local Testnet
 res/crab-redirect-dev.*
 res/darwinia-redirect-dev.*
