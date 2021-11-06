@@ -2,11 +2,11 @@
 authors     = ["Darwinia Network <hello@darwinia.network>"]
 description = "Parachain node runtime primitives"
 edition     = "2018"
-homepage    = "https://darwinia.network/"
+homepage    = "https://darwinia.network"
 license     = "GPL-3.0"
 name        = "darwinia-collator-primitives"
 readme      = "README.md"
-repository  = "https://github.com/darwinia-network/parachain/"
+repository  = "https://github.com/darwinia-network/parachain"
 version     = "3.0.0"
 
 [dependencies]
