@@ -7,7 +7,7 @@ homepage    = "https://darwinia.network/"
 license     = "GPL-3.0"
 name        = "darwinia-collator"
 readme      = "README.md"
-repository  = "https://github.com/darwinia-network/darwinia-common/"
+repository  = "https://github.com/darwinia-network/parachain/"
 version     = "3.0.0"
 
 [[bin]]
@@ -81,6 +81,7 @@ substrate-build-script-utils = { git = "https://github.com/paritytech/substrate"
 [workspace]
 members = [
 	"primitives",
+	"rpc",
 	"runtime/crab-redirect",
 	"runtime/darwinia-redirect",
 ]
