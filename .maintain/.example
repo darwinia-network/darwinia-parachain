@@ -34,6 +34,7 @@ c rr -- \
 	--ws-port 10000 \
 	--unsafe-ws-external \
 	--rpc-port 9998 \
+	--unsafe-rpc-external \
 	--rpc-methods unsafe \
 	--rpc-cors all \
 	--port 35333 \
@@ -49,7 +50,6 @@ c rr -- \
 c rr -- \
 	--rpc-port 9999 \
 	--rpc-methods unsafe \
-	--rpc-cors all \
 	--port 36333 \
 	--chain res/crab-redirect-dev.json \
 	--tmp \
@@ -61,13 +61,13 @@ c rr -- \
 	--bootnodes /ip4/127.0.0.1/tcp/31333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
 
 curl http://localhost:9998 -H "Content-Type:application/json;charset=utf-8" -d \
-	'{
-			"jsonrpc":"2.0",
-			"id":1,
-			"method":"author_insertKey",
-			"params": [
-				"aura",
-				"",
-				""
-			]
-	}'
+'{
+	"jsonrpc":"2.0",
+	"id":1,
+	"method":"author_insertKey",
+	"params": [
+		"aura",
+		"",
+		""
+	]
+}'
