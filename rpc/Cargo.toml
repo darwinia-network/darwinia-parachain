@@ -1,0 +1,29 @@
+[package]
+authors     = ["Darwinia Network <hello@darwinia.network>"]
+description = "Darwinia Redirect RPCs"
+edition     = "2018"
+homepage    = "https://darwinia.network"
+license     = "GPL-3.0"
+name        = "darwinia-collator-rpc"
+readme      = "README.md"
+repository  = "https://github.com/darwinia-network/parachain"
+version     = "3.0.0"
+
+[dependencies]
+# crates.io
+jsonrpc-core = { version = "18.0.0" }
+# darwinia-network
+darwinia-collator-primitives = { path = "../primitives" }
+# paritytech
+pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
+sc-client-api                  = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
+sc-rpc                         = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
+sc-transaction-pool-api        = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
+sp-api                         = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
+sp-block-builder               = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
+sp-blockchain                  = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
+substrate-frame-rpc-system     = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
+
+[features]
+default = ["std"]
+std     = []

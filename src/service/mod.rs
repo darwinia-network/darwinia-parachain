@@ -57,7 +57,8 @@ use sp_keystore::SyncCryptoStorePtr;
 use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
 use substrate_prometheus_endpoint::Registry;
 // --- darwinia-network ---
-use darwinia_collator_primitives::{Hash, Header, OpaqueBlock as Block};
+use darwinia_collator_primitives::{AccountId, Balance, Hash, Header, Nonce, OpaqueBlock as Block};
+use darwinia_collator_rpc::FullDeps;
 
 /// Can be called for a `Configuration` to check if it is a configuration for the `Crab Redirect` network.
 pub trait IdentifyVariant {
@@ -302,7 +303,7 @@ async fn start_node_impl<RuntimeApi, Executor, RB, BIQ, BIC>(
 	parachain_config: Configuration,
 	polkadot_config: Configuration,
 	id: ParaId,
-	rpc_ext_builder: RB,
+	_rpc_ext_builder: RB,
 	build_import_queue: BIQ,
 	build_consensus: BIC,
 ) -> sc_service::error::Result<(
@@ -322,7 +323,9 @@ where
 		+ sp_block_builder::BlockBuilder<Block>
 		+ sp_offchain::OffchainWorkerApi<Block>
 		+ sp_session::SessionKeys<Block>
-		+ sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
+		+ sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>
+		+ pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>
+		+ substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
 	sc_client_api::StateBackendFor<TFullBackend<Block>, Block>: sp_api::StateBackend<BlakeTwo256>,
 	Executor: 'static + sc_executor::NativeExecutionDispatch,
 	RB: 'static
@@ -364,17 +367,14 @@ where
 	}
 
 	let parachain_config = prepare_node_config(parachain_config);
-
 	let params = new_partial::<RuntimeApi, Executor, BIQ>(&parachain_config, build_import_queue)?;
 	let (mut telemetry, telemetry_worker_handle) = params.other;
-
 	let relay_chain_full_node =
 		cumulus_client_service::build_polkadot_full_node(polkadot_config, telemetry_worker_handle)
 			.map_err(|e| match e {
 				polkadot_service::Error::Sub(x) => x,
 				s => format!("{}", s).into(),
 			})?;
-
 	let client = params.client.clone();
 	let backend = params.backend.clone();
 	let block_announce_validator = build_block_announce_validator(
@@ -383,7 +383,6 @@ where
 		Box::new(relay_chain_full_node.network.clone()),
 		relay_chain_full_node.backend.clone(),
 	);
-
 	let force_authoring = parachain_config.force_authoring;
 	let validator = parachain_config.role.is_authority();
 	let prometheus_registry = parachain_config.prometheus_registry().cloned();
@@ -401,9 +400,20 @@ where
 			block_announce_validator_builder: Some(Box::new(|_| block_announce_validator)),
 			warp_sync: None,
 		})?;
+	let rpc_extensions_builder = {
+		let client = client.clone();
+		let transaction_pool = transaction_pool.clone();
 
-	let rpc_client = client.clone();
-	let rpc_extensions_builder = Box::new(move |_, _| rpc_ext_builder(rpc_client.clone()));
+		Box::new(move |deny_unsafe, _| {
+			let deps = FullDeps {
+				client: client.clone(),
+				pool: transaction_pool.clone(),
+				deny_unsafe,
+			};
+
+			Ok(darwinia_collator_rpc::create_full(deps))
+		})
+	};
 
 	sc_service::spawn_tasks(sc_service::SpawnTasksParams {
 		on_demand: None,

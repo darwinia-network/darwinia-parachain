@@ -1019,6 +1019,7 @@ dependencies = [
  "frame-executive",
  "frame-support",
  "frame-system",
+ "frame-system-rpc-runtime-api",
  "pallet-aura",
  "pallet-authorship",
  "pallet-balances",
@@ -1030,6 +1031,7 @@ dependencies = [
  "pallet-sudo",
  "pallet-timestamp",
  "pallet-transaction-payment",
+ "pallet-transaction-payment-rpc-runtime-api",
  "pallet-utility",
  "pallet-xcm",
  "parachain-info",
@@ -1682,10 +1684,12 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-parachain-inherent",
  "darwinia-collator-primitives",
+ "darwinia-collator-rpc",
  "darwinia-redirect-runtime",
  "futures 0.3.17",
  "jsonrpc-core",
  "log",
+ "pallet-transaction-payment-rpc",
  "parity-scale-codec",
  "polkadot-cli",
  "polkadot-parachain",
@@ -1719,6 +1723,7 @@ dependencies = [
  "sp-transaction-pool",
  "structopt",
  "substrate-build-script-utils",
+ "substrate-frame-rpc-system",
  "substrate-prometheus-endpoint",
  "tempfile",
 ]
@@ -1729,6 +1734,22 @@ version = "3.0.0"
 dependencies = [
  "sp-core",
  "sp-runtime",
+]
+
+[[package]]
+name = "darwinia-collator-rpc"
+version = "3.0.0"
+dependencies = [
+ "darwinia-collator-primitives",
+ "jsonrpc-core",
+ "pallet-transaction-payment-rpc",
+ "sc-client-api",
+ "sc-rpc",
+ "sc-transaction-pool-api",
+ "sp-api",
+ "sp-block-builder",
+ "sp-blockchain",
+ "substrate-frame-rpc-system",
 ]
 
 [[package]]
@@ -1747,6 +1768,7 @@ dependencies = [
  "frame-executive",
  "frame-support",
  "frame-system",
+ "frame-system-rpc-runtime-api",
  "pallet-aura",
  "pallet-authorship",
  "pallet-balances",
@@ -1758,6 +1780,7 @@ dependencies = [
  "pallet-sudo",
  "pallet-timestamp",
  "pallet-transaction-payment",
+ "pallet-transaction-payment-rpc-runtime-api",
  "pallet-utility",
  "pallet-xcm",
  "parachain-info",
