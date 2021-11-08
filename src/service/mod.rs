@@ -20,13 +20,13 @@ pub mod crab_redirect;
 pub use crab_redirect::{
 	self as crab_redirect_service, RuntimeExecutor as CrabRedirectRuntimeExecutor,
 };
-pub use crab_redirect_runtime;
+pub use crab_redirect_runtime::{self, RuntimeApi as CrabRedirectRuntimeApi};
 
 pub mod darwinia_redirect;
 pub use darwinia_redirect::{
 	self as darwinia_redirect_service, RuntimeExecutor as DarwiniaRedirectRuntimeExecutor,
 };
-pub use darwinia_redirect_runtime;
+pub use darwinia_redirect_runtime::{self, RuntimeApi as DarwiniaRedirectRuntimeApi};
 
 // --- std ---
 use std::sync::Arc;

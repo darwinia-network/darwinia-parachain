@@ -41,8 +41,9 @@ use crate::{
 	cli::{Cli, RelayChainCli, Subcommand},
 	service::{
 		crab_redirect_runtime, crab_redirect_service, darwinia_redirect_runtime,
-		darwinia_redirect_service, new_partial, CrabRedirectRuntimeExecutor,
-		DarwiniaRedirectRuntimeExecutor, IdentifyVariant,
+		darwinia_redirect_service, new_partial, CrabRedirectRuntimeApi,
+		CrabRedirectRuntimeExecutor, DarwiniaRedirectRuntimeApi, DarwiniaRedirectRuntimeExecutor,
+		IdentifyVariant,
 	},
 };
 use crab_redirect_runtime::Block;
@@ -194,7 +195,7 @@ pub fn run() -> Result<()> {
 			if chain_spec.is_crab_redirect() {
 				runner.async_run(|$config| {
 					let $components = new_partial::<
-						crab_redirect_runtime::RuntimeApi,
+						CrabRedirectRuntimeApi,
 						CrabRedirectRuntimeExecutor,
 						_
 					>(
@@ -207,7 +208,7 @@ pub fn run() -> Result<()> {
 			} else {
 				runner.async_run(|$config| {
 					let $components = new_partial::<
-						darwinia_redirect_runtime::RuntimeApi,
+						DarwiniaRedirectRuntimeApi,
 						DarwiniaRedirectRuntimeExecutor,
 						_
 					>(
