@@ -8,7 +8,7 @@ license     = "GPL-3.0"
 name        = "darwinia-parachain-runtime"
 readme      = "README.md"
 repository  = "https://github.com/darwinia-network/parachain/"
-version     = "3.0.0"
+version     = "4.0.0"
 
 [dependencies]
 # crates.io
