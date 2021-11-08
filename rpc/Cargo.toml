@@ -11,7 +11,7 @@ version     = "3.0.0"
 
 [dependencies]
 # crates.io
-jsonrpc-core = { version = "18.0.0" }
+jsonrpc-core = { version = "18.0" }
 # darwinia-network
 darwinia-collator-primitives = { path = "../primitives" }
 # paritytech
