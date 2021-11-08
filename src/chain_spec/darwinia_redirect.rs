@@ -59,7 +59,7 @@ pub fn genesis_config() -> ChainSpec {
 			"0x129d025b24257aabdefac93d00419f06a38e3a5e2314dd6866b16e8f205ce074",
 		);
 		let invulnerables = [
-			// Denny
+			// Darwinia Dev
 			"0x7e8672b2c2ad0904ba6137de480eaa3b9476042f3f2ae08da033c4ccf2272d5a",
 			"0xbe7e6c55feca7ffbfd961c93acdf1bc68bea91d758fb8da92f65c66bbf12ea74",
 			// Way
@@ -87,7 +87,7 @@ pub fn genesis_config() -> ChainSpec {
 				balances: vec![
 					// Root
 					(root.clone(), 100_000 * COIN),
-					// Denny
+					// Darwinia Dev
 					(
 						array_bytes::hex_into_unchecked(
 							"0x0a66532a23c418cca12183fee5f6afece770a0bb8725f459d7d1b1b598f91c49",
