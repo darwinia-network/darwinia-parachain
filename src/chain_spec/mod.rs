@@ -17,12 +17,12 @@
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
 pub mod crab_parachain;
-pub use crab_parachain as crab_parachain_chain_spec;
-pub use crab_parachain::ChainSpec as CrabParachainChainSpec;
+pub use crab_parachain::{self as crab_parachain_chain_spec, ChainSpec as CrabParachainChainSpec};
 
 pub mod darwinia_parachain;
-pub use darwinia_parachain as darwinia_parachain_chain_spec;
-pub use darwinia_parachain::ChainSpec as DarwiniaParachainChainSpec;
+pub use darwinia_parachain::{
+	self as darwinia_parachain_chain_spec, ChainSpec as DarwiniaParachainChainSpec,
+};
 
 // --- crates.io ---
 use serde::{Deserialize, Serialize};
