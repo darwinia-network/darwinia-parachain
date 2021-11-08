@@ -1004,7 +1004,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "crab-redirect-runtime"
+name = "crab-parachain-runtime"
 version = "3.0.0"
 dependencies = [
  "cumulus-pallet-aura-ext",
@@ -1674,7 +1674,7 @@ version = "3.0.0"
 dependencies = [
  "array-bytes",
  "async-trait",
- "crab-redirect-runtime",
+ "crab-parachain-runtime",
  "cumulus-client-cli",
  "cumulus-client-consensus-aura",
  "cumulus-client-consensus-common",
@@ -1685,7 +1685,7 @@ dependencies = [
  "cumulus-primitives-parachain-inherent",
  "darwinia-collator-primitives",
  "darwinia-collator-rpc",
- "darwinia-redirect-runtime",
+ "darwinia-parachain-runtime",
  "futures 0.3.17",
  "jsonrpc-core",
  "log",
@@ -1753,7 +1753,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "darwinia-redirect-runtime"
+name = "darwinia-parachain-runtime"
 version = "3.0.0"
 dependencies = [
  "cumulus-pallet-aura-ext",

@@ -27,10 +27,10 @@ structopt    = { version = "0.3" }
 tempfile     = { version = "3.2" }
 
 # parachain
-crab-redirect-runtime        = { path = "runtime/crab-redirect" }
+crab-parachain-runtime       = { path = "runtime/crab-parachain" }
 darwinia-collator-primitives = { path = "primitives" }
 darwinia-collator-rpc        = { path = "rpc" }
-darwinia-redirect-runtime    = { path = "runtime/darwinia-redirect" }
+darwinia-parachain-runtime   = { path = "runtime/darwinia-parachain" }
 
 # substrate
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.11" }
@@ -85,6 +85,6 @@ substrate-build-script-utils = { git = "https://github.com/paritytech/substrate"
 members = [
 	"primitives",
 	"rpc",
-	"runtime/crab-redirect",
-	"runtime/darwinia-redirect",
+	"runtime/crab-parachain",
+	"runtime/darwinia-parachain",
 ]

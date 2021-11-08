@@ -16,13 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
-pub mod crab_redirect;
-pub use crab_redirect as crab_redirect_chain_spec;
-pub use crab_redirect::ChainSpec as CrabRedirectChainSpec;
+pub mod crab_parachain;
+pub use crab_parachain as crab_parachain_chain_spec;
+pub use crab_parachain::ChainSpec as CrabParachainChainSpec;
 
-pub mod darwinia_redirect;
-pub use darwinia_redirect as darwinia_redirect_chain_spec;
-pub use darwinia_redirect::ChainSpec as DarwiniaRedirectChainSpec;
+pub mod darwinia_parachain;
+pub use darwinia_parachain as darwinia_parachain_chain_spec;
+pub use darwinia_parachain::ChainSpec as DarwiniaParachainChainSpec;
 
 // --- crates.io ---
 use serde::{Deserialize, Serialize};

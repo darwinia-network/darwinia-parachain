@@ -23,9 +23,9 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{crypto::UncheckedInto, sr25519};
 // --- darwinia-network ---
 use super::*;
-use darwinia_redirect_runtime::*;
+use darwinia_parachain_runtime::*;
 
-/// Specialized `ChainSpec` for the `Darwinia Redirect` parachain runtime.
+/// Specialized `ChainSpec` for the `Darwinia Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
 
 pub const PARA_ID: u32 = 2003;
@@ -50,7 +50,7 @@ fn properties() -> Properties {
 }
 
 pub fn config() -> Result<ChainSpec, String> {
-	ChainSpec::from_json_bytes(&include_bytes!("../../res/darwinia-redirect.json")[..])
+	ChainSpec::from_json_bytes(&include_bytes!("../../res/darwinia-parachain.json")[..])
 }
 
 pub fn genesis_config() -> ChainSpec {
@@ -127,14 +127,14 @@ pub fn genesis_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Darwinia Redirect",
-		"Darwinia Redirect",
+		"Darwinia Parachain",
+		"Darwinia Parachain",
 		ChainType::Live,
 		genesis,
 		vec![],
 		Some(
 			TelemetryEndpoints::new(vec![(TELEMETRY_URL.to_string(), 0)])
-				.expect("Darwinia Redirect telemetry url is valid; qed"),
+				.expect("Darwinia Parachain telemetry url is valid; qed"),
 		),
 		None,
 		Some(properties()),
@@ -196,8 +196,8 @@ pub fn development_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Darwinia Redirect Dev",
-		"Darwinia Redirect Dev",
+		"Darwinia Parachain Dev",
+		"Darwinia Parachain Dev",
 		ChainType::Development,
 		genesis,
 		vec![],

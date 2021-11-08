@@ -91,7 +91,7 @@ pub mod constants {
 		impl WeightToFeePolynomial for WeightToFee {
 			type Balance = Balance;
 			fn polynomial() -> WeightToFeeCoefficients<Self::Balance> {
-				// in `Darwinia Redirect`, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
+				// in `Crab Parachain`, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
 				let p = 100 * MILLI;
 				let q = Balance::from(ExtrinsicBaseWeight::get());
 
@@ -165,12 +165,12 @@ pub mod wasm {
 		feature = "std",
 		not(any(target_arch = "x86_64", target_arch = "x86", target_vendor = "apple"))
 	))]
-	pub const WASM_BINARY: &[u8] = include_bytes!("../wasm/darwinia_redirect_runtime.compact.wasm");
+	pub const WASM_BINARY: &[u8] = include_bytes!("../wasm/crab_parachain_runtime.compact.wasm");
 	#[cfg(all(
 		feature = "std",
 		not(any(target_arch = "x86_64", target_arch = "x86", target_vendor = "apple"))
 	))]
-	pub const WASM_BINARY_BLOATY: &[u8] = include_bytes!("../wasm/darwinia_redirect_runtime.wasm");
+	pub const WASM_BINARY_BLOATY: &[u8] = include_bytes!("../wasm/crab_parachain_runtime.wasm");
 
 	#[cfg(feature = "std")]
 	/// Wasm binary unwrapped. If built with `BUILD_DUMMY_WASM_BINARY`, the function panics.
@@ -240,8 +240,8 @@ type Ring = Balances;
 /// This runtime version.
 #[sp_version::runtime_version]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: create_runtime_str!("Darwinia Redirect"),
-	impl_name: create_runtime_str!("Darwinia Redirect"),
+	spec_name: create_runtime_str!("Crab Parachain"),
+	impl_name: create_runtime_str!("Darwinia Crab Parachain"),
 	authoring_version: 1,
 	spec_version: 1,
 	impl_version: 1,

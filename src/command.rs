@@ -35,18 +35,18 @@ use sp_runtime::traits::Block as BlockT;
 // --- darwinia-network ---
 use crate::{
 	chain_spec::{
-		crab_redirect_chain_spec, darwinia_redirect_chain_spec, CrabRedirectChainSpec,
-		DarwiniaRedirectChainSpec, Extensions,
+		crab_parachain_chain_spec, darwinia_parachain_chain_spec, CrabParachainChainSpec,
+		DarwiniaParachainChainSpec, Extensions,
 	},
 	cli::{Cli, RelayChainCli, Subcommand},
 	service::{
-		crab_redirect_runtime, crab_redirect_service, darwinia_redirect_runtime,
-		darwinia_redirect_service, new_partial, CrabRedirectRuntimeApi,
-		CrabRedirectRuntimeExecutor, DarwiniaRedirectRuntimeApi, DarwiniaRedirectRuntimeExecutor,
-		IdentifyVariant,
+		crab_parachain_runtime, crab_parachain_service, darwinia_parachain_runtime,
+		darwinia_parachain_service, new_partial, CrabParachainRuntimeApi,
+		CrabParachainRuntimeExecutor, DarwiniaParachainRuntimeApi,
+		DarwiniaParachainRuntimeExecutor, IdentifyVariant,
 	},
 };
-use crab_redirect_runtime::Block;
+use crab_parachain_runtime::Block;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
@@ -78,10 +78,10 @@ impl SubstrateCli for Cli {
 	}
 
 	fn native_runtime_version(spec: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		if spec.is_crab_redirect() {
-			&crab_redirect_runtime::VERSION
+		if spec.is_crab_parachain() {
+			&crab_parachain_runtime::VERSION
 		} else {
-			&darwinia_redirect_runtime::VERSION
+			&darwinia_parachain_runtime::VERSION
 		}
 	}
 }
@@ -127,29 +127,29 @@ fn load_spec(
 ) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
 	let id = if id == "" {
 		let n = get_exec_name().unwrap_or_default();
-		["darwinia-redirect", "crab-redirect"]
+		["darwinia-parachain", "crab-parachain"]
 			.iter()
 			.cloned()
 			.find(|&chain| n.starts_with(chain))
-			.unwrap_or("darwinia-redirect")
+			.unwrap_or("darwinia-parachain")
 	} else {
 		id
 	};
 
 	Ok(match id.to_lowercase().as_ref() {
-		"darwinia-redirect" => Box::new(darwinia_redirect_chain_spec::config()?),
-		"darwinia-redirect-genesis" => Box::new(darwinia_redirect_chain_spec::genesis_config()),
-		"darwinia-redirect-dev" => Box::new(darwinia_redirect_chain_spec::development_config()),
-		"crab-redirect" => Box::new(crab_redirect_chain_spec::config()?),
-		"crab-redirect-genesis" => Box::new(crab_redirect_chain_spec::genesis_config()),
-		"crab-redirect-dev" => Box::new(crab_redirect_chain_spec::development_config()),
+		"darwinia-parachain" => Box::new(darwinia_parachain_chain_spec::config()?),
+		"darwinia-parachain-genesis" => Box::new(darwinia_parachain_chain_spec::genesis_config()),
+		"darwinia-parachain-dev" => Box::new(darwinia_parachain_chain_spec::development_config()),
+		"crab-parachain" => Box::new(crab_parachain_chain_spec::config()?),
+		"crab-parachain-genesis" => Box::new(crab_parachain_chain_spec::genesis_config()),
+		"crab-parachain-dev" => Box::new(crab_parachain_chain_spec::development_config()),
 		path => {
 			let path = PathBuf::from(path);
-			let chain_spec = Box::new(DarwiniaRedirectChainSpec::from_json_file(path.clone())?)
+			let chain_spec = Box::new(DarwiniaParachainChainSpec::from_json_file(path.clone())?)
 				as Box<dyn ChainSpec>;
 
-			if chain_spec.is_crab_redirect() {
-				Box::new(CrabRedirectChainSpec::from_json_file(path)?)
+			if chain_spec.is_crab_parachain() {
+				Box::new(CrabParachainChainSpec::from_json_file(path)?)
 			} else {
 				chain_spec
 			}
@@ -165,7 +165,7 @@ fn get_exec_name() -> Option<String> {
 }
 
 fn set_default_ss58_version(spec: &Box<dyn ChainSpec>) {
-	let ss58_version = if spec.is_crab_redirect() {
+	let ss58_version = if spec.is_crab_parachain() {
 		Ss58AddressFormat::SubstrateAccount
 	} else {
 		Ss58AddressFormat::DarwiniaAccount
@@ -192,15 +192,15 @@ pub fn run() -> Result<()> {
 
 			set_default_ss58_version(chain_spec);
 
-			if chain_spec.is_crab_redirect() {
+			if chain_spec.is_crab_parachain() {
 				runner.async_run(|$config| {
 					let $components = new_partial::<
-						CrabRedirectRuntimeApi,
-						CrabRedirectRuntimeExecutor,
+						CrabParachainRuntimeApi,
+						CrabParachainRuntimeExecutor,
 						_
 					>(
 						&$config,
-						crab_redirect_service::build_import_queue,
+						crab_parachain_service::build_import_queue,
 					)?;
 					let task_manager = $components.task_manager;
 					{ $( $code )* }.map(|v| (v, task_manager))
@@ -208,12 +208,12 @@ pub fn run() -> Result<()> {
 			} else {
 				runner.async_run(|$config| {
 					let $components = new_partial::<
-						DarwiniaRedirectRuntimeApi,
-						DarwiniaRedirectRuntimeExecutor,
+						DarwiniaParachainRuntimeApi,
+						DarwiniaParachainRuntimeExecutor,
 						_
 					>(
 						&$config,
-						darwinia_redirect_service::build_import_queue,
+						darwinia_parachain_service::build_import_queue,
 					)?;
 					let task_manager = $components.task_manager;
 					{ $( $code )* }.map(|v| (v, task_manager))
@@ -228,12 +228,12 @@ pub fn run() -> Result<()> {
 	match &cli.subcommand {
 		None => {
 			let runner = cli.create_runner(&cli.run.normalize())?;
-			let is_crab_redirect = {
+			let is_crab_parachain = {
 				let chain_spec = &runner.config().chain_spec;
 
 				set_default_ss58_version(chain_spec);
 
-				chain_spec.is_crab_redirect()
+				chain_spec.is_crab_parachain()
 			};
 
 			runner.run_node_until_exit(|config| async move {
@@ -272,13 +272,13 @@ pub fn run() -> Result<()> {
 					}
 				);
 
-				if is_crab_redirect {
-					crab_redirect_service::start_node(config, polkadot_config, id)
+				if is_crab_parachain {
+					crab_parachain_service::start_node(config, polkadot_config, id)
 						.await
 						.map(|r| r.0)
 						.map_err(Into::into)
 				} else {
-					darwinia_redirect_service::start_node(config, polkadot_config, id)
+					darwinia_parachain_service::start_node(config, polkadot_config, id)
 						.await
 						.map(|r| r.0)
 						.map_err(Into::into)

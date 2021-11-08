@@ -23,9 +23,9 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{crypto::UncheckedInto, sr25519};
 // --- darwinia-network ---
 use super::*;
-use crab_redirect_runtime::*;
+use crab_parachain_runtime::*;
 
-/// Specialized `ChainSpec` for the `Crab Redirect` parachain runtime.
+/// Specialized `ChainSpec` for the `Crab Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
 
 pub const PARA_ID: u32 = 2006;
@@ -50,7 +50,7 @@ fn properties() -> Properties {
 }
 
 pub fn config() -> Result<ChainSpec, String> {
-	ChainSpec::from_json_bytes(&include_bytes!("../../res/crab-redirect.json")[..])
+	ChainSpec::from_json_bytes(&include_bytes!("../../res/crab-parachain.json")[..])
 }
 
 pub fn genesis_config() -> ChainSpec {
@@ -127,14 +127,14 @@ pub fn genesis_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Crab Redirect",
-		"Crab Redirect",
+		"Crab Parachain",
+		"Crab Parachain",
 		ChainType::Live,
 		genesis,
 		vec![],
 		Some(
 			TelemetryEndpoints::new(vec![(TELEMETRY_URL.to_string(), 0)])
-				.expect("Crab Redirect telemetry url is valid; qed"),
+				.expect("Crab Parachain telemetry url is valid; qed"),
 		),
 		None,
 		Some(properties()),
@@ -196,8 +196,8 @@ pub fn development_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Crab Redirect Dev",
-		"Crab Redirect Dev",
+		"Crab Parachain Dev",
+		"Crab Parachain Dev",
 		ChainType::Development,
 		genesis,
 		vec![],

@@ -16,17 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
-pub mod crab_redirect;
-pub use crab_redirect::{
-	self as crab_redirect_service, RuntimeExecutor as CrabRedirectRuntimeExecutor,
+pub mod crab_parachain;
+pub use crab_parachain::{
+	self as crab_parachain_service, RuntimeExecutor as CrabParachainRuntimeExecutor,
 };
-pub use crab_redirect_runtime::{self, RuntimeApi as CrabRedirectRuntimeApi};
+pub use crab_parachain_runtime::{self, RuntimeApi as CrabParachainRuntimeApi};
 
-pub mod darwinia_redirect;
-pub use darwinia_redirect::{
-	self as darwinia_redirect_service, RuntimeExecutor as DarwiniaRedirectRuntimeExecutor,
+pub mod darwinia_parachain;
+pub use darwinia_parachain::{
+	self as darwinia_parachain_service, RuntimeExecutor as DarwiniaParachainRuntimeExecutor,
 };
-pub use darwinia_redirect_runtime::{self, RuntimeApi as DarwiniaRedirectRuntimeApi};
+pub use darwinia_parachain_runtime::{self, RuntimeApi as DarwiniaParachainRuntimeApi};
 
 // --- std ---
 use std::sync::Arc;
@@ -60,17 +60,17 @@ use substrate_prometheus_endpoint::Registry;
 use darwinia_collator_primitives::{AccountId, Balance, Hash, Header, Nonce, OpaqueBlock as Block};
 use darwinia_collator_rpc::FullDeps;
 
-/// Can be called for a `Configuration` to check if it is a configuration for the `Crab Redirect` network.
+/// Can be called for a `Configuration` to check if it is a configuration for the `Crab Parachain` network.
 pub trait IdentifyVariant {
-	/// Returns if this is a configuration for the `Crab Redirect` network.
-	fn is_crab_redirect(&self) -> bool;
+	/// Returns if this is a configuration for the `Crab Parachain` network.
+	fn is_crab_parachain(&self) -> bool;
 
 	/// Returns true if this configuration is for a development network.
 	fn is_dev(&self) -> bool;
 }
 impl IdentifyVariant for Box<dyn ChainSpec> {
-	fn is_crab_redirect(&self) -> bool {
-		self.id().starts_with("crab-redirect")
+	fn is_crab_parachain(&self) -> bool {
+		self.id().starts_with("crab-parachain")
 	}
 
 	fn is_dev(&self) -> bool {

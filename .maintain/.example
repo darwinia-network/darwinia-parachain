@@ -38,7 +38,7 @@ c rr -- \
 	--rpc-methods unsafe \
 	--rpc-cors all \
 	--port 35333 \
-	--chain res/crab-redirect-dev.json \
+	--chain res/crab-parachain-dev.json \
 	--tmp \
 	--alice \
 	--collator \
@@ -51,7 +51,7 @@ c rr -- \
 	--rpc-port 9999 \
 	--rpc-methods unsafe \
 	--port 36333 \
-	--chain res/crab-redirect-dev.json \
+	--chain res/crab-parachain-dev.json \
 	--tmp \
 	--bob \
 	--collator \

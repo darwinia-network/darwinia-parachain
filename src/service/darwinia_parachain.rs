@@ -40,8 +40,8 @@ use sp_consensus::{CanAuthorWithNativeVersion, SlotData};
 use sp_consensus_aura::sr25519;
 // --- darwinia-network ---
 use super::*;
-use crab_redirect_runtime::{api, RuntimeApi};
 use darwinia_collator_primitives::OpaqueBlock as Block;
+use darwinia_parachain_runtime::{api, RuntimeApi};
 
 /// Native executor instance.
 pub struct RuntimeExecutor;
@@ -53,11 +53,11 @@ impl NativeExecutionDispatch for RuntimeExecutor {
 	}
 
 	fn native_version() -> NativeVersion {
-		crab_redirect_runtime::native_version()
+		darwinia_parachain_runtime::native_version()
 	}
 }
 
-/// Build the import queue for the `Crab Redirect` runtime.
+/// Build the import queue for the `Darwinia Parachain` runtime.
 pub fn build_import_queue(
 	client: Arc<TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<RuntimeExecutor>>>,
 	config: &Configuration,
@@ -119,7 +119,7 @@ pub fn build_import_queue(
 	))
 }
 
-/// Start a `Crab Redirect` parachain node.
+/// Start a `Darwinia Parachain` parachain node.
 pub async fn start_node(
 	parachain_config: Configuration,
 	polkadot_config: Configuration,

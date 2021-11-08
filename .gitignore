@@ -15,8 +15,8 @@ node_modules
 ## Chain data
 data
 ## Rococo Local Testnet
-res/crab-redirect-dev.*
-res/darwinia-redirect-dev.*
+res/crab-parachain-dev.*
+res/darwinia-parachain-dev.*
 tests/bin
 tests/deploy.bin
 tests/local-testnet/data
