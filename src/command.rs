@@ -366,6 +366,7 @@ pub fn run() -> Result<()> {
 
 			Ok(())
 		}
+		Some(Subcommand::Key(cmd)) => Ok(cmd.run(&cli)?),
 	}
 }
 
