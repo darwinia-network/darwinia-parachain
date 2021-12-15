@@ -29,11 +29,11 @@ parachain-info                  = { default-features = false, git = "https://git
 # darwinia
 darwinia-collator-primitives = { default-features = false, path = "../../primitives" }
 # polkadot
-pallet-xcm         = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.11" }
-polkadot-parachain = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.11" }
-xcm                = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.11" }
-xcm-builder        = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.11" }
-xcm-executor       = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.11" }
+pallet-xcm         = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.12" }
+polkadot-parachain = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.12" }
+xcm                = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.12" }
+xcm-builder        = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.12" }
+xcm-executor       = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.12" }
 # substrate
 frame-executive                            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.12" }
 frame-support                              = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.12" }
