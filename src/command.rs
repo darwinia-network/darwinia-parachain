@@ -30,7 +30,7 @@ use sc_cli::{
 	NetworkParams, Result, RuntimeVersion, SharedParams, SubstrateCli,
 };
 use sc_service::config::{BasePath, PrometheusConfig};
-use sp_core::{crypto::Ss58AddressFormat, hexdisplay::HexDisplay};
+use sp_core::{crypto::Ss58AddressFormatRegistry, hexdisplay::HexDisplay};
 use sp_runtime::traits::Block as BlockT;
 // --- darwinia-network ---
 use crate::{chain_spec::*, cli::*, service::*};
@@ -154,10 +154,11 @@ fn get_exec_name() -> Option<String> {
 
 fn set_default_ss58_version(spec: &Box<dyn ChainSpec>) {
 	let ss58_version = if spec.is_crab_parachain() {
-		Ss58AddressFormat::SubstrateAccount
+		Ss58AddressFormatRegistry::SubstrateAccount
 	} else {
-		Ss58AddressFormat::DarwiniaAccount
-	};
+		Ss58AddressFormatRegistry::DarwiniaAccount
+	}
+	.into();
 
 	sp_core::crypto::set_default_ss58_version(ss58_version);
 }
