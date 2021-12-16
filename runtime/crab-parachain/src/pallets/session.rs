@@ -2,7 +2,7 @@
 use frame_system::Config as SystemConfig;
 use pallet_collator_selection::IdentityCollator;
 use pallet_session::{Config, PeriodicSessions};
-use sp_runtime::{traits::OpaqueKeys, Perbill};
+use sp_runtime::traits::OpaqueKeys;
 // --- darwinia-network ---
 use crate::{weights::pallet_session::WeightInfo, *};
 
@@ -13,7 +13,6 @@ sp_runtime::impl_opaque_keys! {
 }
 
 frame_support::parameter_types! {
-	pub const DisabledValidatorsThreshold: Perbill = Perbill::from_percent(33);
 	pub const Period: u32 = 6 * HOURS;
 	pub const Offset: u32 = 0;
 }
@@ -29,6 +28,5 @@ impl Config for Runtime {
 	// Essentially just Aura, but lets be pedantic.
 	type SessionHandler = <SessionKeys as OpaqueKeys>::KeyTypeIdProviders;
 	type Keys = SessionKeys;
-	type DisabledValidatorsThreshold = DisabledValidatorsThreshold;
 	type WeightInfo = WeightInfo<Runtime>;
 }

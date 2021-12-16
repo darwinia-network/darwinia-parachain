@@ -30,22 +30,10 @@ use sc_cli::{
 	NetworkParams, Result, RuntimeVersion, SharedParams, SubstrateCli,
 };
 use sc_service::config::{BasePath, PrometheusConfig};
-use sp_core::{crypto::Ss58AddressFormat, hexdisplay::HexDisplay};
+use sp_core::{crypto::Ss58AddressFormatRegistry, hexdisplay::HexDisplay};
 use sp_runtime::traits::Block as BlockT;
 // --- darwinia-network ---
-use crate::{
-	chain_spec::{
-		crab_parachain_chain_spec, darwinia_parachain_chain_spec, CrabParachainChainSpec,
-		DarwiniaParachainChainSpec, Extensions,
-	},
-	cli::{Cli, RelayChainCli, Subcommand},
-	service::{
-		crab_parachain_runtime, crab_parachain_service, darwinia_parachain_runtime,
-		darwinia_parachain_service, new_partial, CrabParachainRuntimeApi,
-		CrabParachainRuntimeExecutor, DarwiniaParachainRuntimeApi,
-		DarwiniaParachainRuntimeExecutor, IdentifyVariant,
-	},
-};
+use crate::{chain_spec::*, cli::*, service::*};
 use crab_parachain_runtime::Block;
 
 impl SubstrateCli for Cli {
@@ -166,10 +154,11 @@ fn get_exec_name() -> Option<String> {
 
 fn set_default_ss58_version(spec: &Box<dyn ChainSpec>) {
 	let ss58_version = if spec.is_crab_parachain() {
-		Ss58AddressFormat::SubstrateAccount
+		Ss58AddressFormatRegistry::SubstrateAccount
 	} else {
-		Ss58AddressFormat::DarwiniaAccount
-	};
+		Ss58AddressFormatRegistry::DarwiniaAccount
+	}
+	.into();
 
 	sp_core::crypto::set_default_ss58_version(ss58_version);
 }
@@ -378,6 +367,7 @@ pub fn run() -> Result<()> {
 
 			Ok(())
 		}
+		Some(Subcommand::Key(cmd)) => Ok(cmd.run(&cli)?),
 	}
 }
 
