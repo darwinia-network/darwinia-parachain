@@ -131,8 +131,8 @@ fn load_spec(
 		"crab-parachain" => Box::new(crab_parachain_chain_spec::config()?),
 		"crab-parachain-genesis" => Box::new(crab_parachain_chain_spec::genesis_config()),
 		"crab-parachain-dev" => Box::new(crab_parachain_chain_spec::development_config()),
-		path => {
-			let path = PathBuf::from(path);
+		_ => {
+			let path = PathBuf::from(id);
 			let chain_spec = Box::new(DarwiniaParachainChainSpec::from_json_file(path.clone())?)
 				as Box<dyn ChainSpec>;
 
