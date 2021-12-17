@@ -12,12 +12,4 @@ target
 node_modules
 
 # Test Data
-## Chain data
-data
-## Rococo Local Testnet
-res/crab-parachain-dev.*
-res/darwinia-parachain-dev.*
-tests/bin
-tests/deploy.bin
-tests/local-testnet/data
-tests/local-testnet/log
+tests
