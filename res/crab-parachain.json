@@ -1,6 +1,6 @@
 {
 	"name": "Crab Parachain",
-	"id": "Crab Parachain",
+	"id": "crab_parachain",
 	"chainType": "Live",
 	"bootNodes": [],
 	"telemetryEndpoints": [

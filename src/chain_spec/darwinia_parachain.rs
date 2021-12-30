@@ -128,7 +128,7 @@ pub fn genesis_config() -> ChainSpec {
 
 	return ChainSpec::from_genesis(
 		"Darwinia Parachain",
-		"Darwinia Parachain",
+		"darwinia_parachain",
 		ChainType::Live,
 		genesis,
 		vec![],
@@ -197,7 +197,7 @@ pub fn development_config() -> ChainSpec {
 
 	return ChainSpec::from_genesis(
 		"Darwinia Parachain Dev",
-		"Darwinia Parachain Dev",
+		"darwinia_parachain_dev",
 		ChainType::Development,
 		genesis,
 		vec![],
