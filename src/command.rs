@@ -34,7 +34,7 @@ use sp_core::{crypto::Ss58AddressFormatRegistry, hexdisplay::HexDisplay};
 use sp_runtime::traits::Block as BlockT;
 // --- darwinia-network ---
 use crate::{chain_spec::*, cli::*, service::*};
-use crab_parachain_runtime::Block;
+use darwinia_collator_primitives::Block;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
