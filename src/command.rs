@@ -34,7 +34,7 @@ use sp_core::{crypto::Ss58AddressFormatRegistry, hexdisplay::HexDisplay};
 use sp_runtime::traits::Block as BlockT;
 // --- darwinia-network ---
 use crate::{chain_spec::*, cli::*, service::*};
-use darwinia_collator_primitives::Block;
+use darwinia_collator_primitives::OpaqueBlock;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
@@ -240,7 +240,7 @@ pub fn run() -> Result<()> {
 				let parachain_account =
 					AccountIdConversion::<polkadot_primitives::v0::AccountId>::into_account(&id);
 
-				let block: Block =
+				let block: OpaqueBlock =
 					generate_genesis_block(&config.chain_spec).map_err(|e| format!("{:?}", e))?;
 				let genesis_state = format!("0x{:?}", HexDisplay::from(&block.header().encode()));
 
@@ -327,7 +327,7 @@ pub fn run() -> Result<()> {
 			builder.with_profiling(sc_tracing::TracingReceiver::Log, "");
 			let _ = builder.init();
 
-			let block: Block = generate_genesis_block(&load_spec(
+			let block: OpaqueBlock = generate_genesis_block(&load_spec(
 				&params.chain.clone().unwrap_or_default(),
 				params.parachain_id.unwrap_or_default().into(),
 			)?)?;
