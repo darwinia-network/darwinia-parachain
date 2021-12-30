@@ -128,7 +128,7 @@ pub fn genesis_config() -> ChainSpec {
 
 	return ChainSpec::from_genesis(
 		"Crab Parachain",
-		"Crab Parachain",
+		"crab_parachain",
 		ChainType::Live,
 		genesis,
 		vec![],
@@ -197,7 +197,7 @@ pub fn development_config() -> ChainSpec {
 
 	return ChainSpec::from_genesis(
 		"Crab Parachain Dev",
-		"Crab Parachain Dev",
+		"crab_parachain_dev",
 		ChainType::Development,
 		genesis,
 		vec![],

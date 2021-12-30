@@ -70,7 +70,7 @@ pub trait IdentifyVariant {
 }
 impl IdentifyVariant for Box<dyn ChainSpec> {
 	fn is_crab_parachain(&self) -> bool {
-		self.id().starts_with("crab-parachain")
+		self.id().starts_with("crab_parachain")
 	}
 
 	fn is_dev(&self) -> bool {

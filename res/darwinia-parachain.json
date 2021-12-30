@@ -1,6 +1,6 @@
 {
 	"name": "Darwinia Parachain",
-	"id": "Darwinia Parachain",
+	"id": "darwinia_parachain",
 	"chainType": "Live",
 	"bootNodes": [],
 	"telemetryEndpoints": [
