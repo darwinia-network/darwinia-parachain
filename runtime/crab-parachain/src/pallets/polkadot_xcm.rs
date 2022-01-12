@@ -34,7 +34,7 @@ pub type LocalAssetTransactor = CurrencyAdapter<
 /// queues.
 pub type XcmRouter = (
 	// Two routers - use UMP to communicate with the relay chain:
-	ParentAsUmp<ParachainSystem, ()>,
+	ParentAsUmp<ParachainSystem, PolkadotXcm>,
 	// ..and XCMP to communicate with the sibling chains.
 	XcmpQueue,
 );
