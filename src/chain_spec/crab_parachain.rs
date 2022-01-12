@@ -81,7 +81,6 @@ pub fn genesis_config() -> ChainSpec {
 		GenesisConfig {
 			system: SystemConfig {
 				code: wasm_binary_unwrap().into(),
-				changes_trie_config: Default::default(),
 			},
 			balances: BalancesConfig {
 				balances: vec![
@@ -155,7 +154,6 @@ pub fn development_config() -> ChainSpec {
 		GenesisConfig {
 			system: SystemConfig {
 				code: wasm_binary_unwrap().into(),
-				changes_trie_config: Default::default(),
 			},
 			balances: BalancesConfig {
 				balances: invulnerables
