@@ -1,7 +1,7 @@
 [package]
 authors     = ["Darwinia Network <hello@darwinia.network>"]
 description = "Parachain node runtime primitives"
-edition     = "2018"
+edition     = "2021"
 homepage    = "https://darwinia.network"
 license     = "GPL-3.0"
 name        = "darwinia-collator-primitives"
@@ -11,8 +11,8 @@ version     = "5.0.0"
 
 [dependencies]
 # substrate
-sp-core    = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.12" }
-sp-runtime = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.12" }
+sp-core    = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.13" }
+sp-runtime = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.13" }
 
 [features]
 default = ["std"]

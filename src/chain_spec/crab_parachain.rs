@@ -81,7 +81,6 @@ pub fn genesis_config() -> ChainSpec {
 		GenesisConfig {
 			system: SystemConfig {
 				code: wasm_binary_unwrap().into(),
-				changes_trie_config: Default::default(),
 			},
 			balances: BalancesConfig {
 				balances: vec![
@@ -106,12 +105,11 @@ pub fn genesis_config() -> ChainSpec {
 			},
 			session: SessionConfig {
 				keys: invulnerables
-					.iter()
-					.cloned()
+					.into_iter()
 					.map(|(acc, aura)| {
 						(
 							acc.clone(),        // account id
-							acc.clone(),        // validator id
+							acc,                // validator id
 							session_keys(aura), // session keys
 						)
 					})
@@ -156,7 +154,6 @@ pub fn development_config() -> ChainSpec {
 		GenesisConfig {
 			system: SystemConfig {
 				code: wasm_binary_unwrap().into(),
-				changes_trie_config: Default::default(),
 			},
 			balances: BalancesConfig {
 				balances: invulnerables
@@ -175,12 +172,11 @@ pub fn development_config() -> ChainSpec {
 			},
 			session: SessionConfig {
 				keys: invulnerables
-					.iter()
-					.cloned()
+					.into_iter()
 					.map(|(acc, aura)| {
 						(
 							acc.clone(),        // account id
-							acc.clone(),        // validator id
+							acc,                // validator id
 							session_keys(aura), // session keys
 						)
 					})

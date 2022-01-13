@@ -118,10 +118,10 @@ pub mod constants {
 				let staking_pot = <pallet_collator_selection::Pallet<R>>::account_id();
 
 				<pallet_balances::Pallet<R>>::resolve_creating(&staking_pot, amount);
-				<frame_system::Pallet<R>>::deposit_event(pallet_balances::Event::Deposit(
-					staking_pot,
-					numeric_amount,
-				));
+				<frame_system::Pallet<R>>::deposit_event(pallet_balances::Event::Deposit {
+					who: staking_pot,
+					amount: numeric_amount,
+				});
 			}
 		}
 
@@ -234,7 +234,18 @@ pub type Executive = frame_executive::Executive<
 	frame_system::ChainContext<Runtime>,
 	Runtime,
 	AllPallets,
+	RemoveCollectiveFlip,
 >;
+
+pub struct RemoveCollectiveFlip;
+impl frame_support::traits::OnRuntimeUpgrade for RemoveCollectiveFlip {
+	fn on_runtime_upgrade() -> frame_support::weights::Weight {
+		use frame_support::storage::migration;
+		// Remove the storage value `RandomMaterial` from removed pallet `RandomnessCollectiveFlip`
+		migration::remove_storage_prefix(b"RandomnessCollectiveFlip", b"RandomMaterial", b"");
+		<Runtime as frame_system::Config>::DbWeight::get().writes(1)
+	}
+}
 
 type Ring = Balances;
 
@@ -244,7 +255,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: create_runtime_str!("Darwinia Parachain"),
 	impl_name: create_runtime_str!("Darwinia Parachain"),
 	authoring_version: 1,
-	spec_version: 1,
+	spec_version: 2,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -269,7 +280,6 @@ frame_support::construct_runtime! {
 		// System support stuff.
 		System: frame_system::{Pallet, Call, Storage, Config, Event<T>} = 0,
 		ParachainSystem: cumulus_pallet_parachain_system::{Pallet, Call, Inherent, Storage, Config, Event<T>, ValidateUnsigned} = 1,
-		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Pallet, Storage} = 2,
 		Timestamp: pallet_timestamp::{Pallet, Call, Inherent, Storage} = 3,
 		ParachainInfo: parachain_info::{Pallet, Storage, Config} = 4,
 
@@ -286,7 +296,7 @@ frame_support::construct_runtime! {
 
 		// XCM helpers.
 		XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Call, Storage, Event<T>} = 12,
-		PolkadotXcm: pallet_xcm::{Pallet, Call, Event<T>, Origin} = 13,
+		PolkadotXcm: pallet_xcm::{Pallet, Call, Storage, Event<T>, Origin} = 13,
 		CumulusXcm: cumulus_pallet_xcm::{Pallet, Event<T>, Origin} = 14,
 		DmpQueue: cumulus_pallet_dmp_queue::{Pallet, Call, Storage, Event<T>} = 15,
 

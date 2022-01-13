@@ -4,9 +4,6 @@ pub use system::*;
 pub mod parachain_system;
 pub use parachain_system::*;
 
-pub mod randomness_collective_flip;
-pub use randomness_collective_flip::*;
-
 pub mod timestamp;
 pub use timestamp::*;
 
