@@ -25,7 +25,7 @@ jobs:
         run: |
           apt update -y
           apt install --no-install-recommends -y \
-            curl ca-certificates make gcc g++ clang-4.0 pkg-config zip
+            curl ca-certificates make gcc g++ clang-4.0 pkg-config
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -39,9 +39,9 @@ jobs:
         run: |
           mkdir -p shared/crab-parachain-runtime
           mkdir -p shared/darwinia-parachain-runtime
-          zip -jr \
-            shared/darwinia-collator-linux-x86_64.zip \
-            target/x86_64-unknown-linux-gnu/release/darwinia-collator
+          tar cjSf shared/darwinia-collator-x86_64-linux-gnu.tar.bz2 \
+            -C target/x86_64-unknown-linux-gnu/release \
+           darwinia-collator
 
           mv target/x86_64-unknown-linux-gnu/release/wbuild/crab-parachain-runtime/*.wasm shared/crab-parachain-runtime
           mv target/x86_64-unknown-linux-gnu/release/wbuild/darwinia-parachain-runtime/*.wasm shared/darwinia-parachain-runtime
@@ -128,7 +128,7 @@ jobs:
       - name: Extract package
         run: |
           mkdir -p dist
-          unzip shared/darwinia-collator-linux-x86_64.zip -d dist/
+          tar -xvf shared/darwinia-collator-x86_64-linux-gnu.tar.bz2 -C dist/
 
       - name: Build and publish docker image
         run: |
@@ -161,7 +161,7 @@ jobs:
         run: |
           mkdir -p deploy
 
-          mv shared/darwinia-collator-linux-x86_64.zip deploy/
+          mv shared/darwinia-collator-x86_64-linux-gnu.tar.bz2 deploy/
 
           mv shared/crab-parachain-runtime/*.compact.wasm deploy/
           mv shared/crab-parachain-runtime/*.compact.json deploy/
