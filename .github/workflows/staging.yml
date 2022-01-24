@@ -21,7 +21,7 @@ jobs:
         run: |
           apt update -y
           apt install --no-install-recommends -y \
-            make gcc g++ clang-4.0 pkg-config zip
+            curl make gcc g++ clang-4.0 pkg-config zip
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
