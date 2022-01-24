@@ -39,14 +39,12 @@ jobs:
         run: |
           mkdir -p shared/crab-parachain-runtime
           mkdir -p shared/darwinia-parachain-runtime
-          mkdir -p shared/polkadot-runtime
           zip -jr \
             shared/darwinia-collator-linux-x86_64.zip \
             target/x86_64-unknown-linux-gnu/release/darwinia-collator
 
           mv target/x86_64-unknown-linux-gnu/release/wbuild/crab-parachain-runtime/*.wasm shared/crab-parachain-runtime
           mv target/x86_64-unknown-linux-gnu/release/wbuild/darwinia-parachain-runtime/*.wasm shared/darwinia-parachain-runtime
-          mv target/x86_64-unknown-linux-gnu/release/wbuild/polkadot-runtime/*.wasm shared/polkadot-runtime
 
 
       - name: Upload shared
@@ -65,7 +63,7 @@ jobs:
     needs: [build-package]
     strategy:
       matrix:
-        runtime: [crab-parachain-runtime, darwinia-parachain-runtime, polkadot-runtime]
+        runtime: [crab-parachain-runtime, darwinia-parachain-runtime]
       max-parallel: 1
     steps:
       - uses: actions/download-artifact@v2
@@ -169,8 +167,6 @@ jobs:
           mv shared/crab-parachain-runtime/*.compact.json deploy/
           mv shared/darwinia-parachain-runtime/*.compact.wasm deploy/
           mv shared/darwinia-parachain-runtime/*.compact.json deploy/
-          mv shared/polkadot-runtime/*.compact.wasm deploy/
-          mv shared/polkadot-runtime/*.compact.json deploy/
 
 
       - name: Hash file
@@ -188,19 +184,16 @@ jobs:
         run: |
           PROPOSAL_CRAB_PARACHAIN_COMPACT=$(cat deploy/crab-parachain-runtime.compact.json | jq -r .proposal_hash)
           PROPOSAL_DARWINIA_PARACHAIN_COMPACT=$(cat deploy/darwinia-parachain-runtime.compact.json | jq -r .proposal_hash)
-          PROPOSAL_POLKADOT_COMPACT=$(cat deploy/polkadot-runtime.compact.json | jq -r .proposal_hash)
 
           echo 'Template data:'
           jq -n \
             --arg crab_parachain_proposal_compact "$PROPOSAL_CRAB_PARACHAIN_COMPACT" \
             --arg darwinia_parachain_proposal_compact "$PROPOSAL_DARWINIA_PARACHAIN_COMPACT" \
-            --arg polkadot_proposal_compact "$PROPOSAL_POLKADOT_COMPACT" \
             --arg tag "$GIT_TAG_NAME" \
             --arg sha "$SHA" \
             '{
               crab_parachain_proposal_compact: $crab_proposal_compact,
               darwinia_parachain_proposal_compact: $darwinia_proposal_compact,
-              polkadot_proposal_compact: $polkadot_proposal_compact,
               tag: $tag,
               sha: $sha
             }' | tee template_data.json
