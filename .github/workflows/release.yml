@@ -9,6 +9,10 @@ env:
   RUST_TOOLCHAIN: nightly
 
 jobs:
+
+  ##
+  # Build page
+  ##
   build-package:
     name: Build package
     runs-on: ubuntu-latest
@@ -33,10 +37,17 @@ jobs:
 
       - name: Collect shared
         run: |
-          mkdir -p shared
+          mkdir -p shared/crab-parachain-runtime
+          mkdir -p shared/darwinia-parachain-runtime
+          mkdir -p shared/polkadot-runtime
           zip -jr \
             shared/darwinia-collator-linux-x86_64.zip \
             target/x86_64-unknown-linux-gnu/release/darwinia-collator
+
+          mv target/x86_64-unknown-linux-gnu/release/wbuild/crab-parachain-runtime/*.wasm shared/crab-parachain-runtime
+          mv target/x86_64-unknown-linux-gnu/release/wbuild/darwinia-parachain-runtime/*.wasm shared/darwinia-parachain-runtime
+          mv target/x86_64-unknown-linux-gnu/release/wbuild/polkadot-runtime/*.wasm shared/polkadot-runtime
+
 
       - name: Upload shared
         uses: actions/upload-artifact@v2
@@ -44,10 +55,56 @@ jobs:
           name: bridger-artifact
           path: shared
 
+
+  ##
+  # Generate subwasm info
+  ##
+  build-subwasm:
+    name: Generate subwasm info
+    runs-on: ubuntu-latest
+    needs: [build-package]
+    strategy:
+      matrix:
+        runtime: [crab-parachain-runtime, darwinia-parachain-runtime, polkadot-runtime]
+      max-parallel: 1
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: darwinia-artifact
+          path: shared
+
+      - name: Install subwasm
+        env:
+          # Currently, Same with srtool version v0.9.18
+          # https://github.com/paritytech/srtool/blob/v0.9.18/Dockerfile#L19
+          SUBWASM_VERSION: 0.15.0
+        run: |
+          curl -L https://github.com/chevdor/subwasm/releases/download/v${SUBWASM_VERSION}/subwasm_linux_amd64_v${SUBWASM_VERSION}.deb \
+            --output subwasm.deb && \
+            sudo dpkg -i subwasm.deb && \
+            subwasm --version
+      - name: Generate subwasm info for ${{ matrix.runtime }}
+        run: |
+          WASM=shared/${{ matrix.runtime }}/*.compact.wasm
+          Z_WASM=shared/${{ matrix.runtime }}/*.compact.compressed.wasm
+          echo '${{ matrix.runtime }} compact subwasm info'
+          subwasm -j info $WASM | tee shared/${{ matrix.runtime }}/${{ matrix.runtime }}.compact.json
+          echo '${{ matrix.runtime }} compressed compact subwasm info'
+          subwasm -j info $Z_WASM | tee shared/${{ matrix.runtime }}/${{ matrix.runtime }}.compact.compressed.json
+      - name: Upload shared
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: darwinia-artifact
+          path: shared
+
+
+  ##
+  # Build docker image
+  ##
   build-docker-image:
     name: Build image
     runs-on: ubuntu-latest
-    needs: [ build-package ]
+    needs: [build-package]
     steps:
       - uses: actions/checkout@v2
 
@@ -102,9 +159,23 @@ jobs:
           name: bridger-artifact
           path: shared
 
+      - name: Prepare deploy folder
+        run: |
+          mkdir -p deploy
+
+          mv shared/darwinia-collator-linux-x86_64.zip deploy/
+
+          mv shared/crab-parachain-runtime/*.compact.wasm deploy/
+          mv shared/crab-parachain-runtime/*.compact.json deploy/
+          mv shared/darwinia-parachain-runtime/*.compact.wasm deploy/
+          mv shared/darwinia-parachain-runtime/*.compact.json deploy/
+          mv shared/polkadot-runtime/*.compact.wasm deploy/
+          mv shared/polkadot-runtime/*.compact.json deploy/
+
+
       - name: Hash file
         run: |
-          (cd shared && sha256sum * | tee sha256sums.txt)
+          (cd deploy && sha256sum * | tee sha256sums.txt)
 
       - uses: olegtarasov/get-tag@v2.1
         id: tag-name
@@ -115,11 +186,21 @@ jobs:
 
       - name: Generate template data
         run: |
+          PROPOSAL_CRAB_PARACHAIN_COMPACT=$(cat deploy/crab-parachain-runtime.compact.json | jq -r .proposal_hash)
+          PROPOSAL_DARWINIA_PARACHAIN_COMPACT=$(cat deploy/darwinia-parachain-runtime.compact.json | jq -r .proposal_hash)
+          PROPOSAL_POLKADOT_COMPACT=$(cat deploy/polkadot-runtime.compact.json | jq -r .proposal_hash)
+
           echo 'Template data:'
           jq -n \
+            --arg crab_parachain_proposal_compact "$PROPOSAL_CRAB_PARACHAIN_COMPACT" \
+            --arg darwinia_parachain_proposal_compact "$PROPOSAL_DARWINIA_PARACHAIN_COMPACT" \
+            --arg polkadot_proposal_compact "$PROPOSAL_POLKADOT_COMPACT" \
             --arg tag "$GIT_TAG_NAME" \
             --arg sha "$SHA" \
             '{
+              crab_parachain_proposal_compact: $crab_proposal_compact,
+              darwinia_parachain_proposal_compact: $darwinia_proposal_compact,
+              polkadot_proposal_compact: $polkadot_proposal_compact,
               tag: $tag,
               sha: $sha
             }' | tee template_data.json
@@ -128,20 +209,20 @@ jobs:
         uses: jayamanikharyono/jinja-action@v0.1
         with:
           datafile: template_data.json
-          path: .maintain/release-template.md
+          path: .github/release-template.md
 
       - name: Publish github release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            shared/*
+            deploy/*
           body_path: ".maintain/release-template.md"
           token: ${{ secrets.GITHUB_TOKEN }}
 
   clean-artifacts:
     name: Clean artifacts
     runs-on: ubuntu-latest
-    needs: [ build-docker-image ]
+    needs: [build-docker-image]
     if: always()
     steps:
       - uses: geekyeggo/delete-artifact@v1

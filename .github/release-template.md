@@ -15,3 +15,12 @@ docker pull quay.io/darwinia-network/darwinia-collator:{{ tag }}
 ```docker
 docker pull quay.io/darwinia-network/darwinia-collator:sha-{{ sha }}
 ```
+
+
+## Proposal Hashes
+
+| Network  |                Proposal Hash              |
+| :------: | :---------------------------------------: |
+| Darwinia | {{ darwinia_parachain_proposal_compact }} |
+|   Crab   |   {{ crab_parachain_proposal_compact }}   |
+
