@@ -2,7 +2,7 @@ name: Staging
 
 on:
   push:
-    branches: [ build-image ]
+    branches: [ main ]
   workflow_dispatch:
 
 env:
