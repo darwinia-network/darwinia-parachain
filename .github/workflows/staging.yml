@@ -21,9 +21,7 @@ jobs:
         run: |
           apt update -y
           apt install --no-install-recommends -y \
-            git curl ca-certificates \
-            make gcc g++ clang-4.0 \
-            libssl-dev pkg-config zip
+            make gcc g++ clang-4.0 pkg-config zip
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -49,7 +47,7 @@ jobs:
   build-docker-image:
     name: Build image
     runs-on: ubuntu-latest
-    needs: [ build-linux ]
+    needs: [ build-package ]
     steps:
       - uses: actions/checkout@v2
 
