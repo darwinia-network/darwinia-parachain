@@ -192,8 +192,8 @@ jobs:
             --arg tag "$GIT_TAG_NAME" \
             --arg sha "$SHA" \
             '{
-              crab_parachain_proposal_compact: $crab_proposal_compact,
-              darwinia_parachain_proposal_compact: $darwinia_proposal_compact,
+              crab_parachain_proposal_compact: $crab_parachain_proposal_compact,
+              darwinia_parachain_proposal_compact: $darwinia_parachain_proposal_compact,
               tag: $tag,
               sha: $sha
             }' | tee template_data.json
