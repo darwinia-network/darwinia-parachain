@@ -50,7 +50,7 @@ jobs:
       - name: Upload shared
         uses: actions/upload-artifact@v2
         with:
-          name: bridger-artifact
+          name: darwinia-artifact
           path: shared
 
 
@@ -108,7 +108,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: bridger-artifact
+          name: darwinia-artifact
           path: shared
 
 #      - name: Docker login
@@ -154,7 +154,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: bridger-artifact
+          name: darwinia-artifact
           path: shared
 
       - name: Prepare deploy folder
@@ -220,4 +220,4 @@ jobs:
     steps:
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: bridger-artifact
+          name: darwinia-artifact
