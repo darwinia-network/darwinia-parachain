@@ -9,7 +9,6 @@ env:
   RUST_TOOLCHAIN: nightly
 
 jobs:
-
   ##
   # Build page
   ##
@@ -46,13 +45,11 @@ jobs:
           mv target/x86_64-unknown-linux-gnu/release/wbuild/crab-parachain-runtime/*.wasm shared/crab-parachain-runtime
           mv target/x86_64-unknown-linux-gnu/release/wbuild/darwinia-parachain-runtime/*.wasm shared/darwinia-parachain-runtime
 
-
       - name: Upload shared
         uses: actions/upload-artifact@v2
         with:
           name: darwinia-artifact
           path: shared
-
 
   ##
   # Generate subwasm info
@@ -94,7 +91,6 @@ jobs:
         with:
           name: darwinia-artifact
           path: shared
-
 
   ##
   # Build docker image
@@ -144,11 +140,10 @@ jobs:
           docker push ${IMAGE_PUSH_NAME_TAG}
           docker push ${IMAGE_PUSH_NAME_SHA}
 
-
   publish-release:
     name: Publish release
     runs-on: ubuntu-latest
-    needs: [ build-subwasm, build-docker-image ]
+    needs: [build-subwasm, build-docker-image]
     steps:
       - uses: actions/checkout@v2
 
@@ -167,7 +162,6 @@ jobs:
           mv shared/crab-parachain-runtime/*.compact.json deploy/
           mv shared/darwinia-parachain-runtime/*.compact.wasm deploy/
           mv shared/darwinia-parachain-runtime/*.compact.json deploy/
-
 
       - name: Hash file
         run: |
