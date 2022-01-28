@@ -158,10 +158,10 @@ jobs:
 
           mv shared/darwinia-collator-x86_64-linux-gnu.tar.bz2 deploy/
 
-          mv shared/crab-parachain-runtime/*.compact.wasm deploy/
-          mv shared/crab-parachain-runtime/*.compact.json deploy/
-          mv shared/darwinia-parachain-runtime/*.compact.wasm deploy/
-          mv shared/darwinia-parachain-runtime/*.compact.json deploy/
+          mv shared/crab-parachain-runtime/*.compact.compressed.wasm deploy/
+          mv shared/crab-parachain-runtime/*.compact.compressed.json deploy/
+          mv shared/darwinia-parachain-runtime/*.compact.compressed.wasm deploy/
+          mv shared/darwinia-parachain-runtime/*.compact.compressed.json deploy/
 
       - name: Hash file
         run: |
@@ -176,18 +176,18 @@ jobs:
 
       - name: Generate template data
         run: |
-          PROPOSAL_CRAB_PARACHAIN_COMPACT=$(cat deploy/crab-parachain-runtime.compact.json | jq -r .proposal_hash)
-          PROPOSAL_DARWINIA_PARACHAIN_COMPACT=$(cat deploy/darwinia-parachain-runtime.compact.json | jq -r .proposal_hash)
+          Z_PROPOSAL_CRAB_PARACHAIN_COMPACT=$(cat deploy/crab-parachain-runtime.compact.compressed.json | jq -r .proposal_hash)
+          Z_PROPOSAL_DARWINIA_PARACHAIN_COMPACT=$(cat deploy/darwinia-parachain-runtime.compact.compressed.json | jq -r .proposal_hash)
 
           echo 'Template data:'
           jq -n \
-            --arg crab_parachain_proposal_compact "$PROPOSAL_CRAB_PARACHAIN_COMPACT" \
-            --arg darwinia_parachain_proposal_compact "$PROPOSAL_DARWINIA_PARACHAIN_COMPACT" \
+            --arg z_crab_parachain_proposal_compact "$Z_PROPOSAL_CRAB_PARACHAIN_COMPACT" \
+            --arg z_darwinia_parachain_proposal_compact "$Z_PROPOSAL_DARWINIA_PARACHAIN_COMPACT" \
             --arg tag "$GIT_TAG_NAME" \
             --arg sha "$SHA" \
             '{
-              crab_parachain_proposal_compact: $crab_parachain_proposal_compact,
-              darwinia_parachain_proposal_compact: $darwinia_parachain_proposal_compact,
+              z_crab_parachain_proposal_compact: $z_crab_parachain_proposal_compact,
+              z_darwinia_parachain_proposal_compact: $z_darwinia_parachain_proposal_compact,
               tag: $tag,
               sha: $sha
             }' | tee template_data.json
