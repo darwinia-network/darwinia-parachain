@@ -135,6 +135,7 @@ pub fn genesis_config() -> ChainSpec {
 				.expect("Darwinia Parachain telemetry url is valid; qed"),
 		),
 		None,
+		None,
 		Some(properties()),
 		Extensions {
 			relay_chain: "polkadot".into(),
@@ -197,6 +198,7 @@ pub fn development_config() -> ChainSpec {
 		ChainType::Development,
 		genesis,
 		vec![],
+		None,
 		None,
 		None,
 		Some(properties()),
