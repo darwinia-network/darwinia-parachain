@@ -13,8 +13,9 @@ use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
 // --- darwinia-network ---
 use crate::*;
 
-/// No local origins on this chain are allowed to dispatch XCM sends/executions.
-pub type LocalOriginToLocation = ();
+/// Converts a local signed origin into an XCM multilocation.
+/// Forms the basis for local origins sending/executing XCMs.
+pub type LocalOriginToLocation = SignedToAccountId32<Origin, AccountId, RelayNetwork>;
 
 /// Means for transacting assets on this chain.
 pub type LocalAssetTransactor = CurrencyAdapter<
