@@ -1,7 +1,7 @@
 // --- paritytech ---
 use cumulus_pallet_parachain_system::ParachainSetCode;
 use frame_support::{
-	traits::{Everything, ConstU32},
+	traits::{ConstU32, Everything},
 	weights::{
 		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
 		DispatchClass, Weight,
