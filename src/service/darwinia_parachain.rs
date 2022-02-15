@@ -165,13 +165,16 @@ pub async fn start_node(
 						proposer_factory,
 						create_inherent_data_providers:
 							move |_, (relay_parent, validation_data)| {
-								let parachain_inherent = ParachainInherentData::create_at(
-									relay_parent,
-									&relay_chain_for_aura,
-									&validation_data,
-									id,
-								);
+								let relay_chain_interface = relay_chain_interface.clone();
+
 								async move {
+									let parachain_inherent = ParachainInherentData::create_at(
+										relay_parent,
+										&relay_chain_for_aura,
+										&validation_data,
+										id,
+									)
+									.await;
 									let time =
 										sp_timestamp::InherentDataProvider::from_system_time();
 
@@ -222,13 +225,16 @@ pub async fn start_node(
 						relay_chain_interface: relay_chain_interface.clone(),
 						create_inherent_data_providers:
 							move |_, (relay_parent, validation_data)| {
-								let parachain_inherent = ParachainInherentData::create_at(
-									relay_parent,
-									&relay_chain_interface,
-									&validation_data,
-									id,
-								);
+								let relay_chain_interface = relay_chain_interface.clone();
+
 								async move {
+									let parachain_inherent = ParachainInherentData::create_at(
+										relay_parent,
+										&relay_chain_interface,
+										&validation_data,
+										id,
+									)
+									.await;
 									let parachain_inherent =
 										parachain_inherent.ok_or_else(|| {
 											Box::<dyn Error + Send + Sync>::from(
