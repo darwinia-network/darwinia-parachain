@@ -119,6 +119,9 @@ pub fn genesis_config() -> ChainSpec {
 			// of this.
 			aura: Default::default(),
 			aura_ext: Default::default(),
+			polkadot_xcm: PolkadotXcmConfig {
+				safe_xcm_version: Some(SAFE_XCM_VERSION),
+			},
 			sudo: SudoConfig { key: Some(root) },
 			parachain_system: Default::default(),
 		}
@@ -187,6 +190,9 @@ pub fn development_config() -> ChainSpec {
 			// of this.
 			aura: Default::default(),
 			aura_ext: Default::default(),
+			polkadot_xcm: PolkadotXcmConfig {
+				safe_xcm_version: Some(SAFE_XCM_VERSION),
+			},
 			sudo: SudoConfig { key: Some(root) },
 			parachain_system: Default::default(),
 		}
