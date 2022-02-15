@@ -1,7 +1,7 @@
 // --- paritytech ---
 use cumulus_pallet_parachain_system::ParachainSetCode;
 use frame_support::{
-	traits::Everything,
+	traits::{Everything, ConstU32},
 	weights::{
 		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
 		DispatchClass, Weight,
@@ -80,4 +80,5 @@ impl Config for Runtime {
 	type SystemWeightInfo = ();
 	type SS58Prefix = SS58Prefix;
 	type OnSetCode = ParachainSetCode<Self>;
+	type MaxConsumers = ConstU32<16>;
 }
