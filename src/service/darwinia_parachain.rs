@@ -165,7 +165,7 @@ pub async fn start_node(
 						proposer_factory,
 						create_inherent_data_providers:
 							move |_, (relay_parent, validation_data)| {
-								let relay_chain_interface = relay_chain_interface.clone();
+								let relay_chain_for_aura = relay_chain_for_aura.clone();
 
 								async move {
 									let parachain_inherent = ParachainInherentData::create_at(
@@ -194,7 +194,7 @@ pub async fn start_node(
 								}
 							},
 						block_import: client2.clone(),
-						para_client: client.clone(),
+						para_client: client2.clone(),
 						backoff_authoring_blocks: Option::<()>::None,
 						sync_oracle,
 						keystore,
