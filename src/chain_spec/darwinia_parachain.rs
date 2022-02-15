@@ -119,7 +119,7 @@ pub fn genesis_config() -> ChainSpec {
 			// of this.
 			aura: Default::default(),
 			aura_ext: Default::default(),
-			sudo: SudoConfig { key: root },
+			sudo: SudoConfig { key: Some(root) },
 			parachain_system: Default::default(),
 		}
 	}
@@ -186,7 +186,7 @@ pub fn development_config() -> ChainSpec {
 			// of this.
 			aura: Default::default(),
 			aura_ext: Default::default(),
-			sudo: SudoConfig { key: root },
+			sudo: SudoConfig { key: Some(root) },
 			parachain_system: Default::default(),
 		}
 	}
