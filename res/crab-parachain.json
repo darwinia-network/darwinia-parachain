@@ -3,7 +3,7 @@
 	"id": "crab_parachain",
 	"chainType": "Live",
 	"bootNodes": [
-		"/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWL7dA1s6pe1tzVSfQhmvFz3iXuVbNXgxVBzwkpYZx6Xwn"
+		"/dns4/r1.crab-parachain-p2p.darwinia.network/tcp/30333/p2p/12D3KooWHSt7j3r4WQPsFqHpuquwbUd56EDTEXRo9jqsFnTqWWkr"
 	],
 	"telemetryEndpoints": [
 		[
