@@ -1,14 +1,14 @@
 Darwinia Parachain
 ===
 
-## [5.0.1] - 2022-01-27
+## [5.1.0] - 2022-02-16
 
 > :warning: **This release introduces a new host function. Please upgrade your node prior to the next runtime upgrade of Crab Parachain or Darwinia Parachain in order for your node to continue syncing.**
 
 |      Network       | Native Runtime | Upgrade Priority |
 | :----------------: | :------------: | :--------------: |
-| Darwinia Parachain |       2        |       HIGH       |
-|  Crab  Parachain   |       2        |       HIGH       |
+| Darwinia Parachain |       3        |       HIGH       |
+|  Crab  Parachain   |       3        |       HIGH       |
 
 ## Resources
 
