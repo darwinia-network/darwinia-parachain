@@ -22,7 +22,7 @@ use std::{error::Error, sync::Arc};
 use futures::lock::Mutex;
 // --- paritytech ---
 use cumulus_client_consensus_aura::{
-	build_aura_consensus, BuildAuraConsensusParams, BuildVerifierParams, SlotProportion,
+	AuraConsensus, BuildAuraConsensusParams, BuildVerifierParams, SlotProportion,
 };
 use cumulus_client_consensus_common::ParachainBlockImport;
 use cumulus_client_consensus_relay_chain::{
@@ -138,23 +138,20 @@ pub async fn start_node(
 		 prometheus_registry,
 		 telemetry,
 		 task_manager,
-		 relay_chain_node,
+		 relay_chain_interface,
 		 transaction_pool,
 		 sync_oracle,
 		 keystore,
 		 force_authoring| {
 			let client2 = client.clone();
-			let relay_chain_backend = relay_chain_node.backend.clone();
-			let relay_chain_client = relay_chain_node.client.clone();
 			let spawn_handle = task_manager.spawn_handle();
 			let transaction_pool2 = transaction_pool.clone();
 			let telemetry2 = telemetry.clone();
 			let prometheus_registry2 = prometheus_registry.map(|r| (*r).clone());
-
+			let relay_chain_for_aura = relay_chain_interface.clone();
 			let aura_consensus = BuildOnAccess::Uninitialized(Some(Box::new(move || {
 				let slot_duration =
 					cumulus_client_consensus_aura::slot_duration(&*client2).unwrap();
-
 				let proposer_factory = ProposerFactory::with_proof_recording(
 					spawn_handle,
 					client2.clone(),
@@ -163,23 +160,21 @@ pub async fn start_node(
 					telemetry2.clone(),
 				);
 
-				let relay_chain_backend2 = relay_chain_backend.clone();
-				let relay_chain_client2 = relay_chain_client.clone();
-
-				build_aura_consensus::<sr25519::AuthorityPair, _, _, _, _, _, _, _, _, _>(
+				AuraConsensus::build::<sp_consensus_aura::sr25519::AuthorityPair, _, _, _, _, _, _>(
 					BuildAuraConsensusParams {
 						proposer_factory,
 						create_inherent_data_providers:
 							move |_, (relay_parent, validation_data)| {
-								let parachain_inherent =
-									ParachainInherentData::create_at_with_client(
+								let relay_chain_for_aura = relay_chain_for_aura.clone();
+
+								async move {
+									let parachain_inherent = ParachainInherentData::create_at(
 										relay_parent,
-										&relay_chain_client,
-										&*relay_chain_backend,
+										&relay_chain_for_aura,
 										&validation_data,
 										id,
-									);
-								async move {
+									)
+									.await;
 									let time =
 										sp_timestamp::InherentDataProvider::from_system_time();
 
@@ -199,8 +194,6 @@ pub async fn start_node(
 								}
 							},
 						block_import: client2.clone(),
-						relay_chain_client: relay_chain_client2,
-						relay_chain_backend: relay_chain_backend2,
 						para_client: client2.clone(),
 						backoff_authoring_blocks: Option::<()>::None,
 						sync_oracle,
@@ -223,29 +216,25 @@ pub async fn start_node(
 				prometheus_registry.clone(),
 				telemetry.clone(),
 			);
-
-			let relay_chain_backend = relay_chain_node.backend.clone();
-			let relay_chain_client = relay_chain_node.client.clone();
-
 			let relay_chain_consensus =
 				cumulus_client_consensus_relay_chain::build_relay_chain_consensus(
 					BuildRelayChainConsensusParams {
 						para_id: id,
 						proposer_factory,
 						block_import: client.clone(),
-						relay_chain_client: relay_chain_node.client.clone(),
-						relay_chain_backend: relay_chain_node.backend.clone(),
+						relay_chain_interface: relay_chain_interface.clone(),
 						create_inherent_data_providers:
 							move |_, (relay_parent, validation_data)| {
-								let parachain_inherent =
-									ParachainInherentData::create_at_with_client(
+								let relay_chain_interface = relay_chain_interface.clone();
+
+								async move {
+									let parachain_inherent = ParachainInherentData::create_at(
 										relay_parent,
-										&relay_chain_client,
-										&*relay_chain_backend,
+										&relay_chain_interface,
 										&validation_data,
 										id,
-									);
-								async move {
+									)
+									.await;
 									let parachain_inherent =
 										parachain_inherent.ok_or_else(|| {
 											Box::<dyn Error + Send + Sync>::from(

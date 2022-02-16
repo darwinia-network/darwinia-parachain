@@ -119,7 +119,10 @@ pub fn genesis_config() -> ChainSpec {
 			// of this.
 			aura: Default::default(),
 			aura_ext: Default::default(),
-			sudo: SudoConfig { key: root },
+			polkadot_xcm: PolkadotXcmConfig {
+				safe_xcm_version: Some(SAFE_XCM_VERSION),
+			},
+			sudo: SudoConfig { key: Some(root) },
 			parachain_system: Default::default(),
 		}
 	}
@@ -134,6 +137,7 @@ pub fn genesis_config() -> ChainSpec {
 			TelemetryEndpoints::new(vec![(TELEMETRY_URL.to_string(), 0)])
 				.expect("Darwinia Parachain telemetry url is valid; qed"),
 		),
+		None,
 		None,
 		Some(properties()),
 		Extensions {
@@ -186,7 +190,10 @@ pub fn development_config() -> ChainSpec {
 			// of this.
 			aura: Default::default(),
 			aura_ext: Default::default(),
-			sudo: SudoConfig { key: root },
+			polkadot_xcm: PolkadotXcmConfig {
+				safe_xcm_version: Some(SAFE_XCM_VERSION),
+			},
+			sudo: SudoConfig { key: Some(root) },
 			parachain_system: Default::default(),
 		}
 	}
@@ -197,6 +204,7 @@ pub fn development_config() -> ChainSpec {
 		ChainType::Development,
 		genesis,
 		vec![],
+		None,
 		None,
 		None,
 		Some(properties()),

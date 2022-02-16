@@ -114,14 +114,9 @@ pub mod constants {
 			<R as frame_system::Config>::Event: From<pallet_balances::Event<R>>,
 		{
 			fn on_nonzero_unbalanced(amount: NegativeImbalance<R>) {
-				let numeric_amount = amount.peek();
 				let staking_pot = <pallet_collator_selection::Pallet<R>>::account_id();
 
 				<pallet_balances::Pallet<R>>::resolve_creating(&staking_pot, amount);
-				<frame_system::Pallet<R>>::deposit_event(pallet_balances::Event::Deposit {
-					who: staking_pot,
-					amount: numeric_amount,
-				});
 			}
 		}
 
@@ -217,6 +212,7 @@ pub type Block = generic::Block<Header, UncheckedExtrinsic>;
 pub type SignedBlock = generic::SignedBlock<Block>;
 /// The SignedExtension to the basic transaction logic.
 pub type SignedExtra = (
+	frame_system::CheckNonZeroSender<Runtime>,
 	frame_system::CheckSpecVersion<Runtime>,
 	frame_system::CheckTxVersion<Runtime>,
 	frame_system::CheckGenesis<Runtime>,
@@ -233,7 +229,7 @@ pub type Executive = frame_executive::Executive<
 	Block,
 	frame_system::ChainContext<Runtime>,
 	Runtime,
-	AllPallets,
+	AllPalletsWithSystem,
 	RemoveCollectiveFlip,
 >;
 
@@ -255,10 +251,11 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: create_runtime_str!("Darwinia Parachain"),
 	impl_name: create_runtime_str!("Darwinia Parachain"),
 	authoring_version: 1,
-	spec_version: 2,
+	spec_version: 3,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
+	state_version: 0,
 };
 
 /// The version information used to identify this runtime when compiled natively.
@@ -296,7 +293,7 @@ frame_support::construct_runtime! {
 
 		// XCM helpers.
 		XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Call, Storage, Event<T>} = 12,
-		PolkadotXcm: pallet_xcm::{Pallet, Call, Storage, Event<T>, Origin} = 13,
+		PolkadotXcm: pallet_xcm::{Pallet, Call, Storage, Event<T>, Origin, Config} = 13,
 		CumulusXcm: cumulus_pallet_xcm::{Pallet, Event<T>, Origin} = 14,
 		DmpQueue: cumulus_pallet_dmp_queue::{Pallet, Call, Storage, Event<T>} = 15,
 
@@ -409,8 +406,8 @@ sp_api::impl_runtime_apis! {
 	}
 
 	impl cumulus_primitives_core::CollectCollationInfo<Block> for Runtime {
-		fn collect_collation_info() -> cumulus_primitives_core::CollationInfo {
-			ParachainSystem::collect_collation_info()
+		fn collect_collation_info(header: &<Block as BlockT>::Header) -> cumulus_primitives_core::CollationInfo {
+			ParachainSystem::collect_collation_info(header)
 		}
 	}
 }

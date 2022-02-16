@@ -1,6 +1,6 @@
 // --- paritytech ---
-use frame_support::PalletId;
-use frame_system::{EnsureOneOf, EnsureRoot};
+use frame_support::{traits::EnsureOneOf, PalletId};
+use frame_system::EnsureRoot;
 use pallet_collator_selection::Config;
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
 use xcm::v0::BodyId;
@@ -16,11 +16,8 @@ frame_support::parameter_types! {
 }
 
 /// We allow root and the Relay Chain council to execute privileged collator selection operations.
-pub type CollatorSelectionUpdateOrigin = EnsureOneOf<
-	AccountId,
-	EnsureRoot<AccountId>,
-	EnsureXcm<IsMajorityOfBody<KsmLocation, ExecutiveBody>>,
->;
+pub type CollatorSelectionUpdateOrigin =
+	EnsureOneOf<EnsureRoot<AccountId>, EnsureXcm<IsMajorityOfBody<DotLocation, ExecutiveBody>>>;
 
 impl Config for Runtime {
 	type Event = Event;
