@@ -21,8 +21,8 @@ jobs:
         with:
           toolchain: ${{ env.RUST_TOOLCHAIN }}
 
-      - name: Lint
-        run: cargo clippy --all -- -D warnings
+      - name: Build
+        run: cargo build
 
       - name: Run tests
         run: cargo test
