@@ -113,3 +113,5 @@ std = [
 	"sp-transaction-pool/std",
 	"sp-version/std",
 ]
+
+no-wasm = []

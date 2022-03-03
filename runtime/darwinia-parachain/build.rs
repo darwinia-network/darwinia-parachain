@@ -16,10 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
-// --- darwinia-network ---
+// --- paritytech ---
+#[cfg(not(feature = "no-wasm"))]
 use substrate_wasm_builder::WasmBuilder;
 
 fn main() {
+	#[cfg(not(feature = "no-wasm"))]
 	WasmBuilder::new()
 		.with_current_project()
 		.export_heap_base()
