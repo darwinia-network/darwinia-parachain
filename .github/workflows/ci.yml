@@ -1,0 +1,28 @@
+name: Check pull request
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  RUST_TOOLCHAIN: nightly
+
+jobs:
+  check-package:
+    name: Check package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+
+      - name: Build
+        run: cargo build
+
+      - name: Run tests
+        run: cargo test
