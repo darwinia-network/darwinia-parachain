@@ -49,14 +49,6 @@ jobs:
           - action: test
             task:
               target: subalfred
-        include:
-          - action: build
-            flags: --features template
-            task:
-              target: darwinia-collator
-          - action: build
-            task:
-              target: subalfred
 
     steps:
       - name: Install Rust ${{ env.RUST_TOOLCHAIN }} toolchain
@@ -95,7 +87,7 @@ jobs:
           restore-keys: sccache-${{ matrix.action }}-${{ matrix.task.target }}-${{ env.GITHUB_CACHE_VERSION }}-
 
       - name: Action ${{ matrix.action }}
-        run: cargo ${{ matrix.action }} ${{ matrix.flags }} --locked
+        run: cargo ${{ matrix.action }} --locked
 
       - name: Compress ${{ matrix.task.target }}
         if: matrix.action != 'test'
