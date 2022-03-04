@@ -14,7 +14,7 @@
 	"protocolId": null,
 	"properties": {
 		"ss58Format": 42,
-		"tokenDecimals": 9,
+		"tokenDecimals": 18,
 		"tokenSymbol": "CRAB"
 	},
 	"relay_chain": "kusama",
