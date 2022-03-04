@@ -9,6 +9,7 @@ on:
       - "**.toml"
       - "**.lock"
       - "**.json"
+      - "**.yml"
   pull_request:
     types: [opened, synchronize, ready_for_review]
     branches:
@@ -19,6 +20,7 @@ on:
       - "**.toml"
       - "**.lock"
       - "**.json"
+      - "**.yml"
 
 env:
   RUST_TOOLCHAIN: nightly
