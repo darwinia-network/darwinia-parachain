@@ -12,7 +12,7 @@
 	"protocolId": null,
 	"properties": {
 		"ss58Format": 18,
-		"tokenDecimals": 9,
+		"tokenDecimals": 18,
 		"tokenSymbol": "RING"
 	},
 	"relay_chain": "polkadot",

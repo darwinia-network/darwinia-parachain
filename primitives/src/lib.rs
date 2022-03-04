@@ -74,3 +74,42 @@ pub type Header = generic::Header<BlockNumber, BlakeTwo256>;
 
 /// Block type.
 pub type OpaqueBlock = generic::Block<Header, OpaqueExtrinsic>;
+
+/// `1` in `u128`.
+pub const WEI: Balance = 1;
+/// `1_000` in `u128`.
+pub const K_WEI: Balance = 1_000 * WEI;
+/// `1_000_000` in `u128`.
+pub const M_WEI: Balance = 1_000 * K_WEI;
+/// `1_000_000_000` in `u128`.
+pub const G_WEI: Balance = 1_000 * M_WEI;
+/// `1_000_000_000_000` in `u128`.
+pub const MICRO_COIN: Balance = 1_000 * G_WEI;
+/// `1_000_000_000_000_000` in `u128`.
+pub const MILLI_COIN: Balance = 1_000 * MICRO_COIN;
+/// `1_000_000_000_000_000_000` in `u128`.
+pub const COIN: Balance = 1_000 * MILLI_COIN;
+
+/// Block time of Darwinia Parachain.
+pub const MILLISECS_PER_BLOCK: Moment = 12000;
+
+/// Minute in Darwinia Parachain.
+pub const MINUTES: BlockNumber = 60_000 / (MILLISECS_PER_BLOCK as BlockNumber);
+
+/// Hour in Darwinia Parachain.
+pub const HOURS: BlockNumber = 60 * MINUTES;
+/// Day in Darwinia Parachain.
+pub const DAYS: BlockNumber = 24 * HOURS;
+
+/// Slot duration in Darwinia Parachain.
+pub const SLOT_DURATION: Moment = MILLISECS_PER_BLOCK;
+
+/// Deposit calculator for Darwinia Parachain.
+pub const fn darwinia_deposit(items: u32, bytes: u32) -> Balance {
+	(items as Balance) * 20 * COIN + (bytes as Balance) * 100 * MICRO_COIN
+}
+
+/// Deposit calculator for Crab Parachain.
+pub const fn crab_deposit(items: u32, bytes: u32) -> Balance {
+	(items as Balance) * 20 * MILLI_COIN + (bytes as Balance) * 100 * G_WEI
+}
