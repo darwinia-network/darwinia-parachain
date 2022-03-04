@@ -16,10 +16,7 @@ sp-runtime = { default-features = false, git = "https://github.com/paritytech/su
 
 [features]
 default = ["std"]
-
-std = ["substrate-primitives-std"]
-
-substrate-primitives-std = [
+std = [
 	"sp-core/std",
 	"sp-runtime/std",
 ]
