@@ -24,6 +24,7 @@ pub use executors::*;
 
 pub use crab_parachain_runtime::RuntimeApi as CrabParachainRuntimeApi;
 pub use darwinia_parachain_runtime::RuntimeApi as DarwiniaParachainRuntimeApi;
+pub use pangolin_parachain_runtime::RuntimeApi as PangolinParachainRuntimeApi;
 
 // --- std ---
 use std::{error::Error, sync::Arc, time::Duration};
@@ -83,12 +84,19 @@ pub trait IdentifyVariant {
 	/// Returns if this is a configuration for the `Crab Parachain` network.
 	fn is_crab_parachain(&self) -> bool;
 
+	/// Returns if this is a configuration for the `Pangolin Parachain` network.
+	fn is_pangolin_parachain(&self) -> bool;
+
 	/// Returns true if this configuration is for a development network.
 	fn is_dev(&self) -> bool;
 }
 impl IdentifyVariant for Box<dyn ChainSpec> {
 	fn is_crab_parachain(&self) -> bool {
 		self.id().starts_with("crab_parachain")
+	}
+
+	fn is_pangolin_parachain(&self) -> bool {
+		self.id().starts_with("pangolin_parachain")
 	}
 
 	fn is_dev(&self) -> bool {
