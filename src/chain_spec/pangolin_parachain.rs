@@ -16,6 +16,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
+#[cfg(feature = "alpha")]
+mod network {
+	pub const NAME: &str = "Pangolin Parachain Alpha";
+	pub const ID: &str = "pangolin_parachain_alpha";
+}
+
+#[cfg(not(feature = "alpha"))]
+mod network {
+	pub const NAME: &str = "Pangolin Parachain";
+	pub const ID: &str = "pangolin_parachain";
+}
+
 // --- paritytech ---
 use sc_service::{ChainType, GenericChainSpec, Properties};
 use sc_telemetry::TelemetryEndpoints;
@@ -24,6 +36,7 @@ use sp_core::{crypto::UncheckedInto, sr25519};
 // --- darwinia-network ---
 use super::*;
 use darwinia_parachain_runtime::*;
+use network::*;
 
 /// Specialized `ChainSpec` for the `Darwinia Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
@@ -50,7 +63,12 @@ fn properties() -> Properties {
 }
 
 pub fn config() -> Result<ChainSpec, String> {
-	ChainSpec::from_json_bytes(&include_bytes!("../../res/darwinia-parachain.json")[..])
+	#[cfg(feature = "alpha")]
+	return ChainSpec::from_json_bytes(
+		&include_bytes!("../../res/pangolin-parachain-alpha.json")[..],
+	);
+	#[cfg(not(feature = "alpha"))]
+	return ChainSpec::from_json_bytes(&include_bytes!("../../res/pangolin-parachain.json")[..]);
 }
 
 pub fn genesis_config() -> ChainSpec {
@@ -113,8 +131,8 @@ pub fn genesis_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Pangolin Parachain",
-		"pangolin_parachain",
+		NAME,
+		ID,
 		ChainType::Live,
 		genesis,
 		vec![],
@@ -184,8 +202,8 @@ pub fn development_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Pangolin Parachain Dev",
-		"pangolin_parachain_dev",
+		NAME,
+		ID,
 		ChainType::Development,
 		genesis,
 		vec![],
