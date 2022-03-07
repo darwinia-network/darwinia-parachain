@@ -1721,6 +1721,7 @@ dependencies = [
  "jsonrpc-core",
  "log",
  "pallet-transaction-payment-rpc",
+ "pangolin-parachain-runtime",
  "parity-scale-codec",
  "polkadot-cli",
  "polkadot-parachain",
