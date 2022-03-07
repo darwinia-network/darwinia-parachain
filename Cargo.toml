@@ -90,4 +90,5 @@ members = [
 	"rpc",
 	"runtime/crab-parachain",
 	"runtime/darwinia-parachain",
+	"runtime/pangolin-parachain",
 ]
