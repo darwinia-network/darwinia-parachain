@@ -6,7 +6,7 @@ homepage    = "https://darwinia.network"
 license     = "GPL-3.0"
 name        = "darwinia-collator-primitives"
 readme      = "README.md"
-repository  = "https://github.com/darwinia-network/parachain"
+repository  = "https://github.com/darwinia-network/darwinia-parachain"
 version     = "5.1.0"
 
 [dependencies]

@@ -96,7 +96,7 @@ impl SubstrateCli for RelayChainCli {
 	}
 
 	fn support_url() -> String {
-		"https://github.com/darwinia-network/parachain/issues/new".into()
+		"https://github.com/darwinia-network/darwinia-parachain/issues/new".into()
 	}
 
 	fn copyright_start_year() -> i32 {
