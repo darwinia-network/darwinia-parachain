@@ -203,7 +203,7 @@ pub fn run() -> Result<()> {
 						_
 					>(
 						&$config,
-						darwinia_parachain_service::build_import_queue,
+						service::build_import_queue,
 					)?;
 					let task_manager = $components.task_manager;
 					{ $( $code )* }.map(|v| (v, task_manager))

@@ -16,17 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
-pub mod crab_parachain;
-pub use crab_parachain::{
-	self as crab_parachain_service, RuntimeExecutor as CrabParachainRuntimeExecutor,
-};
-pub use crab_parachain_runtime::{self, RuntimeApi as CrabParachainRuntimeApi};
+pub mod executors;
+pub use executors::*;
 
-pub mod darwinia_parachain;
-pub use darwinia_parachain::{
-	self as darwinia_parachain_service, RuntimeExecutor as DarwiniaParachainRuntimeExecutor,
-};
-pub use darwinia_parachain_runtime::{self, RuntimeApi as DarwiniaParachainRuntimeApi};
+pub use crab_parachain_runtime::RuntimeApi as CrabParachainRuntimeApi;
+pub use darwinia_parachain_runtime::RuntimeApi as DarwiniaParachainRuntimeApi;
 
 // --- std ---
 use std::{sync::Arc, time::Duration};
