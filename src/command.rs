@@ -116,7 +116,7 @@ impl SubstrateCli for RelayChainCli {
 fn load_spec(id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
 	let id = if id == "" {
 		let n = get_exec_name().unwrap_or_default();
-		["darwinia-parachain", "crab-parachain"]
+		["darwinia-parachain", "crab-parachain", "pangolin-parachain"]
 			.iter()
 			.cloned()
 			.find(|&chain| n.starts_with(chain))
@@ -132,6 +132,9 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, St
 		"crab-parachain" => Box::new(crab_parachain_chain_spec::config()?),
 		"crab-parachain-genesis" => Box::new(crab_parachain_chain_spec::genesis_config()),
 		"crab-parachain-dev" => Box::new(crab_parachain_chain_spec::development_config()),
+		"pangolin-parachain" => Box::new(pangolin_parachain_chain_spec::config()?),
+		"pangolin-parachain-genesis" => Box::new(pangolin_parachain_chain_spec::genesis_config()),
+		"pangolin-parachain-dev" => Box::new(pangolin_parachain_chain_spec::development_config()),
 		_ => {
 			let path = PathBuf::from(id);
 			let chain_spec = Box::new(DarwiniaParachainChainSpec::from_json_file(path.clone())?)

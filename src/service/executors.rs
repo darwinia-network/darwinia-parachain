@@ -19,6 +19,20 @@
 // --- paritytech ---
 use sc_executor::{NativeExecutionDispatch, NativeVersion};
 
+/// Darwinia native executor instance.
+pub struct DarwiniaParachainRuntimeExecutor;
+impl NativeExecutionDispatch for DarwiniaParachainRuntimeExecutor {
+	type ExtendHostFunctions = ();
+
+	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
+		darwinia_parachain_runtime::api::dispatch(method, data)
+	}
+
+	fn native_version() -> NativeVersion {
+		darwinia_parachain_runtime::native_version()
+	}
+}
+
 /// Crab Parachain native executor instance.
 pub struct CrabParachainRuntimeExecutor;
 impl NativeExecutionDispatch for CrabParachainRuntimeExecutor {
@@ -33,16 +47,16 @@ impl NativeExecutionDispatch for CrabParachainRuntimeExecutor {
 	}
 }
 
-/// Darwinia native executor instance.
-pub struct DarwiniaParachainRuntimeExecutor;
-impl NativeExecutionDispatch for DarwiniaParachainRuntimeExecutor {
+/// Pangolin Parachain native executor instance.
+pub struct PangolinParachainRuntimeExecutor;
+impl NativeExecutionDispatch for PangolinParachainRuntimeExecutor {
 	type ExtendHostFunctions = ();
 
 	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
-		darwinia_parachain_runtime::api::dispatch(method, data)
+		pangolin_parachain_runtime::api::dispatch(method, data)
 	}
 
 	fn native_version() -> NativeVersion {
-		darwinia_parachain_runtime::native_version()
+		pangolin_parachain_runtime::native_version()
 	}
 }

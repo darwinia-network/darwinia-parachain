@@ -28,7 +28,7 @@ use darwinia_parachain_runtime::*;
 /// Specialized `ChainSpec` for the `Darwinia Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
 
-pub const PARA_ID: u32 = 2003;
+pub const PARA_ID: u32 = 2071;
 
 const TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
@@ -44,13 +44,13 @@ fn properties() -> Properties {
 
 	properties.insert("ss58Format".into(), 18.into());
 	properties.insert("tokenDecimals".into(), 18.into());
-	properties.insert("tokenSymbol".into(), "RING".into());
+	properties.insert("tokenSymbol".into(), "PRING".into());
 
 	properties
 }
 
 pub fn config() -> Result<ChainSpec, String> {
-	ChainSpec::from_json_bytes(&include_bytes!("../../res/pangolin-parachain.json")[..])
+	ChainSpec::from_json_bytes(&include_bytes!("../../res/darwinia-parachain.json")[..])
 }
 
 pub fn genesis_config() -> ChainSpec {
@@ -128,20 +128,20 @@ pub fn genesis_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Darwinia Parachain",
-		"darwinia_parachain",
+		"Pangolin Parachain",
+		"pangolin_parachain",
 		ChainType::Live,
 		genesis,
 		vec![],
 		Some(
 			TelemetryEndpoints::new(vec![(TELEMETRY_URL.to_string(), 0)])
-				.expect("Darwinia Parachain telemetry url is valid; qed"),
+				.expect("Pangolin Parachain telemetry url is valid; qed"),
 		),
 		None,
 		None,
 		Some(properties()),
 		Extensions {
-			relay_chain: "polkadot".into(),
+			relay_chain: "rococo".into(),
 			para_id: PARA_ID,
 		},
 	);
@@ -199,8 +199,8 @@ pub fn development_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Darwinia Parachain Dev",
-		"darwinia_parachain_dev",
+		"Pangolin Parachain Dev",
+		"pangolin_parachain_dev",
 		ChainType::Development,
 		genesis,
 		vec![],
