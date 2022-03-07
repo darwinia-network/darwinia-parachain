@@ -91,7 +91,7 @@ pub mod constants {
 		impl WeightToFeePolynomial for WeightToFee {
 			type Balance = Balance;
 			fn polynomial() -> WeightToFeeCoefficients<Self::Balance> {
-				// in `Crab Parachain`, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
+				// in `Pangolin Parachain`, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
 				let p = 100 * MILLI;
 				let q = Balance::from(ExtrinsicBaseWeight::get());
 
@@ -166,12 +166,43 @@ pub mod wasm {
 #[cfg(not(feature = "no-wasm"))]
 pub use wasm::*;
 
+pub mod runtime_version {
+	/// This runtime version.
+	#[cfg(not(feature = "alpha"))]
+	#[sp_version::runtime_version]
+	pub const VERSION: RuntimeVersion = RuntimeVersion {
+		spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
+		impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
+		authoring_version: 1,
+		spec_version: 3,
+		impl_version: 1,
+		apis: RUNTIME_API_VERSIONS,
+		transaction_version: 1,
+		state_version: 0,
+	};
+
+	/// This runtime version.
+	#[cfg(feature = "alpha")]
+	#[sp_version::runtime_version]
+	pub const VERSION: RuntimeVersion = RuntimeVersion {
+		spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
+		impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
+		authoring_version: 1,
+		spec_version: 3,
+		impl_version: 1,
+		apis: RUNTIME_API_VERSIONS,
+		transaction_version: 1,
+		state_version: 0,
+	};
+}
+pub use runtime_version::*;
+
 pub use darwinia_collator_primitives::*;
 
 // --- paritytech ---
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
-	create_runtime_str, generic,
+	generic,
 	traits::Block as BlockT,
 	transaction_validity::{TransactionSource, TransactionValidity},
 	ApplyExtrinsicResult, MultiAddress,
@@ -210,19 +241,6 @@ pub type Executive = frame_executive::Executive<
 >;
 
 type Ring = Balances;
-
-/// This runtime version.
-#[sp_version::runtime_version]
-pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: create_runtime_str!("Crab Parachain"),
-	impl_name: create_runtime_str!("Darwinia Crab Parachain"),
-	authoring_version: 1,
-	spec_version: 3,
-	impl_version: 1,
-	apis: RUNTIME_API_VERSIONS,
-	transaction_version: 1,
-	state_version: 0,
-};
 
 /// The version information used to identify this runtime when compiled natively.
 #[cfg(feature = "std")]

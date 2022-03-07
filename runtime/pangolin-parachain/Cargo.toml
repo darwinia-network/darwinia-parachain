@@ -114,4 +114,6 @@ std = [
 	"sp-version/std",
 ]
 
+alpha = []
+
 no-wasm = []
