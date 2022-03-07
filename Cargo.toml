@@ -79,7 +79,7 @@ cumulus-relay-chain-interface         = { git = "https://github.com/paritytech/c
 cumulus-relay-chain-local             = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 
 # polkadot
-polkadot-cli        = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
+polkadot-cli        = { features = ["rococo-native"], git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-parachain  = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-primitives = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-service    = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
