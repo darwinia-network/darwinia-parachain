@@ -7,7 +7,7 @@ pub type SlowAdjustingFeeUpdate<R> =
 	TargetedFeeAdjustment<R, TargetBlockFullness, AdjustmentVariable, MinimumMultiplier>;
 
 frame_support::parameter_types! {
-	pub const TransactionByteFee: Balance = 5 * MILLI;
+	pub const TransactionByteFee: Balance = 5 * MILLI_COIN;
 	pub const OperationalFeeMultiplier: u8 = 5;
 }
 

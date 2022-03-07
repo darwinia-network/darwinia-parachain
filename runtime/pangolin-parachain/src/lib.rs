@@ -62,7 +62,7 @@ pub mod fee {
 		type Balance = Balance;
 		fn polynomial() -> WeightToFeeCoefficients<Self::Balance> {
 			// in `Pangolin Parachain`, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
-			let p = 100 * MILLI;
+			let p = 100 * MILLI_COIN;
 			let q = Balance::from(ExtrinsicBaseWeight::get());
 
 			smallvec::smallvec![WeightToFeeCoefficient {
@@ -134,37 +134,6 @@ pub mod wasm {
 #[cfg(not(feature = "no-wasm"))]
 pub use wasm::*;
 
-pub mod runtime_version {
-	/// This runtime version.
-	#[cfg(not(feature = "alpha"))]
-	#[sp_version::runtime_version]
-	pub const VERSION: RuntimeVersion = RuntimeVersion {
-		spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
-		impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
-		authoring_version: 1,
-		spec_version: 3,
-		impl_version: 1,
-		apis: RUNTIME_API_VERSIONS,
-		transaction_version: 1,
-		state_version: 0,
-	};
-
-	/// This runtime version.
-	#[cfg(feature = "alpha")]
-	#[sp_version::runtime_version]
-	pub const VERSION: RuntimeVersion = RuntimeVersion {
-		spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
-		impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
-		authoring_version: 1,
-		spec_version: 3,
-		impl_version: 1,
-		apis: RUNTIME_API_VERSIONS,
-		transaction_version: 1,
-		state_version: 0,
-	};
-}
-pub use runtime_version::*;
-
 pub use darwinia_collator_primitives::*;
 
 // --- paritytech ---
@@ -210,14 +179,33 @@ pub type Executive = frame_executive::Executive<
 
 type Ring = Balances;
 
-/// The version information used to identify this runtime when compiled natively.
-#[cfg(feature = "std")]
-pub fn native_version() -> NativeVersion {
-	NativeVersion {
-		runtime_version: VERSION,
-		can_author_with: Default::default(),
-	}
-}
+/// This runtime version.
+#[cfg(not(feature = "alpha"))]
+#[sp_version::runtime_version]
+pub const VERSION: RuntimeVersion = RuntimeVersion {
+	spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
+	impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
+	authoring_version: 1,
+	spec_version: 3,
+	impl_version: 1,
+	apis: RUNTIME_API_VERSIONS,
+	transaction_version: 1,
+	state_version: 0,
+};
+
+/// This runtime version.
+#[cfg(feature = "alpha")]
+#[sp_version::runtime_version]
+pub const VERSION: RuntimeVersion = RuntimeVersion {
+	spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
+	impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
+	authoring_version: 1,
+	spec_version: 3,
+	impl_version: 1,
+	apis: RUNTIME_API_VERSIONS,
+	transaction_version: 1,
+	state_version: 0,
+};
 
 frame_support::construct_runtime! {
 	pub enum Runtime
@@ -390,4 +378,13 @@ cumulus_pallet_parachain_system::register_validate_block! {
 	Runtime = Runtime,
 	BlockExecutor = cumulus_pallet_aura_ext::BlockExecutor::<Runtime, Executive>,
 	CheckInherents = CheckInherents,
+}
+
+/// The version information used to identify this runtime when compiled natively.
+#[cfg(feature = "std")]
+pub fn native_version() -> NativeVersion {
+	NativeVersion {
+		runtime_version: VERSION,
+		can_author_with: Default::default(),
+	}
 }
