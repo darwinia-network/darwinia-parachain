@@ -33,7 +33,11 @@ use sc_service::config::{BasePath, PrometheusConfig};
 use sp_core::{crypto::Ss58AddressFormatRegistry, hexdisplay::HexDisplay};
 use sp_runtime::traits::Block as BlockT;
 // --- darwinia-network ---
-use crate::{chain_spec::*, cli::*, service::*};
+use crate::{
+	chain_spec::*,
+	cli::*,
+	service::{self, *},
+};
 use darwinia_collator_primitives::OpaqueBlock;
 
 impl SubstrateCli for Cli {
@@ -186,7 +190,7 @@ pub fn run() -> Result<()> {
 						_
 					>(
 						&$config,
-						crab_parachain_service::build_import_queue,
+						service::build_import_queue,
 					)?;
 					let task_manager = $components.task_manager;
 					{ $( $code )* }.map(|v| (v, task_manager))
@@ -259,15 +263,22 @@ pub fn run() -> Result<()> {
 				);
 
 				if is_crab_parachain {
-					crab_parachain_service::start_node(config, polkadot_config, id)
-						.await
-						.map(|r| r.0)
-						.map_err(Into::into)
+					service::start_node::<CrabParachainRuntimeApi, CrabParachainRuntimeExecutor>(
+						config,
+						polkadot_config,
+						id,
+					)
+					.await
+					.map(|r| r.0)
+					.map_err(Into::into)
 				} else {
-					darwinia_parachain_service::start_node(config, polkadot_config, id)
-						.await
-						.map(|r| r.0)
-						.map_err(Into::into)
+					service::start_node::<
+						DarwiniaParachainRuntimeApi,
+						DarwiniaParachainRuntimeExecutor,
+					>(config, polkadot_config, id)
+					.await
+					.map(|r| r.0)
+					.map_err(Into::into)
 				}
 			})
 		}
