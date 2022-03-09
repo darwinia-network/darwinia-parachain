@@ -50,7 +50,7 @@ fn properties() -> Properties {
 }
 
 pub fn config() -> Result<ChainSpec, String> {
-	ChainSpec::from_json_bytes(&include_bytes!("../../res/pangolin-parachain.json")[..])
+	ChainSpec::from_json_bytes(&include_bytes!("../../res/darwinia-parachain.json")[..])
 }
 
 pub fn genesis_config() -> ChainSpec {
