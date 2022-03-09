@@ -33,7 +33,11 @@ use sc_service::config::{BasePath, PrometheusConfig};
 use sp_core::{crypto::Ss58AddressFormatRegistry, hexdisplay::HexDisplay};
 use sp_runtime::traits::Block as BlockT;
 // --- darwinia-network ---
-use crate::{chain_spec::*, cli::*, service::*};
+use crate::{
+	chain_spec::*,
+	cli::*,
+	service::{self, *},
+};
 use darwinia_collator_primitives::OpaqueBlock;
 
 impl SubstrateCli for Cli {
@@ -54,7 +58,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn support_url() -> String {
-		"https://github.com/darwinia-network/parachain/issues/new".into()
+		"https://github.com/darwinia-network/darwinia-parachain/issues/new".into()
 	}
 
 	fn copyright_start_year() -> i32 {
@@ -68,6 +72,8 @@ impl SubstrateCli for Cli {
 	fn native_runtime_version(spec: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
 		if spec.is_crab_parachain() {
 			&crab_parachain_runtime::VERSION
+		} else if spec.is_pangolin_parachain() {
+			&pangolin_parachain_runtime::VERSION
 		} else {
 			&darwinia_parachain_runtime::VERSION
 		}
@@ -92,7 +98,7 @@ impl SubstrateCli for RelayChainCli {
 	}
 
 	fn support_url() -> String {
-		"https://github.com/darwinia-network/parachain/issues/new".into()
+		"https://github.com/darwinia-network/darwinia-parachain/issues/new".into()
 	}
 
 	fn copyright_start_year() -> i32 {
@@ -112,7 +118,7 @@ impl SubstrateCli for RelayChainCli {
 fn load_spec(id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
 	let id = if id == "" {
 		let n = get_exec_name().unwrap_or_default();
-		["darwinia-parachain", "crab-parachain"]
+		["darwinia-parachain", "crab-parachain", "pangolin-parachain"]
 			.iter()
 			.cloned()
 			.find(|&chain| n.starts_with(chain))
@@ -128,6 +134,9 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, St
 		"crab-parachain" => Box::new(crab_parachain_chain_spec::config()?),
 		"crab-parachain-genesis" => Box::new(crab_parachain_chain_spec::genesis_config()),
 		"crab-parachain-dev" => Box::new(crab_parachain_chain_spec::development_config()),
+		"pangolin-parachain" => Box::new(pangolin_parachain_chain_spec::config()?),
+		"pangolin-parachain-genesis" => Box::new(pangolin_parachain_chain_spec::genesis_config()),
+		"pangolin-parachain-dev" => Box::new(pangolin_parachain_chain_spec::development_config()),
 		_ => {
 			let path = PathBuf::from(id);
 			let chain_spec = Box::new(DarwiniaParachainChainSpec::from_json_file(path.clone())?)
@@ -135,6 +144,8 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, St
 
 			if chain_spec.is_crab_parachain() {
 				Box::new(CrabParachainChainSpec::from_json_file(path)?)
+			} else if chain_spec.is_pangolin_parachain() {
+				Box::new(PangolinParachainChainSpec::from_json_file(path)?)
 			} else {
 				chain_spec
 			}
@@ -149,8 +160,10 @@ fn get_exec_name() -> Option<String> {
 		.and_then(|s| s.into_string().ok())
 }
 
-fn set_default_ss58_version(spec: &Box<dyn ChainSpec>) {
-	let ss58_version = if spec.is_crab_parachain() {
+fn set_default_ss58_version(chain_spec: &Box<dyn ChainSpec>) {
+	let ss58_version = if chain_spec.is_crab_parachain() {
+		Ss58AddressFormatRegistry::SubstrateAccount
+	} else if chain_spec.is_pangolin_parachain() {
 		Ss58AddressFormatRegistry::SubstrateAccount
 	} else {
 		Ss58AddressFormatRegistry::DarwiniaAccount
@@ -186,7 +199,20 @@ pub fn run() -> Result<()> {
 						_
 					>(
 						&$config,
-						crab_parachain_service::build_import_queue,
+						service::build_import_queue,
+					)?;
+					let task_manager = $components.task_manager;
+					{ $( $code )* }.map(|v| (v, task_manager))
+				})
+			} else if chain_spec.is_pangolin_parachain() {
+				runner.async_run(|$config| {
+					let $components = new_partial::<
+						PangolinParachainRuntimeApi,
+						PangolinParachainRuntimeExecutor,
+						_
+					>(
+						&$config,
+						service::build_import_queue,
 					)?;
 					let task_manager = $components.task_manager;
 					{ $( $code )* }.map(|v| (v, task_manager))
@@ -199,7 +225,7 @@ pub fn run() -> Result<()> {
 						_
 					>(
 						&$config,
-						darwinia_parachain_service::build_import_queue,
+						service::build_import_queue,
 					)?;
 					let task_manager = $components.task_manager;
 					{ $( $code )* }.map(|v| (v, task_manager))
@@ -212,17 +238,13 @@ pub fn run() -> Result<()> {
 	let cli = Cli::from_args();
 
 	match &cli.subcommand {
-		None => {
-			let runner = cli.create_runner(&cli.run.normalize())?;
-			let is_crab_parachain = {
-				let chain_spec = &runner.config().chain_spec;
+		None => cli
+			.create_runner(&cli.run.normalize())?
+			.run_node_until_exit(|config| async move {
+				let chain_spec = &config.chain_spec;
 
 				set_default_ss58_version(chain_spec);
 
-				chain_spec.is_crab_parachain()
-			};
-
-			runner.run_node_until_exit(|config| async move {
 				let para_id = Extensions::try_get(&*config.chain_spec)
 					.map(|e| e.para_id)
 					.ok_or_else(|| "Could not find parachain ID in chain-spec.")?;
@@ -258,19 +280,33 @@ pub fn run() -> Result<()> {
 					}
 				);
 
-				if is_crab_parachain {
-					crab_parachain_service::start_node(config, polkadot_config, id)
-						.await
-						.map(|r| r.0)
-						.map_err(Into::into)
+				if chain_spec.is_crab_parachain() {
+					service::start_node::<CrabParachainRuntimeApi, CrabParachainRuntimeExecutor>(
+						config,
+						polkadot_config,
+						id,
+					)
+					.await
+					.map(|r| r.0)
+					.map_err(Into::into)
+				} else if chain_spec.is_pangolin_parachain() {
+					service::start_node::<
+						PangolinParachainRuntimeApi,
+						PangolinParachainRuntimeExecutor,
+					>(config, polkadot_config, id)
+					.await
+					.map(|r| r.0)
+					.map_err(Into::into)
 				} else {
-					darwinia_parachain_service::start_node(config, polkadot_config, id)
-						.await
-						.map(|r| r.0)
-						.map_err(Into::into)
+					service::start_node::<
+						DarwiniaParachainRuntimeApi,
+						DarwiniaParachainRuntimeExecutor,
+					>(config, polkadot_config, id)
+					.await
+					.map(|r| r.0)
+					.map_err(Into::into)
 				}
-			})
-		}
+			}),
 		Some(Subcommand::BuildSpec(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.sync_run(|config| cmd.run(config.chain_spec, config.network))

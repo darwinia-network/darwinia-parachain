@@ -1,18 +1,21 @@
 [package]
 authors     = ["Darwinia Network <hello@darwinia.network>"]
 build       = "build.rs"
-description = "Darwinia Runtime Module Library Node"
+description = "Darwinia Collator"
 edition     = "2018"
 homepage    = "https://darwinia.network"
 license     = "GPL-3.0"
 name        = "darwinia-collator"
 readme      = "README.md"
-repository  = "https://github.com/darwinia-network/parachain"
+repository  = "https://github.com/darwinia-network/darwinia-parachain"
 version     = "5.1.0"
 
 [[bin]]
 name = "darwinia-collator"
 path = "src/main.rs"
+
+[features]
+alpha = ["pangolin-parachain-runtime/alpha"]
 
 [dependencies]
 # crates.io
@@ -31,6 +34,7 @@ crab-parachain-runtime       = { path = "runtime/crab-parachain" }
 darwinia-collator-primitives = { path = "primitives" }
 darwinia-collator-rpc        = { path = "rpc" }
 darwinia-parachain-runtime   = { path = "runtime/darwinia-parachain" }
+pangolin-parachain-runtime   = { path = "runtime/pangolin-parachain" }
 
 # substrate
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
@@ -75,7 +79,7 @@ cumulus-relay-chain-interface         = { git = "https://github.com/paritytech/c
 cumulus-relay-chain-local             = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 
 # polkadot
-polkadot-cli        = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
+polkadot-cli        = { features = ["rococo-native"], git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-parachain  = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-primitives = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-service    = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
@@ -90,4 +94,5 @@ members = [
 	"rpc",
 	"runtime/crab-parachain",
 	"runtime/darwinia-parachain",
+	"runtime/pangolin-parachain",
 ]

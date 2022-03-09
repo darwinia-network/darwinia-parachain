@@ -113,3 +113,8 @@ pub const fn darwinia_deposit(items: u32, bytes: u32) -> Balance {
 pub const fn crab_deposit(items: u32, bytes: u32) -> Balance {
 	(items as Balance) * 20 * MILLI_COIN + (bytes as Balance) * 100 * G_WEI
 }
+
+/// Deposit calculator for Pangolin Parachain.
+pub const fn pangolin_deposit(items: u32, bytes: u32) -> Balance {
+	(items as Balance) * 20 * MILLI_COIN + (bytes as Balance) * 100 * G_WEI
+}

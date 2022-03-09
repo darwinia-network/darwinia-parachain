@@ -16,12 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
-pub mod crab_parachain;
-pub use crab_parachain::{self as crab_parachain_chain_spec, ChainSpec as CrabParachainChainSpec};
-
 pub mod darwinia_parachain;
 pub use darwinia_parachain::{
 	self as darwinia_parachain_chain_spec, ChainSpec as DarwiniaParachainChainSpec,
+};
+
+pub mod crab_parachain;
+pub use crab_parachain::{self as crab_parachain_chain_spec, ChainSpec as CrabParachainChainSpec};
+
+pub mod pangolin_parachain;
+pub use pangolin_parachain::{
+	self as pangolin_parachain_chain_spec, ChainSpec as PangolinParachainChainSpec,
 };
 
 // --- crates.io ---

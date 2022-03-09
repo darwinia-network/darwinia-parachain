@@ -16,6 +16,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
+#[cfg(feature = "alpha")]
+mod network {
+	pub const NAME: &str = "Pangolin Parachain Alpha";
+	pub const ID: &str = "pangolin_parachain_alpha";
+}
+
+#[cfg(not(feature = "alpha"))]
+mod network {
+	pub const NAME: &str = "Pangolin Parachain";
+	pub const ID: &str = "pangolin_parachain";
+}
+
 // --- paritytech ---
 use sc_service::{ChainType, GenericChainSpec, Properties};
 use sc_telemetry::TelemetryEndpoints;
@@ -24,11 +36,12 @@ use sp_core::{crypto::UncheckedInto, sr25519};
 // --- darwinia-network ---
 use super::*;
 use darwinia_parachain_runtime::*;
+use network::*;
 
 /// Specialized `ChainSpec` for the `Darwinia Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
 
-pub const PARA_ID: u32 = 2003;
+pub const PARA_ID: u32 = 2071;
 
 const TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
@@ -44,30 +57,30 @@ fn properties() -> Properties {
 
 	properties.insert("ss58Format".into(), 18.into());
 	properties.insert("tokenDecimals".into(), 18.into());
-	properties.insert("tokenSymbol".into(), "RING".into());
+	properties.insert("tokenSymbol".into(), "PRING".into());
 
 	properties
 }
 
 pub fn config() -> Result<ChainSpec, String> {
-	ChainSpec::from_json_bytes(&include_bytes!("../../res/darwinia-parachain.json")[..])
+	#[cfg(feature = "alpha")]
+	return ChainSpec::from_json_bytes(
+		&include_bytes!("../../res/pangolin-parachain-alpha.json")[..],
+	);
+	#[cfg(not(feature = "alpha"))]
+	return ChainSpec::from_json_bytes(&include_bytes!("../../res/pangolin-parachain.json")[..]);
 }
 
 pub fn genesis_config() -> ChainSpec {
 	fn genesis() -> GenesisConfig {
 		let root: AccountId = array_bytes::hex_into_unchecked(
-			"0x129d025b24257aabdefac93d00419f06a38e3a5e2314dd6866b16e8f205ce074",
+			"0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
 		);
 		let invulnerables = [
-			// @HackFisher
-			"0x7e8672b2c2ad0904ba6137de480eaa3b9476042f3f2ae08da033c4ccf2272d5a",
-			"0xbe7e6c55feca7ffbfd961c93acdf1bc68bea91d758fb8da92f65c66bbf12ea74",
-			// @wi1dcard
-			"0xea0f4185dd32c1278d7bbd3cdd2fbaec3ca29921a88c04c175401a0668d88e66",
-			"0x56695000227fee2b4e2b15e892527250e47d4671e17f6e604cd67fb7213bbc19",
-			// @AurevoirXavier
-			"0xb4f7f03bebc56ebe96bc52ea5ed3159d45a0ce3a8d7f082983c33ef133274747",
-			"0x28b4a5e67767ec4aba8e8d99ac58481ec74e48185507f1552b1f8ba00994cf59",
+			"0x9c43c00407c0a51e0d88ede9d531f165e370013b648e6b62f4b3bcff4689df02",
+			"0x741a9f507722713ec0a5df1558ac375f62469b61d1f60fa60f5dedfc85425b2e",
+			"0x2276a3162f1b63c21b3396c5846d43874c5b8ba69917d756142d460b2d70d036",
+			"0x7a8b265c416eab5fdf8e5a1b3c7635131ca7164fbe6f66d8a70feeeba7c4dd7f",
 		]
 		.iter()
 		.map(|hex| {
@@ -83,17 +96,7 @@ pub fn genesis_config() -> ChainSpec {
 				code: wasm_binary_unwrap().into(),
 			},
 			balances: BalancesConfig {
-				balances: vec![
-					// Root
-					(root.clone(), 100_000 * COIN),
-					// Darwinia Dev
-					(
-						array_bytes::hex_into_unchecked(
-							"0x0a66532a23c418cca12183fee5f6afece770a0bb8725f459d7d1b1b598f91c49",
-						),
-						100_000 * COIN,
-					),
-				],
+				balances: vec![(root.clone(), 100_000 * COIN)],
 			},
 			parachain_info: ParachainInfoConfig {
 				parachain_id: PARA_ID.into(),
@@ -128,20 +131,20 @@ pub fn genesis_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Darwinia Parachain",
-		"darwinia_parachain",
+		NAME,
+		ID,
 		ChainType::Live,
 		genesis,
 		vec![],
 		Some(
 			TelemetryEndpoints::new(vec![(TELEMETRY_URL.to_string(), 0)])
-				.expect("Darwinia Parachain telemetry url is valid; qed"),
+				.expect("Pangolin Parachain telemetry url is valid; qed"),
 		),
 		None,
 		None,
 		Some(properties()),
 		Extensions {
-			relay_chain: "polkadot".into(),
+			relay_chain: "rococo".into(),
 			para_id: PARA_ID,
 		},
 	);
@@ -199,8 +202,8 @@ pub fn development_config() -> ChainSpec {
 	}
 
 	return ChainSpec::from_genesis(
-		"Darwinia Parachain Dev",
-		"darwinia_parachain_dev",
+		NAME,
+		ID,
 		ChainType::Development,
 		genesis,
 		vec![],

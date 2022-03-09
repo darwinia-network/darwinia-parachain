@@ -1,13 +1,13 @@
 [package]
 authors     = ["Darwinia Network <hello@darwinia.network>"]
 build       = "build.rs"
-description = "Darwinia Parachain Runtime"
+description = "Pangolin Parachain Runtime"
 edition     = "2021"
-homepage    = "https://darwinia.network"
+homepage    = "https://darwinia.network/"
 license     = "GPL-3.0"
-name        = "darwinia-parachain-runtime"
+name        = "pangolin-parachain-runtime"
 readme      = "README.md"
-repository  = "https://github.com/darwinia-network/darwinia-parachain/"
+repository  = "https://github.com/darwinia-network/darwinia-parachain"
 version     = "5.1.0"
 
 [dependencies]
@@ -113,5 +113,7 @@ std = [
 	"sp-transaction-pool/std",
 	"sp-version/std",
 ]
+
+alpha = []
 
 no-wasm = []

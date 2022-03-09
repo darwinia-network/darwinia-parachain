@@ -139,7 +139,7 @@ pub use darwinia_collator_primitives::*;
 // --- paritytech ---
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
-	create_runtime_str, generic,
+	generic,
 	traits::Block as BlockT,
 	transaction_validity::{TransactionSource, TransactionValidity},
 	ApplyExtrinsicResult, MultiAddress,
@@ -182,8 +182,8 @@ type Ring = Balances;
 /// This runtime version.
 #[sp_version::runtime_version]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: create_runtime_str!("Darwinia Parachain"),
-	impl_name: create_runtime_str!("Darwinia Parachain"),
+	spec_name: sp_runtime::create_runtime_str!("Darwinia Parachain"),
+	impl_name: sp_runtime::create_runtime_str!("Darwinia Parachain"),
 	authoring_version: 1,
 	spec_version: 3,
 	impl_version: 1,
