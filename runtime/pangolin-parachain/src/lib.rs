@@ -242,6 +242,9 @@ frame_support::construct_runtime! {
 		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
 		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
+
+		// Pangolin bridge.
+		BridgePangolinGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20
 	}
 }
 

@@ -54,3 +54,6 @@ pub use proxy::*;
 
 pub mod sudo;
 pub use sudo::*;
+
+pub mod bridge_pangolin_grandpa;
+pub use bridge_pangolin_grandpa::*;

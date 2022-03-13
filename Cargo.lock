@@ -676,6 +676,22 @@ dependencies = [
 [[package]]
 name = "bp-header-chain"
 version = "0.1.0"
+source = "git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916#86cc7857b81477f830643b514c25affaa8d33c1a"
+dependencies = [
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916)",
+ "finality-grandpa",
+ "frame-support",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-finality-grandpa",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "bp-header-chain"
+version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
  "finality-grandpa",
@@ -694,7 +710,7 @@ name = "bp-message-dispatch"
 version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
- "bp-runtime",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "parity-scale-codec",
  "scale-info",
@@ -707,7 +723,7 @@ version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
  "bitvec",
- "bp-runtime",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "frame-system",
  "impl-trait-for-tuples",
@@ -723,7 +739,7 @@ version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
  "bp-messages",
- "bp-runtime",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "frame-system",
  "parity-scale-codec",
@@ -742,7 +758,7 @@ source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab
 dependencies = [
  "bp-messages",
  "bp-polkadot-core",
- "bp-runtime",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "parity-scale-codec",
  "smallvec",
@@ -750,6 +766,24 @@ dependencies = [
  "sp-runtime",
  "sp-std",
  "sp-version",
+]
+
+[[package]]
+name = "bp-runtime"
+version = "0.1.0"
+source = "git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916#86cc7857b81477f830643b514c25affaa8d33c1a"
+dependencies = [
+ "frame-support",
+ "hash-db",
+ "num-traits",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-state-machine",
+ "sp-std",
+ "sp-trie",
 ]
 
 [[package]]
@@ -775,7 +809,7 @@ name = "bp-test-utils"
 version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
- "bp-header-chain",
+ "bp-header-chain 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "ed25519-dalek",
  "finality-grandpa",
  "parity-scale-codec",
@@ -793,7 +827,7 @@ dependencies = [
  "bp-messages",
  "bp-polkadot-core",
  "bp-rococo",
- "bp-runtime",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "parity-scale-codec",
  "sp-api",
  "sp-runtime",
@@ -807,11 +841,11 @@ source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab
 dependencies = [
  "bp-message-dispatch",
  "bp-messages",
- "bp-runtime",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "hash-db",
  "pallet-bridge-dispatch",
- "pallet-bridge-grandpa",
+ "pallet-bridge-grandpa 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "pallet-bridge-messages",
  "pallet-transaction-payment",
  "parity-scale-codec",
@@ -1915,6 +1949,9 @@ dependencies = [
 name = "darwinia-collator-primitives"
 version = "5.1.0"
 dependencies = [
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916)",
+ "frame-support",
+ "frame-system",
  "sp-core",
  "sp-runtime",
 ]
@@ -5099,7 +5136,7 @@ version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
  "bp-message-dispatch",
- "bp-runtime",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "frame-system",
  "log",
@@ -5113,10 +5150,30 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-grandpa"
 version = "0.1.0"
+source = "git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916#86cc7857b81477f830643b514c25affaa8d33c1a"
+dependencies = [
+ "bp-header-chain 0.1.0 (git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916)",
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916)",
+ "finality-grandpa",
+ "frame-support",
+ "frame-system",
+ "log",
+ "num-traits",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-finality-grandpa",
+ "sp-runtime",
+ "sp-std",
+ "sp-trie",
+]
+
+[[package]]
+name = "pallet-bridge-grandpa"
+version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
- "bp-header-chain",
- "bp-runtime",
+ "bp-header-chain 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-test-utils",
  "finality-grandpa",
  "frame-support",
@@ -5140,7 +5197,7 @@ dependencies = [
  "bitvec",
  "bp-message-dispatch",
  "bp-messages",
- "bp-runtime",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "frame-system",
  "log",
@@ -5758,6 +5815,7 @@ dependencies = [
  "pallet-aura",
  "pallet-authorship",
  "pallet-balances",
+ "pallet-bridge-grandpa 0.1.0 (git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916)",
  "pallet-collator-selection",
  "pallet-multisig",
  "pallet-proxy",
@@ -7777,7 +7835,7 @@ dependencies = [
  "beefy-primitives",
  "bp-messages",
  "bp-rococo",
- "bp-runtime",
+ "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-wococo",
  "bridge-runtime-common",
  "frame-executive",
@@ -7792,7 +7850,7 @@ dependencies = [
  "pallet-beefy",
  "pallet-beefy-mmr",
  "pallet-bridge-dispatch",
- "pallet-bridge-grandpa",
+ "pallet-bridge-grandpa 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "pallet-bridge-messages",
  "pallet-collective",
  "pallet-grandpa",

@@ -61,6 +61,7 @@ sp-session                                 = { default-features = false, git = "
 sp-std                                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 sp-transaction-pool                        = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 sp-version                                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+pallet-bridge-grandpa                      = { default-features = false, git = "https://github.com/darwinia-network/parity-bridges-common", branch = "nada-parity-polkadot-0916" }
 
 [build-dependencies]
 substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
