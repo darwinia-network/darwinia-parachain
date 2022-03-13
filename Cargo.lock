@@ -683,6 +683,7 @@ dependencies = [
  "frame-support",
  "parity-scale-codec",
  "scale-info",
+ "serde",
  "sp-core",
  "sp-finality-grandpa",
  "sp-runtime",
@@ -802,6 +803,21 @@ dependencies = [
  "sp-state-machine",
  "sp-std",
  "sp-trie",
+]
+
+[[package]]
+name = "bp-test-utils"
+version = "0.1.0"
+source = "git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916#86cc7857b81477f830643b514c25affaa8d33c1a"
+dependencies = [
+ "bp-header-chain 0.1.0 (git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916)",
+ "ed25519-dalek",
+ "finality-grandpa",
+ "parity-scale-codec",
+ "sp-application-crypto",
+ "sp-finality-grandpa",
+ "sp-runtime",
+ "sp-std",
 ]
 
 [[package]]
@@ -5154,6 +5170,7 @@ source = "git+https://github.com/darwinia-network/parity-bridges-common?branch=n
 dependencies = [
  "bp-header-chain 0.1.0 (git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916)",
+ "bp-test-utils 0.1.0 (git+https://github.com/darwinia-network/parity-bridges-common?branch=nada-parity-polkadot-0916)",
  "finality-grandpa",
  "frame-support",
  "frame-system",
@@ -5161,6 +5178,7 @@ dependencies = [
  "num-traits",
  "parity-scale-codec",
  "scale-info",
+ "serde",
  "sp-finality-grandpa",
  "sp-runtime",
  "sp-std",
@@ -5174,7 +5192,7 @@ source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab
 dependencies = [
  "bp-header-chain 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
- "bp-test-utils",
+ "bp-test-utils 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "finality-grandpa",
  "frame-support",
  "frame-system",
