@@ -115,6 +115,9 @@ pub use pallets::*;
 
 pub mod weights;
 
+pub mod migrations;
+pub use migrations::*;
+
 #[cfg(not(feature = "no-wasm"))]
 pub mod wasm {
 	//! Make the WASM binary available.
@@ -175,6 +178,7 @@ pub type Executive = frame_executive::Executive<
 	frame_system::ChainContext<Runtime>,
 	Runtime,
 	AllPalletsWithSystem,
+	CustomOnRuntimeUpgrade,
 >;
 
 type Ring = Balances;
