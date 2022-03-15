@@ -17,7 +17,7 @@
 		"tokenSymbol": "PRING"
 	},
 	"relay_chain": "westend",
-	"para_id": 2071,
+	"para_id": 2105,
 	"consensusEngine": null,
 	"codeSubstitutes": {},
 	"genesis": {
