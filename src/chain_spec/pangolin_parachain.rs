@@ -41,7 +41,7 @@ use network::*;
 /// Specialized `ChainSpec` for the `Darwinia Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
 
-pub const PARA_ID: u32 = 2071;
+pub const PARA_ID: u32 = 2105;
 
 const TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
