@@ -38,7 +38,7 @@ use crate::{
 	cli::*,
 	service::{self, *},
 };
-use darwinia_collator_primitives::OpaqueBlock;
+use darwinia_collator_primitives::OpaqueBlock as Block;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
@@ -260,7 +260,7 @@ pub fn run() -> Result<()> {
 					AccountIdConversion::<polkadot_primitives::v0::AccountId>::into_account(&id);
 				let state_version =
 					RelayChainCli::native_runtime_version(&config.chain_spec).state_version();
-				let block: OpaqueBlock = generate_genesis_block(&config.chain_spec, state_version)
+				let block: Block = generate_genesis_block(&config.chain_spec, state_version)
 					.map_err(|e| format!("{:?}", e))?;
 				let genesis_state = format!("0x{:?}", HexDisplay::from(&block.header().encode()));
 				let tokio_handle = config.tokio_handle.clone();
@@ -363,7 +363,7 @@ pub fn run() -> Result<()> {
 			let _ = builder.init();
 			let spec = load_spec(&params.chain.clone().unwrap_or_default())?;
 			let state_version = Cli::native_runtime_version(&spec).state_version();
-			let block: OpaqueBlock = generate_genesis_block(&spec, state_version)?;
+			let block: Block = generate_genesis_block(&spec, state_version)?;
 			let raw_header = block.header().encode();
 			let output_buf = if params.raw {
 				raw_header
@@ -401,6 +401,31 @@ pub fn run() -> Result<()> {
 			Ok(())
 		}
 		Some(Subcommand::Key(cmd)) => Ok(cmd.run(&cli)?),
+		#[cfg(feature = "try-runtime")]
+		Some(Subcommand::TryRuntime(cmd)) => {
+			let runner = cli.create_runner(cmd)?;
+			let chain_spec = &runner.config().chain_spec;
+
+			set_default_ss58_version(chain_spec);
+
+			if chain_spec.is_crab_parachain() {
+				runner.async_run(|config| {
+					// we don't need any of the components of new_partial, just a runtime, or a task
+					// manager to do `async_run`.
+					let registry = config.prometheus_config.as_ref().map(|cfg| &cfg.registry);
+					let task_manager =
+						sc_service::TaskManager::new(config.tokio_handle.clone(), registry)
+							.map_err(|e| sc_cli::Error::from(sc_service::Error::Prometheus(e)))?;
+
+					Ok((
+						cmd.run::<Block, CrabParachainRuntimeExecutor>(config),
+						task_manager,
+					))
+				})
+			} else {
+				panic!("Try runtime not support chain: {}", chain_spec.id());
+			}
+		}
 	}
 }
 

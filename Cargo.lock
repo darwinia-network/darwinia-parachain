@@ -1144,6 +1144,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "frame-system-rpc-runtime-api",
+ "frame-try-runtime",
  "pallet-aura",
  "pallet-authorship",
  "pallet-balances",
@@ -1909,6 +1910,7 @@ dependencies = [
  "substrate-frame-rpc-system",
  "substrate-prometheus-endpoint",
  "tempfile",
+ "try-runtime-cli",
  "xcm",
 ]
 

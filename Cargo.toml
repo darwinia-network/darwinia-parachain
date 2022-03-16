@@ -17,6 +17,13 @@ path = "src/main.rs"
 [features]
 alpha = ["pangolin-parachain-runtime/alpha"]
 
+try-runtime = [
+	# darwinia-network
+	"crab-parachain-runtime/try-runtime",
+	# paritytech
+	"try-runtime-cli",
+]
+
 [dependencies]
 # crates.io
 array-bytes  = { version = "1.4" }
@@ -65,6 +72,7 @@ sp-timestamp                   = { git = "https://github.com/paritytech/substrat
 sp-transaction-pool            = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 substrate-frame-rpc-system     = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 substrate-prometheus-endpoint  = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+try-runtime-cli                = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 
 # cumulus
 cumulus-client-cli                    = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
@@ -87,6 +95,7 @@ xcm                 = { git = "https://github.com/paritytech/polkadot", branch =
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+try-runtime-cli              = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 
 [workspace]
 members = [

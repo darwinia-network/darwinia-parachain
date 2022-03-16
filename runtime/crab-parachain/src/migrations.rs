@@ -29,7 +29,10 @@ impl OnRuntimeUpgrade for CustomOnRuntimeUpgrade {
 	#[cfg(feature = "try-runtime")]
 	fn pre_upgrade() -> Result<(), &'static str> {
 		for account in accounts() {
-			assert_eq!(Balances::free_balance(account), 100_000 * G_WEI);
+			let balance = Balances::free_balance(&account);
+
+			frame_support::log::info!("{:?}: {:?}", account, balance);
+			assert_eq!(balance, 100_000 * G_WEI);
 		}
 
 		Ok(())
@@ -38,7 +41,10 @@ impl OnRuntimeUpgrade for CustomOnRuntimeUpgrade {
 	#[cfg(feature = "try-runtime")]
 	fn post_upgrade() -> Result<(), &'static str> {
 		for account in accounts() {
-			assert_eq!(Balances::free_balance(account), 100_000 * COIN);
+			let balance = Balances::free_balance(&account);
+
+			frame_support::log::info!("{:?}: {:?}", account, balance);
+			assert_eq!(balance, 100_000 * COIN);
 		}
 
 		Ok(())

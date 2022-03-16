@@ -140,6 +140,8 @@ pub use wasm::*;
 pub use darwinia_collator_primitives::*;
 
 // --- paritytech ---
+#[cfg(feature = "try-runtime")]
+use frame_support::weights::Weight;
 use sp_core::OpaqueMetadata;
 use sp_runtime::{
 	generic,
@@ -186,7 +188,7 @@ type Ring = Balances;
 /// This runtime version.
 #[sp_version::runtime_version]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: sp_runtime::create_runtime_str!("Crab Parachain"),
+	spec_name: sp_runtime::create_runtime_str!("crab parachain"),
 	impl_name: sp_runtime::create_runtime_str!("Darwinia Crab Parachain"),
 	authoring_version: 1,
 	spec_version: 3,
@@ -346,6 +348,22 @@ sp_api::impl_runtime_apis! {
 	impl cumulus_primitives_core::CollectCollationInfo<Block> for Runtime {
 		fn collect_collation_info(header: &<Block as BlockT>::Header) -> cumulus_primitives_core::CollationInfo {
 			ParachainSystem::collect_collation_info(header)
+		}
+	}
+
+	#[cfg(feature = "try-runtime")]
+	impl frame_try_runtime::TryRuntime<Block> for Runtime {
+		fn on_runtime_upgrade() -> (Weight, Weight) {
+			// NOTE: intentional unwrap: we don't want to propagate the error backwards, and want to
+			// have a backtrace here. If any of the pre/post migration checks fail, we shall stop
+			// right here and right now.
+			let weight = Executive::try_runtime_upgrade().unwrap();
+
+			(weight, RuntimeBlockWeights::get().max_block)
+		}
+
+		fn execute_block_no_check(block: Block) -> Weight {
+			Executive::execute_block_no_check(block)
 		}
 	}
 }

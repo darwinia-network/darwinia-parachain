@@ -20,6 +20,9 @@
 use std::path::PathBuf;
 // --- crates.io ---
 use structopt::StructOpt;
+// --- paritytech ---
+#[cfg(feature = "try-runtime")]
+use try_runtime_cli::TryRuntimeCmd;
 // --- darwinia-network ---
 use crate::chain_spec;
 
@@ -57,6 +60,11 @@ pub enum Subcommand {
 
 	/// Key management CLI utilities
 	Key(sc_cli::KeySubcommand),
+
+	/// Try some experimental command on the runtime. This includes migration and runtime-upgrade
+	/// testing.
+	#[cfg(feature = "try-runtime")]
+	TryRuntime(TryRuntimeCmd),
 }
 
 /// Command for exporting the genesis state of the parachain
