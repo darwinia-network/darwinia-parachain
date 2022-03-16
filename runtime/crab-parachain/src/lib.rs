@@ -188,7 +188,7 @@ type Ring = Balances;
 /// This runtime version.
 #[sp_version::runtime_version]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: sp_runtime::create_runtime_str!("crab parachain"),
+	spec_name: sp_runtime::create_runtime_str!("Crab Parachain"),
 	impl_name: sp_runtime::create_runtime_str!("Darwinia Crab Parachain"),
 	authoring_version: 1,
 	spec_version: 3,
