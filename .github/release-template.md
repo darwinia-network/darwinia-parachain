@@ -1,21 +1,20 @@
 Darwinia Parachain
 ===
 
-## [5.1.0] - 2022-02-16
+## [5.1.1] - 2022-02-16
 
-> :warning: **This release introduces a new host function. Please upgrade your node prior to the next runtime upgrade of Crab Parachain or Darwinia Parachain in order for your node to continue syncing.**
+> :warning: **We changed the token decimal in this release. In order to query the correct value from RPC please upgrade your node.**
 
-|      Network       | Native Runtime | Upgrade Priority |
-| :----------------: | :------------: | :--------------: |
-| Darwinia Parachain |       3        |       HIGH       |
-|  Crab  Parachain   |       3        |       HIGH       |
+|    Network     | Native Runtime | Upgrade Priority |
+| :------------: | :------------: | :--------------: |
+| Crab Parachain |       4        |      MEDIUM      |
 
 ## Resources
 
 ### Pre-built Binary
-|  OS   |  Arch  | Glibc | LLVM  |                                                                 Download                                                                 |
-| :---: | :----: | :---: | :---: | :--------------------------------------------------------------------------------------------------------------------------------------: |
-| Linux | x86_64 | 2.23  |  4.0  | [tar.bz2](https://github.com/darwinia-network/darwinia-parachain/releases/download/{{ tag }}/darwinia-collator-x86_64-linux-gnu.tar.bz2) |
+|  OS   |  Arch  | Glibc | LLVM  |                                                                                                                                      Download                                                                                                                                      |
+| :---: | :----: | :---: | :---: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Linux | x86_64 | 2.23  |  4.0  | [tar.bz2](https://github.com/darwinia-network/darwinia-parachain/releases/download/{{ tag }}/darwinia-collator-x86_64-linux-gnu.tar.bz2), [tar.zst](https://github.com/darwinia-network/darwinia-parachain/releases/download/{{ tag }}/darwinia-collator-x86_64-linux-gnu.tar.zst) |
 
 ### Docker
 #### Pull with the Git Tag
@@ -28,7 +27,6 @@ docker pull quay.io/darwinia-network/darwinia-collator:sha-{{ sha }}
 ```
 
 ## Proposal Hashes
-| Network  |                Proposal Hash                |
-| :------: | :-----------------------------------------: |
-| Darwinia | {{ z_darwinia_parachain_proposal_compact }} |
-|   Crab   |   {{ z_crab_parachain_proposal_compact }}   |
+|    Network     |              Proposal Hash              |
+| :------------: | :-------------------------------------: |
+| Crab Parachain | {{ z_crab_parachain_proposal_compact }} |
