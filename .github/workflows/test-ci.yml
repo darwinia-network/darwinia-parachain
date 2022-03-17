@@ -30,10 +30,12 @@ jobs:
         run: |
           apt update -y
           apt install -y tree zstd
-          tree
 
           mkdir -p shared/crab-parachain-runtime
           mkdir -p shared/darwinia-parachain-runtime
+          
+          tree
+
           tar cjSf shared/darwinia-collator-x86_64-linux-gnu.tar.bz2 \
             -C target/x86_64-unknown-linux-gnu/release \
             darwinia-collator
