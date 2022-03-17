@@ -30,6 +30,8 @@ jobs:
 
       - name: Collect shared
         run: |
+          apt update -y
+          apt install -y tree
           tree
 
           mkdir -p shared/crab-parachain-runtime
