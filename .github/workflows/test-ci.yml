@@ -30,6 +30,8 @@ jobs:
 
       - name: Collect shared
         run: |
+          tree
+
           mkdir -p shared/crab-parachain-runtime
           mkdir -p shared/darwinia-parachain-runtime
           tar cjSf shared/darwinia-collator-x86_64-linux-gnu.tar.bz2 \
