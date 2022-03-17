@@ -1128,7 +1128,7 @@ dependencies = [
 
 [[package]]
 name = "crab-parachain-runtime"
-version = "5.1.0"
+version = "5.1.1"
 dependencies = [
  "array-bytes",
  "cumulus-pallet-aura-ext",
@@ -1851,7 +1851,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-collator"
-version = "5.1.0"
+version = "5.1.1"
 dependencies = [
  "array-bytes",
  "async-trait",
@@ -1916,7 +1916,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-collator-primitives"
-version = "5.1.0"
+version = "5.1.1"
 dependencies = [
  "sp-core",
  "sp-runtime",
@@ -1924,7 +1924,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-collator-rpc"
-version = "5.1.0"
+version = "5.1.1"
 dependencies = [
  "darwinia-collator-primitives",
  "jsonrpc-core",
@@ -1940,7 +1940,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-parachain-runtime"
-version = "5.1.0"
+version = "5.1.1"
 dependencies = [
  "cumulus-pallet-aura-ext",
  "cumulus-pallet-dmp-queue",
@@ -5743,7 +5743,7 @@ dependencies = [
 
 [[package]]
 name = "pangolin-parachain-runtime"
-version = "5.1.0"
+version = "5.1.1"
 dependencies = [
  "cumulus-pallet-aura-ext",
  "cumulus-pallet-dmp-queue",
