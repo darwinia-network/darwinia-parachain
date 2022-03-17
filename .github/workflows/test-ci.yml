@@ -29,7 +29,7 @@ jobs:
       - name: Collect shared
         run: |
           apt update -y
-          apt install -y tree zstd
+          apt install -y tree bzip2 zstd
 
           mkdir -p shared/crab-parachain-runtime
           mkdir -p shared/darwinia-parachain-runtime
