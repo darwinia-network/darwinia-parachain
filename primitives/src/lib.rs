@@ -26,12 +26,18 @@ use sp_core::H256;
 use sp_runtime::{
 	generic,
 	traits::{BlakeTwo256, IdentifyAccount, Verify},
-	MultiSignature, OpaqueExtrinsic,
+	MultiAddress, MultiSignature, OpaqueExtrinsic,
 };
 
 /// An index to a block.
 /// 32-bits will allow for 136 years of blocks assuming 1 block per second.
 pub type BlockNumber = u32;
+
+/// Hashing algorithm used by the chain.
+pub type Hashing = BlakeTwo256;
+
+/// A hash of some data used by the relay chain.
+pub type Hash = H256;
 
 /// An instant or duration in time.
 pub type Moment = u64;
@@ -51,8 +57,8 @@ pub type AccountId = <AccountPublic as IdentifyAccount>::AccountId;
 /// The type for looking up accounts. We don't expect more than 4 billion of them.
 pub type AccountIndex = u32;
 
-/// A hash of some data used by the relay chain.
-pub type Hash = H256;
+/// The address format for describing accounts.
+pub type Address = MultiAddress<AccountId, ()>;
 
 /// Index of a transaction in the relay chain. 32-bit should be plenty.
 pub type Nonce = u32;
@@ -66,11 +72,8 @@ pub type Nonce = u32;
 /// that 32 bits may be multiplied with a balance in 128 bits without worrying about overflow.
 pub type Balance = u128;
 
-/// The power of an account.
-pub type Power = u32;
-
 /// Header type.
-pub type Header = generic::Header<BlockNumber, BlakeTwo256>;
+pub type Header = generic::Header<BlockNumber, Hashing>;
 
 /// Block type.
 pub type OpaqueBlock = generic::Block<Header, OpaqueExtrinsic>;
