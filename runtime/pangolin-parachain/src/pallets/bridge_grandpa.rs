@@ -1,11 +1,11 @@
 pub use pallet_bridge_grandpa::Instance1 as WithPangolinGrandpa;
 
 // --- paritytech ---
+use bp_pangolin::Pangolin;
 use pallet_bridge_grandpa::Config;
 // --- darwinia-network ---
 use crate::*;
-use darwinia_collator_primitives::{DAYS, Pangolin};
-
+use darwinia_collator_primitives::DAYS;
 
 frame_support::parameter_types! {
 	// This is a pretty unscientific cap.
@@ -19,7 +19,6 @@ frame_support::parameter_types! {
 	// week.
 	pub const HeadersToKeep: u32 = 7 * DAYS as u32;
 }
-
 
 impl Config<WithPangolinGrandpa> for Runtime {
 	type BridgedChain = Pangolin;

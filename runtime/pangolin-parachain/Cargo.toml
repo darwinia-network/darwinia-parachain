@@ -28,6 +28,9 @@ pallet-collator-selection       = { default-features = false, git = "https://git
 parachain-info                  = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 # darwinia
 darwinia-collator-primitives = { default-features = false, path = "../../primitives" }
+# darwinia-bridges-substrate
+bp-pangolin           = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
+pallet-bridge-grandpa = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
 # polkadot
 pallet-xcm         = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-parachain = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
@@ -61,7 +64,6 @@ sp-session                                 = { default-features = false, git = "
 sp-std                                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 sp-transaction-pool                        = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 sp-version                                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
-pallet-bridge-grandpa                      = { default-features = false, git = "https://github.com/darwinia-network/parity-bridges-common", branch = "nada-parity-polkadot-0916" }
 
 [build-dependencies]
 substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
@@ -69,8 +71,10 @@ substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", bran
 [features]
 default = ["std"]
 std = [
+	# crates.io
 	"codec/std",
 	"scale-info/std",
+	# cumulus
 	"cumulus-pallet-aura-ext/std",
 	"cumulus-pallet-dmp-queue/std",
 	"cumulus-pallet-parachain-system/std",
@@ -81,12 +85,18 @@ std = [
 	"cumulus-primitives-utility/std",
 	"pallet-collator-selection/std",
 	"parachain-info/std",
+	# darwinia
 	"darwinia-collator-primitives/std",
+	# darwinia-bridges-substrate
+	"bp-pangolin/std",
+	"pallet-bridge-grandpa/std",
+	# polkadot
 	"pallet-xcm/std",
 	"polkadot-parachain/std",
 	"xcm/std",
 	"xcm-builder/std",
 	"xcm-executor/std",
+	# substrate
 	"frame-executive/std",
 	"frame-support/std",
 	"frame-system/std",
@@ -102,7 +112,6 @@ std = [
 	"pallet-transaction-payment/std",
 	"pallet-transaction-payment-rpc-runtime-api/std",
 	"pallet-utility/std",
-	"pallet-bridge-grandpa/std",
 	"sp-api/std",
 	"sp-block-builder/std",
 	"sp-consensus-aura/std",
