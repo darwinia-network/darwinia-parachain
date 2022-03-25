@@ -22,26 +22,22 @@
 #![warn(missing_docs)]
 
 // --- paritytech ---
-use sp_core::{H256, RuntimeDebug};
+use sp_core::H256;
 use sp_runtime::{
 	generic,
 	traits::{BlakeTwo256, IdentifyAccount, Verify},
-	MultiSignature, OpaqueExtrinsic,
-	Perbill
+	MultiAddress, MultiSignature, OpaqueExtrinsic,
 };
-use bp_runtime::{Chain};
-use frame_support::{
-	parameter_types,
-	weights::{
-		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, WEIGHT_PER_SECOND},
-		DispatchClass, Weight,
-	}
-};
-use frame_system::limits;
 
 /// An index to a block.
 /// 32-bits will allow for 136 years of blocks assuming 1 block per second.
 pub type BlockNumber = u32;
+
+/// Hashing algorithm used by the chain.
+pub type Hashing = BlakeTwo256;
+
+/// A hash of some data used by the relay chain.
+pub type Hash = H256;
 
 /// An instant or duration in time.
 pub type Moment = u64;
@@ -61,11 +57,8 @@ pub type AccountId = <AccountPublic as IdentifyAccount>::AccountId;
 /// The type for looking up accounts. We don't expect more than 4 billion of them.
 pub type AccountIndex = u32;
 
-/// A hash of some data used by the relay chain.
-pub type Hash = H256;
-
-/// Hashing algorithm used by the chain.
-pub type Hashing = BlakeTwo256;
+/// The address format for describing accounts.
+pub type Address = MultiAddress<AccountId, ()>;
 
 /// Index of a transaction in the relay chain. 32-bit should be plenty.
 pub type Nonce = u32;
@@ -79,11 +72,8 @@ pub type Nonce = u32;
 /// that 32 bits may be multiplied with a balance in 128 bits without worrying about overflow.
 pub type Balance = u128;
 
-/// The power of an account.
-pub type Power = u32;
-
 /// Header type.
-pub type Header = generic::Header<BlockNumber, BlakeTwo256>;
+pub type Header = generic::Header<BlockNumber, Hashing>;
 
 /// Block type.
 pub type OpaqueBlock = generic::Block<Header, OpaqueExtrinsic>;
@@ -131,81 +121,3 @@ pub const fn crab_deposit(items: u32, bytes: u32) -> Balance {
 pub const fn pangolin_deposit(items: u32, bytes: u32) -> Balance {
 	(items as Balance) * 20 * MILLI_COIN + (bytes as Balance) * 100 * G_WEI
 }
-
-/// All Polkadot-like chains allow normal extrinsics to fill block up to 75 percent.
-///
-/// This is a copy-paste from the Polkadot repo's `polkadot-runtime-common` crate.
-const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
-
-/// All Polkadot-like chains allow 2 seconds of compute with a 6-second average block time.
-///
-/// This is a copy-paste from the Polkadot repo's `polkadot-runtime-common` crate.
-pub const MAXIMUM_BLOCK_WEIGHT: Weight = 2 * WEIGHT_PER_SECOND;
-
-/// All Polkadot-like chains assume that an on-initialize consumes 1 percent of the weight on
-/// average, hence a single extrinsic will not be allowed to consume more than
-/// `AvailableBlockRatio - 1 percent`.
-///
-/// This is a copy-paste from the Polkadot repo's `polkadot-runtime-common` crate.
-pub const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(1);
-
-
-parameter_types! {
-	/// All Polkadot-like chains have maximal block size set to 5MB.
-	///
-	/// This is a copy-paste from the Polkadot repo's `polkadot-runtime-common` crate.
-	pub BlockLength: limits::BlockLength = limits::BlockLength::max_with_normal_ratio(
-		5 * 1024 * 1024,
-		NORMAL_DISPATCH_RATIO,
-	);
-	/// All Polkadot-like chains have the same block weights.
-	///
-	/// This is a copy-paste from the Polkadot repo's `polkadot-runtime-common` crate.
-	pub BlockWeights: limits::BlockWeights = limits::BlockWeights::builder()
-		.base_block(BlockExecutionWeight::get())
-		.for_class(DispatchClass::all(), |weights| {
-			weights.base_extrinsic = ExtrinsicBaseWeight::get();
-		})
-		.for_class(DispatchClass::Normal, |weights| {
-			weights.max_total = Some(NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT);
-		})
-		.for_class(DispatchClass::Operational, |weights| {
-			weights.max_total = Some(MAXIMUM_BLOCK_WEIGHT);
-			// Operational transactions have an extra reserved space, so that they
-			// are included even if block reached `MAXIMUM_BLOCK_WEIGHT`.
-			weights.reserved = Some(
-				MAXIMUM_BLOCK_WEIGHT - NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT,
-			);
-		})
-		.avg_block_initialization(AVERAGE_ON_INITIALIZE_RATIO)
-		.build_or_panic();
-}
-
-
-/// Pangolin chain
-#[derive(RuntimeDebug)]
-pub struct Pangolin;
-
-impl Chain for Pangolin {
-	type BlockNumber = BlockNumber;
-	type Hash = Hash;
-	type Hasher = Hashing;
-	type Header = Header;
-	type AccountId = AccountId;
-	type Balance = Balance;
-	type Index = Nonce;
-	type Signature = Signature;
-
-	fn max_extrinsic_size() -> u32 {
-		*BlockLength::get().max.get(DispatchClass::Normal)
-	}
-
-	fn max_extrinsic_weight() -> Weight {
-		BlockWeights::get()
-			.get(DispatchClass::Normal)
-			.max_extrinsic
-			.unwrap_or(Weight::MAX)
-	}
-
-}
-
