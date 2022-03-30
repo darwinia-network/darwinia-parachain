@@ -110,6 +110,9 @@ pub mod fee {
 }
 pub use fee::*;
 
+pub mod bridges;
+pub use bridges::*;
+
 pub mod pallets;
 pub use pallets::*;
 
@@ -242,7 +245,9 @@ frame_support::construct_runtime! {
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
 
 		// S2S bridges.
-		BridgePangolinGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20
+		BridgePangolinGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20,
+		BridgePangolinMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
+		BridgePangolinDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
 	}
 }
 
