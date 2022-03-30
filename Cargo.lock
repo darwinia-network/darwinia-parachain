@@ -725,6 +725,18 @@ dependencies = [
 [[package]]
 name = "bp-message-dispatch"
 version = "0.1.0"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16#9628ea0a33d374983680dd1b15aae34997cf7759"
+dependencies = [
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "frame-support",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-std",
+]
+
+[[package]]
+name = "bp-message-dispatch"
+version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
  "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
@@ -783,6 +795,39 @@ dependencies = [
 ]
 
 [[package]]
+name = "bp-pangolin-parachain"
+version = "0.1.0"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16#9628ea0a33d374983680dd1b15aae34997cf7759"
+dependencies = [
+ "bp-darwinia-core",
+ "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "frame-support",
+ "sp-api",
+ "sp-runtime",
+ "sp-std",
+ "sp-version",
+]
+
+[[package]]
+name = "bp-polkadot-core"
+version = "0.1.0"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16#9628ea0a33d374983680dd1b15aae34997cf7759"
+dependencies = [
+ "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-api",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+ "sp-version",
+]
+
+[[package]]
 name = "bp-polkadot-core"
 version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
@@ -806,7 +851,7 @@ version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
  "bp-messages 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
- "bp-polkadot-core",
+ "bp-polkadot-core 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "parity-scale-codec",
@@ -889,7 +934,7 @@ version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
  "bp-messages 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
- "bp-polkadot-core",
+ "bp-polkadot-core 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-rococo",
  "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "parity-scale-codec",
@@ -901,16 +946,39 @@ dependencies = [
 [[package]]
 name = "bridge-runtime-common"
 version = "0.1.0"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16#9628ea0a33d374983680dd1b15aae34997cf7759"
+dependencies = [
+ "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "frame-support",
+ "hash-db",
+ "pallet-bridge-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "pallet-bridge-grandpa 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "pallet-bridge-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "pallet-transaction-payment",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-runtime",
+ "sp-state-machine",
+ "sp-std",
+ "sp-trie",
+]
+
+[[package]]
+name = "bridge-runtime-common"
+version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
- "bp-message-dispatch",
+ "bp-message-dispatch 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-messages 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "hash-db",
- "pallet-bridge-dispatch",
+ "pallet-bridge-dispatch 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "pallet-bridge-grandpa 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
- "pallet-bridge-messages",
+ "pallet-bridge-messages 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "pallet-transaction-payment",
  "parity-scale-codec",
  "scale-info",
@@ -5197,9 +5265,26 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-dispatch"
 version = "0.1.0"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16#9628ea0a33d374983680dd1b15aae34997cf7759"
+dependencies = [
+ "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "frame-support",
+ "frame-system",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-bridge-dispatch"
+version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
- "bp-message-dispatch",
+ "bp-message-dispatch 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
  "frame-system",
@@ -5258,10 +5343,31 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-messages"
 version = "0.1.0"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16#9628ea0a33d374983680dd1b15aae34997cf7759"
+dependencies = [
+ "bitvec",
+ "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "frame-support",
+ "frame-system",
+ "log",
+ "num-traits",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-bridge-messages"
+version = "0.1.0"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.16#41ab002d7451766324a9f314fee11c9c53314350"
 dependencies = [
  "bitvec",
- "bp-message-dispatch",
+ "bp-message-dispatch 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-messages 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-support",
@@ -5756,7 +5862,7 @@ dependencies = [
 [[package]]
 name = "pallet-transaction-payment"
 version = "4.0.0-dev"
-source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.16#4aeb95f7f38fcd519e2628f32f79044a8fef99d5"
+source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.16#19162e43be45817b44c7d48e50d03f074f60fbf4"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -5865,7 +5971,13 @@ dependencies = [
 name = "pangolin-parachain-runtime"
 version = "5.1.1"
 dependencies = [
+ "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
  "bp-pangolin",
+ "bp-pangolin-parachain",
+ "bp-polkadot-core 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bridge-runtime-common 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
  "cumulus-pallet-aura-ext",
  "cumulus-pallet-dmp-queue",
  "cumulus-pallet-parachain-system",
@@ -5882,7 +5994,9 @@ dependencies = [
  "pallet-aura",
  "pallet-authorship",
  "pallet-balances",
+ "pallet-bridge-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
  "pallet-bridge-grandpa 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "pallet-bridge-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
  "pallet-collator-selection",
  "pallet-multisig",
  "pallet-proxy",
@@ -7904,7 +8018,7 @@ dependencies = [
  "bp-rococo",
  "bp-runtime 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "bp-wococo",
- "bridge-runtime-common",
+ "bridge-runtime-common 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "frame-executive",
  "frame-support",
  "frame-system",
@@ -7916,9 +8030,9 @@ dependencies = [
  "pallet-balances",
  "pallet-beefy",
  "pallet-beefy-mmr",
- "pallet-bridge-dispatch",
+ "pallet-bridge-dispatch 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "pallet-bridge-grandpa 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
- "pallet-bridge-messages",
+ "pallet-bridge-messages 0.1.0 (git+https://github.com/paritytech/polkadot?branch=release-v0.9.16)",
  "pallet-collective",
  "pallet-grandpa",
  "pallet-im-online",
@@ -10689,7 +10803,7 @@ dependencies = [
  "chrono",
  "lazy_static",
  "matchers",
- "parking_lot 0.10.2",
+ "parking_lot 0.11.2",
  "regex",
  "serde",
  "serde_json",
@@ -10810,7 +10924,7 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "rand 0.8.5",
  "static_assertions",
 ]
