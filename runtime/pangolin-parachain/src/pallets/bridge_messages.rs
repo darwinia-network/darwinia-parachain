@@ -1,9 +1,8 @@
 pub use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 
-// --- paritytech ---
+// --- darwinia-network ---
 use bp_messages::MessageNonce;
-use pallet_bridge_messages::Config;
-// --- darwinia-netwrok ---
+use pallet_bridge_messages::Config
 use crate::{
 	pangolin_messages::{
 		FromPangolinMessageDispatch, FromPangolinMessagePayload, Pangolin,

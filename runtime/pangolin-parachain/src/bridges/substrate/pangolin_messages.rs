@@ -2,6 +2,14 @@
 use codec::{Decode, Encode};
 use scale_info::TypeInfo;
 // --- paritytech ---
+use frame_support::{
+	weights::{DispatchClass, Weight},
+	RuntimeDebug,
+};
+use sp_runtime::{traits::Zero, FixedPointNumber, FixedU128};
+use sp_std::ops::RangeInclusive;
+// --- darwinia-network ---
+use crate::*;
 use bp_messages::{
 	source_chain::TargetHeaderChain, target_chain::SourceHeaderChain,
 	Parameter as MessagesParameter,
@@ -19,15 +27,7 @@ use bridge_runtime_common::messages::{
 	},
 	MessageBridge,
 };
-use frame_support::{
-	weights::{DispatchClass, Weight},
-	RuntimeDebug,
-};
 use pallet_bridge_messages::EXPECTED_DEFAULT_MESSAGE_LENGTH;
-use sp_runtime::{traits::Zero, FixedPointNumber, FixedU128};
-use sp_std::ops::RangeInclusive;
-// --- darwinia-network ---
-use crate::*;
 
 /// Identifier of PangolinParachain in the relay chain.
 pub const PANGOLIN_PARACHAIN_ID: u32 = 2071;

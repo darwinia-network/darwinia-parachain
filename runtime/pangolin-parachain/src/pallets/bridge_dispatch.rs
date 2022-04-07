@@ -1,11 +1,10 @@
 pub use pallet_bridge_dispatch::Instance1 as WithPangolinDispatch;
 
-// --- paritytech ---
+// --- darwinia-network ---
+use crate::{pangolin_messages::FromPangolinEncodedCall, *};
 use bp_messages::{LaneId, MessageNonce};
 use bp_pangolin::AccountIdConverter;
 use pallet_bridge_dispatch::Config;
-// --- darwinia-network ---
-use crate::{pangolin_messages::FromPangolinEncodedCall, *};
 
 impl Config<WithPangolinDispatch> for Runtime {
 	type Event = Event;
