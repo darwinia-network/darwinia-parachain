@@ -103,9 +103,9 @@ std = [
 	"bp-polkadot-core/std",
 	"bp-pangolin-parachain/std",
 	"bridge-runtime-common/std",
-	"pallet-bridge-messages/std",
-	"pallet-bridge-grandpa/std",
 	"pallet-bridge-dispatch/std",
+	"pallet-bridge-grandpa/std",
+	"pallet-bridge-messages/std",
 	# polkadot
 	"pallet-xcm/std",
 	"polkadot-parachain/std",
