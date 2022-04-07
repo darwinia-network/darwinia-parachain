@@ -1,10 +1,10 @@
 pub use pallet_bridge_grandpa::Instance1 as WithPangolinGrandpa;
 
 // --- paritytech ---
-use bp_pangolin::Pangolin;
 use pallet_bridge_grandpa::Config;
 // --- darwinia-network ---
 use crate::*;
+use bp_pangolin::Pangolin;
 use darwinia_collator_primitives::DAYS;
 
 frame_support::parameter_types! {
