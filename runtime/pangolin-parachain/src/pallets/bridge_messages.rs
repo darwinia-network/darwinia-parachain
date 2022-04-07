@@ -1,19 +1,13 @@
 pub use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 
 // --- darwinia-network ---
+use crate::{bridge_messages::pangolin::*, *};
 use bp_messages::MessageNonce;
-use pallet_bridge_messages::Config
-use crate::{
-	pangolin_messages::{
-		FromPangolinMessageDispatch, FromPangolinMessagePayload, Pangolin,
-		PangolinParachainToPangolinParameter, ToPangolinMessagePayload, ToPangolinMessageVerifier,
-	},
-	*,
-};
 use bp_pangolin_parachain::{
 	AccountIdConverter, MAX_SINGLE_MESSAGE_DELIVERY_CONFIRMATION_TX_WEIGHT,
 	MAX_UNCONFIRMED_MESSAGES_IN_CONFIRMATION_TX, MAX_UNREWARDED_RELAYERS_IN_CONFIRMATION_TX,
 };
+use pallet_bridge_messages::Config;
 
 frame_support::parameter_types! {
 	pub RootAccountForPayments: Option<AccountId> = None;

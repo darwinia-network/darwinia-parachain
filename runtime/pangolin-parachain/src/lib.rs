@@ -110,11 +110,10 @@ pub mod fee {
 }
 pub use fee::*;
 
-pub mod bridges;
-pub use bridges::*;
-
 pub mod pallets;
 pub use pallets::*;
+
+pub mod bridge_messages;
 
 pub mod weights;
 

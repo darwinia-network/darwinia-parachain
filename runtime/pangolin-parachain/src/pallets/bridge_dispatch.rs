@@ -1,7 +1,7 @@
 pub use pallet_bridge_dispatch::Instance1 as WithPangolinDispatch;
 
 // --- darwinia-network ---
-use crate::{pangolin_messages::FromPangolinEncodedCall, *};
+use crate::{bridge_messages::pangolin::FromPangolinEncodedCall, *};
 use bp_messages::{LaneId, MessageNonce};
 use bp_pangolin::AccountIdConverter;
 use pallet_bridge_dispatch::Config;
