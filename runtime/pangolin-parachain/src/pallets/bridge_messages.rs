@@ -7,12 +7,13 @@ use bp_pangolin_parachain::{
 	AccountIdConverter, MAX_SINGLE_MESSAGE_DELIVERY_CONFIRMATION_TX_WEIGHT,
 	MAX_UNCONFIRMED_MESSAGES_IN_CONFIRMATION_TX, MAX_UNREWARDED_RELAYERS_IN_CONFIRMATION_TX,
 };
-use pallet_bridge_messages::Config;
+use bp_runtime::{ChainId, PANGOLIN_CHAIN_ID};
+use pallet_bridge_messages::{instant_payments::InstantCurrencyPayments, Config};
 
 frame_support::parameter_types! {
 	pub RootAccountForPayments: Option<AccountId> = None;
 	pub const MaxMessagesToPruneAtOnce: MessageNonce = 8;
-	pub const BridgedChainId: bp_runtime::ChainId = bp_runtime::PANGOLIN_CHAIN_ID;
+	pub const BridgedChainId: ChainId = PANGOLIN_CHAIN_ID;
 	pub const MaxUnconfirmedMessagesAtInboundLane: MessageNonce = MAX_UNCONFIRMED_MESSAGES_IN_CONFIRMATION_TX;
 	pub const MaxUnrewardedRelayerEntriesAtInboundLane: MessageNonce = MAX_UNREWARDED_RELAYERS_IN_CONFIRMATION_TX;
 	pub const GetDeliveryConfirmationTransactionFee: Balance = MAX_SINGLE_MESSAGE_DELIVERY_CONFIRMATION_TX_WEIGHT as _;
@@ -34,14 +35,13 @@ impl Config<WithPangolinMessages> for Runtime {
 	type AccountIdConverter = AccountIdConverter;
 	type TargetHeaderChain = Pangolin;
 	type LaneMessageVerifier = ToPangolinMessageVerifier;
-	type MessageDeliveryAndDispatchPayment =
-		pallet_bridge_messages::instant_payments::InstantCurrencyPayments<
-			Runtime,
-			WithPangolinMessages,
-			Ring,
-			GetDeliveryConfirmationTransactionFee,
-			RootAccountForPayments,
-		>;
+	type MessageDeliveryAndDispatchPayment = InstantCurrencyPayments<
+		Runtime,
+		WithPangolinMessages,
+		Ring,
+		GetDeliveryConfirmationTransactionFee,
+		RootAccountForPayments,
+	>;
 	type OnMessageAccepted = ();
 	type OnDeliveryConfirmed = ();
 	type SourceHeaderChain = Pangolin;
