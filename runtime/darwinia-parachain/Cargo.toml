@@ -27,7 +27,8 @@ cumulus-primitives-utility      = { default-features = false, git = "https://git
 pallet-collator-selection       = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 parachain-info                  = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 # darwinia
-darwinia-collator-primitives = { default-features = false, path = "../../primitives" }
+darwinia-collator-primitives      = { default-features = false, path = "../../primitives" }
+pallet-fee-market-rpc-runtime-api = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
 # polkadot
 pallet-xcm         = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-parachain = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
@@ -81,6 +82,7 @@ std = [
 	"pallet-collator-selection/std",
 	"parachain-info/std",
 	"darwinia-collator-primitives/std",
+	"pallet-fee-market-rpc-runtime-api/std",
 	"pallet-xcm/std",
 	"polkadot-parachain/std",
 	"xcm/std",

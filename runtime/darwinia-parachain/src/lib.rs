@@ -342,6 +342,15 @@ sp_api::impl_runtime_apis! {
 			ParachainSystem::collect_collation_info(header)
 		}
 	}
+
+	impl pallet_fee_market_rpc_runtime_api::FeeMarketApi<Block, Balance> for Runtime {
+		fn market_fee() -> Option<pallet_fee_market_rpc_runtime_api::Fee<Balance>> {
+			Default::default()
+		}
+		fn in_process_orders() -> pallet_fee_market_rpc_runtime_api::InProcessOrders {
+			Default::default()
+		}
+	}
 }
 
 struct CheckInherents;

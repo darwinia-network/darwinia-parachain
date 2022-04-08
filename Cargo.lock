@@ -1327,6 +1327,7 @@ dependencies = [
  "pallet-authorship",
  "pallet-balances",
  "pallet-collator-selection",
+ "pallet-fee-market-rpc-runtime-api",
  "pallet-multisig",
  "pallet-proxy",
  "pallet-session",
@@ -2052,6 +2053,7 @@ dependencies = [
  "futures 0.3.21",
  "jsonrpc-core",
  "log",
+ "pallet-fee-market-rpc-runtime-api",
  "pallet-transaction-payment-rpc",
  "pangolin-parachain-runtime",
  "parity-scale-codec",
@@ -2108,6 +2110,7 @@ version = "5.1.1"
 dependencies = [
  "darwinia-collator-primitives",
  "jsonrpc-core",
+ "pallet-fee-market-rpc",
  "pallet-transaction-payment-rpc",
  "sc-client-api",
  "sc-rpc",
@@ -2139,6 +2142,7 @@ dependencies = [
  "pallet-authorship",
  "pallet-balances",
  "pallet-collator-selection",
+ "pallet-fee-market-rpc-runtime-api",
  "pallet-multisig",
  "pallet-proxy",
  "pallet-session",
@@ -5530,6 +5534,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-fee-market-rpc"
+version = "0.1.0"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16#87760516fa833649c99871d8b92849bfc2c7acd2"
+dependencies = [
+ "jsonrpc-core",
+ "jsonrpc-core-client",
+ "jsonrpc-derive",
+ "pallet-fee-market-rpc-runtime-api",
+ "parity-scale-codec",
+ "sp-api",
+ "sp-blockchain",
+ "sp-runtime",
+]
+
+[[package]]
+name = "pallet-fee-market-rpc-runtime-api"
+version = "0.1.0"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16#87760516fa833649c99871d8b92849bfc2c7acd2"
+dependencies = [
+ "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "parity-scale-codec",
+ "serde",
+ "sp-api",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-gilt"
 version = "4.0.0-dev"
 source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.16#19162e43be45817b44c7d48e50d03f074f60fbf4"
@@ -6056,6 +6088,7 @@ dependencies = [
  "pallet-bridge-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
  "pallet-collator-selection",
  "pallet-fee-market",
+ "pallet-fee-market-rpc-runtime-api",
  "pallet-multisig",
  "pallet-proxy",
  "pallet-session",
@@ -10884,7 +10917,7 @@ dependencies = [
  "chrono",
  "lazy_static",
  "matchers",
- "parking_lot 0.11.2",
+ "parking_lot 0.10.2",
  "regex",
  "serde",
  "serde_json",
@@ -11005,7 +11038,7 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if 0.1.10",
  "rand 0.8.5",
  "static_assertions",
 ]
