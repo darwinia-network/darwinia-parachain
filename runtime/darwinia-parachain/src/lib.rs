@@ -32,7 +32,7 @@ pub mod fee {
 	use sp_runtime::{FixedPointNumber, Perbill, Perquintill};
 	// --- darwinia-network ---
 	use crate::*;
-	use darwinia_collator_primitives::*;
+	use dc_primitives::*;
 
 	frame_support::parameter_types! {
 		/// The portion of the `NORMAL_DISPATCH_RATIO` that we adjust the fees with. Blocks filled less
@@ -132,7 +132,7 @@ pub mod wasm {
 }
 pub use wasm::*;
 
-pub use darwinia_collator_primitives::*;
+pub use dc_primitives::*;
 
 // --- paritytech ---
 use sp_core::OpaqueMetadata;

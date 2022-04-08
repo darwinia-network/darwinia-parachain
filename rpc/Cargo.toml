@@ -4,7 +4,7 @@ description = "Darwinia Parachain RPCs"
 edition     = "2021"
 homepage    = "https://darwinia.network"
 license     = "GPL-3.0"
-name        = "darwinia-collator-rpc"
+name        = "dc-rpc"
 readme      = "README.md"
 repository  = "https://github.com/darwinia-network/darwinia-parachain"
 version     = "5.1.1"
@@ -13,7 +13,7 @@ version     = "5.1.1"
 # crates.io
 jsonrpc-core = { version = "18.0" }
 # darwinia-network
-darwinia-collator-primitives = { path = "../primitives" }
+dc-primitives = { path = "../primitives" }
 pallet-fee-market-rpc         = { git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
 # paritytech
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }

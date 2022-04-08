@@ -28,7 +28,7 @@ use jsonrpc_core::IoHandler;
 use sc_rpc::Metadata;
 use sp_blockchain::Error as BlockChainError;
 // --- darwinia-network ---
-use darwinia_collator_primitives::{AccountId, Balance, Nonce, OpaqueBlock as Block};
+use dc_primitives::{AccountId, Balance, Nonce, OpaqueBlock as Block};
 
 /// A type representing all RPC extensions.
 pub type RpcExtension = IoHandler<Metadata>;

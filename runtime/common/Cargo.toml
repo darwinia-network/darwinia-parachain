@@ -1,0 +1,17 @@
+[package]
+authors     = ["Darwinia Network <hello@darwinia.network>"]
+description = "Darwinia Collator Common Runtime"
+edition     = "2021"
+homepage    = "https://darwinia.network/"
+license     = "GPL-3.0"
+name        = "dc-common-runtime"
+readme      = "README.md"
+repository  = "https://github.com/darwinia-network/darwinia-parachain"
+version     = "5.1.1"
+
+[dependencies]
+
+
+[features]
+default = ["std"]
+std     = []

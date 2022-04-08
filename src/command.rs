@@ -38,7 +38,7 @@ use crate::{
 	cli::*,
 	service::{self, *},
 };
-use darwinia_collator_primitives::OpaqueBlock as Block;
+use dc_primitives::OpaqueBlock as Block;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {

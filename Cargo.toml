@@ -37,11 +37,11 @@ structopt    = { version = "0.3" }
 tempfile     = { version = "3.2" }
 
 # parachain
-crab-parachain-runtime       = { path = "runtime/crab-parachain" }
-darwinia-collator-primitives = { path = "primitives" }
-darwinia-collator-rpc        = { path = "rpc" }
-darwinia-parachain-runtime   = { path = "runtime/darwinia-parachain" }
-pangolin-parachain-runtime   = { path = "runtime/pangolin-parachain" }
+crab-parachain-runtime     = { path = "runtime/crab-parachain" }
+darwinia-parachain-runtime = { path = "runtime/darwinia-parachain" }
+dc-primitives               = { path = "primitives" }
+dc-rpc                     = { path = "rpc" }
+pangolin-parachain-runtime = { path = "runtime/pangolin-parachain" }
 
 # substrate
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
@@ -104,7 +104,5 @@ try-runtime-cli              = { optional = true, git = "https://github.com/pari
 members = [
 	"primitives",
 	"rpc",
-	"runtime/crab-parachain",
-	"runtime/darwinia-parachain",
-	"runtime/pangolin-parachain",
+	"runtime/*",
 ]
