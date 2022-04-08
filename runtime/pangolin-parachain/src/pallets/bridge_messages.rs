@@ -8,7 +8,10 @@ use bp_pangolin_parachain::{
 	MAX_UNCONFIRMED_MESSAGES_IN_CONFIRMATION_TX, MAX_UNREWARDED_RELAYERS_IN_CONFIRMATION_TX,
 };
 use bp_runtime::{ChainId, PANGOLIN_CHAIN_ID};
-use pallet_bridge_messages::{instant_payments::InstantCurrencyPayments, Config};
+use pallet_bridge_messages::Config;
+use pallet_fee_market::s2s::{
+	FeeMarketMessageAcceptedHandler, FeeMarketMessageConfirmedHandler, FeeMarketPayment,
+};
 
 frame_support::parameter_types! {
 	pub RootAccountForPayments: Option<AccountId> = None;
@@ -22,28 +25,34 @@ frame_support::parameter_types! {
 impl Config<WithPangolinMessages> for Runtime {
 	type Event = Event;
 	type WeightInfo = ();
-	type BridgedChainId = BridgedChainId;
 	type Parameter = PangolinParachainToPangolinParameter;
 	type MaxMessagesToPruneAtOnce = MaxMessagesToPruneAtOnce;
 	type MaxUnrewardedRelayerEntriesAtInboundLane = MaxUnrewardedRelayerEntriesAtInboundLane;
 	type MaxUnconfirmedMessagesAtInboundLane = MaxUnconfirmedMessagesAtInboundLane;
+
 	type OutboundPayload = ToPangolinMessagePayload;
 	type OutboundMessageFee = Balance;
+
 	type InboundPayload = FromPangolinMessagePayload;
 	type InboundMessageFee = bp_pangolin_parachain::Balance;
 	type InboundRelayer = bp_pangolin_parachain::AccountId;
+
 	type AccountIdConverter = AccountIdConverter;
+
 	type TargetHeaderChain = Pangolin;
 	type LaneMessageVerifier = ToPangolinMessageVerifier;
-	type MessageDeliveryAndDispatchPayment = InstantCurrencyPayments<
+	type MessageDeliveryAndDispatchPayment = FeeMarketPayment<
 		Runtime,
 		WithPangolinMessages,
 		Ring,
 		GetDeliveryConfirmationTransactionFee,
 		RootAccountForPayments,
 	>;
-	type OnMessageAccepted = ();
-	type OnDeliveryConfirmed = ();
+
+	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self>;
+	type OnDeliveryConfirmed = (FeeMarketMessageConfirmedHandler<Self>,);
+
 	type SourceHeaderChain = Pangolin;
 	type MessageDispatch = FromPangolinMessageDispatch;
+	type BridgedChainId = BridgedChainId;
 }

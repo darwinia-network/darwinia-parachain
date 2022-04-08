@@ -1,5 +1,7 @@
 pub use pallet_bridge_dispatch::Instance1 as WithPangolinDispatch;
 
+// --- paritytech ---
+use frame_support::traits::Everything;
 // --- darwinia-network ---
 use crate::{bridge_messages::pangolin::FromPangolinEncodedCall, *};
 use bp_messages::{LaneId, MessageNonce};
@@ -10,9 +12,8 @@ impl Config<WithPangolinDispatch> for Runtime {
 	type Event = Event;
 	type BridgeMessageId = (LaneId, MessageNonce);
 	type Call = Call;
-
 	// TODO
-	type CallFilter = frame_support::traits::Everything;
+	type CallFilter = Everything;
 	type EncodedCall = FromPangolinEncodedCall;
 	type SourceChainAccountId = bp_pangolin::AccountId;
 	type TargetChainAccountPublic = AccountPublic;
