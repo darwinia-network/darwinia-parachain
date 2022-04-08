@@ -113,7 +113,7 @@ pub use fee::*;
 pub mod pallets;
 pub use pallets::*;
 
-pub mod weights;
+// pub mod weights;
 
 #[cfg(not(feature = "no-wasm"))]
 pub mod wasm {

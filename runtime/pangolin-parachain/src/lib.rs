@@ -115,7 +115,7 @@ pub use pallets::*;
 
 pub mod bridge_messages;
 
-pub mod weights;
+// pub mod weights;
 
 #[cfg(not(feature = "no-wasm"))]
 pub mod wasm {

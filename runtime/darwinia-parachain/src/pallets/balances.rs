@@ -3,7 +3,7 @@ use frame_support::traits::Currency;
 use frame_system::Config as SystemConfig;
 use pallet_balances::{Config, Pallet};
 // --- darwinia-network ---
-use crate::{weights::pallet_balances::WeightInfo, *};
+use crate::*;
 
 pub type NegativeImbalance<R> =
 	<Pallet<R> as Currency<<R as SystemConfig>::AccountId>>::NegativeImbalance;
@@ -23,5 +23,5 @@ impl Config for Runtime {
 	type MaxLocks = MaxLocks;
 	type MaxReserves = MaxReserves;
 	type ReserveIdentifier = [u8; 8];
-	type WeightInfo = WeightInfo<Runtime>;
+	type WeightInfo = ();
 }

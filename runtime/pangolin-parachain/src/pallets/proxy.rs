@@ -6,7 +6,7 @@ use frame_support::traits::InstanceFilter;
 use pallet_proxy::{Call as ProxyCall, Config};
 use sp_runtime::{traits::BlakeTwo256, RuntimeDebug};
 // --- darwinia-network ---
-use crate::{weights::pallet_proxy::WeightInfo, *};
+use crate::*;
 
 /// The type used to represent the kinds of proxying allowed.
 #[derive(
@@ -89,5 +89,5 @@ impl Config for Runtime {
 	type CallHasher = BlakeTwo256;
 	type AnnouncementDepositBase = AnnouncementDepositBase;
 	type AnnouncementDepositFactor = AnnouncementDepositFactor;
-	type WeightInfo = WeightInfo<Runtime>;
+	type WeightInfo = ();
 }
