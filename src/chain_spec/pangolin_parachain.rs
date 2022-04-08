@@ -35,8 +35,8 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{crypto::UncheckedInto, sr25519};
 // --- darwinia-network ---
 use super::*;
-use darwinia_parachain_runtime::*;
 use network::*;
+use pangolin_parachain_runtime::*;
 
 /// Specialized `ChainSpec` for the `Darwinia Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
