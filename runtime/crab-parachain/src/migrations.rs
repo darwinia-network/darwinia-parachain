@@ -1,10 +1,5 @@
 // --- paritytech ---
-use frame_support::{
-	traits::{Currency, OnRuntimeUpgrade},
-	weights::Weight,
-};
-// --- darwinia-network ---
-use crate::*;
+use frame_support::{traits::OnRuntimeUpgrade, weights::Weight};
 
 pub struct CustomOnRuntimeUpgrade;
 impl OnRuntimeUpgrade for CustomOnRuntimeUpgrade {
