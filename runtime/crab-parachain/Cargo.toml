@@ -15,7 +15,7 @@ version     = "5.1.1"
 array-bytes = { version = "1.5" }
 codec       = { package = "parity-scale-codec", version = "2.3", default-features = false, features = ["derive"] }
 scale-info  = { version = "1.0", default-features = false, features = ["derive"] }
-smallvec    = { version = "1.7" }
+smallvec    = { version = "1.8" }
 # cumulus
 cumulus-pallet-aura-ext         = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 cumulus-pallet-dmp-queue        = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
@@ -72,8 +72,10 @@ substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", bran
 [features]
 default = ["std"]
 std = [
+	# crates.io
 	"codec/std",
 	"scale-info/std",
+	# cumulus
 	"cumulus-pallet-aura-ext/std",
 	"cumulus-pallet-dmp-queue/std",
 	"cumulus-pallet-parachain-system/std",
@@ -84,14 +86,17 @@ std = [
 	"cumulus-primitives-utility/std",
 	"pallet-collator-selection/std",
 	"parachain-info/std",
+	# darwinia
 	"dc-common-runtime/std",
 	"dc-primitives/std",
 	"pallet-fee-market-rpc-runtime-api/std",
+	# polkadot
 	"pallet-xcm/std",
 	"polkadot-parachain/std",
 	"xcm/std",
 	"xcm-builder/std",
 	"xcm-executor/std",
+	# substrate
 	"frame-executive/std",
 	"frame-support/std",
 	"frame-system/std",
