@@ -22,7 +22,7 @@
 pub mod pallets;
 pub use pallets::*;
 
-pub mod bridge_messages;
+pub mod bridges_message;
 
 // pub mod weights;
 
