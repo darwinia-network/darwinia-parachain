@@ -15,30 +15,28 @@ use bp_runtime::{Chain, ChainId, PANGOLIN_CHAIN_ID, PANGOLIN_PARACHAIN_CHAIN_ID}
 use bridge_runtime_common::messages::{self, source::*, target::*, *};
 use pallet_bridge_messages::EXPECTED_DEFAULT_MESSAGE_LENGTH;
 
-/// Message verifier for PangolinParachain -> Pangolin messages.
-pub type ToPangolinMessageVerifier = FromThisChainMessageVerifier<WithPangolinMessageBridge>;
-/// Message payload for PangolinParachain -> Pangolin messages.
-pub type ToPangolinMessagePayload = FromThisChainMessagePayload<WithPangolinMessageBridge>;
-
-/// Message payload for Pangolin -> PangolinParachain messages.
-pub type FromPangolinMessagePayload = FromBridgedChainMessagePayload<WithPangolinMessageBridge>;
-/// Call-dispatch based message dispatch for PangolinParachain -> Pangolin messages.
-pub type FromPangolinMessageDispatch =
-	FromBridgedChainMessageDispatch<WithPangolinMessageBridge, Runtime, Ring, WithPangolinDispatch>;
-
-/// Message proof for Pangolin -> PangolinParachain  messages.
-type FromPangolinMessagesProof = FromBridgedChainMessagesProof<bp_pangolin::Hash>;
 /// Message delivery proof for PangolinParachain -> Pangolin messages.
 type ToPangolinMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_pangolin::Hash>;
+/// Message proof for Pangolin -> PangolinParachain  messages.
+type FromPangolinMessagesProof = FromBridgedChainMessagesProof<bp_pangolin::Hash>;
+
+/// Message payload for PangolinParachain -> Pangolin messages.
+pub type ToPangolinMessagePayload = FromThisChainMessagePayload<WithPangolinMessageBridge>;
+/// Message payload for Pangolin -> PangolinParachain messages.
+pub type FromPangolinMessagePayload = FromBridgedChainMessagePayload<WithPangolinMessageBridge>;
+
+/// Message verifier for PangolinParachain -> Pangolin messages.
+pub type ToPangolinMessageVerifier = FromThisChainMessageVerifier<WithPangolinMessageBridge>;
 
 /// Encoded Pangolin Call as it comes from Pangolin.
 pub type FromPangolinEncodedCall = FromBridgedChainEncodedMessageCall<Call>;
 
+/// Call-dispatch based message dispatch for Pangolin -> PangolinParachain messages.
+pub type FromPangolinMessageDispatch =
+	FromBridgedChainMessageDispatch<WithPangolinMessageBridge, Runtime, Ring, WithPangolinDispatch>;
+
 pub const INITIAL_PANGOLIN_TO_PANGOLIN_PARACHAIN_CONVERSION_RATE: FixedU128 =
 	FixedU128::from_inner(FixedU128::DIV);
-
-/// Identifier of PangolinParachain in the relay chain.
-pub const PANGOLIN_PARACHAIN_ID: u32 = 2071;
 
 /// Identifier of bridge between pangolin and pangolin parachain.
 pub const PANGOLIN_PANGOLIN_PARACHAIN_LANE: [u8; 4] = *b"pali";
