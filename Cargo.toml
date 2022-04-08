@@ -39,7 +39,7 @@ tempfile     = { version = "3.2" }
 # parachain
 crab-parachain-runtime     = { path = "runtime/crab-parachain" }
 darwinia-parachain-runtime = { path = "runtime/darwinia-parachain" }
-dc-primitives               = { path = "primitives" }
+dc-primitives              = { path = "primitives" }
 dc-rpc                     = { path = "rpc" }
 pangolin-parachain-runtime = { path = "runtime/pangolin-parachain" }
 
