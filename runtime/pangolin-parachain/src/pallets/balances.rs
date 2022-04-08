@@ -1,5 +1,4 @@
 // --- paritytech ---
-use frame_support::traits::Currency;
 use pallet_balances::Config;
 // --- darwinia-network ---
 use crate::*;
