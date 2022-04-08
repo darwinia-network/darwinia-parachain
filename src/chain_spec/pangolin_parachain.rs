@@ -35,8 +35,8 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{crypto::UncheckedInto, sr25519};
 // --- darwinia-network ---
 use super::*;
-use darwinia_parachain_runtime::*;
 use network::*;
+use pangolin_parachain_runtime::*;
 
 /// Specialized `ChainSpec` for the `Darwinia Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
@@ -79,8 +79,6 @@ pub fn genesis_config() -> ChainSpec {
 		let invulnerables = [
 			"0x9c43c00407c0a51e0d88ede9d531f165e370013b648e6b62f4b3bcff4689df02",
 			"0x741a9f507722713ec0a5df1558ac375f62469b61d1f60fa60f5dedfc85425b2e",
-			"0x2276a3162f1b63c21b3396c5846d43874c5b8ba69917d756142d460b2d70d036",
-			"0x7a8b265c416eab5fdf8e5a1b3c7635131ca7164fbe6f66d8a70feeeba7c4dd7f",
 		]
 		.iter()
 		.map(|hex| {
