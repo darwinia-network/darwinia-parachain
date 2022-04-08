@@ -63,3 +63,6 @@ pub use bridge_dispatch::*;
 
 pub mod bridge_messages;
 pub use bridge_messages::*;
+
+pub mod fee_market;
+pub use fee_market::*;
