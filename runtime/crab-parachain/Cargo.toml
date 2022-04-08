@@ -119,8 +119,6 @@ std = [
 	"sp-version/std",
 ]
 
-no-wasm = []
-
 try-runtime = [
 	# paritytech
 	"frame-executive/try-runtime",

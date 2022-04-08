@@ -118,7 +118,6 @@ pub use pallets::*;
 pub mod migrations;
 pub use migrations::*;
 
-#[cfg(not(feature = "no-wasm"))]
 pub mod wasm {
 	//! Make the WASM binary available.
 
@@ -134,7 +133,6 @@ pub mod wasm {
 		);
 	}
 }
-#[cfg(not(feature = "no-wasm"))]
 pub use wasm::*;
 
 pub use darwinia_collator_primitives::*;
