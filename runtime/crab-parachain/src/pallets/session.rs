@@ -1,5 +1,4 @@
 // --- paritytech ---
-use frame_system::Config as SystemConfig;
 use pallet_collator_selection::IdentityCollator;
 use pallet_session::{Config, PeriodicSessions};
 use sp_runtime::traits::OpaqueKeys;
@@ -19,7 +18,7 @@ frame_support::parameter_types! {
 
 impl Config for Runtime {
 	type Event = Event;
-	type ValidatorId = <Self as SystemConfig>::AccountId;
+	type ValidatorId = <Self as frame_system::Config>::AccountId;
 	// we don't have stash and controller, thus we don't need the convert as well.
 	type ValidatorIdOf = IdentityCollator;
 	type ShouldEndSession = PeriodicSessions<Period, Offset>;

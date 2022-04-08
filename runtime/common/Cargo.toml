@@ -10,8 +10,33 @@ repository  = "https://github.com/darwinia-network/darwinia-parachain"
 version     = "5.1.1"
 
 [dependencies]
+# crates.io
+smallvec = { version = "1.8" }
+# cumulus
+pallet-collator-selection = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
+# darwinia-network
+dc-primitives = { default-features = false, path = "../../primitives" }
+# substrate
+frame-support              = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+frame-system               = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+pallet-balances            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+pallet-transaction-payment = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+sp-runtime                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+sp-std                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 
 
 [features]
 default = ["std"]
-std     = []
+std = [
+	# cumulus
+	"pallet-collator-selection/std",
+	# darwinia-network
+	"dc-primitives/std",
+	# substrate
+	"frame-support/std",
+	"frame-system/std",
+	"pallet-balances/std",
+	"pallet-transaction-payment/std",
+	"sp-runtime/std",
+	"sp-std/std",
+]

@@ -1317,6 +1317,7 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
+ "dc-common-runtime",
  "dc-primitives",
  "frame-executive",
  "frame-support",
@@ -2106,6 +2107,7 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
+ "dc-common-runtime",
  "dc-primitives",
  "frame-executive",
  "frame-support",
@@ -2176,6 +2178,17 @@ dependencies = [
 [[package]]
 name = "dc-common-runtime"
 version = "5.1.1"
+dependencies = [
+ "dc-primitives",
+ "frame-support",
+ "frame-system",
+ "pallet-balances",
+ "pallet-collator-selection",
+ "pallet-transaction-payment",
+ "smallvec",
+ "sp-runtime",
+ "sp-std",
+]
 
 [[package]]
 name = "dc-primitives"
@@ -6060,6 +6073,7 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
+ "dc-common-runtime",
  "dc-primitives",
  "frame-executive",
  "frame-support",

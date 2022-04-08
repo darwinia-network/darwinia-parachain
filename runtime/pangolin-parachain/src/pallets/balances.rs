@@ -1,12 +1,8 @@
 // --- paritytech ---
 use frame_support::traits::Currency;
-use frame_system::Config as SystemConfig;
-use pallet_balances::{Config, Pallet};
+use pallet_balances::Config;
 // --- darwinia-network ---
 use crate::*;
-
-pub type NegativeImbalance<R> =
-	<Pallet<R> as Currency<<R as SystemConfig>::AccountId>>::NegativeImbalance;
 
 frame_support::parameter_types! {
 	pub const ExistentialDeposit: Balance = 0;
