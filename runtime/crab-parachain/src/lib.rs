@@ -349,6 +349,15 @@ sp_api::impl_runtime_apis! {
 		}
 	}
 
+	impl pallet_fee_market_rpc_runtime_api::FeeMarketApi<Block, Balance> for Runtime {
+		fn market_fee() -> Option<pallet_fee_market_rpc_runtime_api::Fee<Balance>> {
+			Default::default()
+		}
+		fn in_process_orders() -> pallet_fee_market_rpc_runtime_api::InProcessOrders {
+			Default::default()
+		}
+	}
+
 	#[cfg(feature = "try-runtime")]
 	impl frame_try_runtime::TryRuntime<Block> for Runtime {
 		fn on_runtime_upgrade() -> (Weight, Weight) {
