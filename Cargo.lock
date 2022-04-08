@@ -2181,11 +2181,15 @@ dependencies = [
 name = "dc-common-runtime"
 version = "5.1.1"
 dependencies = [
+ "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bridge-runtime-common 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
  "dc-primitives",
  "frame-support",
  "frame-system",
  "pallet-balances",
+ "pallet-bridge-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
  "pallet-collator-selection",
+ "pallet-fee-market",
  "pallet-transaction-payment",
  "smallvec",
  "sp-runtime",

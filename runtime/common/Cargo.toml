@@ -14,7 +14,12 @@ version     = "5.1.1"
 smallvec = { version = "1.8" }
 # cumulus
 pallet-collator-selection = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
-# darwinia-network
+# darwinia-bridges-substrate
+bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
+bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
+pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
+pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
+# darwinia-collator
 dc-primitives = { default-features = false, path = "../../primitives" }
 # substrate
 frame-support              = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
@@ -30,7 +35,12 @@ default = ["std"]
 std = [
 	# cumulus
 	"pallet-collator-selection/std",
-	# darwinia-network
+	# darwinia-bridges-substrate
+	"bp-messages/std",
+	"bridge-runtime-common/std",
+	"pallet-bridge-dispatch/std",
+	"pallet-fee-market/std",
+	# darwinia-collator
 	"dc-primitives/std",
 	# substrate
 	"frame-support/std",

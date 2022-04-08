@@ -21,6 +21,11 @@
 // --- core ---
 use core::marker::PhantomData;
 // --- paritytech ---
+use bp_messages::{
+	source_chain::{LaneMessageVerifier, Sender},
+	LaneId, OutboundLaneData,
+};
+use bridge_runtime_common::messages::{source::*, *};
 use frame_support::{
 	traits::{Currency, Imbalance, OnUnbalanced},
 	weights::{
@@ -29,7 +34,7 @@ use frame_support::{
 	},
 };
 use pallet_transaction_payment::Multiplier;
-use sp_runtime::{FixedPointNumber, Perbill, Perquintill};
+use sp_runtime::{FixedPointNumber, Perbill, Perquintill, RuntimeDebug};
 // --- darwinia-network ---
 use dc_primitives::*;
 
@@ -106,5 +111,82 @@ where
 			}
 			<ToStakingPot<R> as OnUnbalanced<_>>::on_unbalanced(fees);
 		}
+	}
+}
+
+/// Message verifier that is doing all basic checks.
+///
+/// This verifier assumes following:
+///
+/// - all message lanes are equivalent, so all checks are the same;
+/// - messages are being dispatched using `pallet-bridge-dispatch` pallet on the target chain.
+///
+/// Following checks are made:
+///
+/// - message is rejected if its lane is currently blocked;
+/// - message is rejected if there are too many pending (undelivered) messages at the outbound
+///   lane;
+/// - check that the sender has rights to dispatch the call on target chain using provided
+///   dispatch origin;
+/// - check that the sender has paid enough funds for both message delivery and dispatch.
+#[derive(RuntimeDebug)]
+pub struct FromThisChainMessageVerifier<B, R>(PhantomData<(B, R)>);
+impl<B, R>
+	LaneMessageVerifier<
+		AccountIdOf<ThisChain<B>>,
+		FromThisChainMessagePayload<B>,
+		BalanceOf<ThisChain<B>>,
+	> for FromThisChainMessageVerifier<B, R>
+where
+	B: MessageBridge,
+	R: pallet_fee_market::Config,
+	AccountIdOf<ThisChain<B>>: Clone + PartialEq,
+	pallet_fee_market::RingBalance<R>: From<BalanceOf<ThisChain<B>>>,
+{
+	type Error = &'static str;
+
+	fn verify_message(
+		submitter: &Sender<AccountIdOf<ThisChain<B>>>,
+		delivery_and_dispatch_fee: &BalanceOf<ThisChain<B>>,
+		lane: &LaneId,
+		lane_outbound_data: &OutboundLaneData,
+		payload: &FromThisChainMessagePayload<B>,
+	) -> Result<(), Self::Error> {
+		// reject message if lane is blocked
+		if !ThisChain::<B>::is_outbound_lane_enabled(lane) {
+			return Err(OUTBOUND_LANE_DISABLED);
+		}
+
+		// reject message if there are too many pending messages at this lane
+		let max_pending_messages = ThisChain::<B>::maximal_pending_messages_at_outbound_lane();
+		let pending_messages = lane_outbound_data
+			.latest_generated_nonce
+			.saturating_sub(lane_outbound_data.latest_received_nonce);
+		if pending_messages > max_pending_messages {
+			return Err(TOO_MANY_PENDING_MESSAGES);
+		}
+
+		// Do the dispatch-specific check. We assume that the target chain uses
+		// `Dispatch`, so we verify the message accordingly.
+		pallet_bridge_dispatch::verify_message_origin(submitter, payload)
+			.map_err(|_| BAD_ORIGIN)?;
+
+		// Do the delivery_and_dispatch_fee. We assume that the delivery and dispatch fee always
+		// greater than the fee market provided fee.
+		if let Some(market_fee) = pallet_fee_market::Pallet::<R>::market_fee() {
+			let message_fee: pallet_fee_market::RingBalance<R> =
+				(*delivery_and_dispatch_fee).into();
+
+			// compare with actual fee paid
+			if message_fee < market_fee {
+				return Err(TOO_LOW_FEE);
+			}
+		} else {
+			const NO_MARKET_FEE: &str = "The fee market are not ready for accepting messages.";
+
+			return Err(NO_MARKET_FEE);
+		}
+
+		Ok(())
 	}
 }
