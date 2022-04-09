@@ -1,7 +1,7 @@
 pub use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 
 // --- darwinia-network ---
-use crate::{bridge_messages::pangolin::*, *};
+use crate::{bridges_message::pangolin::*, *};
 use bp_messages::MessageNonce;
 use bp_pangolin_parachain::{
 	AccountIdConverter, MAX_SINGLE_MESSAGE_DELIVERY_CONFIRMATION_TX_WEIGHT,

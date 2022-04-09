@@ -1317,7 +1317,8 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
- "darwinia-collator-primitives",
+ "dc-common-runtime",
+ "dc-primitives",
  "frame-executive",
  "frame-support",
  "frame-system",
@@ -2047,9 +2048,9 @@ dependencies = [
  "cumulus-primitives-parachain-inherent",
  "cumulus-relay-chain-interface",
  "cumulus-relay-chain-local",
- "darwinia-collator-primitives",
- "darwinia-collator-rpc",
  "darwinia-parachain-runtime",
+ "dc-primitives",
+ "dc-rpc",
  "futures 0.3.21",
  "jsonrpc-core",
  "log",
@@ -2097,31 +2098,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "darwinia-collator-primitives"
-version = "5.1.1"
-dependencies = [
- "sp-core",
- "sp-runtime",
-]
-
-[[package]]
-name = "darwinia-collator-rpc"
-version = "5.1.1"
-dependencies = [
- "darwinia-collator-primitives",
- "jsonrpc-core",
- "pallet-fee-market-rpc",
- "pallet-transaction-payment-rpc",
- "sc-client-api",
- "sc-rpc",
- "sc-transaction-pool-api",
- "sp-api",
- "sp-block-builder",
- "sp-blockchain",
- "substrate-frame-rpc-system",
-]
-
-[[package]]
 name = "darwinia-parachain-runtime"
 version = "5.1.1"
 dependencies = [
@@ -2133,7 +2109,8 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
- "darwinia-collator-primitives",
+ "dc-common-runtime",
+ "dc-primitives",
  "frame-executive",
  "frame-support",
  "frame-system",
@@ -2198,6 +2175,50 @@ checksum = "a5bbed42daaa95e780b60a50546aa345b8413a1e46f9a40a12907d3598f038db"
 dependencies = [
  "data-encoding",
  "syn",
+]
+
+[[package]]
+name = "dc-common-runtime"
+version = "5.1.1"
+dependencies = [
+ "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "bridge-runtime-common 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "dc-primitives",
+ "frame-support",
+ "frame-system",
+ "pallet-balances",
+ "pallet-bridge-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
+ "pallet-collator-selection",
+ "pallet-fee-market",
+ "pallet-transaction-payment",
+ "smallvec",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "dc-primitives"
+version = "5.1.1"
+dependencies = [
+ "sp-core",
+ "sp-runtime",
+]
+
+[[package]]
+name = "dc-rpc"
+version = "5.1.1"
+dependencies = [
+ "dc-primitives",
+ "jsonrpc-core",
+ "pallet-fee-market-rpc",
+ "pallet-transaction-payment-rpc",
+ "sc-client-api",
+ "sc-rpc",
+ "sc-transaction-pool-api",
+ "sp-api",
+ "sp-block-builder",
+ "sp-blockchain",
+ "substrate-frame-rpc-system",
 ]
 
 [[package]]
@@ -6075,7 +6096,8 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
- "darwinia-collator-primitives",
+ "dc-common-runtime",
+ "dc-primitives",
  "frame-executive",
  "frame-support",
  "frame-system",
@@ -10917,7 +10939,7 @@ dependencies = [
  "chrono",
  "lazy_static",
  "matchers",
- "parking_lot 0.10.2",
+ "parking_lot 0.11.2",
  "regex",
  "serde",
  "serde_json",
@@ -11038,7 +11060,7 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "rand 0.8.5",
  "static_assertions",
 ]

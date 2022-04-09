@@ -37,7 +37,7 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{Pair, Public};
 use sp_runtime::traits::IdentifyAccount;
 // --- darwinia-network ---
-use darwinia_collator_primitives::{AccountId, AccountPublic};
+use dc_primitives::{AccountId, AccountPublic};
 
 /// The default XCM version to set in genesis config.
 pub const SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;

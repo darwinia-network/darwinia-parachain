@@ -5,7 +5,7 @@ use pallet_collator_selection::Config;
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
 use xcm::v0::BodyId;
 // --- darwinia-network ---
-use crate::{weights::pallet_collator_selection::WeightInfo, *};
+use crate::*;
 
 frame_support::parameter_types! {
 	pub const ExecutiveBody: BodyId = BodyId::Executive;
@@ -32,5 +32,5 @@ impl Config for Runtime {
 	type ValidatorId = <Self as frame_system::Config>::AccountId;
 	type ValidatorIdOf = pallet_collator_selection::IdentityCollator;
 	type ValidatorRegistration = Session;
-	type WeightInfo = WeightInfo<Runtime>;
+	type WeightInfo = ();
 }

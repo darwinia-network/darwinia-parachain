@@ -14,7 +14,7 @@ version     = "5.1.1"
 # crates.io
 codec      = { package = "parity-scale-codec", version = "2.3", default-features = false, features = ["derive"] }
 scale-info = { version = "1.0", default-features = false, features = ["derive"] }
-smallvec   = { version = "1.7" }
+smallvec   = { version = "1.8" }
 # cumulus
 cumulus-pallet-aura-ext         = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 cumulus-pallet-dmp-queue        = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
@@ -27,7 +27,8 @@ cumulus-primitives-utility      = { default-features = false, git = "https://git
 pallet-collator-selection       = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 parachain-info                  = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 # darwinia
-darwinia-collator-primitives = { default-features = false, path = "../../primitives" }
+dc-common-runtime = { default-features = false, path = "../common" }
+dc-primitives     = { default-features = false, path = "../../primitives" }
 # darwinia-bridges-substrate
 bp-message-dispatch               = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
 bp-messages                       = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
@@ -96,7 +97,8 @@ std = [
 	"pallet-collator-selection/std",
 	"parachain-info/std",
 	# darwinia
-	"darwinia-collator-primitives/std",
+	"dc-common-runtime/std",
+	"dc-primitives/std",
 	# darwinia-bridges-substrate
 	"bp-pangolin/std",
 	"bp-message-dispatch/std",
@@ -146,5 +148,3 @@ std = [
 ]
 
 alpha = []
-
-no-wasm = []

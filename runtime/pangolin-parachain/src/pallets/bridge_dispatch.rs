@@ -3,7 +3,7 @@ pub use pallet_bridge_dispatch::Instance1 as WithPangolinDispatch;
 // --- paritytech ---
 use frame_support::traits::Everything;
 // --- darwinia-network ---
-use crate::{bridge_messages::pangolin::FromPangolinEncodedCall, *};
+use crate::{bridges_message::pangolin::FromPangolinEncodedCall, *};
 use bp_messages::{LaneId, MessageNonce};
 use bp_pangolin::AccountIdConverter;
 use pallet_bridge_dispatch::Config;
