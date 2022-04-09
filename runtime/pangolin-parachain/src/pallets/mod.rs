@@ -61,8 +61,8 @@ pub use bridge_grandpa::*;
 pub mod bridge_dispatch;
 pub use bridge_dispatch::*;
 
-pub mod bridges_message;
-pub use bridges_message::*;
+pub mod bridge_messages;
+pub use bridge_messages::*;
 
 pub mod fee_market;
 pub use fee_market::*;
