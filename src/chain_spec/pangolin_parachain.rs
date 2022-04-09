@@ -21,7 +21,7 @@ mod network {
 	pub const NAME: &str = "Pangolin Parachain";
 	pub const ID: &str = "pangolin_parachain";
 
-	pub const BOOT_NODES: &[&str] = [
+	pub const BOOT_NODES: &[&str] = &[
 		"/dns4/g1.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWALrn86eyZJikWQhPWsbfHMHnXK1g6FLsGY5voCDKm2AN",
 		"/dns4/g2.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWGwYxLgjoDe7m8dNmkTdXbm8PXZQK2RJkFG4nNqMaDCDB"
 	];
@@ -32,12 +32,14 @@ mod network {
 	pub const NAME: &str = "Pangolin Parachain Alpha";
 	pub const ID: &str = "pangolin_parachain_alpha";
 
-	pub const BOOT_NODES: &[&str] = [
+	pub const BOOT_NODES: &[&str] = &[
 		"/dns4/g3.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWHPr7V9NyW7Pm7BgNwfKTmz94Ft4MFCmWyr4e6EFQqnCj",
 		"/dns4/g4.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWK4LVr99FkLMdjQbuzKnCYm5Z977GmDCzYuwm6A5rTuME"
 	];
 }
 
+// --- std ---
+use std::str::FromStr;
 // --- paritytech ---
 use sc_service::{ChainType, GenericChainSpec, Properties};
 use sc_telemetry::TelemetryEndpoints;
@@ -143,7 +145,10 @@ pub fn genesis_config() -> ChainSpec {
 		ID,
 		ChainType::Live,
 		genesis,
-		BOOT_NODES,
+		BOOT_NODES
+			.iter()
+			.filter_map(|s| FromStr::from_str(s).ok())
+			.collect(),
 		Some(
 			TelemetryEndpoints::new(vec![(TELEMETRY_URL.to_string(), 0)])
 				.expect("Pangolin Parachain telemetry url is valid; qed"),
@@ -214,7 +219,7 @@ pub fn development_config() -> ChainSpec {
 		ID,
 		ChainType::Development,
 		genesis,
-		[],
+		vec![],
 		None,
 		None,
 		None,
