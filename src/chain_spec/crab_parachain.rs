@@ -16,6 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
+// --- std ---
+use std::str::FromStr;
 // --- paritytech ---
 use sc_service::{ChainType, GenericChainSpec, Properties};
 use sc_telemetry::TelemetryEndpoints;
@@ -203,7 +205,10 @@ pub fn development_config() -> ChainSpec {
 		"crab_parachain_dev",
 		ChainType::Development,
 		genesis,
-		vec![],
+		["/dns4/r1.crab-parachain-p2p.darwinia.network/tcp/30333/ws/p2p/12D3KooWG4PuU1ysPwi3XTnWzAzv9vf8yEmh3kNnZH2nWW9TVJcQ"]
+			.iter()
+			.filter_map(|s| FromStr::from_str(s).ok())
+			.collect(),
 		None,
 		None,
 		None,
