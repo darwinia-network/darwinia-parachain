@@ -68,7 +68,7 @@ impl Deployer {
 	}
 
 	fn get_execs(project_dir: &PathBuf) -> Option<(PathBuf, PathBuf)> {
-		fn get_darwinia_exec(project_dir: &PathBuf) -> Option<(PathBuf)> {
+		fn get_darwinia_exec(project_dir: &PathBuf) -> Option<PathBuf> {
 			let target_1 = project_dir.join("target/release/darwinia-collator");
 
 			if target_1.is_file() {

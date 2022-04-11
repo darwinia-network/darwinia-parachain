@@ -1,12 +1,7 @@
 // --- paritytech ---
-use frame_support::traits::Currency;
-use frame_system::Config as SystemConfig;
-use pallet_balances::{Config, Pallet};
+use pallet_balances::Config;
 // --- darwinia-network ---
-use crate::{weights::pallet_balances::WeightInfo, *};
-
-pub type NegativeImbalance<R> =
-	<Pallet<R> as Currency<<R as SystemConfig>::AccountId>>::NegativeImbalance;
+use crate::*;
 
 frame_support::parameter_types! {
 	pub const ExistentialDeposit: Balance = 0;
@@ -23,5 +18,5 @@ impl Config for Runtime {
 	type MaxLocks = MaxLocks;
 	type MaxReserves = MaxReserves;
 	type ReserveIdentifier = [u8; 8];
-	type WeightInfo = WeightInfo<Runtime>;
+	type WeightInfo = ();
 }

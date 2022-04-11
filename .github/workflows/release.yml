@@ -24,7 +24,8 @@ jobs:
         run: |
           apt update -y
           apt install --no-install-recommends -y \
-            curl ca-certificates make gcc g++ clang-4.0 pkg-config
+            curl ca-certificates make gcc g++ clang-4.0 \
+            pkg-config bzip2 zstd
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1

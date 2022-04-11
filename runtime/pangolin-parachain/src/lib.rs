@@ -19,103 +19,13 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![recursion_limit = "256"]
 
-pub mod fee {
-	// --- paritytech ---
-	use frame_support::{
-		traits::{Currency, Imbalance, OnUnbalanced},
-		weights::{
-			constants::ExtrinsicBaseWeight, WeightToFeeCoefficient, WeightToFeeCoefficients,
-			WeightToFeePolynomial,
-		},
-	};
-	use pallet_transaction_payment::Multiplier;
-	use sp_runtime::{FixedPointNumber, Perbill, Perquintill};
-	// --- darwinia-network ---
-	use crate::*;
-	use darwinia_collator_primitives::*;
-
-	frame_support::parameter_types! {
-		/// The portion of the `NORMAL_DISPATCH_RATIO` that we adjust the fees with. Blocks filled less
-		/// than this will decrease the weight and more will increase.
-		pub const TargetBlockFullness: Perquintill = Perquintill::from_percent(25);
-		/// The adjustment variable of the runtime. Higher values will cause `TargetBlockFullness` to
-		/// change the fees more rapidly.
-		pub AdjustmentVariable: Multiplier = Multiplier::saturating_from_rational(3, 100_000);
-		/// Minimum amount of the multiplier. This value cannot be too low. A test case should ensure
-		/// that combined with `AdjustmentVariable`, we can recover from the minimum.
-		/// See `multiplier_can_grow_from_zero`.
-		pub MinimumMultiplier: Multiplier = Multiplier::saturating_from_rational(1, 1_000_000_000u128);
-	}
-
-	/// Handles converting a weight scalar to a fee value, based on the scale and granularity of the
-	/// node's balance type.
-	///
-	/// This should typically create a mapping between the following ranges:
-	///   - [0, MAXIMUM_BLOCK_WEIGHT]
-	///   - [Balance::min, Balance::max]
-	///
-	/// Yet, it can be used for any other sort of change to weight-fee. Some examples being:
-	///   - Setting it to `0` will essentially disable the weight fee.
-	///   - Setting it to `1` will cause the literal `#[weight = x]` values to be charged.
-	pub struct WeightToFee;
-	impl WeightToFeePolynomial for WeightToFee {
-		type Balance = Balance;
-		fn polynomial() -> WeightToFeeCoefficients<Self::Balance> {
-			// in `Pangolin Parachain`, extrinsic base weight (smallest non-zero weight) is mapped to 100 MILLI:
-			let p = 100 * MILLI_COIN;
-			let q = Balance::from(ExtrinsicBaseWeight::get());
-
-			smallvec::smallvec![WeightToFeeCoefficient {
-				degree: 1,
-				negative: false,
-				coeff_frac: Perbill::from_rational(p % q, q),
-				coeff_integer: p / q,
-			}]
-		}
-	}
-
-	/// Logic for the author to get a portion of fees.
-	pub struct ToStakingPot<R>(sp_std::marker::PhantomData<R>);
-	impl<R> OnUnbalanced<NegativeImbalance<R>> for ToStakingPot<R>
-	where
-		R: pallet_balances::Config + pallet_collator_selection::Config,
-		<R as frame_system::Config>::AccountId: From<AccountId>,
-		<R as frame_system::Config>::AccountId: Into<AccountId>,
-		<R as frame_system::Config>::Event: From<pallet_balances::Event<R>>,
-	{
-		fn on_nonzero_unbalanced(amount: NegativeImbalance<R>) {
-			let staking_pot = <pallet_collator_selection::Pallet<R>>::account_id();
-
-			<pallet_balances::Pallet<R>>::resolve_creating(&staking_pot, amount);
-		}
-	}
-
-	pub struct DealWithFees<R>(sp_std::marker::PhantomData<R>);
-	impl<R> OnUnbalanced<NegativeImbalance<R>> for DealWithFees<R>
-	where
-		R: pallet_balances::Config + pallet_collator_selection::Config,
-		<R as frame_system::Config>::AccountId: From<AccountId>,
-		<R as frame_system::Config>::AccountId: Into<AccountId>,
-		<R as frame_system::Config>::Event: From<pallet_balances::Event<R>>,
-	{
-		fn on_unbalanceds<B>(mut fees_then_tips: impl Iterator<Item = NegativeImbalance<R>>) {
-			if let Some(mut fees) = fees_then_tips.next() {
-				if let Some(tips) = fees_then_tips.next() {
-					tips.merge_into(&mut fees);
-				}
-				<ToStakingPot<R> as OnUnbalanced<_>>::on_unbalanced(fees);
-			}
-		}
-	}
-}
-pub use fee::*;
-
 pub mod pallets;
 pub use pallets::*;
 
-pub mod weights;
+pub mod bridges_message;
 
-#[cfg(not(feature = "no-wasm"))]
+// pub mod weights;
+
 pub mod wasm {
 	//! Make the WASM binary available.
 
@@ -131,10 +41,9 @@ pub mod wasm {
 		);
 	}
 }
-#[cfg(not(feature = "no-wasm"))]
 pub use wasm::*;
 
-pub use darwinia_collator_primitives::*;
+pub use dc_primitives::*;
 
 // --- paritytech ---
 use sp_core::OpaqueMetadata;
@@ -142,15 +51,15 @@ use sp_runtime::{
 	generic,
 	traits::Block as BlockT,
 	transaction_validity::{TransactionSource, TransactionValidity},
-	ApplyExtrinsicResult, MultiAddress,
+	ApplyExtrinsicResult,
 };
 use sp_std::prelude::*;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
+// --- darwinia-network ---
+use dc_common_runtime::*;
 
-/// The address format for describing accounts.
-pub type Address = MultiAddress<AccountId, ()>;
 /// Block type as expected by this runtime.
 pub type Block = generic::Block<Header, UncheckedExtrinsic>;
 /// A Block signed with a Justification
@@ -242,6 +151,13 @@ frame_support::construct_runtime! {
 		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
 		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
+
+		// S2S bridges.
+		BridgePangolinGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20,
+		BridgePangolinMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
+		BridgePangolinDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
+
+		FeeMarket: pallet_fee_market::{Pallet, Call, Storage, Event<T>} = 23,
 	}
 }
 
@@ -348,6 +264,22 @@ sp_api::impl_runtime_apis! {
 	impl cumulus_primitives_core::CollectCollationInfo<Block> for Runtime {
 		fn collect_collation_info(header: &<Block as BlockT>::Header) -> cumulus_primitives_core::CollationInfo {
 			ParachainSystem::collect_collation_info(header)
+		}
+	}
+
+	impl pallet_fee_market_rpc_runtime_api::FeeMarketApi<Block, Balance> for Runtime {
+		fn market_fee() -> Option<pallet_fee_market_rpc_runtime_api::Fee<Balance>> {
+			if let Some(fee) = FeeMarket::market_fee() {
+				return Some(pallet_fee_market_rpc_runtime_api::Fee {
+					amount: fee,
+				});
+			}
+			None
+		}
+		fn in_process_orders() -> pallet_fee_market_rpc_runtime_api::InProcessOrders {
+			return pallet_fee_market_rpc_runtime_api::InProcessOrders {
+				orders: FeeMarket::in_process_orders(),
+			}
 		}
 	}
 }

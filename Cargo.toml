@@ -8,7 +8,7 @@ license     = "GPL-3.0"
 name        = "darwinia-collator"
 readme      = "README.md"
 repository  = "https://github.com/darwinia-network/darwinia-parachain"
-version     = "5.1.0"
+version     = "5.1.1"
 
 [[bin]]
 name = "darwinia-collator"
@@ -38,11 +38,11 @@ tempfile     = { version = "3.2" }
 
 # parachain
 crab-parachain-runtime            = { path = "runtime/crab-parachain" }
-darwinia-collator-primitives      = { path = "primitives" }
-darwinia-collator-rpc             = { path = "rpc" }
 darwinia-parachain-runtime        = { path = "runtime/darwinia-parachain" }
+dc-primitives                     = { path = "primitives" }
+dc-rpc                            = { path = "rpc" }
 pangolin-parachain-runtime        = { path = "runtime/pangolin-parachain" }
-darwinia-parachain-runtime-common = { path = "runtime/common" }
+#darwinia-parachain-runtime-common = { path = "runtime/common" }
 
 # substrate
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
@@ -87,6 +87,9 @@ cumulus-primitives-parachain-inherent = { git = "https://github.com/paritytech/c
 cumulus-relay-chain-interface         = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 cumulus-relay-chain-local             = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.16" }
 
+# darwinia-network
+pallet-fee-market-rpc-runtime-api = { git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.16" }
+
 # polkadot
 polkadot-cli        = { features = ["rococo-native"], git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-parachain  = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
@@ -102,8 +105,5 @@ try-runtime-cli              = { optional = true, git = "https://github.com/pari
 members = [
 	"primitives",
 	"rpc",
-	"runtime/crab-parachain",
-	"runtime/common",
-	"runtime/darwinia-parachain",
-	"runtime/pangolin-parachain",
+	"runtime/*",
 ]

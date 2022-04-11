@@ -71,8 +71,8 @@ use sp_keystore::SyncCryptoStorePtr;
 use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
 use substrate_prometheus_endpoint::Registry;
 // --- darwinia-network ---
-use darwinia_collator_primitives::{OpaqueBlock as Block, *};
-use darwinia_collator_rpc::FullDeps;
+use dc_primitives::{OpaqueBlock as Block, *};
+use dc_rpc::FullDeps;
 
 type FullBackend = TFullBackend<Block>;
 type FullClient<RuntimeApi, Executor> =
@@ -396,7 +396,7 @@ where
 				deny_unsafe,
 			};
 
-			Ok(darwinia_collator_rpc::create_full(deps))
+			Ok(dc_rpc::create_full(deps))
 		})
 	};
 

@@ -16,18 +16,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
-#[cfg(feature = "alpha")]
-mod network {
-	pub const NAME: &str = "Pangolin Parachain Alpha";
-	pub const ID: &str = "pangolin_parachain_alpha";
-}
-
 #[cfg(not(feature = "alpha"))]
 mod network {
 	pub const NAME: &str = "Pangolin Parachain";
 	pub const ID: &str = "pangolin_parachain";
+
+	pub const BOOT_NODES: &[&str] = &[
+		"/dns4/g1.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWALrn86eyZJikWQhPWsbfHMHnXK1g6FLsGY5voCDKm2AN",
+		"/dns4/g2.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWGwYxLgjoDe7m8dNmkTdXbm8PXZQK2RJkFG4nNqMaDCDB"
+	];
 }
 
+#[cfg(feature = "alpha")]
+mod network {
+	pub const NAME: &str = "Pangolin Parachain Alpha";
+	pub const ID: &str = "pangolin_parachain_alpha";
+
+	pub const BOOT_NODES: &[&str] = &[
+		"/dns4/g3.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWHPr7V9NyW7Pm7BgNwfKTmz94Ft4MFCmWyr4e6EFQqnCj",
+		"/dns4/g4.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWK4LVr99FkLMdjQbuzKnCYm5Z977GmDCzYuwm6A5rTuME"
+	];
+}
+
+// --- std ---
+use std::str::FromStr;
 // --- paritytech ---
 use sc_service::{ChainType, GenericChainSpec, Properties};
 use sc_telemetry::TelemetryEndpoints;
@@ -35,8 +47,8 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{crypto::UncheckedInto, sr25519};
 // --- darwinia-network ---
 use super::*;
-use darwinia_parachain_runtime::*;
 use network::*;
+use pangolin_parachain_runtime::*;
 
 /// Specialized `ChainSpec` for the `Darwinia Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
@@ -79,8 +91,6 @@ pub fn genesis_config() -> ChainSpec {
 		let invulnerables = [
 			"0x9c43c00407c0a51e0d88ede9d531f165e370013b648e6b62f4b3bcff4689df02",
 			"0x741a9f507722713ec0a5df1558ac375f62469b61d1f60fa60f5dedfc85425b2e",
-			"0x2276a3162f1b63c21b3396c5846d43874c5b8ba69917d756142d460b2d70d036",
-			"0x7a8b265c416eab5fdf8e5a1b3c7635131ca7164fbe6f66d8a70feeeba7c4dd7f",
 		]
 		.iter()
 		.map(|hex| {
@@ -135,7 +145,10 @@ pub fn genesis_config() -> ChainSpec {
 		ID,
 		ChainType::Live,
 		genesis,
-		vec![],
+		BOOT_NODES
+			.iter()
+			.filter_map(|s| FromStr::from_str(s).ok())
+			.collect(),
 		Some(
 			TelemetryEndpoints::new(vec![(TELEMETRY_URL.to_string(), 0)])
 				.expect("Pangolin Parachain telemetry url is valid; qed"),

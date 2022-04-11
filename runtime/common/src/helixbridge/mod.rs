@@ -430,7 +430,6 @@ pub mod pallet {
                     T::BridgedChainId::get(),
                     SourceAccount::Account(<RemoteBackingAccount<T>>::get())
                 );
-            log::info!("===== hexid {:?}", hex_id);
             T::BridgedAccountIdConverter::convert(hex_id)
         }
 	}

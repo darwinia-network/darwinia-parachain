@@ -6,7 +6,7 @@ use frame_support::traits::InstanceFilter;
 use pallet_proxy::{Call as ProxyCall, Config};
 use sp_runtime::{traits::BlakeTwo256, RuntimeDebug};
 // --- darwinia-network ---
-use crate::{weights::pallet_proxy::WeightInfo, *};
+use crate::*;
 
 /// The type used to represent the kinds of proxying allowed.
 #[derive(
@@ -67,13 +67,13 @@ impl InstanceFilter<Call> for ProxyType {
 
 frame_support::parameter_types! {
 	// One storage item; key size 32, value size 8; .
-	pub const ProxyDepositBase: Balance = darwinia_collator_primitives::darwinia_deposit(1, 40);
+	pub const ProxyDepositBase: Balance = dc_primitives::darwinia_deposit(1, 40);
 	// Additional storage item size of 33 bytes.
-	pub const ProxyDepositFactor: Balance = darwinia_collator_primitives::darwinia_deposit(0, 33);
+	pub const ProxyDepositFactor: Balance = dc_primitives::darwinia_deposit(0, 33);
 	pub const MaxProxies: u16 = 32;
 	// One storage item; key size 32, value size 16
-	pub const AnnouncementDepositBase: Balance = darwinia_collator_primitives::darwinia_deposit(1, 48);
-	pub const AnnouncementDepositFactor: Balance = darwinia_collator_primitives::darwinia_deposit(0, 66);
+	pub const AnnouncementDepositBase: Balance = dc_primitives::darwinia_deposit(1, 48);
+	pub const AnnouncementDepositFactor: Balance = dc_primitives::darwinia_deposit(0, 66);
 	pub const MaxPending: u16 = 32;
 }
 
@@ -89,5 +89,5 @@ impl Config for Runtime {
 	type CallHasher = BlakeTwo256;
 	type AnnouncementDepositBase = AnnouncementDepositBase;
 	type AnnouncementDepositFactor = AnnouncementDepositFactor;
-	type WeightInfo = WeightInfo<Runtime>;
+	type WeightInfo = ();
 }
