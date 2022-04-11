@@ -2,8 +2,6 @@ pub use pallet_bridge_grandpa::Instance1 as WithPangolinGrandpa;
 
 // --- darwinia-network ---
 use crate::*;
-use bp_pangolin::Pangolin;
-use dc_primitives::DAYS;
 use pallet_bridge_grandpa::Config;
 
 frame_support::parameter_types! {
@@ -16,11 +14,11 @@ frame_support::parameter_types! {
 	//
 	// Assuming the worst case of every header being finalized, we will keep headers for at least a
 	// week.
-	pub const HeadersToKeep: u32 = 7 * DAYS as u32;
+	pub const HeadersToKeep: u32 = 7 * bp_pangolin::DAYS as u32;
 }
 
 impl Config<WithPangolinGrandpa> for Runtime {
-	type BridgedChain = Pangolin;
+	type BridgedChain = bp_pangolin::Pangolin;
 	type MaxRequests = MaxRequests;
 	type HeadersToKeep = HeadersToKeep;
 	type WeightInfo = ();
