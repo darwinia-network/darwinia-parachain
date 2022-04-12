@@ -158,6 +158,8 @@ frame_support::construct_runtime! {
 		BridgePangolinDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
 
 		FeeMarket: pallet_fee_market::{Pallet, Call, Storage, Event<T>} = 23,
+
+		FromPangolinIssuing: dc_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
 	}
 }
 
