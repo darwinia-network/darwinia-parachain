@@ -75,23 +75,25 @@ impl MessageBridge for WithPangolinMessageBridge {
 	const BRIDGED_MESSAGES_PALLET_NAME: &'static str =
 		bp_pangolin_parachain::WITH_PANGOLIN_PARACHAIN_MESSAGES_PALLET_NAME;
 
-	fn bridged_balance_to_this_balance(bridged_balance: BalanceOf<BridgedChain<Self>>) -> Balance {
-		Balance::try_from(
+	fn bridged_balance_to_this_balance(
+		bridged_balance: BalanceOf<Self::BridgedChain>,
+	) -> BalanceOf<Self::ThisChain> {
+		<BalanceOf<Self::ThisChain>>::try_from(
 			PangolinToPangolinParachainConversionRate::get().saturating_mul_int(bridged_balance),
 		)
-		.unwrap_or(Balance::MAX)
+		.unwrap_or(<BalanceOf<Self::ThisChain>>::MAX)
 	}
 }
 
 #[derive(Clone, Copy, RuntimeDebug)]
 pub struct PangolinParachain;
 impl ChainWithMessages for PangolinParachain {
-	type Hash = Hash;
-	type AccountId = AccountId;
-	type Signer = AccountPublic;
-	type Signature = Signature;
+	type Hash = bp_pangolin_parachain::Hash;
+	type AccountId = bp_pangolin_parachain::AccountId;
+	type Signer = bp_pangolin_parachain::AccountPublic;
+	type Signature = bp_pangolin_parachain::Signature;
 	type Weight = Weight;
-	type Balance = Balance;
+	type Balance = bp_pangolin_parachain::Balance;
 }
 impl ThisChainWithMessages for PangolinParachain {
 	type Call = Call;
@@ -105,7 +107,7 @@ impl ThisChainWithMessages for PangolinParachain {
 	}
 
 	fn estimate_delivery_confirmation_transaction() -> MessageTransaction<Weight> {
-		let inbound_data_size = InboundLaneData::<AccountId>::encoded_size_hint(
+		let inbound_data_size = InboundLaneData::<Self::AccountId>::encoded_size_hint(
 			bp_pangolin_parachain::MAXIMAL_ENCODED_ACCOUNT_ID_SIZE,
 			1,
 			1,
@@ -182,7 +184,7 @@ impl BridgedChainWithMessages for Pangolin {
 		}
 	}
 
-	fn transaction_payment(transaction: MessageTransaction<Weight>) -> bp_pangolin::Balance {
+	fn transaction_payment(transaction: MessageTransaction<Weight>) -> Self::Balance {
 		// in our testnets, both per-byte fee and weight-to-fee are 1:1
 		messages::transaction_payment(
 			bp_pangolin::RuntimeBlockWeights::get()
@@ -195,9 +197,10 @@ impl BridgedChainWithMessages for Pangolin {
 		)
 	}
 }
-impl TargetHeaderChain<ToPangolinMessagePayload, bp_pangolin::AccountId> for Pangolin {
+impl TargetHeaderChain<ToPangolinMessagePayload, <Self as ChainWithMessages>::AccountId>
+	for Pangolin
+{
 	type Error = &'static str;
-
 	type MessagesDeliveryProof = ToPangolinMessagesDeliveryProof;
 
 	fn verify_message(payload: &ToPangolinMessagePayload) -> Result<(), Self::Error> {
@@ -214,15 +217,14 @@ impl TargetHeaderChain<ToPangolinMessagePayload, bp_pangolin::AccountId> for Pan
 		>(proof)
 	}
 }
-impl SourceHeaderChain<bp_pangolin::Balance> for Pangolin {
+impl SourceHeaderChain<<Self as ChainWithMessages>::Balance> for Pangolin {
 	type Error = &'static str;
-
 	type MessagesProof = FromPangolinMessagesProof;
 
 	fn verify_messages_proof(
 		proof: Self::MessagesProof,
 		messages_count: u32,
-	) -> Result<ProvedMessages<Message<bp_pangolin::Balance>>, Self::Error> {
+	) -> Result<ProvedMessages<Message<<Self as ChainWithMessages>::Balance>>, Self::Error> {
 		target::verify_messages_proof::<WithPangolinMessageBridge, Runtime, WithPangolinGrandpa>(
 			proof,
 			messages_count,
