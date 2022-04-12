@@ -29,47 +29,24 @@ mod benchmarking;
 // --- crates.io ---
 use ethereum_types::{H160, H256, U256};
 // --- paritytech ---
-use bp_messages::{
-    BridgeMessageId,
-    DeliveredMessages,
-    LaneId,
-    MessageNonce,
-    source_chain::{OnDeliveryConfirmed, MessagesBridge},
-};
 use bp_message_dispatch::CallOrigin;
-use bp_runtime::{
-    ChainId,
-    derive_account_id,
-    messages::DispatchFeePayment,
-    SourceAccount,
+use bp_messages::{
+	source_chain::{MessagesBridge, OnDeliveryConfirmed},
+	BridgeMessageId, DeliveredMessages, LaneId, MessageNonce,
 };
+use bp_runtime::{derive_account_id, messages::DispatchFeePayment, ChainId, SourceAccount};
 use frame_support::{
-    log,
 	ensure,
 	pallet_prelude::*,
-    PalletId,
-	traits::{
-        Currency,
-        ExistenceRequirement,
-        Get,
-        WithdrawReasons,
-    },
+	traits::{Currency, ExistenceRequirement, Get, WithdrawReasons},
 	transactional,
-    weights::PostDispatchInfo,
+	weights::PostDispatchInfo,
+	PalletId,
 };
-use frame_system::{RawOrigin, ensure_signed};
+use frame_system::{ensure_signed, RawOrigin};
 use sp_runtime::{
-    DispatchErrorWithPostInfo,
-    MultiSignature,
-    MultiSigner,
-    SaturatedConversion,
-    traits::{
-        AccountIdConversion,
-        BadOrigin,
-        Convert,
-        Saturating,
-        Zero,
-    },
+	traits::{AccountIdConversion, BadOrigin, Convert, Saturating, Zero},
+	DispatchErrorWithPostInfo, MultiSignature, MultiSigner, SaturatedConversion,
 };
 use sp_std::{str, vec, vec::Vec};
 
@@ -104,8 +81,8 @@ pub trait CreatePayload<SourceChainAccountId, TargetChainAccountPublic, TargetCh
 }
 
 pub trait LatestMessageNoncer {
-    fn outbound_latest_generated_nonce(lane_id: LaneId) -> u64;
-    fn inbound_latest_received_nonce(lane_id: LaneId) -> u64;
+	fn outbound_latest_generated_nonce(lane_id: LaneId) -> u64;
+	fn inbound_latest_received_nonce(lane_id: LaneId) -> u64;
 }
 
 #[frame_support::pallet]
@@ -150,25 +127,25 @@ pub mod pallet {
 		#[pallet::constant]
 		type RingAddress: Get<H160>;
 
-        type MessagesBridge: MessagesBridge<
-            Self::AccountId,
-            RingBalance<Self>,
-            <<Self as Config>::OutboundPayloadCreator as CreatePayload<
-                Self::AccountId,
-                MultiSigner,
-                MultiSignature,
-                >>::Payload,
-                Error = DispatchErrorWithPostInfo<PostDispatchInfo>,
-                >;
+		type MessagesBridge: MessagesBridge<
+			Self::AccountId,
+			RingBalance<Self>,
+			<<Self as Config>::OutboundPayloadCreator as CreatePayload<
+				Self::AccountId,
+				MultiSigner,
+				MultiSignature,
+			>>::Payload,
+			Error = DispatchErrorWithPostInfo<PostDispatchInfo>,
+		>;
 		type MessageNoncer: LatestMessageNoncer;
 	}
 
 	/// Remote Backing Address, this used to verify the remote caller
 	#[pallet::storage]
 	#[pallet::getter(fn remote_backing_account)]
-	pub type RemoteBackingAccount<T: Config> = StorageValue<_, AccountId<T>, ValueQuery>;
+	pub type RemoteBackingAccount<T: Config> = StorageValue<_, AccountId<T>, OptionQuery>;
 
-    /// `(sender, amount)` the user *sender* lock and remote issuing amount of asset
+	/// `(sender, amount)` the user *sender* lock and remote issuing amount of asset
 	#[pallet::storage]
 	#[pallet::getter(fn transaction_infos)]
 	pub type TransactionInfos<T: Config> = StorageMap<
@@ -218,20 +195,24 @@ pub mod pallet {
 		pub fn issue_from_remote(
 			origin: OriginFor<T>,
 			token_address: H160,
-            recipient: Vec<u8>,
+			recipient: Vec<u8>,
 			value: U256,
 		) -> DispatchResultWithPostInfo {
 			let user = ensure_signed(origin)?;
 
-            let target_id = Self::derived_backing_id();
-            ensure!(&target_id == &user, BadOrigin);
-            
-            ensure!(
+			if let Some(backing) = <RemoteBackingAccount<T>>::get() {
+				let target_id = Self::derived_backing_id(backing);
+				ensure!(&target_id == &user, BadOrigin);
+			} else {
+				return Err(Error::<T>::BackingAccountNone.into());
+			}
+
+			ensure!(
 				token_address == T::RingAddress::get(),
 				<Error<T>>::UnsupportedToken
 			);
 			let value = value.low_u128().saturated_into();
-            // Make sure the total transfer is less than the security limitation
+			// Make sure the total transfer is less than the security limitation
 			{
 				let (used, limitation) = <SecureLimitedRingAmount<T>>::get();
 				ensure!(
@@ -245,11 +226,8 @@ pub mod pallet {
 			let recipient_id = T::AccountId::decode(&mut &recipient[..])
 				.map_err(|_| Error::<T>::InvalidRecipient)?;
 
-            T::RingCurrency::deposit_creating(&recipient_id, value);
-			Self::deposit_event(Event::TokenIssued(
-				recipient_id,
-				value,
-			));
+			T::RingCurrency::deposit_creating(&recipient_id, value);
+			Self::deposit_event(Event::TokenIssued(recipient_id, value));
 			Ok(().into())
 		}
 
@@ -257,7 +235,7 @@ pub mod pallet {
             <T as Config>::WeightInfo::burn_and_remote_unlock()
         )]
 		#[transactional]
-        pub fn burn_and_remote_unlock(
+		pub fn burn_and_remote_unlock(
 			origin: OriginFor<T>,
 			spec_version: u32,
 			weight: u64,
@@ -273,7 +251,12 @@ pub mod pallet {
 				<Error<T>>::InsufficientBalance
 			);
 
-			T::RingCurrency::transfer(&user, &Self::pallet_account_id(), value, ExistenceRequirement::KeepAlive)?;
+			T::RingCurrency::transfer(
+				&user,
+				&Self::pallet_account_id(),
+				value,
+				ExistenceRequirement::KeepAlive,
+			)?;
 
 			// Send to the target chain
 			let amount: U256 = value.saturated_into::<u128>().into();
@@ -283,12 +266,21 @@ pub mod pallet {
 				CallOrigin::SourceAccount(Self::pallet_account_id()),
 				spec_version,
 				weight,
-				CallParams::S2sBackingPalletUnlockFromRemote(T::RingAddress::get(), amount, recipient.encode()),
+				CallParams::S2sBackingPalletUnlockFromRemote(
+					T::RingAddress::get(),
+					amount,
+					recipient.encode(),
+				),
 				DispatchFeePayment::AtSourceChain,
 			)?;
 			// this pallet account as the submitter of the remote message
 			// we need to transfer fee from user to this account to pay the bridge fee
-			T::RingCurrency::transfer(&user, &Self::pallet_account_id(), fee, ExistenceRequirement::KeepAlive)?;
+			T::RingCurrency::transfer(
+				&user,
+				&Self::pallet_account_id(),
+				fee,
+				ExistenceRequirement::KeepAlive,
+			)?;
 			T::MessagesBridge::send_message(
 				RawOrigin::Signed(Self::pallet_account_id()),
 				T::MessageLaneId::get(),
@@ -313,7 +305,7 @@ pub mod pallet {
 				value,
 			));
 			Ok(().into())
-        }
+		}
 
 		#[pallet::weight(
             <T as Config>::WeightInfo::set_remote_backing_account()
@@ -328,7 +320,7 @@ pub mod pallet {
 			Ok(().into())
 		}
 
-        #[pallet::weight(
+		#[pallet::weight(
             <T as Config>::WeightInfo::set_secure_limited_period()
         )]
 		pub fn set_secure_limited_period(
@@ -342,7 +334,7 @@ pub mod pallet {
 			Ok(().into())
 		}
 
-        #[pallet::weight(
+		#[pallet::weight(
             <T as Config>::WeightInfo::set_security_limitation_ring_amount()
         )]
 		pub fn set_security_limitation_ring_amount(
@@ -361,7 +353,7 @@ pub mod pallet {
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
 		/// TokenBurnAndRemoteUnlocked \[lane_id, message_nonce, token address, sender, recipient, amount\]
-        TokenBurnAndRemoteUnlocked(
+		TokenBurnAndRemoteUnlocked(
 			LaneId,
 			MessageNonce,
 			H160,
@@ -390,6 +382,8 @@ pub mod pallet {
 		UnsupportedToken,
 		/// Invalid recipient
 		InvalidRecipient,
+		/// Backing not configured
+		BackingAccountNone,
 	}
 
 	#[pallet::genesis_config]
@@ -412,26 +406,25 @@ pub mod pallet {
 	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
 		fn build(&self) {
 			<SecureLimitedPeriod<T>>::put(self.secure_limited_period);
-            <SecureLimitedRingAmount<T>>::put((
+			<SecureLimitedRingAmount<T>>::put((
 				<RingBalance<T>>::zero(),
 				self.secure_limited_ring_amount,
 			));
 		}
 	}
 
-    impl<T: Config> Pallet<T> {
+	impl<T: Config> Pallet<T> {
 		pub fn pallet_account_id() -> T::AccountId {
 			T::PalletId::get().into_account()
 		}
 
-        pub fn derived_backing_id() -> T::AccountId {
-            let hex_id =
-                derive_account_id::<T::AccountId>(
-                    T::BridgedChainId::get(),
-                    SourceAccount::Account(<RemoteBackingAccount<T>>::get())
-                );
-            T::BridgedAccountIdConverter::convert(hex_id)
-        }
+		pub fn derived_backing_id(backing_account: T::AccountId) -> T::AccountId {
+			let hex_id = derive_account_id::<T::AccountId>(
+				T::BridgedChainId::get(),
+				SourceAccount::Account(backing_account),
+			);
+			T::BridgedAccountIdConverter::convert(hex_id)
+		}
 	}
 
 	impl<T: Config> OnDeliveryConfirmed for Pallet<T> {
@@ -441,10 +434,10 @@ pub mod pallet {
 			}
 			for nonce in messages.begin..=messages.end {
 				let result = messages.message_dispatch_result(nonce);
-                if let Some((user, value)) = <TransactionInfos<T>>::take((*lane, nonce)) {
+				if let Some((user, value)) = <TransactionInfos<T>>::take((*lane, nonce)) {
 					if !result {
 						// if remote backing unlock failed, this fund need to transfer back to the user.
-                        // otherwise burn it.
+						// otherwise burn it.
 						let _ = T::RingCurrency::transfer(
 							&Self::pallet_account_id(),
 							&user,
@@ -452,21 +445,19 @@ pub mod pallet {
 							ExistenceRequirement::KeepAlive,
 						);
 					} else {
-                        let _ = T::RingCurrency::withdraw(
-                            &Self::pallet_account_id(),
-                            value,
-                            WithdrawReasons::TRANSFER,
-                            ExistenceRequirement::AllowDeath
-                        );
-                    }
-                    Self::deposit_event(Event::TokenUnlockedConfirmed(
-                        *lane, nonce, user, value, result,
-                    ));
+						let _ = T::RingCurrency::withdraw(
+							&Self::pallet_account_id(),
+							value,
+							WithdrawReasons::TRANSFER,
+							ExistenceRequirement::AllowDeath,
+						);
+					}
+					Self::deposit_event(Event::TokenUnlockedConfirmed(
+						*lane, nonce, user, value, result,
+					));
 				}
 			}
 			<T as frame_system::Config>::DbWeight::get().reads_writes(1, 1)
 		}
 	}
 }
-
-
