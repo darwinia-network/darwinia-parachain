@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
-// --- crates.io ---
-use crate::helixbridge::*;
+use crate::helixbridge::{mock::*, *};
+
+// --- std ---
 use std::str::FromStr;
 
 // --- paritytech ---
-use super::mock::*;
 use frame_support::{assert_err, assert_ok};
 use frame_system::RawOrigin;
 

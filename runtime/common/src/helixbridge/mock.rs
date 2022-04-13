@@ -16,18 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 //
-// use frame_support::traits::ConstU32;
 
 // --- std ---
 use std::str::FromStr;
-// --- crates.io ---
-use codec::Decode;
 // --- paritytech ---
+use bp_messages::source_chain::SendMessageArtifacts;
 use frame_support::{
 	traits::{Everything, GenesisBuild},
 	PalletId,
 };
 use frame_system::mocking::*;
+use pallet_balances::AccountData;
 use sp_runtime::{
 	testing::Header,
 	traits::{BlakeTwo256, IdentityLookup},
@@ -37,8 +36,6 @@ use sp_runtime::{
 use crate::helixbridge::{
 	*, {self as s2s_issuing},
 };
-use bp_messages::source_chain::SendMessageArtifacts;
-use pallet_balances::AccountData;
 
 type Block = MockBlock<Test>;
 type SignedExtra = (frame_system::CheckSpecVersion<Test>,);
@@ -109,8 +106,8 @@ impl frame_system::Config for Test {
 frame_support::parameter_types! {
 	pub const S2sRelayPalletId: PalletId = PalletId(*b"da/s2sre");
 	pub const PangolinChainId: bp_runtime::ChainId = *b"pagl";
-	pub PangoroName: Vec<u8> = (b"Pangoro").to_vec();
-	pub MessageLaneId: [u8; 4] = *b"ltor";
+	pub PangolinName: Vec<u8> = (b"Pangolin").to_vec();
+	pub MessageLaneId: [u8; 4] = *b"ptol";
 	pub RingAddress: H160 = H160::from_str("1000000000000000000000000000000000000001").unwrap();
 }
 
@@ -171,7 +168,7 @@ impl Config for Test {
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
 	type OutboundPayloadCreator = ();
-	type BackingChainName = PangoroName;
+	type BackingChainName = PangolinName;
 	type MessageLaneId = MessageLaneId;
 	type RingAddress = RingAddress;
 	type MessagesBridge = MockMessagesBridge;
@@ -186,7 +183,7 @@ frame_support::construct_runtime! {
 	{
 		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
 		Timestamp: pallet_timestamp::{Pallet, Call, Storage},
-		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>} = 5,
+		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
 		S2sIssuing: s2s_issuing::{Pallet, Call, Storage, Config<T>, Event<T>},
 	}
 }
