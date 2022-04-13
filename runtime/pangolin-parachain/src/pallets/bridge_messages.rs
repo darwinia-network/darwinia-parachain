@@ -49,7 +49,7 @@ impl Config<WithPangolinMessages> for Runtime {
 	>;
 
 	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self>;
-	type OnDeliveryConfirmed = (FeeMarketMessageConfirmedHandler<Self>,);
+	type OnDeliveryConfirmed = (FromPangolinIssuing, FeeMarketMessageConfirmedHandler<Self>);
 
 	type SourceHeaderChain = bm_pangolin::Pangolin;
 	type MessageDispatch = bm_pangolin::FromPangolinMessageDispatch;
