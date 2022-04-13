@@ -23,6 +23,10 @@ pub use weight::WeightInfo;
 
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
+#[cfg(test)]
+mod mock;
+#[cfg(test)]
+mod tests;
 
 // --- crates.io ---
 use ethereum_types::{H160, H256, U256};
@@ -249,10 +253,12 @@ pub mod pallet {
 				<Error<T>>::InsufficientBalance
 			);
 
+			// this pallet account as the submitter of the remote message
+			// we need to transfer fee from user to this account to pay the bridge fee
 			T::RingCurrency::transfer(
 				&user,
 				&Self::pallet_account_id(),
-				value,
+				value + fee,
 				ExistenceRequirement::KeepAlive,
 			)?;
 
@@ -270,14 +276,6 @@ pub mod pallet {
 					recipient.encode(),
 				),
 				DispatchFeePayment::AtSourceChain,
-			)?;
-			// this pallet account as the submitter of the remote message
-			// we need to transfer fee from user to this account to pay the bridge fee
-			T::RingCurrency::transfer(
-				&user,
-				&Self::pallet_account_id(),
-				fee,
-				ExistenceRequirement::KeepAlive,
 			)?;
 			T::MessagesBridge::send_message(
 				RawOrigin::Signed(Self::pallet_account_id()),
