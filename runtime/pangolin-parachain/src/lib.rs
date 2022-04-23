@@ -161,6 +161,41 @@ frame_support::construct_runtime! {
 	}
 }
 
+
+#[cfg(feature = "runtime-benchmarks")]
+#[macro_use]
+extern crate frame_benchmarking;
+
+pub use frame_support::{
+	traits::{Currency},
+	weights::{constants::WEIGHT_PER_SECOND, DispatchClass, IdentityFee, RuntimeDbWeight, Weight},
+};
+
+#[cfg(feature = "runtime-benchmarks")]
+mod benches {
+	define_benchmarks!(
+		// System support stuff.
+		[frame_benchmarking, BaselineBench::<Runtime>]
+		[frame_system, SystemBench::<Runtime>]
+		[pallet_timestamp, Timestamp]
+		// Monetary stuff.
+		[pallet_balances, Balances]
+		// Collator support. the order of these 4 are important and shall not change.
+		[pallet_collator_selection, CollatorSelection]
+		// TODO wait for https://github.com/paritytech/substrate/issues/11068
+		// [pallet_session, SessionBench::<Runtime>]
+		// Handy utilities.
+		[pallet_utility, Utility]
+		[pallet_multisig, Multisig]
+		[pallet_proxy, Proxy]
+		// S2S bridges.
+		[pallet_bridge_grandpa, BridgePangolinGrandpa]
+		[pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
+		// FeeMarket
+		[pallet_fee_market, FeeMarket]
+	);
+}
+
 sp_api::impl_runtime_apis! {
 	impl sp_api::Core<Block> for Runtime {
 		fn version() -> RuntimeVersion {
@@ -280,6 +315,139 @@ sp_api::impl_runtime_apis! {
 			return pallet_fee_market_rpc_runtime_api::InProcessOrders {
 				orders: FeeMarket::in_process_orders(),
 			}
+		}
+	}
+
+	#[cfg(feature = "runtime-benchmarks")]
+	impl frame_benchmarking::Benchmark<Block> for Runtime {
+		fn benchmark_metadata(extra: bool) -> (
+			Vec<frame_benchmarking::BenchmarkList>,
+			Vec<frame_support::traits::StorageInfo>,
+		) {
+			use frame_benchmarking::{baseline, Benchmarking, BenchmarkList};
+			use frame_support::traits::StorageInfoTrait;
+			use frame_system_benchmarking::Pallet as SystemBench;
+
+			use baseline::Pallet as BaselineBench;
+			use pallet_bridge_messages::benchmarking::Pallet as MessagesBench;
+
+
+			let mut list = Vec::<BenchmarkList>::new();
+			list_benchmarks!(list, extra);
+
+			let storage_info = AllPalletsWithSystem::storage_info();
+			return (list, storage_info)
+		}
+
+		fn dispatch_benchmark(
+			config: frame_benchmarking::BenchmarkConfig
+		) -> Result<Vec<frame_benchmarking::BenchmarkBatch>, sp_runtime::RuntimeString> {
+			use frame_benchmarking::{baseline, Benchmarking, BenchmarkBatch, TrackedStorageKey};
+			use frame_system_benchmarking::Pallet as SystemBench;
+			use bridge_runtime_common::messages;
+
+			use baseline::Pallet as BaselineBench;
+			use pallet_bridge_messages::benchmarking::{
+				Pallet as MessagesBench,
+				Config as MessagesConfig,
+				MessageDeliveryProofParams,
+				MessageParams,
+				MessageProofParams,
+
+			};
+			use bridges_message::pangolin::{
+				WithPangolinMessageBridge,
+				FromPangolinMessagesProof,
+				ToPangolinMessagePayload,
+				ToPangolinMessagesDeliveryProof
+			};
+			use bridge_runtime_common::messages_benchmarking::{
+				prepare_outbound_message,
+				prepare_message_proof,
+				prepare_message_delivery_proof
+			};
+
+			impl frame_system_benchmarking::Config for Runtime {}
+			impl baseline::Config for Runtime {}
+			impl MessagesConfig<WithPangolinMessages> for Runtime {
+				fn maximal_message_size() -> u32 {
+					messages::source::maximal_message_size::<WithPangolinMessageBridge>()
+				}
+
+				fn bridged_relayer_id() -> Self::InboundRelayer {
+					[0u8; 32].into()
+				}
+
+				fn account_balance(account: &Self::AccountId) -> Self::OutboundMessageFee {
+					pallet_balances::Pallet::<Runtime>::free_balance(account)
+				}
+
+				fn endow_account(account: &Self::AccountId) {
+					pallet_balances::Pallet::<Runtime>::make_free_balance_be(
+						account,
+						Balance::MAX / 100,
+					);
+				}
+
+				fn prepare_outbound_message(
+					params: MessageParams<Self::AccountId>,
+				) -> (ToPangolinMessagePayload, Balance) {
+					prepare_outbound_message::<WithPangolinMessageBridge>(params)
+				}
+
+				fn prepare_message_proof(
+					params: MessageProofParams,
+				) -> (FromPangolinMessagesProof, Weight) {
+					prepare_message_proof::<Runtime, (), (), WithPangolinMessageBridge, bp_pangolin::Header, bp_polkadot_core::Hasher>(
+						params,
+						&VERSION,
+						Balance::MAX / 100,
+					)
+				}
+
+				fn prepare_message_delivery_proof(
+					params: MessageDeliveryProofParams<Self::AccountId>,
+				) -> ToPangolinMessagesDeliveryProof {
+					prepare_message_delivery_proof::<Runtime, (), WithPangolinMessageBridge, bp_pangolin::Header, bp_polkadot_core::Hasher>(
+						params,
+					)
+				}
+
+				fn is_message_dispatched(nonce: bp_messages::MessageNonce) -> bool {
+					frame_system::Pallet::<Runtime>::events()
+						.into_iter()
+						.map(|event_record| event_record.event)
+						.any(|event| matches!(
+							event,
+							Event::BridgePangolinDispatch(pallet_bridge_dispatch::Event::<Runtime, _>::MessageDispatched(
+								_, ([0, 0, 0, 0], nonce_from_event), _,
+							)) if nonce_from_event == nonce
+						))
+				}
+			}
+
+			let whitelist: Vec<TrackedStorageKey> = vec![
+				// Block Number
+				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef702a5c1b19ab7a04f536c519aca4983ac").to_vec().into(),
+				// Total Issuance
+				hex_literal::hex!("c2261276cc9d1f8598ea4b6a74b15c2f57c875e4cff74148e4628f264b974c80").to_vec().into(),
+				// Execution Phase
+				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef7ff553b5a9862a516939d82b3d3d8661a").to_vec().into(),
+				// Event Count
+				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef70a98fdbe9ce6c55837576c60c7af3850").to_vec().into(),
+				// System Events
+				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef780d41e5e16056765bc8461851072c9d7").to_vec().into(),
+				// Treasury Account
+				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef7b99d880ec681799c0cf30e8886371da95ecffd7b6c0f78751baa9d281e0bfa3a6d6f646c70792f74727372790000000000000000000000000000000000000000").to_vec().into(),
+				// Configuration ActiveConfig
+				hex_literal::hex!("06de3d8a54d27e44a9d5ce189618f22db4b49d95320d9021994c850f25b8e385").to_vec().into(),
+			];
+
+			let mut batches = Vec::<BenchmarkBatch>::new();
+			let params = (&config, &whitelist);
+			add_benchmarks!(params, batches);
+
+			Ok(batches)
 		}
 	}
 }

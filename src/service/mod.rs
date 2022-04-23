@@ -74,9 +74,29 @@ use substrate_prometheus_endpoint::Registry;
 use dc_primitives::{OpaqueBlock as Block, *};
 use dc_rpc::FullDeps;
 
+// Our native executor instance.
+pub struct ExecutorDispatch;
+
+impl sc_executor::NativeExecutionDispatch for ExecutorDispatch {
+	/// Only enable the benchmarking host functions when we actually want to benchmark.
+	#[cfg(feature = "runtime-benchmarks")]
+	type ExtendHostFunctions = frame_benchmarking::benchmarking::HostFunctions;
+	/// Otherwise we only use the default Substrate host functions.
+	#[cfg(not(feature = "runtime-benchmarks"))]
+	type ExtendHostFunctions = ();
+
+	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
+		pangolin_parachain_runtime::api::dispatch(method, data)
+	}
+
+	fn native_version() -> sc_executor::NativeVersion {
+		pangolin_parachain_runtime::native_version()
+	}
+}
+
 type FullBackend = TFullBackend<Block>;
 type FullClient<RuntimeApi, Executor> =
-	TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>;
+TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>;
 type StateBackend = StateBackendFor<FullBackend, Block>;
 
 /// Can be called for a `Configuration` to check if it is a configuration for the `Crab Parachain` network.

@@ -65,6 +65,10 @@ pub enum Subcommand {
 	/// testing.
 	#[cfg(feature = "try-runtime")]
 	TryRuntime(TryRuntimeCmd),
+
+	/// Benchmark runtime pallets.
+	#[cfg(feature = "runtime-benchmarks")]
+	Benchmark(frame_benchmarking_cli::BenchmarkCmd),
 }
 
 /// Command for exporting the genesis state of the parachain
