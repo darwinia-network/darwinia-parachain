@@ -96,7 +96,7 @@ impl sc_executor::NativeExecutionDispatch for ExecutorDispatch {
 
 type FullBackend = TFullBackend<Block>;
 type FullClient<RuntimeApi, Executor> =
-TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>;
+	TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>;
 type StateBackend = StateBackendFor<FullBackend, Block>;
 
 /// Can be called for a `Configuration` to check if it is a configuration for the `Crab Parachain` network.
