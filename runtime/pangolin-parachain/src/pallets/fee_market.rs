@@ -51,5 +51,5 @@ impl Config for Runtime {
 	type Slasher = FeeMarketSlasher;
 	type RingCurrency = Ring;
 	type Event = Event;
-	type WeightInfo = ();
+	type WeightInfo = weights::pallet_fee_market::WeightInfo<Runtime>;
 }

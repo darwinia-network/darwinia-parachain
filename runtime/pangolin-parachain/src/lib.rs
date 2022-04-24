@@ -24,7 +24,7 @@ pub use pallets::*;
 
 pub mod bridges_message;
 
-// pub mod weights;
+pub mod weights;
 
 pub mod wasm {
 	//! Make the WASM binary available.
@@ -174,24 +174,18 @@ pub use frame_support::{
 #[cfg(feature = "runtime-benchmarks")]
 mod benches {
 	define_benchmarks!(
-		// System support stuff.
-		[frame_benchmarking, BaselineBench::<Runtime>]
 		[frame_system, SystemBench::<Runtime>]
 		[pallet_timestamp, Timestamp]
-		// Monetary stuff.
 		[pallet_balances, Balances]
-		// Collator support. the order of these 4 are important and shall not change.
 		[pallet_collator_selection, CollatorSelection]
 		// TODO wait for https://github.com/paritytech/substrate/issues/11068
 		// [pallet_session, SessionBench::<Runtime>]
-		// Handy utilities.
 		[pallet_utility, Utility]
 		[pallet_multisig, Multisig]
 		[pallet_proxy, Proxy]
-		// S2S bridges.
-		[pallet_bridge_grandpa, BridgePangolinGrandpa]
-		[pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
-		// FeeMarket
+		// TODO fix `MessageRejectedByLaneVerifier` in benchmarking
+		// [pallet_bridge_grandpa, BridgePangolinGrandpa]
+		// [pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
 		[pallet_fee_market, FeeMarket]
 	);
 }
@@ -328,9 +322,7 @@ sp_api::impl_runtime_apis! {
 			use frame_support::traits::StorageInfoTrait;
 			use frame_system_benchmarking::Pallet as SystemBench;
 
-			use baseline::Pallet as BaselineBench;
 			use pallet_bridge_messages::benchmarking::Pallet as MessagesBench;
-
 
 			let mut list = Vec::<BenchmarkList>::new();
 			list_benchmarks!(list, extra);
@@ -345,15 +337,12 @@ sp_api::impl_runtime_apis! {
 			use frame_benchmarking::{baseline, Benchmarking, BenchmarkBatch, TrackedStorageKey};
 			use frame_system_benchmarking::Pallet as SystemBench;
 			use bridge_runtime_common::messages;
-
-			use baseline::Pallet as BaselineBench;
 			use pallet_bridge_messages::benchmarking::{
 				Pallet as MessagesBench,
 				Config as MessagesConfig,
 				MessageDeliveryProofParams,
 				MessageParams,
 				MessageProofParams,
-
 			};
 			use bridges_message::pangolin::{
 				WithPangolinMessageBridge,
@@ -368,7 +357,6 @@ sp_api::impl_runtime_apis! {
 			};
 
 			impl frame_system_benchmarking::Config for Runtime {}
-			impl baseline::Config for Runtime {}
 			impl MessagesConfig<WithPangolinMessages> for Runtime {
 				fn maximal_message_size() -> u32 {
 					messages::source::maximal_message_size::<WithPangolinMessageBridge>()
