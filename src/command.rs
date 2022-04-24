@@ -426,6 +426,7 @@ pub fn run() -> Result<()> {
 				panic!("Try runtime not support chain: {}", chain_spec.id());
 			}
 		}
+		#[cfg(feature = "runtime-benchmarks")]
 		Some(Subcommand::Benchmark(cmd)) =>
 			if cfg!(feature = "runtime-benchmarks") {
 				let runner = cli.create_runner(cmd)?;
