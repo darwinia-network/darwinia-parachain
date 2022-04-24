@@ -209,7 +209,7 @@ impl TargetHeaderChain<ToPangolinMessagePayload, <Self as ChainWithMessages>::Ac
 
 	fn verify_messages_delivery_proof(
 		proof: Self::MessagesDeliveryProof,
-	) -> Result<(LaneId, InboundLaneData<bp_pangolin::AccountId>), Self::Error> {
+	) -> Result<(LaneId, InboundLaneData<bp_pangoro::AccountId>), Self::Error> {
 		source::verify_messages_delivery_proof::<
 			WithPangolinMessageBridge,
 			Runtime,
