@@ -1,13 +1,13 @@
 Darwinia Parachain
 ===
 
-## [5.1.1] - 2022-02-16
+## [{{ tag }}] - 2022-02-16
 
 > :warning: **We changed the token decimal in this release. In order to query the correct value from RPC please upgrade your node.**
 
-|    Network     | Native Runtime | Upgrade Priority |
-| :------------: | :------------: | :--------------: |
-| Crab Parachain |       4        |      MEDIUM      |
+|    Network     |            Native Runtime            | Upgrade Priority |
+| :------------: | :----------------------------------: | :--------------: |
+| Crab Parachain | {{ crab_parachain_runtime_version }} |      MEDIUM      |
 
 ## Resources
 
@@ -29,4 +29,4 @@ docker pull quay.io/darwinia-network/darwinia-collator:sha-{{ sha }}
 ## Proposal Hashes
 |    Network     |              Proposal Hash              |
 | :------------: | :-------------------------------------: |
-| Crab Parachain | {{ z_crab_parachain_proposal_compact }} |
+| Crab Parachain | {{ crab_parachain_proposal_compact }} |
