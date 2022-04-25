@@ -183,9 +183,9 @@ mod benches {
 		[pallet_utility, Utility]
 		[pallet_multisig, Multisig]
 		[pallet_proxy, Proxy]
+		[pallet_bridge_grandpa, BridgePangolinGrandpa]
 		// TODO fix `MessageRejectedByLaneVerifier` in benchmarking
-		// [pallet_bridge_grandpa, BridgePangolinGrandpa]
-		// [pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
+		[pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
 		[pallet_fee_market, FeeMarket]
 	);
 }
@@ -318,7 +318,7 @@ sp_api::impl_runtime_apis! {
 			Vec<frame_benchmarking::BenchmarkList>,
 			Vec<frame_support::traits::StorageInfo>,
 		) {
-			use frame_benchmarking::{baseline, Benchmarking, BenchmarkList};
+			use frame_benchmarking::{Benchmarking, BenchmarkList};
 			use frame_support::traits::StorageInfoTrait;
 			use frame_system_benchmarking::Pallet as SystemBench;
 
@@ -334,7 +334,7 @@ sp_api::impl_runtime_apis! {
 		fn dispatch_benchmark(
 			config: frame_benchmarking::BenchmarkConfig
 		) -> Result<Vec<frame_benchmarking::BenchmarkBatch>, sp_runtime::RuntimeString> {
-			use frame_benchmarking::{baseline, Benchmarking, BenchmarkBatch, TrackedStorageKey};
+			use frame_benchmarking::{Benchmarking, BenchmarkBatch, TrackedStorageKey};
 			use frame_system_benchmarking::Pallet as SystemBench;
 			use bridge_runtime_common::messages;
 			use pallet_bridge_messages::benchmarking::{
@@ -386,7 +386,7 @@ sp_api::impl_runtime_apis! {
 				fn prepare_message_proof(
 					params: MessageProofParams,
 				) -> (FromPangolinMessagesProof, Weight) {
-					prepare_message_proof::<Runtime, (), (), WithPangolinMessageBridge, bp_pangolin::Header, bp_polkadot_core::Hasher>(
+					prepare_message_proof::<Runtime, (), WithPangolinGrandpa, WithPangolinMessageBridge, bp_pangolin::Header, bp_polkadot_core::Hasher>(
 						params,
 						&VERSION,
 						Balance::MAX / 100,
@@ -396,7 +396,7 @@ sp_api::impl_runtime_apis! {
 				fn prepare_message_delivery_proof(
 					params: MessageDeliveryProofParams<Self::AccountId>,
 				) -> ToPangolinMessagesDeliveryProof {
-					prepare_message_delivery_proof::<Runtime, (), WithPangolinMessageBridge, bp_pangolin::Header, bp_polkadot_core::Hasher>(
+					prepare_message_delivery_proof::<Runtime, WithPangolinGrandpa, WithPangolinMessageBridge, bp_pangolin::Header, bp_polkadot_core::Hasher>(
 						params,
 					)
 				}
