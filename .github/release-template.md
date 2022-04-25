@@ -1,7 +1,7 @@
 Darwinia Parachain
 ===
 
-## [{{ tag }}] - 2022-02-16
+## [{{ tag }}]
 
 > :warning: **We changed the token decimal in this release. In order to query the correct value from RPC please upgrade your node.**
 
