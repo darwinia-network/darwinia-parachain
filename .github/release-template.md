@@ -27,6 +27,6 @@ docker pull quay.io/darwinia-network/darwinia-collator:sha-{{ sha }}
 ```
 
 ## Proposal Hashes
-|    Network     |              Proposal Hash              |
-| :------------: | :-------------------------------------: |
+|    Network     |             Proposal Hash             |
+| :------------: | :-----------------------------------: |
 | Crab Parachain | {{ crab_parachain_proposal_compact }} |
