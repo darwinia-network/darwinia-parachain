@@ -21,6 +21,5 @@ impl Config<WithPangolinGrandpa> for Runtime {
 	type BridgedChain = bp_pangolin::Pangolin;
 	type MaxRequests = MaxRequests;
 	type HeadersToKeep = HeadersToKeep;
-	// TODO wait for https://github.com/darwinia-network/darwinia-bridges-substrate/issues/36
-	type WeightInfo = ();
+	type WeightInfo = weights::pallet_bridge_grandpa::WeightInfo<Runtime>;
 }
