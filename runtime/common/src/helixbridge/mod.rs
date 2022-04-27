@@ -197,8 +197,8 @@ pub mod pallet {
 		pub fn issue_from_remote(
 			origin: OriginFor<T>,
 			token_address: H160,
-			recipient: Vec<u8>,
 			value: U256,
+			recipient: Vec<u8>,
 		) -> DispatchResultWithPostInfo {
 			let user = ensure_signed(origin)?;
 
