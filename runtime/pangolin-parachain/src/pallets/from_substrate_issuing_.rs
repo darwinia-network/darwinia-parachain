@@ -30,13 +30,6 @@ impl LatestMessageNoncer for ToPangoroMessageSender {
 			.latest_generated_nonce
 			.into()
 	}
-
-	fn inbound_latest_received_nonce(lane_id: LaneId) -> u64 {
-		inbound_lane::<Runtime, WithPangolinMessages>(lane_id)
-			.data()
-			.last_delivered_nonce()
-			.into()
-	}
 }
 
 #[derive(Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug, TypeInfo)]

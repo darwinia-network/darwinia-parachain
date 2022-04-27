@@ -122,9 +122,6 @@ impl LatestMessageNoncer for MockS2sMessageSender {
 	fn outbound_latest_generated_nonce(_lane_id: [u8; 4]) -> u64 {
 		0
 	}
-	fn inbound_latest_received_nonce(_lane_id: [u8; 4]) -> u64 {
-		0
-	}
 }
 
 pub struct MockMessagesBridge;

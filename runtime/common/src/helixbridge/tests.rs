@@ -34,8 +34,8 @@ fn issue_from_remote_backing_not_configured() {
 			S2sIssuing::issue_from_remote(
 				Origin::signed(build_account(1).0),
 				token_address,
-				recipient_vec,
 				U256::from(1u128),
+				recipient_vec,
 			),
 			<Error<Test>>::BackingAccountNone
 		);
@@ -57,8 +57,8 @@ fn issue_from_remote_backing_remote_sender_invalid() {
 			S2sIssuing::issue_from_remote(
 				Origin::signed(build_account(1).0),
 				token_address,
-				recipient_vec,
 				U256::from(1u128),
+				recipient_vec,
 			),
 			BadOrigin
 		);
@@ -82,8 +82,8 @@ fn issue_from_remote_backing_token_address_invalid() {
 			S2sIssuing::issue_from_remote(
 				Origin::signed(drived_remote_backing_account.clone()),
 				token_address,
-				recipient_vec,
 				U256::from(1u128),
+				recipient_vec,
 			),
 			<Error<Test>>::UnsupportedToken
 		);
@@ -106,8 +106,8 @@ fn issue_from_remote_backing_success() {
 		assert_ok!(S2sIssuing::issue_from_remote(
 			Origin::signed(drived_remote_backing_account.clone()),
 			token_address,
-			recipient_vec,
 			U256::from(1024u128),
+			recipient_vec,
 		));
 		assert_eq!(Balances::free_balance(recipient), 1024);
 	});

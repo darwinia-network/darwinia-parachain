@@ -84,7 +84,6 @@ pub trait CreatePayload<SourceChainAccountId, TargetChainAccountPublic, TargetCh
 
 pub trait LatestMessageNoncer {
 	fn outbound_latest_generated_nonce(lane_id: LaneId) -> u64;
-	fn inbound_latest_received_nonce(lane_id: LaneId) -> u64;
 }
 
 #[frame_support::pallet]
