@@ -7,3 +7,5 @@ pub mod pallet_proxy;
 pub mod pallet_timestamp;
 pub mod pallet_utility;
 pub mod pallet_bridge_grandpa;
+pub mod pallet_bridge_messages;
+pub mod pallet_bridge_messages_ext;

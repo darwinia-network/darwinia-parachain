@@ -184,7 +184,6 @@ mod benches {
 		[pallet_multisig, Multisig]
 		[pallet_proxy, Proxy]
 		[pallet_bridge_grandpa, BridgePangolinGrandpa]
-		// TODO fix `MessageRejectedByLaneVerifier` in benchmarking
 		[pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
 		[pallet_fee_market, FeeMarket]
 	);
@@ -336,6 +335,7 @@ sp_api::impl_runtime_apis! {
 		) -> Result<Vec<frame_benchmarking::BenchmarkBatch>, sp_runtime::RuntimeString> {
 			use frame_benchmarking::{Benchmarking, BenchmarkBatch, TrackedStorageKey};
 			use frame_system_benchmarking::Pallet as SystemBench;
+			use frame_support::assert_ok;
 			use bridge_runtime_common::messages;
 			use pallet_bridge_messages::benchmarking::{
 				Pallet as MessagesBench,
@@ -350,13 +350,19 @@ sp_api::impl_runtime_apis! {
 				ToPangolinMessagePayload,
 				ToPangolinMessagesDeliveryProof
 			};
-			use bridge_runtime_common::messages_benchmarking::{
-				prepare_outbound_message,
-				prepare_message_proof,
-				prepare_message_delivery_proof
+			use bridge_runtime_common::{
+				messages_benchmarking::{
+					prepare_message_proof,
+					prepare_message_delivery_proof
+				},
+				messages::{
+					source:: FromThisChainMessagePayload
+				}
 			};
+			use bp_runtime::{messages::DispatchFeePayment};
 
 			impl frame_system_benchmarking::Config for Runtime {}
+
 			impl MessagesConfig<WithPangolinMessages> for Runtime {
 				fn maximal_message_size() -> u32 {
 					messages::source::maximal_message_size::<WithPangolinMessageBridge>()
@@ -371,16 +377,49 @@ sp_api::impl_runtime_apis! {
 				}
 
 				fn endow_account(account: &Self::AccountId) {
+					// prepare fee_market
+					let collateral = <Runtime as pallet_fee_market::Config>::CollateralPerOrder::get();
+					let caller1: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 1, 0u32);
+					let caller2: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 2, 0u32);
+					let caller3: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 3, 0u32);
+					<Runtime as pallet_fee_market::Config>::RingCurrency::make_free_balance_be(&caller1, collateral.saturating_mul(10u32.into()));
+					<Runtime as pallet_fee_market::Config>::RingCurrency::make_free_balance_be(&caller2, collateral.saturating_mul(10u32.into()));
+					<Runtime as pallet_fee_market::Config>::RingCurrency::make_free_balance_be(&caller3, collateral.saturating_mul(10u32.into()));
+					assert_ok!(pallet_fee_market::Pallet::<Runtime>::enroll_and_lock_collateral(
+						frame_system::RawOrigin::Signed(caller1).into(),
+						collateral,
+						None
+					));
+					assert_ok!(pallet_fee_market::Pallet::<Runtime>::enroll_and_lock_collateral(
+						frame_system::RawOrigin::Signed(caller2).into(),
+						collateral,
+						None
+					));
+					assert_ok!(pallet_fee_market::Pallet::<Runtime>::enroll_and_lock_collateral(
+						frame_system::RawOrigin::Signed(caller3).into(),
+						collateral,
+						None
+					));
+					// prepare current account
 					pallet_balances::Pallet::<Runtime>::make_free_balance_be(
 						account,
-						Balance::MAX / 100,
+						Balance::MAX/100,
 					);
 				}
 
 				fn prepare_outbound_message(
 					params: MessageParams<Self::AccountId>,
 				) -> (ToPangolinMessagePayload, Balance) {
-					prepare_outbound_message::<WithPangolinMessageBridge>(params)
+					let message_payload = vec![0; params.size as usize];
+					let dispatch_origin = bp_message_dispatch::CallOrigin::SourceAccount(params.sender_account);
+					let message = FromThisChainMessagePayload::<WithPangolinMessageBridge> {
+						spec_version: 0,
+						weight: params.size as _,
+						origin: dispatch_origin,
+						call: message_payload,
+						dispatch_fee_payment: DispatchFeePayment::AtSourceChain,
+					};
+					(message, <Runtime as pallet_fee_market::Config>::MinimumRelayFee::get())
 				}
 
 				fn prepare_message_proof(
@@ -427,6 +466,8 @@ sp_api::impl_runtime_apis! {
 				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef780d41e5e16056765bc8461851072c9d7").to_vec().into(),
 				// Treasury Account
 				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef7b99d880ec681799c0cf30e8886371da95ecffd7b6c0f78751baa9d281e0bfa3a6d6f646c70792f74727372790000000000000000000000000000000000000000").to_vec().into(),
+				// Caller 0 Account
+				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef7b99d880ec681799c0cf30e8886371da946c154ffd9992e395af90b5b13cc6f295c77033fce8a9045824a6690bbf99c6db269502f0a8d1d2a008542d5690a0749").to_vec().into(),
 				// Configuration ActiveConfig
 				hex_literal::hex!("06de3d8a54d27e44a9d5ce189618f22db4b49d95320d9021994c850f25b8e385").to_vec().into(),
 			];

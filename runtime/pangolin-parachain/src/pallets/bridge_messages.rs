@@ -23,7 +23,7 @@ frame_support::parameter_types! {
 
 impl Config<WithPangolinMessages> for Runtime {
 	type Event = Event;
-	type WeightInfo = ();
+	type WeightInfo = weights::pallet_bridge_messages::WeightInfo<Runtime>;
 	type Parameter = bm_pangolin::PangolinParachainToPangolinParameter;
 	type MaxMessagesToPruneAtOnce = MaxMessagesToPruneAtOnce;
 	type MaxUnrewardedRelayerEntriesAtInboundLane = MaxUnrewardedRelayerEntriesAtInboundLane;
