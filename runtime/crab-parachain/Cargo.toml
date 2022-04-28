@@ -65,6 +65,12 @@ sp-session                                 = { default-features = false, git = "
 sp-std                                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 sp-transaction-pool                        = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 sp-version                                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+# benchmarking
+pallet-session-benchmarking                = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16", optional = true }
+pallet-xcm-benchmarks                      = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16", optional = true}
+frame-benchmarking                         = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16", optional = true }
+frame-system-benchmarking                  = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16", optional = true }
+hex-literal                                = { version = "0.3.4", optional = true}
 
 [build-dependencies]
 substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
@@ -141,4 +147,21 @@ try-runtime = [
 	"pallet-timestamp/try-runtime",
 	"pallet-transaction-payment/try-runtime",
 	"pallet-utility/try-runtime",
+]
+
+runtime-benchmarks = [
+	"frame-benchmarking/runtime-benchmarks",
+	"frame-support/runtime-benchmarks",
+	"frame-system/runtime-benchmarks",
+	"frame-system-benchmarking",
+	"hex-literal",
+	"pallet-balances/runtime-benchmarks",
+	"pallet-collator-selection/runtime-benchmarks",
+	"pallet-multisig/runtime-benchmarks",
+	"pallet-proxy/runtime-benchmarks",
+	"pallet-timestamp/runtime-benchmarks",
+	"pallet-utility/runtime-benchmarks",
+	"xcm-builder/runtime-benchmarks",
+	"pallet-xcm/runtime-benchmarks",
+	"pallet-xcm-benchmarks",
 ]
