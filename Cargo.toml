@@ -27,6 +27,7 @@ try-runtime = [
 runtime-benchmarks = [
 	"pangolin-parachain-runtime/runtime-benchmarks",
 	"crab-parachain-runtime/runtime-benchmarks",
+	"darwinia-parachain-runtime/runtime-benchmarks",
 	# solution for issue: "missing `successful_origin` in implementation" https://substrate.stackexchange.com/questions/240/missing-successful-origin-in-implementation-when-running-runtime-benchmarks
 	"polkadot-cli/runtime-benchmarks",
 	"frame-benchmarking",

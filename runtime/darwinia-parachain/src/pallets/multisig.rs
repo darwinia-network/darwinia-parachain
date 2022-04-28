@@ -18,5 +18,5 @@ impl Config for Runtime {
 	type DepositBase = DepositBase;
 	type DepositFactor = DepositFactor;
 	type MaxSignatories = MaxSignatories;
-	type WeightInfo = ();
+	type WeightInfo = weights::pallet_multisig::WeightInfo<Runtime>;
 }
