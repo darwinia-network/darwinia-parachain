@@ -23,6 +23,7 @@ pub mod pallets;
 pub use pallets::*;
 
 pub mod bridges_message;
+pub use bridges_message::*;
 
 // pub mod weights;
 
@@ -280,6 +281,49 @@ sp_api::impl_runtime_apis! {
 			return pallet_fee_market_rpc_runtime_api::InProcessOrders {
 				orders: FeeMarket::in_process_orders(),
 			}
+		}
+	}
+
+	impl bp_pangolin::PangolinFinalityApi<Block> for Runtime {
+		fn best_finalized() -> (bp_pangolin::BlockNumber, bp_pangolin::Hash) {
+			let header = BridgePangolinGrandpa::best_finalized();
+			(header.number, header.hash())
+		}
+	}
+
+	impl bp_pangolin::ToPangolinOutboundLaneApi<Block, Balance, bm_pangolin::ToPangolinMessagePayload> for Runtime {
+		fn message_details(
+			lane: bp_messages::LaneId,
+			begin: bp_messages::MessageNonce,
+			end: bp_messages::MessageNonce,
+		) -> Vec<bp_messages::MessageDetails<Balance>> {
+			bridge_runtime_common::messages_api::outbound_message_details::<
+				Runtime,
+				WithPangolinMessages,
+				bm_pangolin::WithPangolinMessageBridge,
+			>(lane, begin, end)
+		}
+
+		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgePangolinMessages::outbound_latest_received_nonce(lane)
+		}
+
+		fn latest_generated_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgePangolinMessages::outbound_latest_generated_nonce(lane)
+		}
+	}
+
+	impl bp_pangolin::FromPangolinInboundLaneApi<Block> for Runtime {
+		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgePangolinMessages::inbound_latest_received_nonce(lane)
+		}
+
+		fn latest_confirmed_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgePangolinMessages::inbound_latest_confirmed_nonce(lane)
+		}
+
+		fn unrewarded_relayers_state(lane: bp_messages::LaneId) -> bp_messages::UnrewardedRelayersState {
+			BridgePangolinMessages::inbound_unrewarded_relayers_state(lane)
 		}
 	}
 }
