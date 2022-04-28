@@ -326,8 +326,6 @@ sp_api::impl_runtime_apis! {
 			BridgePangolinMessages::inbound_unrewarded_relayers_state(lane)
 		}
 	}
-
-
 }
 
 struct CheckInherents;
