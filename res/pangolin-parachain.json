@@ -3,8 +3,8 @@
 	"id": "pangolin_parachain",
 	"chainType": "Live",
 	"bootNodes": [
-		"/dns4/g1.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWALrn86eyZJikWQhPWsbfHMHnXK1g6FLsGY5voCDKm2AN",
-		"/dns4/g2.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWGwYxLgjoDe7m8dNmkTdXbm8PXZQK2RJkFG4nNqMaDCDB"
+		"/dns4/g1.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWBWAiVRDFukp1LUZVZvqMkUxQck7pz65tZHoHm1YHLPb2",
+		"/dns4/g2.pangolin-p2p.darwinia.network/tcp/10000/p2p/12D3KooWBgFy4m4jctk8JnHGs9eNYKV3ZTbdWRGbXjvg1XmP5HcA"
 	],
 	"telemetryEndpoints": [
 		[
