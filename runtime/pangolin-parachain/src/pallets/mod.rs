@@ -65,4 +65,8 @@ pub mod bridge_messages;
 pub use bridge_messages::*;
 
 pub mod fee_market;
+
+pub mod xcm_matcher;
+pub use xcm_matcher::*;
+
 pub use fee_market::*;
