@@ -8,7 +8,6 @@ use xcm::v0::BodyId;
 use crate::*;
 
 frame_support::parameter_types! {
-	pub const RocLocation: MultiLocation = MultiLocation::parent();
 	pub const ExecutiveBody: BodyId = BodyId::Executive;
 	pub const PotId: PalletId = PalletId(*b"PotStake");
 	pub const MaxCandidates: u32 = 1000;
