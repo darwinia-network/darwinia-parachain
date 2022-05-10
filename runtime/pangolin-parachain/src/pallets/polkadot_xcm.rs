@@ -88,10 +88,15 @@ pub type XcmOriginToTransactDispatchOrigin = (
 );
 
 frame_support::parameter_types! {
-	pub const KsmLocation: MultiLocation = MultiLocation::parent();
 	pub const RelayNetwork: NetworkId = NetworkId::Kusama;
 	pub const MaxInstructions: u32 = 100;
-	pub AnchoringSelfReserve: MultiLocation = PalletInstance(<Balances as PalletInfoAccess>::index() as u8).into();
+	pub AnchoringSelfReserve: MultiLocation = MultiLocation::new(
+		1,
+		X2(
+			Parachain(ParachainInfo::parachain_id().into()),
+			PalletInstance(<Balances as PalletInfoAccess>::index() as u8)
+		)
+	);
 	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
 	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
 	pub UnitWeightCost: Weight = 1_000_000_000;
@@ -123,7 +128,8 @@ impl XcmCExecutorConfig for XcmConfig {
 	type LocationInverter = LocationInverter<Ancestry>;
 	type Barrier = Barrier;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
-	type Trader = UsingComponents<IdentityFee<Balance>, KsmLocation, AccountId, Balances, ()>;
+	type Trader =
+		UsingComponents<IdentityFee<Balance>, AnchoringSelfReserve, AccountId, Balances, ()>;
 	type ResponseHandler = PolkadotXcm;
 	type AssetTrap = PolkadotXcm;
 	type AssetClaims = PolkadotXcm;
