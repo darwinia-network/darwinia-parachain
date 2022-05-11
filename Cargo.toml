@@ -56,6 +56,8 @@ dc-rpc                     = { path = "rpc" }
 pangolin-parachain-runtime = { path = "runtime/pangolin-parachain" }
 
 # substrate
+frame-benchmarking             = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
+frame-benchmarking-cli         = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 sc-basic-authorship            = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 sc-chain-spec                  = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
@@ -107,10 +109,6 @@ polkadot-parachain  = { git = "https://github.com/paritytech/polkadot", branch =
 polkadot-primitives = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 polkadot-service    = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
 xcm                 = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.16" }
-
-# runtime benchmarking
-frame-benchmarking     = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
-frame-benchmarking-cli = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
