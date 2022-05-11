@@ -34,8 +34,8 @@ pub mod wasm {
 	pub fn wasm_binary_unwrap() -> &'static [u8] {
 		return WASM_BINARY.expect(
 			"Development wasm binary is not available. This means the client is \
-							built with `BUILD_DUMMY_WASM_BINARY` flag and it is only usable for \
-							production chains. Please rebuild with the flag disabled.",
+			built with `BUILD_DUMMY_WASM_BINARY` flag and it is only usable for \
+			production chains. Please rebuild with the flag disabled.",
 		);
 	}
 }

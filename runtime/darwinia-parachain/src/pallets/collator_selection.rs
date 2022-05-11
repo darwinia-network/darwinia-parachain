@@ -3,7 +3,7 @@ use frame_support::{traits::EnsureOneOf, PalletId};
 use frame_system::EnsureRoot;
 use pallet_collator_selection::Config;
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
-use xcm::v0::BodyId;
+use xcm::latest::BodyId;
 // --- darwinia-network ---
 use crate::*;
 

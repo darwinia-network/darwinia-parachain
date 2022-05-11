@@ -23,6 +23,7 @@ pub mod pallets;
 pub use pallets::*;
 
 pub mod bridges_message;
+pub use bridges_message::*;
 
 pub mod weights;
 
@@ -36,8 +37,8 @@ pub mod wasm {
 	pub fn wasm_binary_unwrap() -> &'static [u8] {
 		return WASM_BINARY.expect(
 			"Development wasm binary is not available. This means the client is \
-							built with `BUILD_DUMMY_WASM_BINARY` flag and it is only usable for \
-							production chains. Please rebuild with the flag disabled.",
+			built with `BUILD_DUMMY_WASM_BINARY` flag and it is only usable for \
+			production chains. Please rebuild with the flag disabled.",
 		);
 	}
 }
@@ -95,7 +96,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
 	impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
 	authoring_version: 1,
-	spec_version: 3,
+	spec_version: 4,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -161,13 +162,12 @@ frame_support::construct_runtime! {
 	}
 }
 
-
 #[cfg(feature = "runtime-benchmarks")]
 #[macro_use]
 extern crate frame_benchmarking;
 
 pub use frame_support::{
-	traits::{Currency},
+	traits::Currency,
 	weights::{constants::WEIGHT_PER_SECOND, DispatchClass, IdentityFee, RuntimeDbWeight, Weight},
 };
 
@@ -311,6 +311,49 @@ sp_api::impl_runtime_apis! {
 		}
 	}
 
+	impl bp_pangolin::PangolinFinalityApi<Block> for Runtime {
+		fn best_finalized() -> (bp_pangolin::BlockNumber, bp_pangolin::Hash) {
+			let header = BridgePangolinGrandpa::best_finalized();
+			(header.number, header.hash())
+		}
+	}
+
+	impl bp_pangolin::ToPangolinOutboundLaneApi<Block, Balance, bm_pangolin::ToPangolinMessagePayload> for Runtime {
+		fn message_details(
+			lane: bp_messages::LaneId,
+			begin: bp_messages::MessageNonce,
+			end: bp_messages::MessageNonce,
+		) -> Vec<bp_messages::MessageDetails<Balance>> {
+			bridge_runtime_common::messages_api::outbound_message_details::<
+				Runtime,
+				WithPangolinMessages,
+				bm_pangolin::WithPangolinMessageBridge,
+			>(lane, begin, end)
+		}
+
+		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgePangolinMessages::outbound_latest_received_nonce(lane)
+		}
+
+		fn latest_generated_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgePangolinMessages::outbound_latest_generated_nonce(lane)
+		}
+	}
+
+	impl bp_pangolin::FromPangolinInboundLaneApi<Block> for Runtime {
+		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgePangolinMessages::inbound_latest_received_nonce(lane)
+		}
+
+		fn latest_confirmed_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgePangolinMessages::inbound_latest_confirmed_nonce(lane)
+		}
+
+		fn unrewarded_relayers_state(lane: bp_messages::LaneId) -> bp_messages::UnrewardedRelayersState {
+			BridgePangolinMessages::inbound_unrewarded_relayers_state(lane)
+		}
+	}
+
 	#[cfg(feature = "runtime-benchmarks")]
 	impl frame_benchmarking::Benchmark<Block> for Runtime {
 		fn benchmark_metadata(extra: bool) -> (
@@ -320,13 +363,14 @@ sp_api::impl_runtime_apis! {
 			use frame_benchmarking::{Benchmarking, BenchmarkList};
 			use frame_support::traits::StorageInfoTrait;
 			use frame_system_benchmarking::Pallet as SystemBench;
-
 			use pallet_bridge_messages::benchmarking::Pallet as MessagesBench;
 
 			let mut list = Vec::<BenchmarkList>::new();
+
 			list_benchmarks!(list, extra);
 
 			let storage_info = AllPalletsWithSystem::storage_info();
+
 			return (list, storage_info)
 		}
 
@@ -362,7 +406,6 @@ sp_api::impl_runtime_apis! {
 			use bp_runtime::{messages::DispatchFeePayment};
 
 			impl frame_system_benchmarking::Config for Runtime {}
-
 			impl MessagesConfig<WithPangolinMessages> for Runtime {
 				fn maximal_message_size() -> u32 {
 					messages::source::maximal_message_size::<WithPangolinMessageBridge>()
@@ -382,9 +425,11 @@ sp_api::impl_runtime_apis! {
 					let caller1: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 1, 0u32);
 					let caller2: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 2, 0u32);
 					let caller3: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 3, 0u32);
+
 					<Runtime as pallet_fee_market::Config>::RingCurrency::make_free_balance_be(&caller1, collateral.saturating_mul(10u32.into()));
 					<Runtime as pallet_fee_market::Config>::RingCurrency::make_free_balance_be(&caller2, collateral.saturating_mul(10u32.into()));
 					<Runtime as pallet_fee_market::Config>::RingCurrency::make_free_balance_be(&caller3, collateral.saturating_mul(10u32.into()));
+
 					assert_ok!(pallet_fee_market::Pallet::<Runtime>::enroll_and_lock_collateral(
 						frame_system::RawOrigin::Signed(caller1).into(),
 						collateral,
@@ -419,6 +464,7 @@ sp_api::impl_runtime_apis! {
 						call: message_payload,
 						dispatch_fee_payment: DispatchFeePayment::AtSourceChain,
 					};
+
 					(message, <Runtime as pallet_fee_market::Config>::MinimumRelayFee::get())
 				}
 
@@ -471,9 +517,9 @@ sp_api::impl_runtime_apis! {
 				// Configuration ActiveConfig
 				hex_literal::hex!("06de3d8a54d27e44a9d5ce189618f22db4b49d95320d9021994c850f25b8e385").to_vec().into(),
 			];
-
 			let mut batches = Vec::<BenchmarkBatch>::new();
 			let params = (&config, &whitelist);
+
 			add_benchmarks!(params, batches);
 
 			Ok(batches)
