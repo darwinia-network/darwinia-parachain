@@ -91,11 +91,8 @@ frame_support::parameter_types! {
 	pub const RelayNetwork: NetworkId = NetworkId::Kusama;
 	pub const MaxInstructions: u32 = 100;
 	pub AnchoringSelfReserve: MultiLocation = MultiLocation::new(
-		1,
-		X2(
-			Parachain(ParachainInfo::parachain_id().into()),
-			PalletInstance(<Balances as PalletInfoAccess>::index() as u8)
-		)
+		0,
+		X1(PalletInstance(<Balances as PalletInfoAccess>::index() as u8))
 	);
 	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
 	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
