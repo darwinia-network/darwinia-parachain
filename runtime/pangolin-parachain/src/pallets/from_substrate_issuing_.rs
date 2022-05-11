@@ -20,7 +20,7 @@ use frame_support::RuntimeDebug;
 use scale_info::TypeInfo;
 use sp_runtime::{traits::AccountIdConversion, AccountId32};
 
-use pallet_bridge_messages::{inbound_lane, outbound_lane};
+use pallet_bridge_messages::outbound_lane;
 
 pub struct ToPangoroMessageSender;
 impl LatestMessageNoncer for ToPangoroMessageSender {
