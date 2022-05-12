@@ -231,7 +231,6 @@ pub fn run() -> Result<()> {
 					{ $( $code )* }.map(|v| (v, task_manager))
 				})
 			}
-
 		}}
 	}
 
@@ -401,6 +400,33 @@ pub fn run() -> Result<()> {
 			Ok(())
 		}
 		Some(Subcommand::Key(cmd)) => Ok(cmd.run(&cli)?),
+		#[cfg(feature = "runtime-benchmarks")]
+		Some(Subcommand::Benchmark(cmd)) => {
+			if cfg!(feature = "runtime-benchmarks") {
+				let runner = cli.create_runner(cmd)?;
+				let chain_spec = &runner.config().chain_spec;
+
+				set_default_ss58_version(chain_spec);
+
+				if chain_spec.is_crab_parachain() {
+					runner.sync_run(|config| cmd.run::<Block, CrabParachainRuntimeExecutor>(config))
+				} else if chain_spec.is_pangolin_parachain() {
+					runner.sync_run(|config| {
+						cmd.run::<Block, PangolinParachainRuntimeExecutor>(config)
+					})
+				} else {
+					runner.sync_run(|config| {
+						cmd.run::<Block, DarwiniaParachainRuntimeExecutor>(config)
+					})
+				}
+			} else {
+				Err(
+					"Benchmarking wasn't enabled when building the node. You can enable it with \
+				     `--features runtime-benchmarks`."
+						.into(),
+				)
+			}
+		}
 		#[cfg(feature = "try-runtime")]
 		Some(Subcommand::TryRuntime(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
@@ -424,20 +450,6 @@ pub fn run() -> Result<()> {
 				})
 			} else {
 				panic!("Try runtime not support chain: {}", chain_spec.id());
-			}
-		}
-		#[cfg(feature = "runtime-benchmarks")]
-		Some(Subcommand::Benchmark(cmd)) => {
-			if cfg!(feature = "runtime-benchmarks") {
-				let runner = cli.create_runner(cmd)?;
-
-				runner.sync_run(|config| cmd.run::<Block, service::ExecutorDispatch>(config))
-			} else {
-				Err(
-					"Benchmarking wasn't enabled when building the node. You can enable it with \
-				     `--features runtime-benchmarks`."
-						.into(),
-				)
 			}
 		}
 	}
