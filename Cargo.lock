@@ -6198,6 +6198,7 @@ dependencies = [
 name = "pangolin-parachain-runtime"
 version = "5.1.2"
 dependencies = [
+ "array-bytes",
  "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.16)",
  "bp-pangolin",
@@ -6221,7 +6222,6 @@ dependencies = [
  "frame-system",
  "frame-system-benchmarking",
  "frame-system-rpc-runtime-api",
- "hex-literal",
  "pallet-aura",
  "pallet-authorship",
  "pallet-balances",

@@ -44,6 +44,27 @@ pub mod wasm {
 }
 pub use wasm::*;
 
+#[cfg(feature = "runtime-benchmarks")]
+#[macro_use]
+extern crate frame_benchmarking;
+#[cfg(feature = "runtime-benchmarks")]
+mod benches {
+	define_benchmarks!(
+		[frame_system, SystemBench::<Runtime>]
+		[pallet_timestamp, Timestamp]
+		[pallet_balances, Balances]
+		[pallet_collator_selection, CollatorSelection]
+		// TODO: wait for https://github.com/paritytech/substrate/issues/11068
+		// [pallet_session, SessionBench::<Runtime>]
+		[pallet_utility, Utility]
+		[pallet_multisig, Multisig]
+		[pallet_proxy, Proxy]
+		[pallet_bridge_grandpa, BridgePangolinGrandpa]
+		[pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
+		[pallet_fee_market, FeeMarket]
+	);
+}
+
 pub use dc_primitives::*;
 
 // --- paritytech ---
@@ -160,33 +181,6 @@ frame_support::construct_runtime! {
 
 		FeeMarket: pallet_fee_market::{Pallet, Call, Storage, Event<T>} = 23,
 	}
-}
-
-#[cfg(feature = "runtime-benchmarks")]
-#[macro_use]
-extern crate frame_benchmarking;
-
-pub use frame_support::{
-	traits::Currency,
-	weights::{constants::WEIGHT_PER_SECOND, DispatchClass, IdentityFee, RuntimeDbWeight, Weight},
-};
-
-#[cfg(feature = "runtime-benchmarks")]
-mod benches {
-	define_benchmarks!(
-		[frame_system, SystemBench::<Runtime>]
-		[pallet_timestamp, Timestamp]
-		[pallet_balances, Balances]
-		[pallet_collator_selection, CollatorSelection]
-		// TODO wait for https://github.com/paritytech/substrate/issues/11068
-		// [pallet_session, SessionBench::<Runtime>]
-		[pallet_utility, Utility]
-		[pallet_multisig, Multisig]
-		[pallet_proxy, Proxy]
-		[pallet_bridge_grandpa, BridgePangolinGrandpa]
-		[pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
-		[pallet_fee_market, FeeMarket]
-	);
 }
 
 sp_api::impl_runtime_apis! {
@@ -420,6 +414,9 @@ sp_api::impl_runtime_apis! {
 				}
 
 				fn endow_account(account: &Self::AccountId) {
+					// --- paritytech ---
+					use frame_support::traits::Currency;
+
 					// prepare fee_market
 					let collateral = <Runtime as pallet_fee_market::Config>::CollateralPerOrder::get();
 					let caller1: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 1, 0u32);
@@ -470,7 +467,7 @@ sp_api::impl_runtime_apis! {
 
 				fn prepare_message_proof(
 					params: MessageProofParams,
-				) -> (FromPangolinMessagesProof, Weight) {
+				) -> (FromPangolinMessagesProof, frame_support::weights::Weight) {
 					prepare_message_proof::<Runtime, (), WithPangolinGrandpa, WithPangolinMessageBridge, bp_pangolin::Header, bp_polkadot_core::Hasher>(
 						params,
 						&VERSION,
@@ -501,21 +498,21 @@ sp_api::impl_runtime_apis! {
 
 			let whitelist: Vec<TrackedStorageKey> = vec![
 				// Block Number
-				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef702a5c1b19ab7a04f536c519aca4983ac").to_vec().into(),
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef702a5c1b19ab7a04f536c519aca4983ac").into(),
 				// Total Issuance
-				hex_literal::hex!("c2261276cc9d1f8598ea4b6a74b15c2f57c875e4cff74148e4628f264b974c80").to_vec().into(),
+				array_bytes::hex2bytes_unchecked("c2261276cc9d1f8598ea4b6a74b15c2f57c875e4cff74148e4628f264b974c80").into(),
 				// Execution Phase
-				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef7ff553b5a9862a516939d82b3d3d8661a").to_vec().into(),
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef7ff553b5a9862a516939d82b3d3d8661a").into(),
 				// Event Count
-				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef70a98fdbe9ce6c55837576c60c7af3850").to_vec().into(),
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef70a98fdbe9ce6c55837576c60c7af3850").into(),
 				// System Events
-				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef780d41e5e16056765bc8461851072c9d7").to_vec().into(),
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef780d41e5e16056765bc8461851072c9d7").into(),
 				// Treasury Account
-				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef7b99d880ec681799c0cf30e8886371da95ecffd7b6c0f78751baa9d281e0bfa3a6d6f646c70792f74727372790000000000000000000000000000000000000000").to_vec().into(),
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef7b99d880ec681799c0cf30e8886371da95ecffd7b6c0f78751baa9d281e0bfa3a6d6f646c70792f74727372790000000000000000000000000000000000000000").into(),
 				// Caller 0 Account
-				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef7b99d880ec681799c0cf30e8886371da946c154ffd9992e395af90b5b13cc6f295c77033fce8a9045824a6690bbf99c6db269502f0a8d1d2a008542d5690a0749").to_vec().into(),
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef7b99d880ec681799c0cf30e8886371da946c154ffd9992e395af90b5b13cc6f295c77033fce8a9045824a6690bbf99c6db269502f0a8d1d2a008542d5690a0749").into(),
 				// Configuration ActiveConfig
-				hex_literal::hex!("06de3d8a54d27e44a9d5ce189618f22db4b49d95320d9021994c850f25b8e385").to_vec().into(),
+				array_bytes::hex2bytes_unchecked("06de3d8a54d27e44a9d5ce189618f22db4b49d95320d9021994c850f25b8e385").into(),
 			];
 			let mut batches = Vec::<BenchmarkBatch>::new();
 			let params = (&config, &whitelist);

@@ -38,7 +38,7 @@ runtime-benchmarks = [
 
 [dependencies]
 # crates.io
-array-bytes  = { version = "1.4" }
+array-bytes  = { version = "1.5" }
 async-trait  = { version = "0.1" }
 codec        = { package = "parity-scale-codec", version = "2.3" }
 futures      = { version = "0.3" }
