@@ -1,7 +1,7 @@
 // --- paritytech ---
 use frame_support::{traits::EnsureOneOf, PalletId};
 use frame_system::EnsureRoot;
-use pallet_collator_selection::Config;
+use pallet_collator_selection::{Config, IdentityCollator};
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
 use xcm::latest::{BodyId, MultiLocation};
 // --- darwinia-network ---
@@ -31,7 +31,7 @@ impl Config for Runtime {
 	// should be a multiple of session or things will get inconsistent
 	type KickThreshold = Period;
 	type ValidatorId = <Self as frame_system::Config>::AccountId;
-	type ValidatorIdOf = pallet_collator_selection::IdentityCollator;
+	type ValidatorIdOf = IdentityCollator;
 	type ValidatorRegistration = Session;
 	type WeightInfo = WeightInfo<Runtime>;
 }
