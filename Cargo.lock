@@ -1330,7 +1330,6 @@ dependencies = [
  "frame-system-benchmarking",
  "frame-system-rpc-runtime-api",
  "frame-try-runtime",
- "hex-literal",
  "pallet-aura",
  "pallet-authorship",
  "pallet-balances",
@@ -2112,6 +2111,7 @@ dependencies = [
 name = "darwinia-parachain-runtime"
 version = "5.1.2"
 dependencies = [
+ "array-bytes",
  "cumulus-pallet-aura-ext",
  "cumulus-pallet-dmp-queue",
  "cumulus-pallet-parachain-system",
@@ -2128,7 +2128,6 @@ dependencies = [
  "frame-system",
  "frame-system-benchmarking",
  "frame-system-rpc-runtime-api",
- "hex-literal",
  "pallet-aura",
  "pallet-authorship",
  "pallet-balances",
