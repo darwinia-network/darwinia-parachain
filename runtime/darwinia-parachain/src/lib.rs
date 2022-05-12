@@ -42,6 +42,9 @@ pub mod wasm {
 pub use wasm::*;
 
 #[cfg(feature = "runtime-benchmarks")]
+#[macro_use]
+extern crate frame_benchmarking;
+#[cfg(feature = "runtime-benchmarks")]
 mod benches {
 	define_benchmarks!(
 		[frame_system, SystemBench::<Runtime>]
@@ -160,15 +163,6 @@ frame_support::construct_runtime! {
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
 	}
 }
-
-#[cfg(feature = "runtime-benchmarks")]
-#[macro_use]
-extern crate frame_benchmarking;
-
-pub use frame_support::{
-	traits::Currency,
-	weights::{constants::WEIGHT_PER_SECOND, DispatchClass, IdentityFee, RuntimeDbWeight, Weight},
-};
 
 sp_api::impl_runtime_apis! {
 	impl sp_api::Core<Block> for Runtime {
