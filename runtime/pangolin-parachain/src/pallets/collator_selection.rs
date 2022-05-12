@@ -5,7 +5,7 @@ use pallet_collator_selection::Config;
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
 use xcm::latest::{BodyId, MultiLocation};
 // --- darwinia-network ---
-use crate::*;
+use crate::{weights::pallet_collator_selection::WeightInfo, *};
 
 frame_support::parameter_types! {
 	pub const RocLocation: MultiLocation = MultiLocation::parent();
@@ -33,5 +33,5 @@ impl Config for Runtime {
 	type ValidatorId = <Self as frame_system::Config>::AccountId;
 	type ValidatorIdOf = pallet_collator_selection::IdentityCollator;
 	type ValidatorRegistration = Session;
-	type WeightInfo = weights::pallet_collator_selection::WeightInfo<Runtime>;
+	type WeightInfo = WeightInfo<Runtime>;
 }

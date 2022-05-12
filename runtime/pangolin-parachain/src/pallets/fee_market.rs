@@ -4,7 +4,7 @@ use core::cmp;
 use frame_support::{traits::LockIdentifier, PalletId};
 use sp_runtime::{traits::UniqueSaturatedInto, Permill};
 // --- darwinia ---
-use crate::*;
+use crate::{weights::pallet_fee_market::WeightInfo, *};
 use pallet_fee_market::{Config, RingBalance, Slasher};
 
 pub struct FeeMarketSlasher;
@@ -51,5 +51,5 @@ impl Config for Runtime {
 	type Slasher = FeeMarketSlasher;
 	type RingCurrency = Ring;
 	type Event = Event;
-	type WeightInfo = weights::pallet_fee_market::WeightInfo<Runtime>;
+	type WeightInfo = WeightInfo<Runtime>;
 }
