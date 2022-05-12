@@ -427,16 +427,19 @@ pub fn run() -> Result<()> {
 			}
 		}
 		#[cfg(feature = "runtime-benchmarks")]
-		Some(Subcommand::Benchmark(cmd)) =>
+		Some(Subcommand::Benchmark(cmd)) => {
 			if cfg!(feature = "runtime-benchmarks") {
 				let runner = cli.create_runner(cmd)?;
 
 				runner.sync_run(|config| cmd.run::<Block, service::ExecutorDispatch>(config))
 			} else {
-				Err("Benchmarking wasn't enabled when building the node. You can enable it with \
+				Err(
+					"Benchmarking wasn't enabled when building the node. You can enable it with \
 				     `--features runtime-benchmarks`."
-					.into())
+						.into(),
+				)
 			}
+		}
 	}
 }
 

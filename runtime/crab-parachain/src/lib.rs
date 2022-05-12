@@ -157,7 +157,7 @@ frame_support::construct_runtime! {
 extern crate frame_benchmarking;
 
 pub use frame_support::{
-	traits::{Currency},
+	traits::Currency,
 	weights::{constants::WEIGHT_PER_SECOND, DispatchClass, IdentityFee, RuntimeDbWeight, Weight},
 };
 
