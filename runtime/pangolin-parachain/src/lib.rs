@@ -60,7 +60,8 @@ mod benches {
 		[pallet_multisig, Multisig]
 		[pallet_proxy, Proxy]
 		[pallet_bridge_grandpa, BridgePangolinGrandpa]
-		[pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
+		// TODO: https://github.com/darwinia-network/darwinia-parachain/issues/66
+		// [pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
 		[pallet_fee_market, FeeMarket]
 	);
 }
