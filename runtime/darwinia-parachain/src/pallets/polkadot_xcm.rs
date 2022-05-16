@@ -5,7 +5,7 @@ use frame_support::{
 	traits::Everything,
 	weights::{IdentityFee, Weight},
 };
-use pallet_xcm::{Config, XcmPassthrough};
+use pallet_xcm::{Config, CurrentXcmVersion, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
 use xcm::latest::prelude::*;
 use xcm_builder::*;
@@ -144,5 +144,5 @@ impl Config for Runtime {
 	type LocationInverter = LocationInverter<Ancestry>;
 	type Origin = Origin;
 	type Call = Call;
-	type AdvertisedXcmVersion = pallet_xcm::CurrentXcmVersion;
+	type AdvertisedXcmVersion = CurrentXcmVersion;
 }

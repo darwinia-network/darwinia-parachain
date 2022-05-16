@@ -17,9 +17,9 @@ use dc_common_runtime::FromThisChainMessageVerifier;
 use pallet_bridge_messages::EXPECTED_DEFAULT_MESSAGE_LENGTH;
 
 /// Message delivery proof for PangolinParachain -> Pangolin messages.
-type ToPangolinMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_pangolin::Hash>;
+pub type ToPangolinMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_pangolin::Hash>;
 /// Message proof for Pangolin -> PangolinParachain  messages.
-type FromPangolinMessagesProof = FromBridgedChainMessagesProof<bp_pangolin::Hash>;
+pub type FromPangolinMessagesProof = FromBridgedChainMessagesProof<bp_pangolin::Hash>;
 
 /// Message payload for PangolinParachain -> Pangolin messages.
 pub type ToPangolinMessagePayload = FromThisChainMessagePayload<WithPangolinMessageBridge>;

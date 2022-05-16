@@ -18,7 +18,7 @@ use sp_runtime::{
 };
 use sp_version::RuntimeVersion;
 // --- darwinia-network ---
-use crate::*;
+use crate::{weights::frame_system::WeightInfo, *};
 
 /// We assume that ~5% of the block weight is consumed by `on_initialize` handlers. This is
 /// used to limit the maximal weight of a single extrinsic.
@@ -77,7 +77,7 @@ impl Config for Runtime {
 	type AccountData = AccountData<Balance>;
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
-	type SystemWeightInfo = ();
+	type SystemWeightInfo = WeightInfo<Runtime>;
 	type SS58Prefix = SS58Prefix;
 	type OnSetCode = ParachainSetCode<Self>;
 	type MaxConsumers = ConstU32<16>;
