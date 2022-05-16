@@ -19,7 +19,7 @@
 // --- std ---
 use std::path::PathBuf;
 // --- crates.io ---
-use clap::{AppSettings, Parser};
+use clap::Parser;
 // --- darwinia-network ---
 use crate::chain_spec;
 
@@ -56,6 +56,7 @@ pub enum Subcommand {
 	Revert(sc_cli::RevertCmd),
 
 	/// Key management CLI utilities
+	#[clap(subcommand)]
 	Key(sc_cli::KeySubcommand),
 
 	/// Benchmark runtime pallets.
@@ -101,11 +102,11 @@ pub struct ExportGenesisWasmCommand {
 }
 
 #[derive(Debug, Parser)]
-#[clap(setting(
-	AppSettings::PropagateVersion |
-	AppSettings::ArgsNegateSubcommands |
-	AppSettings::SubcommandsNegateReqs,
-))]
+#[clap(
+	propagate_version = true,
+	args_conflicts_with_subcommands = true,
+	subcommand_negates_reqs = true
+)]
 pub struct Cli {
 	#[clap(subcommand)]
 	pub subcommand: Option<Subcommand>,
