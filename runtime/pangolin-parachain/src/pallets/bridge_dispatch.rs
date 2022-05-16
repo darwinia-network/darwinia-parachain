@@ -11,7 +11,6 @@ impl Config<WithPangolinDispatch> for Runtime {
 	type Event = Event;
 	type BridgeMessageId = (LaneId, MessageNonce);
 	type Call = Call;
-	// TODO
 	type CallFilter = Everything;
 	type EncodedCall = bm_pangolin::FromPangolinEncodedCall;
 	type SourceChainAccountId = bp_pangolin::AccountId;

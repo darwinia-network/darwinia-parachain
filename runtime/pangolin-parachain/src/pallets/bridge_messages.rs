@@ -1,7 +1,7 @@
 pub use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 
 // --- darwinia-network ---
-use crate::*;
+use crate::{weights::pallet_bridge_messages::WeightInfo, *};
 use bp_messages::MessageNonce;
 use bp_runtime::{ChainId, PANGOLIN_CHAIN_ID};
 use pallet_bridge_messages::Config;
@@ -23,7 +23,7 @@ frame_support::parameter_types! {
 
 impl Config<WithPangolinMessages> for Runtime {
 	type Event = Event;
-	type WeightInfo = ();
+	type WeightInfo = WeightInfo<Runtime>;
 	type Parameter = bm_pangolin::PangolinParachainToPangolinParameter;
 	type MaxMessagesToPruneAtOnce = MaxMessagesToPruneAtOnce;
 	type MaxUnrewardedRelayerEntriesAtInboundLane = MaxUnrewardedRelayerEntriesAtInboundLane;

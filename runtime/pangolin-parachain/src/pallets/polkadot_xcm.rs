@@ -5,7 +5,7 @@ use frame_support::{
 	traits::{Everything, PalletInfoAccess},
 	weights::{IdentityFee, Weight},
 };
-use pallet_xcm::{Config, XcmPassthrough};
+use pallet_xcm::{Config, CurrentXcmVersion, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
 use xcm::latest::prelude::*;
 use xcm_builder::*;
@@ -91,11 +91,8 @@ frame_support::parameter_types! {
 	pub const RelayNetwork: NetworkId = NetworkId::Kusama;
 	pub const MaxInstructions: u32 = 100;
 	pub AnchoringSelfReserve: MultiLocation = MultiLocation::new(
-		1,
-		X2(
-			Parachain(ParachainInfo::parachain_id().into()),
-			PalletInstance(<Balances as PalletInfoAccess>::index() as u8)
-		)
+		0,
+		X1(PalletInstance(<Balances as PalletInfoAccess>::index() as u8))
 	);
 	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
 	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
@@ -151,5 +148,5 @@ impl Config for Runtime {
 	type LocationInverter = LocationInverter<Ancestry>;
 	type Origin = Origin;
 	type Call = Call;
-	type AdvertisedXcmVersion = pallet_xcm::CurrentXcmVersion;
+	type AdvertisedXcmVersion = CurrentXcmVersion;
 }

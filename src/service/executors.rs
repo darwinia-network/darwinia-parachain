@@ -22,6 +22,9 @@ use sc_executor::{NativeExecutionDispatch, NativeVersion};
 /// Darwinia native executor instance.
 pub struct DarwiniaParachainRuntimeExecutor;
 impl NativeExecutionDispatch for DarwiniaParachainRuntimeExecutor {
+	#[cfg(feature = "runtime-benchmarks")]
+	type ExtendHostFunctions = frame_benchmarking::benchmarking::HostFunctions;
+	#[cfg(not(feature = "runtime-benchmarks"))]
 	type ExtendHostFunctions = ();
 
 	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
@@ -36,6 +39,9 @@ impl NativeExecutionDispatch for DarwiniaParachainRuntimeExecutor {
 /// Crab Parachain native executor instance.
 pub struct CrabParachainRuntimeExecutor;
 impl NativeExecutionDispatch for CrabParachainRuntimeExecutor {
+	#[cfg(feature = "runtime-benchmarks")]
+	type ExtendHostFunctions = frame_benchmarking::benchmarking::HostFunctions;
+	#[cfg(not(feature = "runtime-benchmarks"))]
 	type ExtendHostFunctions = ();
 
 	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
@@ -50,6 +56,9 @@ impl NativeExecutionDispatch for CrabParachainRuntimeExecutor {
 /// Pangolin Parachain native executor instance.
 pub struct PangolinParachainRuntimeExecutor;
 impl NativeExecutionDispatch for PangolinParachainRuntimeExecutor {
+	#[cfg(feature = "runtime-benchmarks")]
+	type ExtendHostFunctions = frame_benchmarking::benchmarking::HostFunctions;
+	#[cfg(not(feature = "runtime-benchmarks"))]
 	type ExtendHostFunctions = ();
 
 	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
