@@ -157,6 +157,8 @@ alpha = []
 runtime-benchmarks = [
 	# crates.io
 	"array-bytes",
+	# cumulus
+	"cumulus-pallet-xcmp-queue/runtime-benchmarks",
 	# darwinia-bridges-substrate
 #	"bridge-runtime-common/runtime-benchmarks",
 #	"pallet-bridge-grandpa/runtime-benchmarks",

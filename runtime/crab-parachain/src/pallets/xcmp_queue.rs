@@ -13,4 +13,6 @@ impl Config for Runtime {
 	type ExecuteOverweightOrigin = EnsureRoot<AccountId>;
 	type ControllerOrigin = EnsureRoot<AccountId>;
 	type ControllerOriginConverter = XcmOriginToTransactDispatchOrigin;
+	// TODO: Update weight
+	type WeightInfo = ();
 }

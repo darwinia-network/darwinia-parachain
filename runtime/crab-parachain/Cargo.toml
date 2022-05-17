@@ -133,6 +133,8 @@ std = [
 runtime-benchmarks = [
 	# crates.io
 	"array-bytes",
+	# cumulus
+	"cumulus-pallet-xcmp-queue/runtime-benchmarks",
 	# polkadot
 	"pallet-xcm/runtime-benchmarks",
 	"pallet-xcm-benchmarks",
