@@ -20,7 +20,6 @@ impl<T: Config> Slasher<T> for FeeMarketSlasher {
 }
 
 frame_support::parameter_types! {
-	pub const FeeMarketPalletId: PalletId = PalletId(*b"da/feemk");
 	pub const TreasuryPalletId: PalletId = PalletId(*b"da/trsry");
 	pub const FeeMarketLockId: LockIdentifier = *b"da/feelf";
 
@@ -41,7 +40,6 @@ impl Config for Runtime {
 	type LockId = FeeMarketLockId;
 	type MessageRelayersRewardRatio = MessageRelayersRewardRatio;
 	type MinimumRelayFee = MinimumRelayFee;
-	type PalletId = FeeMarketPalletId;
 	type RingCurrency = Ring;
 	type Slasher = FeeMarketSlasher;
 	type Slot = Slot;
