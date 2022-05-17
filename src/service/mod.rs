@@ -65,7 +65,7 @@ use sc_service::{
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
 use sc_transaction_pool::FullPool;
 use sp_api::{ApiExt, HeaderT};
-use sp_consensus::{CacheKeyId, CanAuthorWithNativeVersion, SlotData};
+use sp_consensus::{CacheKeyId, CanAuthorWithNativeVersion};
 use sp_consensus_aura::sr25519::{AuthorityId as AuraId, AuthorityPair as AuraPair};
 use sp_keystore::SyncCryptoStorePtr;
 use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
@@ -499,9 +499,9 @@ where
 				let time = sp_timestamp::InherentDataProvider::from_system_time();
 
 				let slot =
-					sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
+					sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
 						*time,
-						slot_duration.slot_duration(),
+						slot_duration,
 					);
 
 				Ok((time, slot))
@@ -595,9 +595,9 @@ where
 							let time = sp_timestamp::InherentDataProvider::from_system_time();
 
 							let slot =
-									sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
+									sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
 										*time,
-										slot_duration.slot_duration(),
+										slot_duration,
 									);
 
 							let parachain_inherent = parachain_inherent.ok_or_else(|| {
