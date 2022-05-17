@@ -149,7 +149,7 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, St
 			} else {
 				chain_spec
 			}
-		}
+		},
 	})
 }
 
@@ -237,99 +237,90 @@ pub fn run() -> Result<()> {
 	let cli = Cli::from_args();
 
 	match &cli.subcommand {
-		None => cli
-			.create_runner(&cli.run.normalize())?
-			.run_node_until_exit(|config| async move {
-				let chain_spec = &config.chain_spec;
+		None => cli.create_runner(&cli.run.normalize())?.run_node_until_exit(|config| async move {
+			let chain_spec = &config.chain_spec;
 
-				set_default_ss58_version(chain_spec);
+			set_default_ss58_version(chain_spec);
 
-				let para_id = Extensions::try_get(&*config.chain_spec)
-					.map(|e| e.para_id)
-					.ok_or_else(|| "Could not find parachain ID in chain-spec.")?;
+			let para_id = Extensions::try_get(&*config.chain_spec)
+				.map(|e| e.para_id)
+				.ok_or_else(|| "Could not find parachain ID in chain-spec.")?;
 
-				let polkadot_cli = RelayChainCli::new(
-					&config,
-					[RelayChainCli::executable_name().to_string()]
-						.iter()
-						.chain(cli.relay_chain_args.iter()),
-				);
-				let id = ParaId::from(para_id);
-				let parachain_account =
-					AccountIdConversion::<polkadot_primitives::v0::AccountId>::into_account(&id);
-				let state_version =
-					RelayChainCli::native_runtime_version(&config.chain_spec).state_version();
-				let block: Block = generate_genesis_block(&config.chain_spec, state_version)
-					.map_err(|e| format!("{:?}", e))?;
-				let genesis_state = format!("0x{:?}", HexDisplay::from(&block.header().encode()));
-				let tokio_handle = config.tokio_handle.clone();
-				let polkadot_config =
-					SubstrateCli::create_configuration(&polkadot_cli, &polkadot_cli, tokio_handle)
-						.map_err(|err| format!("Relay chain argument error: {}", err))?;
+			let polkadot_cli = RelayChainCli::new(
+				&config,
+				[RelayChainCli::executable_name().to_string()]
+					.iter()
+					.chain(cli.relay_chain_args.iter()),
+			);
+			let id = ParaId::from(para_id);
+			let parachain_account =
+				AccountIdConversion::<polkadot_primitives::v0::AccountId>::into_account(&id);
+			let state_version =
+				RelayChainCli::native_runtime_version(&config.chain_spec).state_version();
+			let block: Block = generate_genesis_block(&config.chain_spec, state_version)
+				.map_err(|e| format!("{:?}", e))?;
+			let genesis_state = format!("0x{:?}", HexDisplay::from(&block.header().encode()));
+			let tokio_handle = config.tokio_handle.clone();
+			let polkadot_config =
+				SubstrateCli::create_configuration(&polkadot_cli, &polkadot_cli, tokio_handle)
+					.map_err(|err| format!("Relay chain argument error: {}", err))?;
 
-				info!("Parachain id: {:?}", id);
-				info!("Parachain Account: {}", parachain_account);
-				info!("Parachain genesis state: {}", genesis_state);
-				info!(
-					"Is collating: {}",
-					if config.role.is_authority() {
-						"yes"
-					} else {
-						"no"
-					}
-				);
+			info!("Parachain id: {:?}", id);
+			info!("Parachain Account: {}", parachain_account);
+			info!("Parachain genesis state: {}", genesis_state);
+			info!("Is collating: {}", if config.role.is_authority() { "yes" } else { "no" });
 
-				if chain_spec.is_crab_parachain() {
-					service::start_node::<CrabParachainRuntimeApi, CrabParachainRuntimeExecutor>(
-						config,
-						polkadot_config,
-						id,
-					)
-					.await
-					.map(|r| r.0)
-					.map_err(Into::into)
-				} else if chain_spec.is_pangolin_parachain() {
-					service::start_node::<
+			if chain_spec.is_crab_parachain() {
+				service::start_node::<CrabParachainRuntimeApi, CrabParachainRuntimeExecutor>(
+					config,
+					polkadot_config,
+					id,
+				)
+				.await
+				.map(|r| r.0)
+				.map_err(Into::into)
+			} else if chain_spec.is_pangolin_parachain() {
+				service::start_node::<
 						PangolinParachainRuntimeApi,
 						PangolinParachainRuntimeExecutor,
 					>(config, polkadot_config, id)
 					.await
 					.map(|r| r.0)
 					.map_err(Into::into)
-				} else {
-					service::start_node::<
+			} else {
+				service::start_node::<
 						DarwiniaParachainRuntimeApi,
 						DarwiniaParachainRuntimeExecutor,
 					>(config, polkadot_config, id)
 					.await
 					.map(|r| r.0)
 					.map_err(Into::into)
-				}
-			}),
+			}
+		}),
 		Some(Subcommand::BuildSpec(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.sync_run(|config| cmd.run(config.chain_spec, config.network))
-		}
+		},
 		Some(Subcommand::CheckBlock(cmd)) => {
 			construct_async_run!(|components, cli, cmd, config| {
 				Ok(cmd.run(components.client, components.import_queue))
 			})
-		}
+		},
 		Some(Subcommand::ExportBlocks(cmd)) => {
 			construct_async_run!(|components, cli, cmd, config| {
 				Ok(cmd.run(components.client, config.database))
 			})
-		}
+		},
 		Some(Subcommand::ExportState(cmd)) => {
 			construct_async_run!(|components, cli, cmd, config| {
 				Ok(cmd.run(components.client, config.chain_spec))
 			})
-		}
+		},
 		Some(Subcommand::ImportBlocks(cmd)) => {
 			construct_async_run!(|components, cli, cmd, config| {
 				Ok(cmd.run(components.client, components.import_queue))
 			})
-		}
+		},
 		Some(Subcommand::PurgeChain(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 
@@ -350,7 +341,7 @@ pub fn run() -> Result<()> {
 
 				cmd.run(config, polkadot_config)
 			})
-		}
+		},
 		Some(Subcommand::Revert(cmd)) => construct_async_run!(|components, cli, cmd, config| {
 			Ok(cmd.run(components.client, components.backend))
 		}),
@@ -377,7 +368,7 @@ pub fn run() -> Result<()> {
 			}
 
 			Ok(())
-		}
+		},
 		Some(Subcommand::ExportGenesisWasm(params)) => {
 			let mut builder = sc_cli::LoggerBuilder::new("");
 			builder.with_profiling(sc_tracing::TracingReceiver::Log, "");
@@ -398,7 +389,7 @@ pub fn run() -> Result<()> {
 			}
 
 			Ok(())
-		}
+		},
 		Some(Subcommand::Key(cmd)) => Ok(cmd.run(&cli)?),
 		#[cfg(feature = "runtime-benchmarks")]
 		Some(Subcommand::Benchmark(cmd)) => {
@@ -414,7 +405,7 @@ pub fn run() -> Result<()> {
 			} else {
 				runner.sync_run(|config| cmd.run::<Block, DarwiniaParachainRuntimeExecutor>(config))
 			}
-		}
+		},
 		#[cfg(feature = "try-runtime")]
 		Some(Subcommand::TryRuntime(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
@@ -431,15 +422,12 @@ pub fn run() -> Result<()> {
 						sc_service::TaskManager::new(config.tokio_handle.clone(), registry)
 							.map_err(|e| sc_cli::Error::from(sc_service::Error::Prometheus(e)))?;
 
-					Ok((
-						cmd.run::<Block, CrabParachainRuntimeExecutor>(config),
-						task_manager,
-					))
+					Ok((cmd.run::<Block, CrabParachainRuntimeExecutor>(config), task_manager))
 				})
 			} else {
 				panic!("Try runtime not support chain: {}", chain_spec.id());
 			}
-		}
+		},
 	}
 }
 
@@ -479,10 +467,7 @@ impl CliConfiguration<Self> for RelayChainCli {
 	}
 
 	fn base_path(&self) -> Result<Option<BasePath>> {
-		Ok(self
-			.shared_params()
-			.base_path()
-			.or_else(|| self.base_path.clone().map(Into::into)))
+		Ok(self.shared_params().base_path().or_else(|| self.base_path.clone().map(Into::into)))
 	}
 
 	fn rpc_http(&self, default_listen_port: u16) -> Result<Option<SocketAddr>> {
@@ -502,9 +487,7 @@ impl CliConfiguration<Self> for RelayChainCli {
 		default_listen_port: u16,
 		chain_spec: &Box<dyn ChainSpec>,
 	) -> Result<Option<PrometheusConfig>> {
-		self.base
-			.base
-			.prometheus_config(default_listen_port, chain_spec)
+		self.base.base.prometheus_config(default_listen_port, chain_spec)
 	}
 
 	fn init<F>(
@@ -523,11 +506,7 @@ impl CliConfiguration<Self> for RelayChainCli {
 	fn chain_id(&self, is_dev: bool) -> Result<String> {
 		let chain_id = self.base.base.chain_id(is_dev)?;
 
-		Ok(if chain_id.is_empty() {
-			self.chain_id.clone().unwrap_or_default()
-		} else {
-			chain_id
-		})
+		Ok(if chain_id.is_empty() { self.chain_id.clone().unwrap_or_default() } else { chain_id })
 	}
 
 	fn role(&self, is_dev: bool) -> Result<sc_service::Role> {

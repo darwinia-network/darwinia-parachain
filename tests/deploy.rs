@@ -33,12 +33,7 @@ impl Deployer {
 			return None;
 		};
 
-		Some(Self {
-			chain,
-			project_dir,
-			darwinia_exec,
-			polkadot_exec,
-		})
+		Some(Self { chain, project_dir, darwinia_exec, polkadot_exec })
 	}
 
 	fn get_chain() -> Option<String> {
@@ -59,10 +54,7 @@ impl Deployer {
 		let script_path = env::current_exe().unwrap();
 		let project_dir = script_path.parent().unwrap().parent().unwrap().to_owned();
 
-		println!(
-			"[CHECK] project directory: {}",
-			project_dir.to_string_lossy()
-		);
+		println!("[CHECK] project directory: {}", project_dir.to_string_lossy());
 
 		project_dir
 	}
@@ -114,10 +106,7 @@ impl Deployer {
 			return None;
 		}
 
-		Some((
-			get_darwinia_exec(project_dir)?,
-			get_polkadot_exec(project_dir)?,
-		))
+		Some((get_darwinia_exec(project_dir)?, get_polkadot_exec(project_dir)?))
 	}
 
 	fn deploy(self) {}

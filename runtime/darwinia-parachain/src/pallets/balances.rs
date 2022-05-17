@@ -18,11 +18,11 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type Balance = Balance;
-	type Event = Event;
-	type DustRemoval = ();
-	type ExistentialDeposit = ExistentialDeposit;
 	type AccountStore = System;
+	type Balance = Balance;
+	type DustRemoval = ();
+	type Event = Event;
+	type ExistentialDeposit = ExistentialDeposit;
 	type MaxLocks = MaxLocks;
 	type MaxReserves = MaxReserves;
 	type ReserveIdentifier = [u8; 8];

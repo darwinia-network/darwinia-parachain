@@ -79,7 +79,8 @@ type FullClient<RuntimeApi, Executor> =
 	TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>;
 type StateBackend = StateBackendFor<FullBackend, Block>;
 
-/// Can be called for a `Configuration` to check if it is a configuration for the `Crab Parachain` network.
+/// Can be called for a `Configuration` to check if it is a configuration for the `Crab Parachain`
+/// network.
 pub trait IdentifyVariant {
 	/// Returns if this is a configuration for the `Crab Parachain` network.
 	fn is_crab_parachain(&self) -> bool;
@@ -114,7 +115,7 @@ impl<R> BuildOnAccess<R> {
 			match self {
 				Self::Uninitialized(f) => {
 					*self = Self::Initialized((f.take().unwrap())());
-				}
+				},
 				Self::Initialized(ref mut r) => return r,
 			}
 		}
@@ -136,10 +137,7 @@ where
 		&mut self,
 		block_import: BlockImportParams<Block, ()>,
 	) -> std::result::Result<
-		(
-			BlockImportParams<Block, ()>,
-			Option<Vec<(CacheKeyId, Vec<u8>)>>,
-		),
+		(BlockImportParams<Block, ()>, Option<Vec<(CacheKeyId, Vec<u8>)>>),
 		String,
 	> {
 		let block_id = BlockId::hash(*block_import.header.parent_hash());
@@ -269,9 +267,7 @@ where
 	let telemetry_worker_handle = telemetry.as_ref().map(|(worker, _)| worker.handle());
 
 	let telemetry = telemetry.map(|(worker, telemetry)| {
-		task_manager
-			.spawn_handle()
-			.spawn("telemetry", None, worker.run());
+		task_manager.spawn_handle().spawn("telemetry", None, worker.run());
 		telemetry
 	});
 
@@ -390,11 +386,8 @@ where
 		let transaction_pool = transaction_pool.clone();
 
 		Box::new(move |deny_unsafe, _| {
-			let deps = FullDeps {
-				client: client.clone(),
-				pool: transaction_pool.clone(),
-				deny_unsafe,
-			};
+			let deps =
+				FullDeps { client: client.clone(), pool: transaction_pool.clone(), deny_unsafe };
 
 			Ok(dc_rpc::create_full(deps))
 		})
@@ -488,32 +481,28 @@ where
 	let aura_verifier = move || {
 		let slot_duration = cumulus_client_consensus_aura::slot_duration(&*client2).unwrap();
 
-		Box::new(cumulus_client_consensus_aura::build_verifier::<
-			AuraPair,
-			_,
-			_,
-			_,
-		>(BuildVerifierParams {
-			client: client2.clone(),
-			create_inherent_data_providers: move |_, _| async move {
-				let time = sp_timestamp::InherentDataProvider::from_system_time();
+		Box::new(cumulus_client_consensus_aura::build_verifier::<AuraPair, _, _, _>(
+			BuildVerifierParams {
+				client: client2.clone(),
+				create_inherent_data_providers: move |_, _| async move {
+					let time = sp_timestamp::InherentDataProvider::from_system_time();
 
-				let slot =
+					let slot =
 					sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
 						*time,
 						slot_duration.slot_duration(),
 					);
 
-				Ok((time, slot))
+					Ok((time, slot))
+				},
+				can_author_with: CanAuthorWithNativeVersion::new(client2.executor().clone()),
+				telemetry,
 			},
-			can_author_with: CanAuthorWithNativeVersion::new(client2.executor().clone()),
-			telemetry,
-		})) as Box<_>
+		)) as Box<_>
 	};
 
-	let relay_chain_verifier = Box::new(RelayChainVerifier::new(client.clone(), |_, _| async {
-		Ok(())
-	})) as Box<_>;
+	let relay_chain_verifier =
+		Box::new(RelayChainVerifier::new(client.clone(), |_, _| async { Ok(()) })) as Box<_>;
 
 	let verifier = Verifier {
 		client: client.clone(),

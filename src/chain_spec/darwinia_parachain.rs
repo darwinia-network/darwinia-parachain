@@ -79,9 +79,7 @@ pub fn genesis_config() -> ChainSpec {
 		.collect::<Vec<_>>();
 
 		GenesisConfig {
-			system: SystemConfig {
-				code: wasm_binary_unwrap().into(),
-			},
+			system: SystemConfig { code: wasm_binary_unwrap().into() },
 			balances: BalancesConfig {
 				balances: vec![
 					// Root
@@ -95,9 +93,7 @@ pub fn genesis_config() -> ChainSpec {
 					),
 				],
 			},
-			parachain_info: ParachainInfoConfig {
-				parachain_id: PARA_ID.into(),
-			},
+			parachain_info: ParachainInfoConfig { parachain_id: PARA_ID.into() },
 			collator_selection: CollatorSelectionConfig {
 				invulnerables: invulnerables.iter().cloned().map(|(acc, _)| acc).collect(),
 				candidacy_bond: 0,
@@ -115,13 +111,11 @@ pub fn genesis_config() -> ChainSpec {
 					})
 					.collect(),
 			},
-			// no need to pass anything to aura, in fact it will panic if we do. Session will take care
-			// of this.
+			// no need to pass anything to aura, in fact it will panic if we do. Session will take
+			// care of this.
 			aura: Default::default(),
 			aura_ext: Default::default(),
-			polkadot_xcm: PolkadotXcmConfig {
-				safe_xcm_version: Some(SAFE_XCM_VERSION),
-			},
+			polkadot_xcm: PolkadotXcmConfig { safe_xcm_version: Some(SAFE_XCM_VERSION) },
 			sudo: SudoConfig { key: Some(root) },
 			parachain_system: Default::default(),
 		}
@@ -140,10 +134,7 @@ pub fn genesis_config() -> ChainSpec {
 		None,
 		None,
 		Some(properties()),
-		Extensions {
-			relay_chain: "polkadot".into(),
-			para_id: PARA_ID,
-		},
+		Extensions { relay_chain: "polkadot".into(), para_id: PARA_ID },
 	);
 }
 
@@ -156,9 +147,7 @@ pub fn development_config() -> ChainSpec {
 		)];
 
 		GenesisConfig {
-			system: SystemConfig {
-				code: wasm_binary_unwrap().into(),
-			},
+			system: SystemConfig { code: wasm_binary_unwrap().into() },
 			balances: BalancesConfig {
 				balances: invulnerables
 					.iter()
@@ -166,9 +155,7 @@ pub fn development_config() -> ChainSpec {
 					.map(|(acc, _)| (acc, 100_000 * COIN))
 					.collect(),
 			},
-			parachain_info: ParachainInfoConfig {
-				parachain_id: PARA_ID.into(),
-			},
+			parachain_info: ParachainInfoConfig { parachain_id: PARA_ID.into() },
 			collator_selection: CollatorSelectionConfig {
 				invulnerables: invulnerables.iter().cloned().map(|(acc, _)| acc).collect(),
 				candidacy_bond: 0,
@@ -186,13 +173,11 @@ pub fn development_config() -> ChainSpec {
 					})
 					.collect(),
 			},
-			// no need to pass anything to aura, in fact it will panic if we do. Session will take care
-			// of this.
+			// no need to pass anything to aura, in fact it will panic if we do. Session will take
+			// care of this.
 			aura: Default::default(),
 			aura_ext: Default::default(),
-			polkadot_xcm: PolkadotXcmConfig {
-				safe_xcm_version: Some(SAFE_XCM_VERSION),
-			},
+			polkadot_xcm: PolkadotXcmConfig { safe_xcm_version: Some(SAFE_XCM_VERSION) },
 			sudo: SudoConfig { key: Some(root) },
 			parachain_system: Default::default(),
 		}
@@ -208,9 +193,6 @@ pub fn development_config() -> ChainSpec {
 		None,
 		None,
 		Some(properties()),
-		Extensions {
-			relay_chain: "rococo-local".into(),
-			para_id: PARA_ID,
-		},
+		Extensions { relay_chain: "rococo-local".into(), para_id: PARA_ID },
 	);
 }
