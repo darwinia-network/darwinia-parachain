@@ -241,6 +241,7 @@ pub fn run() -> Result<()> {
 			.create_runner(&cli.run.normalize())?
 			.run_node_until_exit(|config| async move {
 				let chain_spec = &config.chain_spec;
+				let collator_options = cli.run.collator_options();
 
 				set_default_ss58_version(chain_spec);
 
@@ -283,6 +284,7 @@ pub fn run() -> Result<()> {
 					service::start_node::<CrabParachainRuntimeApi, CrabParachainRuntimeExecutor>(
 						config,
 						polkadot_config,
+						collator_options,
 						id,
 					)
 					.await
@@ -292,7 +294,7 @@ pub fn run() -> Result<()> {
 					service::start_node::<
 						PangolinParachainRuntimeApi,
 						PangolinParachainRuntimeExecutor,
-					>(config, polkadot_config, id)
+					>(config, polkadot_config, collator_options, id)
 					.await
 					.map(|r| r.0)
 					.map_err(Into::into)
@@ -300,7 +302,7 @@ pub fn run() -> Result<()> {
 					service::start_node::<
 						DarwiniaParachainRuntimeApi,
 						DarwiniaParachainRuntimeExecutor,
-					>(config, polkadot_config, id)
+					>(config, polkadot_config, collator_options, id)
 					.await
 					.map(|r| r.0)
 					.map_err(Into::into)
