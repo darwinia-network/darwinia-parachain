@@ -30,7 +30,7 @@ parachain-info                  = { default-features = false, git = "https://git
 # darwinia
 dc-common-runtime                 = { default-features = false, path = "../common" }
 dc-primitives                     = { default-features = false, path = "../../primitives" }
-#pallet-fee-market-rpc-runtime-api = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
+pallet-fee-market-rpc-runtime-api = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
 # polkadot
 pallet-xcm            = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
 pallet-xcm-benchmarks = { optional = true, default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
@@ -89,7 +89,7 @@ std = [
 	"parachain-info/std",
 	"dc-common-runtime/std",
 	"dc-primitives/std",
-#	"pallet-fee-market-rpc-runtime-api/std",
+	"pallet-fee-market-rpc-runtime-api/std",
 	"pallet-xcm/std",
 	"polkadot-parachain/std",
 	"xcm/std",

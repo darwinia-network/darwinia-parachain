@@ -14,7 +14,7 @@ version     = "5.2.0-rc1"
 jsonrpc-core = { version = "18.0" }
 # darwinia-network
 dc-primitives         = { path = "../primitives" }
-#pallet-fee-market-rpc = { git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
+pallet-fee-market-rpc = { git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
 # paritytech
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-client-api                  = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }

@@ -102,7 +102,7 @@ cumulus-relay-chain-inprocess-interface = { git = "https://github.com/paritytech
 cumulus-relay-chain-rpc-interface       = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
 
 # darwinia-network
-#pallet-fee-market-rpc-runtime-api = { git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
+pallet-fee-market-rpc-runtime-api = { git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
 
 # polkadot
 polkadot-cli        = { features = ["rococo-native"], git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
