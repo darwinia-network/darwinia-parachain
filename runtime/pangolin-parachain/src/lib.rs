@@ -63,6 +63,7 @@ mod benches {
 		// TODO: https://github.com/darwinia-network/darwinia-parachain/issues/66
 		// [pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
 		[pallet_fee_market, FeeMarket]
+		[cumulus_pallet_xcmp_queue, XcmpQueue]
 	);
 }
 
