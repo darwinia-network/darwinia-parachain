@@ -89,16 +89,17 @@ substrate-prometheus-endpoint  = { git = "https://github.com/paritytech/substrat
 try-runtime-cli                = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 
 # cumulus
-cumulus-client-cli                    = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-client-consensus-aura         = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-client-consensus-common       = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-client-consensus-relay-chain  = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-client-network                = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-client-service                = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-primitives-core               = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-primitives-parachain-inherent = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-relay-chain-interface         = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-relay-chain-local             = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-client-cli                      = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-client-consensus-aura           = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-client-consensus-common         = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-client-consensus-relay-chain    = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-client-network                  = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-client-service                  = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-primitives-core                 = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-primitives-parachain-inherent   = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-relay-chain-interface           = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-relay-chain-inprocess-interface = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-relay-chain-rpc-interface       = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
 
 # darwinia-network
 #pallet-fee-market-rpc-runtime-api = { git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
