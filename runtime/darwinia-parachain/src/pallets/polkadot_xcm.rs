@@ -1,12 +1,10 @@
 // --- paritytech ---
 use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
-use frame_support::{
-	traits::Everything,
-	weights::{IdentityFee, Weight},
-};
+use frame_support::{traits::Everything, weights::Weight};
 use pallet_xcm::{Config, CurrentXcmVersion, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
+use polkadot_runtime_common::impls::ToAuthor;
 use xcm::latest::prelude::*;
 use xcm_builder::*;
 use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
@@ -122,7 +120,8 @@ impl XcmCExecutorConfig for XcmConfig {
 	type LocationInverter = LocationInverter<Ancestry>;
 	type Barrier = Barrier;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
-	type Trader = UsingComponents<IdentityFee<Balance>, DotLocation, AccountId, Balances, ()>;
+	type Trader =
+		UsingComponents<WeightToFee, RelayLocation, AccountId, Balances, ToAuthor<Runtime>>;
 	type ResponseHandler = PolkadotXcm;
 	type AssetTrap = PolkadotXcm;
 	type AssetClaims = PolkadotXcm;
