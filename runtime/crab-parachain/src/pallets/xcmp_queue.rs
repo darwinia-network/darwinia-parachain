@@ -6,13 +6,13 @@ use xcm_executor::XcmExecutor;
 use crate::*;
 
 impl Config for Runtime {
-	type Event = Event;
-	type XcmExecutor = XcmExecutor<XcmConfig>;
 	type ChannelInfo = ParachainSystem;
-	type VersionWrapper = PolkadotXcm;
-	type ExecuteOverweightOrigin = EnsureRoot<AccountId>;
 	type ControllerOrigin = EnsureRoot<AccountId>;
 	type ControllerOriginConverter = XcmOriginToTransactDispatchOrigin;
+	type Event = Event;
+	type ExecuteOverweightOrigin = EnsureRoot<AccountId>;
+	type VersionWrapper = PolkadotXcm;
 	// TODO: Update weight
 	type WeightInfo = ();
+	type XcmExecutor = XcmExecutor<XcmConfig>;
 }
