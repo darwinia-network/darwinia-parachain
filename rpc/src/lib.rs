@@ -55,8 +55,7 @@ where
 		+ sp_blockchain::HeaderMetadata<Block, Error = BlockChainError>,
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>
 		+ pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>
-		+ sp_block_builder::BlockBuilder<Block>
-
+		+ sp_block_builder::BlockBuilder<Block>,
 	P: 'static + Send + Sync + sc_transaction_pool_api::TransactionPool,
 {
 	// --- paritytech ---

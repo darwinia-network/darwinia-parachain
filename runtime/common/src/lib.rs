@@ -130,18 +130,19 @@ where
 ///   dispatch origin;
 /// - check that the sender has paid enough funds for both message delivery and dispatch.
 #[derive(RuntimeDebug)]
-pub struct FromThisChainMessageVerifier<B, R>(PhantomData<(B, R)>);
-impl<B, R>
+pub struct FromThisChainMessageVerifier<B, R, I>(PhantomData<(B, R, I)>);
+impl<B, R, I>
 	LaneMessageVerifier<
 		AccountIdOf<ThisChain<B>>,
 		FromThisChainMessagePayload<B>,
 		BalanceOf<ThisChain<B>>,
-	> for FromThisChainMessageVerifier<B, R>
+	> for FromThisChainMessageVerifier<B, R, I>
 where
 	B: MessageBridge,
-	R: pallet_fee_market::Config,
+	R: pallet_fee_market::Config<I>,
+	I: 'static,
 	AccountIdOf<ThisChain<B>>: Clone + PartialEq,
-	pallet_fee_market::RingBalance<R>: From<BalanceOf<ThisChain<B>>>,
+	pallet_fee_market::BalanceOf<R, I>: From<BalanceOf<ThisChain<B>>>,
 {
 	type Error = &'static str;
 
@@ -173,8 +174,8 @@ where
 
 		// Do the delivery_and_dispatch_fee. We assume that the delivery and dispatch fee always
 		// greater than the fee market provided fee.
-		if let Some(market_fee) = pallet_fee_market::Pallet::<R>::market_fee() {
-			let message_fee: pallet_fee_market::RingBalance<R> =
+		if let Some(market_fee) = pallet_fee_market::Pallet::<R, I>::market_fee() {
+			let message_fee: pallet_fee_market::BalanceOf<R, I> =
 				(*delivery_and_dispatch_fee).into();
 
 			// compare with actual fee paid
