@@ -9,8 +9,8 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
+	type EventHandler = (CollatorSelection,);
+	type FilterUncle = ();
 	type FindAuthor = FindAccountFromAuthorIndex<Self, Aura>;
 	type UncleGenerations = UncleGenerations;
-	type FilterUncle = ();
-	type EventHandler = (CollatorSelection,);
 }

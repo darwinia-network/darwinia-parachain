@@ -18,7 +18,7 @@ use sp_runtime::{
 };
 use sp_version::RuntimeVersion;
 // --- darwinia-network ---
-use crate::*;
+use crate::{weights::frame_system::WeightInfo, *};
 
 /// We assume that ~5% of the block weight is consumed by `on_initialize` handlers. This is
 /// used to limit the maximal weight of a single extrinsic.
@@ -57,28 +57,28 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
+	type AccountData = AccountData<Balance>;
+	type AccountId = AccountId;
 	type BaseCallFilter = Everything;
-	type BlockWeights = RuntimeBlockWeights;
+	type BlockHashCount = BlockHashCount;
 	type BlockLength = RuntimeBlockLength;
-	type DbWeight = RocksDbWeight;
-	type Origin = Origin;
-	type Call = Call;
-	type Index = Nonce;
 	type BlockNumber = BlockNumber;
+	type BlockWeights = RuntimeBlockWeights;
+	type Call = Call;
+	type DbWeight = RocksDbWeight;
+	type Event = Event;
 	type Hash = Hash;
 	type Hashing = BlakeTwo256;
-	type AccountId = AccountId;
-	type Lookup = AccountIdLookup<AccountId, ()>;
 	type Header = Header;
-	type Event = Event;
-	type BlockHashCount = BlockHashCount;
-	type Version = Version;
-	type PalletInfo = PalletInfo;
-	type AccountData = AccountData<Balance>;
-	type OnNewAccount = ();
-	type OnKilledAccount = ();
-	type SystemWeightInfo = ();
-	type SS58Prefix = SS58Prefix;
-	type OnSetCode = ParachainSetCode<Self>;
+	type Index = Nonce;
+	type Lookup = AccountIdLookup<AccountId, ()>;
 	type MaxConsumers = ConstU32<16>;
+	type OnKilledAccount = ();
+	type OnNewAccount = ();
+	type OnSetCode = ParachainSetCode<Self>;
+	type Origin = Origin;
+	type PalletInfo = PalletInfo;
+	type SS58Prefix = SS58Prefix;
+	type SystemWeightInfo = WeightInfo<Runtime>;
+	type Version = Version;
 }

@@ -11,12 +11,12 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
+	type DmpMessageHandler = DmpQueue;
 	type Event = Event;
 	type OnSystemEvent = ();
-	type SelfParaId = ParachainInfoPallet<Runtime>;
-	type DmpMessageHandler = DmpQueue;
-	type ReservedDmpWeight = ReservedDmpWeight;
 	type OutboundXcmpMessageSource = XcmpQueue;
-	type XcmpMessageHandler = XcmpQueue;
+	type ReservedDmpWeight = ReservedDmpWeight;
 	type ReservedXcmpWeight = ReservedXcmpWeight;
+	type SelfParaId = ParachainInfoPallet<Runtime>;
+	type XcmpMessageHandler = XcmpQueue;
 }

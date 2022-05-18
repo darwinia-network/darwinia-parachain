@@ -6,7 +6,7 @@ use frame_support::traits::InstanceFilter;
 use pallet_proxy::{Call as ProxyCall, Config};
 use sp_runtime::{traits::BlakeTwo256, RuntimeDebug};
 // --- darwinia-network ---
-use crate::*;
+use crate::{weights::pallet_proxy::WeightInfo, *};
 
 /// The type used to represent the kinds of proxying allowed.
 #[derive(
@@ -78,16 +78,16 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type Event = Event;
-	type Call = Call;
-	type Currency = Ring;
-	type ProxyType = ProxyType;
-	type ProxyDepositBase = ProxyDepositBase;
-	type ProxyDepositFactor = ProxyDepositFactor;
-	type MaxProxies = MaxProxies;
-	type MaxPending = MaxPending;
-	type CallHasher = BlakeTwo256;
 	type AnnouncementDepositBase = AnnouncementDepositBase;
 	type AnnouncementDepositFactor = AnnouncementDepositFactor;
-	type WeightInfo = ();
+	type Call = Call;
+	type CallHasher = BlakeTwo256;
+	type Currency = Ring;
+	type Event = Event;
+	type MaxPending = MaxPending;
+	type MaxProxies = MaxProxies;
+	type ProxyDepositBase = ProxyDepositBase;
+	type ProxyDepositFactor = ProxyDepositFactor;
+	type ProxyType = ProxyType;
+	type WeightInfo = WeightInfo<Runtime>;
 }

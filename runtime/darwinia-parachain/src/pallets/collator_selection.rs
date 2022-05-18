@@ -1,7 +1,7 @@
 // --- paritytech ---
 use frame_support::{traits::EnsureOneOf, PalletId};
 use frame_system::EnsureRoot;
-use pallet_collator_selection::Config;
+use pallet_collator_selection::{Config, IdentityCollator};
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
 use xcm::latest::BodyId;
 // --- darwinia-network ---
@@ -20,17 +20,17 @@ pub type CollatorSelectionUpdateOrigin =
 	EnsureOneOf<EnsureRoot<AccountId>, EnsureXcm<IsMajorityOfBody<DotLocation, ExecutiveBody>>>;
 
 impl Config for Runtime {
-	type Event = Event;
 	type Currency = Ring;
-	type UpdateOrigin = CollatorSelectionUpdateOrigin;
-	type PotId = PotId;
-	type MaxCandidates = MaxCandidates;
-	type MinCandidates = MinCandidates;
-	type MaxInvulnerables = MaxInvulnerables;
+	type Event = Event;
 	// should be a multiple of session or things will get inconsistent
 	type KickThreshold = Period;
+	type MaxCandidates = MaxCandidates;
+	type MaxInvulnerables = MaxInvulnerables;
+	type MinCandidates = MinCandidates;
+	type PotId = PotId;
+	type UpdateOrigin = CollatorSelectionUpdateOrigin;
 	type ValidatorId = <Self as frame_system::Config>::AccountId;
-	type ValidatorIdOf = pallet_collator_selection::IdentityCollator;
+	type ValidatorIdOf = IdentityCollator;
 	type ValidatorRegistration = Session;
 	type WeightInfo = ();
 }

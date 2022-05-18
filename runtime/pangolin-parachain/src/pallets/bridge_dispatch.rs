@@ -8,14 +8,13 @@ use bp_messages::{LaneId, MessageNonce};
 use pallet_bridge_dispatch::Config;
 
 impl Config<WithPangolinDispatch> for Runtime {
-	type Event = Event;
+	type AccountIdConverter = bp_pangolin_parachain::AccountIdConverter;
 	type BridgeMessageId = (LaneId, MessageNonce);
 	type Call = Call;
-	// TODO
 	type CallFilter = Everything;
 	type EncodedCall = bm_pangolin::FromPangolinEncodedCall;
+	type Event = Event;
 	type SourceChainAccountId = bp_pangolin::AccountId;
 	type TargetChainAccountPublic = AccountPublic;
 	type TargetChainSignature = Signature;
-	type AccountIdConverter = bp_pangolin_parachain::AccountIdConverter;
 }

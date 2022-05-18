@@ -22,7 +22,7 @@
 pub mod pallets;
 pub use pallets::*;
 
-// pub mod weights;
+pub mod weights;
 
 pub mod migrations;
 pub use migrations::*;
@@ -43,6 +43,24 @@ pub mod wasm {
 	}
 }
 pub use wasm::*;
+
+#[cfg(feature = "runtime-benchmarks")]
+#[macro_use]
+extern crate frame_benchmarking;
+#[cfg(feature = "runtime-benchmarks")]
+mod benches {
+	define_benchmarks!(
+		[frame_system, SystemBench::<Runtime>]
+		[pallet_timestamp, Timestamp]
+		[pallet_balances, Balances]
+		[pallet_collator_selection, CollatorSelection]
+		// TODO wait for https://github.com/paritytech/substrate/issues/11068
+		// [pallet_session, SessionBench::<Runtime>]
+		[pallet_utility, Utility]
+		[pallet_multisig, Multisig]
+		[pallet_proxy, Proxy]
+	);
+}
 
 pub use dc_primitives::*;
 
@@ -108,10 +126,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 /// The version information used to identify this runtime when compiled natively.
 #[cfg(feature = "std")]
 pub fn native_version() -> NativeVersion {
-	NativeVersion {
-		runtime_version: VERSION,
-		can_author_with: Default::default(),
-	}
+	NativeVersion { runtime_version: VERSION, can_author_with: Default::default() }
 }
 
 frame_support::construct_runtime! {
@@ -264,6 +279,54 @@ sp_api::impl_runtime_apis! {
 		}
 		fn in_process_orders() -> pallet_fee_market_rpc_runtime_api::InProcessOrders {
 			Default::default()
+		}
+	}
+
+	#[cfg(feature = "runtime-benchmarks")]
+	impl frame_benchmarking::Benchmark<Block> for Runtime {
+		fn benchmark_metadata(extra: bool) -> (
+			Vec<frame_benchmarking::BenchmarkList>,
+			Vec<frame_support::traits::StorageInfo>,
+		) {
+			use frame_benchmarking::{Benchmarking, BenchmarkList};
+			use frame_support::traits::StorageInfoTrait;
+			use frame_system_benchmarking::Pallet as SystemBench;
+
+
+			let mut list = Vec::<BenchmarkList>::new();
+			list_benchmarks!(list, extra);
+
+			let storage_info = AllPalletsWithSystem::storage_info();
+			return (list, storage_info)
+		}
+		fn dispatch_benchmark(
+			config: frame_benchmarking::BenchmarkConfig
+		) -> Result<Vec<frame_benchmarking::BenchmarkBatch>, sp_runtime::RuntimeString> {
+			use frame_benchmarking::{Benchmarking, BenchmarkBatch, TrackedStorageKey};
+			use frame_system_benchmarking::Pallet as SystemBench;
+
+			impl frame_system_benchmarking::Config for Runtime {}
+
+			let whitelist: Vec<TrackedStorageKey> = vec![
+				// Block Number
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef702a5c1b19ab7a04f536c519aca4983ac").into(),
+				// Total Issuance
+				array_bytes::hex2bytes_unchecked("c2261276cc9d1f8598ea4b6a74b15c2f57c875e4cff74148e4628f264b974c80").into(),
+				// Execution Phase
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef7ff553b5a9862a516939d82b3d3d8661a").into(),
+				// Event Count
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef70a98fdbe9ce6c55837576c60c7af3850").into(),
+				// System Events
+				array_bytes::hex2bytes_unchecked("26aa394eea5630e07c48ae0c9558cef780d41e5e16056765bc8461851072c9d7").into(),
+				// Configuration ActiveConfig
+				array_bytes::hex2bytes_unchecked("06de3d8a54d27e44a9d5ce189618f22db4b49d95320d9021994c850f25b8e385").into(),
+			];
+
+			let mut batches = Vec::<BenchmarkBatch>::new();
+			let params = (&config, &whitelist);
+			add_benchmarks!(params, batches);
+
+			Ok(batches)
 		}
 	}
 

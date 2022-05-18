@@ -17,9 +17,9 @@ use dc_common_runtime::FromThisChainMessageVerifier;
 use pallet_bridge_messages::EXPECTED_DEFAULT_MESSAGE_LENGTH;
 
 /// Message delivery proof for PangolinParachain -> Pangolin messages.
-type ToPangolinMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_pangolin::Hash>;
+pub type ToPangolinMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_pangolin::Hash>;
 /// Message proof for Pangolin -> PangolinParachain  messages.
-type FromPangolinMessagesProof = FromBridgedChainMessagesProof<bp_pangolin::Hash>;
+pub type FromPangolinMessagesProof = FromBridgedChainMessagesProof<bp_pangolin::Hash>;
 
 /// Message payload for PangolinParachain -> Pangolin messages.
 pub type ToPangolinMessagePayload = FromThisChainMessagePayload<WithPangolinMessageBridge>;
@@ -49,7 +49,8 @@ frame_support::parameter_types! {
 
 #[derive(Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug, TypeInfo)]
 pub enum PangolinParachainToPangolinParameter {
-	/// The conversion formula we use is: `PangolinTokens = PangolinParachainTokens * conversion_rate`.
+	/// The conversion formula we use is: `PangolinTokens = PangolinParachainTokens *
+	/// conversion_rate`.
 	PangolinToPangolinParachainConversionRate(FixedU128),
 }
 impl Parameter for PangolinParachainToPangolinParameter {
@@ -66,14 +67,14 @@ impl Parameter for PangolinParachainToPangolinParameter {
 #[derive(Clone, Copy, RuntimeDebug)]
 pub struct WithPangolinMessageBridge;
 impl MessageBridge for WithPangolinMessageBridge {
-	type ThisChain = PangolinParachain;
 	type BridgedChain = Pangolin;
+	type ThisChain = PangolinParachain;
 
-	const RELAYER_FEE_PERCENT: u32 = 10;
-	const THIS_CHAIN_ID: ChainId = PANGOLIN_PARACHAIN_CHAIN_ID;
 	const BRIDGED_CHAIN_ID: ChainId = PANGOLIN_CHAIN_ID;
 	const BRIDGED_MESSAGES_PALLET_NAME: &'static str =
 		bp_pangolin_parachain::WITH_PANGOLIN_PARACHAIN_MESSAGES_PALLET_NAME;
+	const RELAYER_FEE_PERCENT: u32 = 10;
+	const THIS_CHAIN_ID: ChainId = PANGOLIN_PARACHAIN_CHAIN_ID;
 
 	fn bridged_balance_to_this_balance(
 		bridged_balance: BalanceOf<Self::BridgedChain>,
@@ -88,12 +89,12 @@ impl MessageBridge for WithPangolinMessageBridge {
 #[derive(Clone, Copy, RuntimeDebug)]
 pub struct PangolinParachain;
 impl ChainWithMessages for PangolinParachain {
-	type Hash = bp_pangolin_parachain::Hash;
 	type AccountId = bp_pangolin_parachain::AccountId;
-	type Signer = bp_pangolin_parachain::AccountPublic;
-	type Signature = bp_pangolin_parachain::Signature;
-	type Weight = Weight;
 	type Balance = bp_pangolin_parachain::Balance;
+	type Hash = bp_pangolin_parachain::Hash;
+	type Signature = bp_pangolin_parachain::Signature;
+	type Signer = bp_pangolin_parachain::AccountPublic;
+	type Weight = Weight;
 }
 impl ThisChainWithMessages for PangolinParachain {
 	type Call = Call;
@@ -126,9 +127,7 @@ impl ThisChainWithMessages for PangolinParachain {
 	fn transaction_payment(transaction: MessageTransaction<Weight>) -> Balance {
 		// in our testnets, both per-byte fee and weight-to-fee are 1:1
 		messages::transaction_payment(
-			RuntimeBlockWeights::get()
-				.get(DispatchClass::Normal)
-				.base_extrinsic,
+			RuntimeBlockWeights::get().get(DispatchClass::Normal).base_extrinsic,
 			1,
 			FixedU128::zero(),
 			|weight| weight as _,
@@ -140,12 +139,12 @@ impl ThisChainWithMessages for PangolinParachain {
 #[derive(Clone, Copy, RuntimeDebug)]
 pub struct Pangolin;
 impl ChainWithMessages for Pangolin {
-	type Hash = bp_pangolin::Hash;
 	type AccountId = bp_pangolin::AccountId;
-	type Signer = bp_pangolin::AccountPublic;
-	type Signature = bp_pangolin::Signature;
-	type Weight = Weight;
 	type Balance = bp_pangolin::Balance;
+	type Hash = bp_pangolin::Hash;
+	type Signature = bp_pangolin::Signature;
+	type Signer = bp_pangolin::AccountPublic;
+	type Weight = Weight;
 }
 impl BridgedChainWithMessages for Pangolin {
 	fn maximal_extrinsic_size() -> u32 {
@@ -187,9 +186,7 @@ impl BridgedChainWithMessages for Pangolin {
 	fn transaction_payment(transaction: MessageTransaction<Weight>) -> Self::Balance {
 		// in our testnets, both per-byte fee and weight-to-fee are 1:1
 		messages::transaction_payment(
-			bp_pangolin::RuntimeBlockWeights::get()
-				.get(DispatchClass::Normal)
-				.base_extrinsic,
+			bp_pangolin::RuntimeBlockWeights::get().get(DispatchClass::Normal).base_extrinsic,
 			1,
 			FixedU128::zero(),
 			|weight| weight as _,

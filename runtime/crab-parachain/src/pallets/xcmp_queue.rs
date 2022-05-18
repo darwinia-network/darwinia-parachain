@@ -6,9 +6,11 @@ use xcm_executor::XcmExecutor;
 use crate::*;
 
 impl Config for Runtime {
-	type Event = Event;
-	type XcmExecutor = XcmExecutor<XcmConfig>;
 	type ChannelInfo = ParachainSystem;
-	type VersionWrapper = PolkadotXcm;
+	type ControllerOrigin = EnsureRoot<AccountId>;
+	type ControllerOriginConverter = XcmOriginToTransactDispatchOrigin;
+	type Event = Event;
 	type ExecuteOverweightOrigin = EnsureRoot<AccountId>;
+	type VersionWrapper = PolkadotXcm;
+	type XcmExecutor = XcmExecutor<XcmConfig>;
 }
