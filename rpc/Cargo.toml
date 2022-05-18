@@ -13,8 +13,7 @@ version     = "5.2.0-rc1"
 # crates.io
 jsonrpc-core = { version = "18.0" }
 # darwinia-network
-dc-primitives         = { path = "../primitives" }
-pallet-fee-market-rpc = { git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+dc-primitives = { path = "../primitives" }
 # paritytech
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
 sc-client-api                  = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }

@@ -1357,7 +1357,6 @@ dependencies = [
  "pallet-authorship",
  "pallet-balances",
  "pallet-collator-selection",
- "pallet-fee-market-rpc-runtime-api",
  "pallet-multisig",
  "pallet-proxy",
  "pallet-session",
@@ -2088,7 +2087,6 @@ dependencies = [
  "futures 0.3.21",
  "jsonrpc-core",
  "log",
- "pallet-fee-market-rpc-runtime-api",
  "pallet-transaction-payment-rpc",
  "pangolin-parachain-runtime",
  "parity-scale-codec",
@@ -2155,7 +2153,6 @@ dependencies = [
  "pallet-authorship",
  "pallet-balances",
  "pallet-collator-selection",
- "pallet-fee-market-rpc-runtime-api",
  "pallet-multisig",
  "pallet-proxy",
  "pallet-session",
@@ -2248,7 +2245,6 @@ version = "5.2.0-rc1"
 dependencies = [
  "dc-primitives",
  "jsonrpc-core",
- "pallet-fee-market-rpc",
  "pallet-transaction-payment-rpc",
  "sc-client-api",
  "sc-rpc",
@@ -5665,34 +5661,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "pallet-fee-market-rpc"
-version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.17#3f46f0ad5fe443bc31112334ef1d22d3d331a897"
-dependencies = [
- "jsonrpc-core",
- "jsonrpc-core-client",
- "jsonrpc-derive",
- "pallet-fee-market-rpc-runtime-api",
- "parity-scale-codec",
- "sp-api",
- "sp-blockchain",
- "sp-runtime",
-]
-
-[[package]]
-name = "pallet-fee-market-rpc-runtime-api"
-version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.17#3f46f0ad5fe443bc31112334ef1d22d3d331a897"
-dependencies = [
- "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.17)",
- "parity-scale-codec",
- "serde",
- "sp-api",
- "sp-runtime",
- "sp-std",
-]
-
-[[package]]
 name = "pallet-gilt"
 version = "4.0.0-dev"
 source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.17#22d40c761a985482f93bbbea5ba4199bdba74f8e"
@@ -6290,7 +6258,6 @@ dependencies = [
  "pallet-bridge-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.17)",
  "pallet-collator-selection",
  "pallet-fee-market",
- "pallet-fee-market-rpc-runtime-api",
  "pallet-multisig",
  "pallet-proxy",
  "pallet-session",
