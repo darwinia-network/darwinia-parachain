@@ -27,6 +27,9 @@ pub mod weights;
 pub mod migrations;
 pub use migrations::*;
 
+pub mod bridges_message;
+pub use bridges_message::*;
+
 pub mod wasm {
 	//! Make the WASM binary available.
 
@@ -164,6 +167,13 @@ frame_support::construct_runtime! {
 		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
 		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
+
+		// Crab <> Crab Parachain
+		BridgeCrabGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20,
+		BridgeCrabMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
+		BridgeCrabDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
+
+		FeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 	}
 }
 
