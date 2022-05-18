@@ -40,7 +40,7 @@ runtime-benchmarks = [
 # crates.io
 array-bytes  = { version = "1.5" }
 async-trait  = { version = "0.1" }
-clap 		 = { version = "3.1", features = ["derive"] }
+clap         = { version = "3.1", features = ["derive"] }
 codec        = { package = "parity-scale-codec", version = "3.0.0" }
 futures      = { version = "0.3" }
 jsonrpc-core = { version = "18.0" }
@@ -97,12 +97,9 @@ cumulus-client-network                  = { git = "https://github.com/paritytech
 cumulus-client-service                  = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
 cumulus-primitives-core                 = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
 cumulus-primitives-parachain-inherent   = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-cumulus-relay-chain-interface           = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
 cumulus-relay-chain-inprocess-interface = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
+cumulus-relay-chain-interface           = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
 cumulus-relay-chain-rpc-interface       = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-
-# darwinia-network
-pallet-fee-market-rpc-runtime-api = { git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
 
 # polkadot
 polkadot-cli        = { features = ["rococo-native"], git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }

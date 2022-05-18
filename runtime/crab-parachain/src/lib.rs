@@ -277,15 +277,6 @@ sp_api::impl_runtime_apis! {
 		}
 	}
 
-	impl pallet_fee_market_rpc_runtime_api::FeeMarketApi<Block, Balance> for Runtime {
-		fn market_fee() -> Option<pallet_fee_market_rpc_runtime_api::Fee<Balance>> {
-			Default::default()
-		}
-		fn in_process_orders() -> pallet_fee_market_rpc_runtime_api::InProcessOrders {
-			Default::default()
-		}
-	}
-
 	#[cfg(feature = "runtime-benchmarks")]
 	impl frame_benchmarking::Benchmark<Block> for Runtime {
 		fn benchmark_metadata(extra: bool) -> (
