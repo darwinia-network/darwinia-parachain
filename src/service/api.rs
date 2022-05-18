@@ -13,7 +13,6 @@ pub trait RuntimeApiCollection:
 	+ sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>
 	+ substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>
 	+ pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>
-	+ pallet_fee_market_rpc_runtime_api::FeeMarketApi<Block, Balance>
 {
 }
 impl<Api> RuntimeApiCollection for Api where
@@ -27,6 +26,5 @@ impl<Api> RuntimeApiCollection for Api where
 		+ sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>
 		+ substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>
 		+ pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>
-		+ pallet_fee_market_rpc_runtime_api::FeeMarketApi<Block, Balance>
 {
 }
