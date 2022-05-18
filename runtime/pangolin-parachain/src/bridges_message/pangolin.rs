@@ -27,7 +27,8 @@ pub type ToPangolinMessagePayload = FromThisChainMessagePayload<WithPangolinMess
 pub type FromPangolinMessagePayload = FromBridgedChainMessagePayload<WithPangolinMessageBridge>;
 
 /// Message verifier for PangolinParachain -> Pangolin messages.
-pub type ToPangolinMessageVerifier<R> = FromThisChainMessageVerifier<WithPangolinMessageBridge, R>;
+pub type ToPangolinMessageVerifier<R> =
+	FromThisChainMessageVerifier<WithPangolinMessageBridge, R, WithPangolinFeeMarket>;
 
 /// Encoded Pangolin Call as it comes from Pangolin.
 pub type FromPangolinEncodedCall = FromBridgedChainEncodedMessageCall<Call>;
