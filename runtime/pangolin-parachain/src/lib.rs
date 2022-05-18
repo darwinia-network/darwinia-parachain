@@ -44,6 +44,9 @@ pub mod wasm {
 }
 pub use wasm::*;
 
+mod migrations;
+use migrations::*;
+
 #[cfg(feature = "runtime-benchmarks")]
 #[macro_use]
 extern crate frame_benchmarking;
@@ -107,6 +110,7 @@ pub type Executive = frame_executive::Executive<
 	frame_system::ChainContext<Runtime>,
 	Runtime,
 	AllPalletsWithSystem,
+	CustomOnRuntimeUpgrade,
 >;
 
 type Ring = Balances;
@@ -180,7 +184,7 @@ frame_support::construct_runtime! {
 		BridgePangolinMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
 		BridgePangolinDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
 
-		FeeMarket: pallet_fee_market::{Pallet, Call, Storage, Event<T>} = 23,
+		PangolinFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 	}
 }
 
@@ -287,22 +291,6 @@ sp_api::impl_runtime_apis! {
 	impl cumulus_primitives_core::CollectCollationInfo<Block> for Runtime {
 		fn collect_collation_info(header: &<Block as BlockT>::Header) -> cumulus_primitives_core::CollationInfo {
 			ParachainSystem::collect_collation_info(header)
-		}
-	}
-
-	impl pallet_fee_market_rpc_runtime_api::FeeMarketApi<Block, Balance> for Runtime {
-		fn market_fee() -> Option<pallet_fee_market_rpc_runtime_api::Fee<Balance>> {
-			if let Some(fee) = FeeMarket::market_fee() {
-				return Some(pallet_fee_market_rpc_runtime_api::Fee {
-					amount: fee,
-				});
-			}
-			None
-		}
-		fn in_process_orders() -> pallet_fee_market_rpc_runtime_api::InProcessOrders {
-			return pallet_fee_market_rpc_runtime_api::InProcessOrders {
-				orders: FeeMarket::in_process_orders(),
-			}
 		}
 	}
 
