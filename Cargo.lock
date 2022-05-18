@@ -736,14 +736,14 @@ dependencies = [
 [[package]]
 name = "bp-darwinia-core"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "frame-support",
  "frame-system",
  "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "scale-info 2.1.1",
  "sp-core",
  "sp-runtime",
  "sp-std",
@@ -752,13 +752,13 @@ dependencies = [
 [[package]]
 name = "bp-header-chain"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "finality-grandpa 0.14.4",
  "frame-support",
- "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "parity-scale-codec 3.1.2",
+ "scale-info 2.1.1",
  "serde",
  "sp-core",
  "sp-finality-grandpa",
@@ -785,12 +785,12 @@ dependencies = [
 [[package]]
 name = "bp-message-dispatch"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "frame-support",
- "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "parity-scale-codec 3.1.2",
+ "scale-info 2.1.1",
  "sp-std",
 ]
 
@@ -809,15 +809,15 @@ dependencies = [
 [[package]]
 name = "bp-messages"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
- "bitvec 0.20.4",
+ "bitvec 1.0.0",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "frame-support",
  "frame-system",
  "impl-trait-for-tuples",
- "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "parity-scale-codec 3.1.2",
+ "scale-info 2.1.1",
  "serde",
  "sp-core",
  "sp-std",
@@ -842,7 +842,7 @@ dependencies = [
 [[package]]
 name = "bp-pangolin"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-darwinia-core",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
@@ -857,7 +857,7 @@ dependencies = [
 [[package]]
 name = "bp-pangolin-parachain"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-darwinia-core",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
@@ -872,14 +872,14 @@ dependencies = [
 [[package]]
 name = "bp-polkadot-core"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "frame-support",
  "frame-system",
- "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "parity-scale-codec 3.1.2",
+ "scale-info 2.1.1",
  "sp-api",
  "sp-core",
  "sp-runtime",
@@ -925,13 +925,13 @@ dependencies = [
 [[package]]
 name = "bp-runtime"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "frame-support",
  "hash-db",
  "num-traits",
- "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "parity-scale-codec 3.1.2",
+ "scale-info 2.1.1",
  "sp-core",
  "sp-io",
  "sp-runtime",
@@ -961,12 +961,12 @@ dependencies = [
 [[package]]
 name = "bp-test-utils"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-header-chain 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "ed25519-dalek",
  "finality-grandpa 0.14.4",
- "parity-scale-codec 2.3.1",
+ "parity-scale-codec 3.1.2",
  "sp-application-crypto",
  "sp-finality-grandpa",
  "sp-runtime",
@@ -1006,7 +1006,7 @@ dependencies = [
 [[package]]
 name = "bridge-runtime-common"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
@@ -1020,8 +1020,8 @@ dependencies = [
  "pallet-bridge-grandpa 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "pallet-bridge-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "pallet-transaction-payment",
- "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "parity-scale-codec 3.1.2",
+ "scale-info 2.1.1",
  "sp-core",
  "sp-runtime",
  "sp-state-machine",
@@ -1270,9 +1270,9 @@ dependencies = [
 
 [[package]]
 name = "clang-sys"
-version = "1.3.1"
+version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4cc00842eed744b858222c4c9faf7243aafc6d33f92f96935263ef4d8a41ce21"
+checksum = "bf6b561dcf059c85bbe388e0a7b0a1469acb3934cc0cfa148613a830629e3049"
 dependencies = [
  "glob",
  "libc",
@@ -5797,15 +5797,15 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-dispatch"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "frame-support",
  "frame-system",
  "log",
- "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "parity-scale-codec 3.1.2",
+ "scale-info 2.1.1",
  "sp-core",
  "sp-runtime",
  "sp-std",
@@ -5831,7 +5831,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-grandpa"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
  "bp-header-chain 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
@@ -5842,8 +5842,8 @@ dependencies = [
  "frame-system",
  "log",
  "num-traits",
- "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "parity-scale-codec 3.1.2",
+ "scale-info 2.1.1",
  "serde",
  "sp-finality-grandpa",
  "sp-runtime",
@@ -5876,9 +5876,9 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-messages"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
- "bitvec 0.20.4",
+ "bitvec 1.0.0",
  "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
@@ -5887,8 +5887,8 @@ dependencies = [
  "frame-system",
  "log",
  "num-traits",
- "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "parity-scale-codec 3.1.2",
+ "scale-info 2.1.1",
  "serde",
  "sp-core",
  "sp-runtime",
@@ -6013,9 +6013,9 @@ dependencies = [
 [[package]]
 name = "pallet-fee-market"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#5cde446dd3bd992e58e6d25d137c25d61e27e82a"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18#c1adcf18d2333e0c9a58bd56606672c7fda3c4c0"
 dependencies = [
- "bitvec 0.20.4",
+ "bitvec 1.0.0",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "frame-benchmarking",
@@ -6024,7 +6024,7 @@ dependencies = [
  "pallet-bridge-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.18)",
  "pallet-timestamp",
  "parity-scale-codec 2.3.1",
- "scale-info 1.0.0",
+ "scale-info 2.1.1",
  "sp-core",
  "sp-io",
  "sp-runtime",
@@ -9919,12 +9919,12 @@ dependencies = [
 
 [[package]]
 name = "schannel"
-version = "0.1.19"
+version = "0.1.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f05ba609c234e60bee0d547fe94a4c7e9da733d1c962cf6e59efa4cd9c8bc75"
+checksum = "88d6731146462ea25d9244b2ed5fd1d716d25c52e4d54aa4fb0f3c4e9854dbe2"
 dependencies = [
  "lazy_static",
- "winapi 0.3.9",
+ "windows-sys",
 ]
 
 [[package]]
