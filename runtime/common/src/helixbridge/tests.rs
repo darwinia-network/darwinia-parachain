@@ -109,7 +109,7 @@ fn issue_from_remote_backing_success() {
 			U256::from(1024u128),
 			recipient_vec,
 		));
-		assert_eq!(Balances::free_balance(recipient), 1024);
+		assert_eq!(Balances::free_balance(recipient), 1024_000_000_000);
 	});
 }
 

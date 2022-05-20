@@ -39,9 +39,9 @@ impl Config<WithPangolinMessages> for Runtime {
 		GetDeliveryConfirmationTransactionFee,
 		RootAccountForPayments,
 	>;
-	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self>;
-	type OnDeliveryConfirmed = (FromPangolinIssuing, FeeMarketMessageConfirmedHandler<Self>);
 	type MessageDispatch = bm_pangolin::FromPangolinMessageDispatch;
+	type OnDeliveryConfirmed = (FromPangolinIssuing, FeeMarketMessageConfirmedHandler<Self>);
+	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self>;
 	type OutboundMessageFee = Balance;
 	type OutboundPayload = bm_pangolin::ToPangolinMessagePayload;
 	type Parameter = bm_pangolin::PangolinParachainToPangolinParameter;

@@ -44,10 +44,7 @@ type Balance = u64;
 
 pub fn build_account(x: u8) -> (AccountId32, Vec<u8>) {
 	let origin = [x; 32];
-	(
-		AccountId32::decode(&mut &origin.clone()[..]).unwrap_or_default(),
-		origin.to_vec(),
-	)
+	(AccountId32::decode(&mut &origin.clone()[..]).unwrap_or_default(), origin.to_vec())
 }
 
 frame_support::parameter_types! {
@@ -55,11 +52,11 @@ frame_support::parameter_types! {
 }
 
 impl pallet_balances::Config for Test {
-	type Balance = Balance;
-	type Event = ();
-	type DustRemoval = ();
-	type ExistentialDeposit = ExistentialDeposit;
 	type AccountStore = System;
+	type Balance = Balance;
+	type DustRemoval = ();
+	type Event = ();
+	type ExistentialDeposit = ExistentialDeposit;
 	type MaxLocks = ();
 	type MaxReserves = ();
 	type ReserveIdentifier = [u8; 8];
@@ -70,37 +67,37 @@ frame_support::parameter_types! {
 	pub const MinimumPeriod: u64 = 6000 / 2;
 }
 impl pallet_timestamp::Config for Test {
+	type MinimumPeriod = MinimumPeriod;
 	type Moment = u64;
 	type OnTimestampSet = ();
-	type MinimumPeriod = MinimumPeriod;
 	type WeightInfo = ();
 }
 
 impl frame_system::Config for Test {
+	type AccountData = AccountData<Balance>;
+	type AccountId = AccountId32;
 	type BaseCallFilter = Everything;
-	type BlockWeights = ();
+	type BlockHashCount = ();
 	type BlockLength = ();
-	type DbWeight = ();
-	type Origin = Origin;
-	type Call = Call;
-	type Index = u64;
 	type BlockNumber = u64;
+	type BlockWeights = ();
+	type Call = Call;
+	type DbWeight = ();
+	type Event = ();
 	type Hash = H256;
 	type Hashing = BlakeTwo256;
-	type AccountId = AccountId32;
-	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
-	type Event = ();
-	type BlockHashCount = ();
-	type Version = ();
-	type PalletInfo = PalletInfo;
-	type AccountData = AccountData<Balance>;
-	type OnNewAccount = ();
-	type OnKilledAccount = ();
-	type SystemWeightInfo = ();
-	type SS58Prefix = ();
-	type OnSetCode = ();
+	type Index = u64;
+	type Lookup = IdentityLookup<Self::AccountId>;
 	type MaxConsumers = ConstU32<16>;
+	type OnKilledAccount = ();
+	type OnNewAccount = ();
+	type OnSetCode = ();
+	type Origin = Origin;
+	type PalletInfo = PalletInfo;
+	type SS58Prefix = ();
+	type SystemWeightInfo = ();
+	type Version = ();
 }
 
 frame_support::parameter_types! {
@@ -109,6 +106,7 @@ frame_support::parameter_types! {
 	pub PangolinName: Vec<u8> = (b"Pangolin").to_vec();
 	pub MessageLaneId: [u8; 4] = *b"ptol";
 	pub RingAddress: H160 = H160::from_str("1000000000000000000000000000000000000001").unwrap();
+	pub RelativeDecimals: u128 = 1_000_000_000u128;
 }
 
 pub struct AccountIdConverter;
@@ -127,6 +125,7 @@ impl LatestMessageNoncer for MockS2sMessageSender {
 pub struct MockMessagesBridge;
 impl MessagesBridge<AccountId<Test>, Balance, ()> for MockMessagesBridge {
 	type Error = DispatchErrorWithPostInfo<PostDispatchInfo>;
+
 	fn send_message(
 		submitter: RawOrigin<AccountId<Test>>,
 		_laneid: [u8; 4],
@@ -135,10 +134,7 @@ impl MessagesBridge<AccountId<Test>, Balance, ()> for MockMessagesBridge {
 	) -> Result<SendMessageArtifacts, Self::Error> {
 		// send fee to fund account [2;32]
 		Balances::transfer(submitter.into(), build_account(2).0, fee)?;
-		Ok(SendMessageArtifacts {
-			nonce: 0,
-			weight: 0,
-		})
+		Ok(SendMessageArtifacts { nonce: 0, weight: 0 })
 	}
 }
 
@@ -157,19 +153,19 @@ impl<AccountId, Signer, Signature> CreatePayload<AccountId, Signer, Signature> f
 }
 
 impl Config for Test {
-	type Event = ();
-	type PalletId = S2sRelayPalletId;
-	type WeightInfo = ();
-
-	type RingCurrency = Balances;
+	type BackingChainName = PangolinName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
-	type OutboundPayloadCreator = ();
-	type BackingChainName = PangolinName;
+	type Event = ();
 	type MessageLaneId = MessageLaneId;
-	type RingAddress = RingAddress;
-	type MessagesBridge = MockMessagesBridge;
 	type MessageNoncer = MockS2sMessageSender;
+	type MessagesBridge = MockMessagesBridge;
+	type OutboundPayloadCreator = ();
+	type PalletId = S2sRelayPalletId;
+	type RelativeDecimals = RelativeDecimals;
+	type RingAddress = RingAddress;
+	type RingCurrency = Balances;
+	type WeightInfo = ();
 }
 
 frame_support::construct_runtime! {
@@ -179,16 +175,14 @@ frame_support::construct_runtime! {
 		UncheckedExtrinsic = UncheckedExtrinsic,
 	{
 		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
-		Timestamp: pallet_timestamp::{Pallet, Call, Storage},
+		Timestamp: pallet_timestamp::{Pallet, Call, Inherent, Storage},
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
 		S2sIssuing: s2s_issuing::{Pallet, Call, Storage, Config<T>, Event<T>},
 	}
 }
 
 pub fn new_test_ext() -> sp_io::TestExternalities {
-	let mut storage = frame_system::GenesisConfig::default()
-		.build_storage::<Test>()
-		.unwrap();
+	let mut storage = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 
 	s2s_issuing::GenesisConfig::<Test> {
 		secure_limited_period: 10,
@@ -199,9 +193,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 
 	// add some balance to backing account 10 ring
 	let balances = vec![(build_account(1).0, 100)];
-	pallet_balances::GenesisConfig::<Test> { balances }
-		.assimilate_storage(&mut storage)
-		.unwrap();
+	pallet_balances::GenesisConfig::<Test> { balances }.assimilate_storage(&mut storage).unwrap();
 
 	storage.into()
 }

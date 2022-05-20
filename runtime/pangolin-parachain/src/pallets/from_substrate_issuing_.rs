@@ -25,10 +25,7 @@ use pallet_bridge_messages::outbound_lane;
 pub struct ToPangoroMessageSender;
 impl LatestMessageNoncer for ToPangoroMessageSender {
 	fn outbound_latest_generated_nonce(lane_id: LaneId) -> u64 {
-		outbound_lane::<Runtime, WithPangolinMessages>(lane_id)
-			.data()
-			.latest_generated_nonce
-			.into()
+		outbound_lane::<Runtime, WithPangolinMessages>(lane_id).data().latest_generated_nonce.into()
 	}
 }
 
@@ -45,13 +42,7 @@ impl CreatePayload<AccountId, AccountPublic, Signature> for ToPangoroOutboundPay
 		dispatch_fee_payment: DispatchFeePayment,
 	) -> Result<Self::Payload, &'static str> {
 		let call = Self::encode_call(PANGOLIN_S2S_BACKING_PALLET_INDEX, call_params)?;
-		Ok(ToPangolinMessagePayload {
-			spec_version,
-			weight,
-			origin,
-			call,
-			dispatch_fee_payment,
-		})
+		Ok(ToPangolinMessagePayload { spec_version, weight, origin, call, dispatch_fee_payment })
 	}
 }
 
@@ -65,22 +56,26 @@ frame_support::parameter_types! {
 	pub const ParachainIssuingPalletId: PalletId = PalletId(*b"da/paais");
 	pub const PangolinChainId: ChainId = PANGOLIN_CHAIN_ID;
 	pub const BridgePangolinLaneId: LaneId = PANGOLIN_PANGOLIN_PARACHAIN_LANE;
-	pub BackingChainName: ChainName = (b"Pangoro").to_vec();
+	pub BackingChainName: ChainName = (b"Pangolin").to_vec();
 	//pub RingAddress: H160 = PalletId(*b"da/bring").into_h160();
-	pub RingAddress: H160 = into_h160(&PalletId(*b"da/bring"));
+	pub RingAddress: H160 = into_h160(&PalletId(*b"da/pring"));
+	pub LocalDecimals: u128 = 1_000_000_000_000_000_000u128;
+	pub RemoteDecimals: u128 = 1_000_000_000u128;
 }
 
 impl Config for Runtime {
-	type PalletId = ParachainIssuingPalletId;
-	type Event = Event;
-	type WeightInfo = ();
-	type RingCurrency = Ring;
+	type BackingChainName = BackingChainName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
-	type OutboundPayloadCreator = ToPangoroOutboundPayLoad;
-	type BackingChainName = BackingChainName;
+	type Event = Event;
+	type LocalDecimals = LocalDecimals;
 	type MessageLaneId = BridgePangolinLaneId;
-	type RingAddress = RingAddress;
-	type MessagesBridge = BridgePangolinMessages;
 	type MessageNoncer = ToPangoroMessageSender;
+	type MessagesBridge = BridgePangolinMessages;
+	type OutboundPayloadCreator = ToPangoroOutboundPayLoad;
+	type PalletId = ParachainIssuingPalletId;
+	type RemoteDecimals = RemoteDecimals;
+	type RingAddress = RingAddress;
+	type RingCurrency = Ring;
+	type WeightInfo = ();
 }

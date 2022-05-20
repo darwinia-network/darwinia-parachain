@@ -128,6 +128,14 @@ pub mod pallet {
 		#[pallet::constant]
 		type RingAddress: Get<H160>;
 
+		/// The local token decimals.
+		#[pallet::constant]
+		type LocalDecimals: Get<u128>;
+
+		/// The remote token decimals.
+		#[pallet::constant]
+		type RemoteDecimals: Get<u128>;
+
 		type MessagesBridge: MessagesBridge<
 			Self::AccountId,
 			RingBalance<Self>,
@@ -208,10 +216,9 @@ pub mod pallet {
 				return Err(Error::<T>::BackingAccountNone.into());
 			}
 
-			ensure!(
-				token_address == T::RingAddress::get(),
-				<Error<T>>::UnsupportedToken
-			);
+			ensure!(token_address == T::RingAddress::get(), <Error<T>>::UnsupportedToken);
+			let value = Self::convert_to_local_decimals(&value).ok_or(<Error<T>>::ValueOverFlow)?;
+
 			let value = value.low_u128().saturated_into();
 			// Make sure the total transfer is less than the security limitation
 			{
@@ -263,6 +270,8 @@ pub mod pallet {
 
 			// Send to the target chain
 			let amount: U256 = value.saturated_into::<u128>().into();
+			let remote_amount =
+				Self::convert_to_remote_decimals(&amount).ok_or(<Error<T>>::ValueOverFlow)?;
 			let token_address = T::RingAddress::get();
 
 			let payload = T::OutboundPayloadCreator::create(
@@ -271,7 +280,7 @@ pub mod pallet {
 				weight,
 				CallParams::S2sBackingPalletUnlockFromRemote(
 					T::RingAddress::get(),
-					amount,
+					remote_amount,
 					recipient.encode(),
 				),
 				DispatchFeePayment::AtSourceChain,
@@ -286,10 +295,7 @@ pub mod pallet {
 			let message_nonce =
 				T::MessageNoncer::outbound_latest_generated_nonce(T::MessageLaneId::get());
 			let message_id: BridgeMessageId = (T::MessageLaneId::get(), message_nonce);
-			ensure!(
-				!<TransactionInfos<T>>::contains_key(message_id),
-				Error::<T>::NonceDuplicated
-			);
+			ensure!(!<TransactionInfos<T>>::contains_key(message_id), Error::<T>::NonceDuplicated);
 			<TransactionInfos<T>>::insert(message_id, (user.clone(), value));
 			Self::deposit_event(Event::TokenBurnAndRemoteUnlocked(
 				T::MessageLaneId::get(),
@@ -347,7 +353,8 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
-		/// TokenBurnAndRemoteUnlocked \[lane_id, message_nonce, token address, sender, recipient, amount\]
+		/// TokenBurnAndRemoteUnlocked \[lane_id, message_nonce, token address, sender, recipient,
+		/// amount\]
 		TokenBurnAndRemoteUnlocked(
 			LaneId,
 			MessageNonce,
@@ -379,6 +386,8 @@ pub mod pallet {
 		InvalidRecipient,
 		/// Backing not configured
 		BackingAccountNone,
+		/// Issue value overflow
+		ValueOverFlow,
 	}
 
 	#[pallet::genesis_config]
@@ -390,10 +399,7 @@ pub mod pallet {
 	#[cfg(feature = "std")]
 	impl<T: Config> Default for GenesisConfig<T> {
 		fn default() -> Self {
-			Self {
-				secure_limited_period: Zero::zero(),
-				secure_limited_ring_amount: Zero::zero(),
-			}
+			Self { secure_limited_period: Zero::zero(), secure_limited_ring_amount: Zero::zero() }
 		}
 	}
 
@@ -420,6 +426,32 @@ pub mod pallet {
 			);
 			T::BridgedAccountIdConverter::convert(hex_id)
 		}
+
+		pub fn convert_to_local_decimals(amount: &U256) -> Option<U256> {
+			let local = T::LocalDecimals::get();
+			let remote = T::RemoteDecimals::get();
+			if remote == 0 || local == 0 {
+				return None;
+			}
+			if local > remote {
+				amount.checked_mul(U256::from(local / remote))
+			} else {
+				amount.checked_div(U256::from(remote / local))
+			}
+		}
+
+		pub fn convert_to_remote_decimals(amount: &U256) -> Option<U256> {
+			let local = T::LocalDecimals::get();
+			let remote = T::RemoteDecimals::get();
+			if remote == 0 || local == 0 {
+				return None;
+			}
+			if local > remote {
+				amount.checked_div(U256::from(local / remote))
+			} else {
+				amount.checked_mul(U256::from(remote / local))
+			}
+		}
 	}
 
 	impl<T: Config> OnDeliveryConfirmed for Pallet<T> {
@@ -431,8 +463,8 @@ pub mod pallet {
 				let result = messages.message_dispatch_result(nonce);
 				if let Some((user, value)) = <TransactionInfos<T>>::take((*lane, nonce)) {
 					if !result {
-						// if remote backing unlock failed, this fund need to transfer back to the user.
-						// otherwise burn it.
+						// if remote backing unlock failed, this fund need to transfer back to the
+						// user. otherwise burn it.
 						let _ = T::RingCurrency::transfer(
 							&Self::pallet_account_id(),
 							&user,
