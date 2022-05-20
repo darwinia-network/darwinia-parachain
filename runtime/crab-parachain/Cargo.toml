@@ -68,6 +68,18 @@ sp-session                                 = { default-features = false, git = "
 sp-std                                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
 sp-transaction-pool                        = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
 sp-version                                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
+# darwinia-bridges-substrate
+bp-crab                = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+bp-crab-parachain      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+pallet-bridge-grandpa  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+pallet-bridge-messages = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.17" }
+
 
 [build-dependencies]
 substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
@@ -92,6 +104,17 @@ std = [
 	# darwinia
 	"dc-common-runtime/std",
 	"dc-primitives/std",
+	# darwinia-bridges-substrate
+	"bp-crab/std",
+	"bp-crab-parachain/std",
+	"bp-message-dispatch/std",
+	"bp-messages/std",
+	"bp-runtime/std",
+	"bridge-runtime-common/std",
+	"pallet-bridge-dispatch/std",
+	"pallet-bridge-grandpa/std",
+	"pallet-bridge-messages/std",
+	"pallet-fee-market/std",
 	# polkadot
 	"pallet-xcm/std",
 	"polkadot-parachain/std",
@@ -163,4 +186,8 @@ try-runtime = [
 	"pallet-timestamp/try-runtime",
 	"pallet-transaction-payment/try-runtime",
 	"pallet-utility/try-runtime",
+	# darwinia-bridges-substrate
+	"bridge-runtime-common/runtime-benchmarks",
+	"pallet-bridge-grandpa/runtime-benchmarks",
+	"pallet-bridge-messages/runtime-benchmarks",
 ]

@@ -27,6 +27,9 @@ pub mod weights;
 pub mod migrations;
 pub use migrations::*;
 
+pub mod bridges_message;
+pub use bridges_message::*;
+
 pub mod wasm {
 	//! Make the WASM binary available.
 
@@ -164,6 +167,13 @@ frame_support::construct_runtime! {
 		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
 		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
+
+		// Crab <> Crab Parachain
+		BridgeCrabGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20,
+		BridgeCrabMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
+		BridgeCrabDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
+
+		FeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 	}
 }
 
@@ -334,6 +344,50 @@ sp_api::impl_runtime_apis! {
 
 		fn execute_block_no_check(block: Block) -> Weight {
 			Executive::execute_block_no_check(block)
+		}
+	}
+
+
+	impl bp_crab::CrabFinalityApi<Block> for Runtime {
+		fn best_finalized() -> (bp_crab::BlockNumber, bp_crab::Hash) {
+			let header = BridgeCrabGrandpa::best_finalized();
+			(header.number, header.hash())
+		}
+	}
+
+	impl bp_crab::ToCrabOutboundLaneApi<Block, Balance, bm_crab::ToCrabMessagePayload> for Runtime {
+		fn message_details(
+			lane: bp_messages::LaneId,
+			begin: bp_messages::MessageNonce,
+			end: bp_messages::MessageNonce,
+		) -> Vec<bp_messages::MessageDetails<Balance>> {
+			bridge_runtime_common::messages_api::outbound_message_details::<
+				Runtime,
+				WithCrabMessages,
+				bm_crab::WithCrabMessageBridge,
+			>(lane, begin, end)
+		}
+
+		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgeCrabMessages::outbound_latest_received_nonce(lane)
+		}
+
+		fn latest_generated_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgeCrabMessages::outbound_latest_generated_nonce(lane)
+		}
+	}
+
+	impl bp_crab::FromCrabInboundLaneApi<Block> for Runtime {
+		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgeCrabMessages::inbound_latest_received_nonce(lane)
+		}
+
+		fn latest_confirmed_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
+			BridgeCrabMessages::inbound_latest_confirmed_nonce(lane)
+		}
+
+		fn unrewarded_relayers_state(lane: bp_messages::LaneId) -> bp_messages::UnrewardedRelayersState {
+			BridgeCrabMessages::inbound_unrewarded_relayers_state(lane)
 		}
 	}
 }
