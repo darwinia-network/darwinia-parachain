@@ -3,7 +3,7 @@ use frame_support::{traits::EnsureOneOf, PalletId};
 use frame_system::EnsureRoot;
 use pallet_collator_selection::{Config, IdentityCollator};
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
-use xcm::latest::BodyId;
+use xcm::latest::{BodyId, MultiLocation};
 // --- darwinia-network ---
 use crate::{weights::pallet_collator_selection::WeightInfo, *};
 
