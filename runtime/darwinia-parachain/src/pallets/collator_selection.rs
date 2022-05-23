@@ -3,11 +3,12 @@ use frame_support::{traits::EnsureOneOf, PalletId};
 use frame_system::EnsureRoot;
 use pallet_collator_selection::{Config, IdentityCollator};
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
-use xcm::latest::BodyId;
+use xcm::latest::{BodyId, MultiLocation};
 // --- darwinia-network ---
 use crate::*;
 
 frame_support::parameter_types! {
+	pub const DotLocation: MultiLocation = MultiLocation::parent();
 	pub const ExecutiveBody: BodyId = BodyId::Executive;
 	pub const PotId: PalletId = PalletId(*b"PotStake");
 	pub const MaxCandidates: u32 = 1000;
