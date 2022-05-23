@@ -118,15 +118,3 @@ members = [
 	"rpc",
 	"runtime/*",
 ]
-[patch."https://github.com/darwinia-network/darwinia-bridges-substrate"]
-bp-message-dispatch    = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/primitives/message-dispatch" }
-bp-messages            = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/primitives/messages" }
-bp-pangolin            = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/primitives/chain-pangolin" }
-bp-pangolin-parachain  = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/primitives/chain-pangolin-parachain" }
-bp-polkadot-core       = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/primitives/polkadot-core" }
-bp-runtime             = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/primitives/runtime" }
-bridge-runtime-common  = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/bin/runtime-common" }
-pallet-bridge-dispatch = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/modules/dispatch" }
-pallet-bridge-grandpa  = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/modules/grandpa" }
-pallet-bridge-messages = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/modules/messages" }
-pallet-fee-market      = { path = "/home/workspace/darwinia-git/darwinia-bridges-substrate/modules/fee-market" }
