@@ -1,7 +1,10 @@
 // --- paritytech ---
 use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
-use frame_support::{traits::Everything, weights::Weight};
+use frame_support::{
+	traits::{Everything, PalletInfoAccess},
+	weights::Weight,
+};
 use pallet_xcm::{Config, CurrentXcmVersion, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
 use polkadot_runtime_common::impls::ToAuthor;
@@ -86,6 +89,7 @@ pub type XcmOriginToTransactDispatchOrigin = (
 );
 
 frame_support::parameter_types! {
+	pub const RococoLocation: MultiLocation = MultiLocation::parent();
 	pub const RelayNetwork: NetworkId = NetworkId::Kusama;
 	pub const MaxInstructions: u32 = 100;
 	pub AnchoringSelfReserve: MultiLocation = MultiLocation::new(
@@ -124,7 +128,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type Barrier = Barrier;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
 	type Trader =
-		UsingComponents<WeightToFee, RelayLocation, AccountId, Balances, ToAuthor<Runtime>>;
+		UsingComponents<WeightToFee, RococoLocation, AccountId, Balances, ToAuthor<Runtime>>;
 	type ResponseHandler = PolkadotXcm;
 	type AssetTrap = PolkadotXcm;
 	type AssetClaims = PolkadotXcm;

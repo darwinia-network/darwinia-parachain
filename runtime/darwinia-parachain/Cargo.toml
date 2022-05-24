@@ -31,12 +31,13 @@ parachain-info                  = { default-features = false, git = "https://git
 dc-common-runtime = { default-features = false, path = "../common" }
 dc-primitives     = { default-features = false, path = "../../primitives" }
 # polkadot
-pallet-xcm            = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
-pallet-xcm-benchmarks = { optional = true, default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
-polkadot-parachain    = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
-xcm                   = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
-xcm-builder           = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
-xcm-executor          = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
+pallet-xcm                 = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
+pallet-xcm-benchmarks      = { optional = true, default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
+polkadot-parachain         = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
+polkadot-runtime-common    = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
+xcm                        = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
+xcm-builder                = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
+xcm-executor               = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.18" }
 # substrate
 frame-benchmarking                         = { optional = true, default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 frame-executive                            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }

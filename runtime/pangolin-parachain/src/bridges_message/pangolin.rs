@@ -77,6 +77,7 @@ impl MessageBridge for WithPangolinMessageBridge {
 
 	fn bridged_balance_to_this_balance(
 		bridged_balance: BalanceOf<Self::BridgedChain>,
+		_bridged_to_this_conversion_rate: Option<FixedU128>,
 	) -> BalanceOf<Self::ThisChain> {
 		<BalanceOf<Self::ThisChain>>::try_from(
 			PangolinToPangolinParachainConversionRate::get().saturating_mul_int(bridged_balance),
