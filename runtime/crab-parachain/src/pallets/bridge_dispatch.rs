@@ -15,6 +15,6 @@ impl Config<WithCrabDispatch> for Runtime {
 	type EncodedCall = bm_crab::FromCrabEncodedCall;
 	type Event = Event;
 	type SourceChainAccountId = bp_crab::AccountId;
-	type TargetChainAccountPublic = AccountPublic;
-	type TargetChainSignature = Signature;
+	type TargetChainAccountPublic = bp_crab_parachain::AccountPublic;
+	type TargetChainSignature = bp_crab_parachain::Signature;
 }

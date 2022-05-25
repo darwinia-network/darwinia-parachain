@@ -1,3 +1,5 @@
+pub use pallet_fee_market::Instance1 as WithCrabFeeMarket;
+
 // --- core ---
 use core::cmp;
 // --- substrate ---
@@ -5,8 +7,7 @@ use frame_support::{traits::LockIdentifier, PalletId};
 use sp_runtime::{traits::UniqueSaturatedInto, Permill};
 // --- darwinia ---
 use crate::*;
-pub use pallet_fee_market::Instance1 as WithCrabFeeMarket;
-use pallet_fee_market::{Config, BalanceOf, Slasher};
+use pallet_fee_market::{BalanceOf, Config, Slasher};
 
 pub struct FeeMarketSlasher;
 impl<T: Config<I>, I: 'static> Slasher<T, I> for FeeMarketSlasher {
@@ -22,7 +23,7 @@ impl<T: Config<I>, I: 'static> Slasher<T, I> for FeeMarketSlasher {
 
 frame_support::parameter_types! {
 	pub const TreasuryPalletId: PalletId = PalletId(*b"da/trsry");
-	pub const FeeMarketLockId: LockIdentifier = *b"da/feelf";
+	pub const FeeMarketLockId: LockIdentifier = *b"da/feecr";
 
 	pub const MinimumRelayFee: Balance = 15 * COIN;
 	pub const CollateralPerOrder: Balance = 50 * COIN;
@@ -37,11 +38,11 @@ impl Config<WithCrabFeeMarket> for Runtime {
 	type AssignedRelayersRewardRatio = AssignedRelayersRewardRatio;
 	type CollateralPerOrder = CollateralPerOrder;
 	type ConfirmRelayersRewardRatio = ConfirmRelayersRewardRatio;
+	type Currency = Ring;
 	type Event = Event;
 	type LockId = FeeMarketLockId;
 	type MessageRelayersRewardRatio = MessageRelayersRewardRatio;
 	type MinimumRelayFee = MinimumRelayFee;
-	type Currency = Ring;
 	type Slasher = FeeMarketSlasher;
 	type Slot = Slot;
 	type TreasuryPalletId = TreasuryPalletId;
