@@ -20,7 +20,7 @@ pub type LocalAssetTransactor = CurrencyAdapter<
 	// Use this currency:
 	Balances,
 	// Use this currency when it is a fungible asset matching the given location or name:
-	IsConcrete<KsmLocation>,
+	IsConcrete<AnchoringSelfReserve>,
 	// Do a simple punn to convert an AccountId32 MultiLocation into a native chain account ID:
 	LocationToAccountId,
 	// Our chain's account ID type (we can't get away without mentioning it explicitly):
@@ -86,9 +86,12 @@ pub type XcmOriginToTransactDispatchOrigin = (
 );
 
 frame_support::parameter_types! {
-	pub const KsmLocation: MultiLocation = MultiLocation::parent();
 	pub const RelayNetwork: NetworkId = NetworkId::Kusama;
 	pub const MaxInstructions: u32 = 100;
+	pub AnchoringSelfReserve: MultiLocation = MultiLocation::new(
+		0,
+		X1(PalletInstance(<Balances as PalletInfoAccess>::index() as u8))
+	);
 	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
 	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
 	pub UnitWeightCost: Weight = 1_000_000_000;

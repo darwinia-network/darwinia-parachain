@@ -192,15 +192,15 @@ jobs:
 
           echo 'Template data:'
           jq -n \
-            --arg crab_parachain_proposal_compact "$PROPOSAL_CRAB_PARACHAIN_COMPACT" \
-            --arg darwinia_parachain_proposal_compact "$PROPOSAL_DARWINIA_PARACHAIN_COMPACT" \
+            --arg crab_parachain_proposal_compressed "$PROPOSAL_CRAB_PARACHAIN_COMPRESSED" \
+            --arg darwinia_parachain_proposal_compressed "$PROPOSAL_DARWINIA_PARACHAIN_COMPRESSED" \
             --arg crab_parachain_runtime_version "$RUNTIME_VERSION_CRAB_PARACHAIN" \
             --arg darwinia_parachain_runtime_version "$RUNTIME_VERSION_DARWINIA_PARACHAIN" \
             --arg tag "$GIT_TAG_NAME" \
             --arg sha "$SHA" \
             '{
-              crab_parachain_proposal_compact: $crab_parachain_proposal_compact,
-              darwinia_parachain_proposal_compact: $darwinia_parachain_proposal_compact,
+              crab_parachain_proposal_compressed: $crab_parachain_proposal_compressed,
+              darwinia_parachain_proposal_compressed: $darwinia_parachain_proposal_compressed,
               crab_parachain_runtime_version: $crab_parachain_runtime_version,
               darwinia_parachain_runtime_version: $darwinia_parachain_runtime_version,
               tag: $tag,
