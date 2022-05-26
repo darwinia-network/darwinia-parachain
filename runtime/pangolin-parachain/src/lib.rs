@@ -65,8 +65,7 @@ mod benches {
 		[pallet_bridge_grandpa, BridgePangolinGrandpa]
 		// TODO: https://github.com/darwinia-network/darwinia-parachain/issues/66
 		// [pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
-		// FIXME: https://github.com/darwinia-network/darwinia-parachain/issues/81
-		// [pallet_fee_market, PangolinFeeMarket]
+		[pallet_fee_market, PangolinFeeMarket]
 		[cumulus_pallet_xcmp_queue, XcmpQueue]
 	);
 }
