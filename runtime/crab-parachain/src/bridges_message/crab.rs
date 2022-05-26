@@ -30,7 +30,8 @@ pub type ToCrabMessagePayload = FromThisChainMessagePayload<WithCrabMessageBridg
 pub type FromCrabMessagePayload = FromBridgedChainMessagePayload<WithCrabMessageBridge>;
 
 /// Message verifier for CrabParachain -> Crab messages.
-pub type ToCrabMessageVerifier<R> = FromThisChainMessageVerifier<WithCrabMessageBridge, R, WithCrabFeeMarket>;
+pub type ToCrabMessageVerifier<R> =
+	FromThisChainMessageVerifier<WithCrabMessageBridge, R, WithCrabFeeMarket>;
 
 /// Encoded Crab Call as it comes from Crab.
 pub type FromCrabEncodedCall = FromBridgedChainEncodedMessageCall<Call>;
@@ -78,6 +79,7 @@ impl MessageBridge for WithCrabMessageBridge {
 
 	fn bridged_balance_to_this_balance(
 		bridged_balance: BalanceOf<Self::BridgedChain>,
+		_bridged_to_this_conversion_rate_override: Option<FixedU128>,
 	) -> BalanceOf<Self::ThisChain> {
 		<BalanceOf<Self::ThisChain>>::try_from(
 			CrabToCrabParachainConversionRate::get().saturating_mul_int(bridged_balance),

@@ -3,7 +3,7 @@ use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
 use frame_support::{
 	traits::{Everything, PalletInfoAccess},
-	weights::{IdentityFee, Weight},
+	weights::Weight,
 };
 use pallet_xcm::{Config, CurrentXcmVersion, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;

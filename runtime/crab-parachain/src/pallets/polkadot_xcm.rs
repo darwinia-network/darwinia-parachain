@@ -1,7 +1,10 @@
 // --- paritytech ---
 use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
-use frame_support::{traits::Everything, weights::Weight};
+use frame_support::{
+	traits::{Everything, PalletInfoAccess},
+	weights::Weight,
+};
 use pallet_xcm::{Config, CurrentXcmVersion, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
 use polkadot_runtime_common::impls::ToAuthor;
