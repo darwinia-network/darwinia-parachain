@@ -450,9 +450,7 @@ where
 			params.keystore_container.sync_keystore(),
 			force_authoring,
 		)?;
-
 		let spawner = task_manager.spawn_handle();
-
 		let params = StartCollatorParams {
 			para_id: id,
 			block_status: client.clone(),

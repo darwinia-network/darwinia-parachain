@@ -246,7 +246,6 @@ pub fn run() -> Result<()> {
 			let para_id = Extensions::try_get(&*config.chain_spec)
 				.map(|e| e.para_id)
 				.ok_or_else(|| "Could not find parachain ID in chain-spec.")?;
-
 			let polkadot_cli = RelayChainCli::new(
 				&config,
 				[RelayChainCli::executable_name().to_string()]
