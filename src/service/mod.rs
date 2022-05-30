@@ -27,7 +27,7 @@ pub use darwinia_parachain_runtime::RuntimeApi as DarwiniaParachainRuntimeApi;
 pub use pangolin_parachain_runtime::RuntimeApi as PangolinParachainRuntimeApi;
 
 // --- std ---
-use std::{error::Error, sync::Arc, time::Duration};
+use std::{error::Error, sync::Arc, timestamp::Duration};
 // --- crates.io ---
 use futures::lock::Mutex;
 // --- paritytech ---
@@ -512,15 +512,15 @@ where
 			BuildVerifierParams {
 				client: client2.clone(),
 				create_inherent_data_providers: move |_, _| async move {
-					let time = sp_timestamp::InherentDataProvider::from_system_time();
+					let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
 
 					let slot =
 					sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
-						*time,
+						*timestamp,
 						slot_duration,
 					);
 
-					Ok((time, slot))
+					Ok((timestamp, slot))
 				},
 				can_author_with: CanAuthorWithNativeVersion::new(client2.executor().clone()),
 				telemetry,
@@ -610,11 +610,11 @@ where
 								id,
 							)
 							.await;
-							let time = sp_timestamp::InherentDataProvider::from_system_time();
+							let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
 
 							let slot =
 									sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
-										*time,
+										*timestamp,
 										slot_duration,
 									);
 
@@ -623,7 +623,7 @@ where
 									"Failed to create parachain inherent",
 								)
 							})?;
-							Ok((time, slot, parachain_inherent))
+							Ok((timestamp, slot, parachain_inherent))
 						}
 					},
 					block_import: client2.clone(),
