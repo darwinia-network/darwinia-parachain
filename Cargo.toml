@@ -61,14 +61,14 @@ frame-benchmarking-cli         = { optional = true, git = "https://github.com/pa
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-basic-authorship            = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-chain-spec                  = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-sc-cli                         = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18", features = ["wasmtime"] }
+sc-cli                         = { features = ["wasmtime"], git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-client-api                  = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-consensus                   = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-sc-executor                    = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18", features = ["wasmtime"] }
+sc-executor                    = { features = ["wasmtime"], git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-keystore                    = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-network                     = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-rpc                         = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-sc-service                     = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18", features = ["wasmtime"] }
+sc-service                     = { features = ["wasmtime"], git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-telemetry                   = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-tracing                     = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sc-transaction-pool            = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
