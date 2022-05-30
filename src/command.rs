@@ -193,11 +193,7 @@ pub fn run() -> Result<()> {
 
 			if chain_spec.is_crab_parachain() {
 				runner.async_run(|$config| {
-					let $components = new_partial::<
-						CrabParachainRuntimeApi,
-						CrabParachainRuntimeExecutor,
-						_
-					>(
+					let $components = new_partial::<CrabParachainRuntimeApi, _>(
 						&$config,
 						service::build_import_queue,
 					)?;
@@ -206,11 +202,7 @@ pub fn run() -> Result<()> {
 				})
 			} else if chain_spec.is_pangolin_parachain() {
 				runner.async_run(|$config| {
-					let $components = new_partial::<
-						PangolinParachainRuntimeApi,
-						PangolinParachainRuntimeExecutor,
-						_
-					>(
+					let $components = new_partial::<PangolinParachainRuntimeApi, _>(
 						&$config,
 						service::build_import_queue,
 					)?;
@@ -219,11 +211,7 @@ pub fn run() -> Result<()> {
 				})
 			} else {
 				runner.async_run(|$config| {
-					let $components = new_partial::<
-						DarwiniaParachainRuntimeApi,
-						DarwiniaParachainRuntimeExecutor,
-						_
-					>(
+					let $components = new_partial::<DarwiniaParachainRuntimeApi, _>(
 						&$config,
 						service::build_import_queue,
 					)?;
@@ -271,7 +259,7 @@ pub fn run() -> Result<()> {
 			info!("Is collating: {}", if config.role.is_authority() { "yes" } else { "no" });
 
 			if chain_spec.is_crab_parachain() {
-				service::start_node::<CrabParachainRuntimeApi, CrabParachainRuntimeExecutor>(
+				service::start_node::<CrabParachainRuntimeApi>(
 					config,
 					polkadot_config,
 					collator_options,
@@ -281,21 +269,25 @@ pub fn run() -> Result<()> {
 				.map(|r| r.0)
 				.map_err(Into::into)
 			} else if chain_spec.is_pangolin_parachain() {
-				service::start_node::<
-						PangolinParachainRuntimeApi,
-						PangolinParachainRuntimeExecutor,
-					>(config, polkadot_config, collator_options, id)
-					.await
-					.map(|r| r.0)
-					.map_err(Into::into)
+				service::start_node::<PangolinParachainRuntimeApi>(
+					config,
+					polkadot_config,
+					collator_options,
+					id,
+				)
+				.await
+				.map(|r| r.0)
+				.map_err(Into::into)
 			} else {
-				service::start_node::<
-						DarwiniaParachainRuntimeApi,
-						DarwiniaParachainRuntimeExecutor,
-					>(config, polkadot_config, collator_options, id)
-					.await
-					.map(|r| r.0)
-					.map_err(Into::into)
+				service::start_node::<DarwiniaParachainRuntimeApi>(
+					config,
+					polkadot_config,
+					collator_options,
+					id,
+				)
+				.await
+				.map(|r| r.0)
+				.map_err(Into::into)
 			}
 		}),
 		Some(Subcommand::BuildSpec(cmd)) => {
@@ -400,11 +392,11 @@ pub fn run() -> Result<()> {
 			set_default_ss58_version(chain_spec);
 
 			if chain_spec.is_crab_parachain() {
-				runner.sync_run(|config| cmd.run::<Block, CrabParachainRuntimeExecutor>(config))
+				runner.sync_run(|config| cmd.run::<Block>(config))
 			} else if chain_spec.is_pangolin_parachain() {
-				runner.sync_run(|config| cmd.run::<Block, PangolinParachainRuntimeExecutor>(config))
+				runner.sync_run(|config| cmd.run::<Block>(config))
 			} else {
-				runner.sync_run(|config| cmd.run::<Block, DarwiniaParachainRuntimeExecutor>(config))
+				runner.sync_run(|config| cmd.run::<Block>(config))
 			}
 		},
 		#[cfg(feature = "try-runtime")]
@@ -423,7 +415,7 @@ pub fn run() -> Result<()> {
 						sc_service::TaskManager::new(config.tokio_handle.clone(), registry)
 							.map_err(|e| sc_cli::Error::from(sc_service::Error::Prometheus(e)))?;
 
-					Ok((cmd.run::<Block, CrabParachainRuntimeExecutor>(config), task_manager))
+					Ok((cmd.run::<Block>(config), task_manager))
 				})
 			} else {
 				panic!("Try runtime not support chain: {}", chain_spec.id());

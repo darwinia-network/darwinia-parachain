@@ -78,6 +78,7 @@ sp-consensus                   = { git = "https://github.com/paritytech/substrat
 sp-consensus-aura              = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sp-core                        = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sp-inherents                   = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
+sp-io                          = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sp-keystore                    = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sp-offchain                    = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
 sp-runtime                     = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
