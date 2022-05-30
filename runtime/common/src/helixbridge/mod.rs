@@ -29,7 +29,7 @@ mod mock;
 mod tests;
 
 // --- crates.io ---
-use ethereum_types::{H160, H256, U256};
+use ethereum_types::H256;
 // --- paritytech ---
 use bp_message_dispatch::CallOrigin;
 use bp_messages::{
@@ -47,8 +47,8 @@ use frame_support::{
 };
 use frame_system::{ensure_signed, RawOrigin};
 use sp_runtime::{
-	traits::{AccountIdConversion, BadOrigin, Convert, Saturating, Zero},
-	DispatchErrorWithPostInfo, MultiSignature, MultiSigner, SaturatedConversion,
+	traits::{AccountIdConversion, BadOrigin, CheckedDiv, CheckedMul, Convert, Saturating, Zero},
+	DispatchErrorWithPostInfo, MultiSignature, MultiSigner,
 };
 use sp_std::{str, vec, vec::Vec};
 
@@ -59,15 +59,21 @@ pub type RingBalance<T> = <<T as Config>::RingCurrency as Currency<AccountId<T>>
 
 /// The parameters box for the pallet runtime call.
 #[derive(Encode, Decode, Debug, PartialEq, Eq, Clone)]
-pub enum CallParams {
+pub enum CallParams<T: Config> {
 	#[codec(index = 2)]
-	S2sBackingPalletUnlockFromRemote(H160, U256, Vec<u8>),
+	S2sBackingPalletUnlockFromRemote(RingBalance<T>, AccountId<T>),
 }
 /// Creating a concrete message payload which would be relay to target chain.
-pub trait CreatePayload<SourceChainAccountId, TargetChainAccountPublic, TargetChainSignature> {
+pub trait CreatePayload<
+	SourceChainAccountId,
+	TargetChainAccountPublic,
+	TargetChainSignature,
+	T: Config,
+>
+{
 	type Payload: Encode;
 
-	fn encode_call(pallet_index: u8, call_params: CallParams) -> Result<Vec<u8>, &'static str> {
+	fn encode_call(pallet_index: u8, call_params: CallParams<T>) -> Result<Vec<u8>, &'static str> {
 		let mut encoded = vec![pallet_index];
 		encoded.append(&mut call_params.encode());
 		Ok(encoded)
@@ -77,7 +83,7 @@ pub trait CreatePayload<SourceChainAccountId, TargetChainAccountPublic, TargetCh
 		origin: CallOrigin<SourceChainAccountId, TargetChainAccountPublic, TargetChainSignature>,
 		spec_version: u32,
 		weight: u64,
-		call_params: CallParams,
+		call_params: CallParams<T>,
 		dispatch_fee_payment: DispatchFeePayment,
 	) -> Result<Self::Payload, &'static str>;
 }
@@ -116,7 +122,7 @@ pub mod pallet {
 
 		/// Outbound payload creator used for s2s message
 		type OutboundPayloadCreator: Parameter
-			+ CreatePayload<Self::AccountId, MultiSigner, MultiSignature>;
+			+ CreatePayload<Self::AccountId, MultiSigner, MultiSignature, Self>;
 
 		/// The remote chain name where the backing module in
 		type BackingChainName: Get<ChainName>;
@@ -124,17 +130,9 @@ pub mod pallet {
 		/// The lane id of the s2s bridge
 		type MessageLaneId: Get<LaneId>;
 
-		/// The local ring address
-		#[pallet::constant]
-		type RingAddress: Get<H160>;
-
 		/// The local token decimals.
 		#[pallet::constant]
-		type LocalDecimals: Get<u128>;
-
-		/// The remote token decimals.
-		#[pallet::constant]
-		type RemoteDecimals: Get<u128>;
+		type DecimalsDifference: Get<RingBalance<Self>>;
 
 		type MessagesBridge: MessagesBridge<
 			Self::AccountId,
@@ -143,6 +141,7 @@ pub mod pallet {
 				Self::AccountId,
 				MultiSigner,
 				MultiSignature,
+				Self,
 			>>::Payload,
 			Error = DispatchErrorWithPostInfo<PostDispatchInfo>,
 		>;
@@ -203,9 +202,8 @@ pub mod pallet {
 		#[transactional]
 		pub fn issue_from_remote(
 			origin: OriginFor<T>,
-			token_address: H160,
-			value: U256,
-			recipient: Vec<u8>,
+			value: RingBalance<T>,
+			recipient: AccountId<T>,
 		) -> DispatchResultWithPostInfo {
 			let user = ensure_signed(origin)?;
 
@@ -216,10 +214,10 @@ pub mod pallet {
 				return Err(Error::<T>::BackingAccountNone.into());
 			}
 
-			ensure!(token_address == T::RingAddress::get(), <Error<T>>::UnsupportedToken);
-			let value = Self::convert_to_local_decimals(&value).ok_or(<Error<T>>::ValueOverFlow)?;
+			let value = value
+				.checked_mul(&T::DecimalsDifference::get())
+				.ok_or(<Error<T>>::ValueOverFlow)?;
 
-			let value = value.low_u128().saturated_into();
 			// Make sure the total transfer is less than the security limitation
 			{
 				let (used, limitation) = <SecureLimitedRingAmount<T>>::get();
@@ -229,13 +227,9 @@ pub mod pallet {
 					<Error<T>>::RingDailyLimited
 				);
 			}
-			// Make sure the recipient is valid(AccountId32).
-			ensure!(recipient.len() == 32, Error::<T>::InvalidRecipient);
-			let recipient_id = T::AccountId::decode(&mut &recipient[..])
-				.map_err(|_| Error::<T>::InvalidRecipient)?;
 
-			T::RingCurrency::deposit_creating(&recipient_id, value);
-			Self::deposit_event(Event::TokenIssued(recipient_id, value));
+			T::RingCurrency::deposit_creating(&recipient, value);
+			Self::deposit_event(Event::TokenIssued(recipient, value));
 			Ok(().into())
 		}
 
@@ -269,20 +263,15 @@ pub mod pallet {
 			)?;
 
 			// Send to the target chain
-			let amount: U256 = value.saturated_into::<u128>().into();
-			let remote_amount =
-				Self::convert_to_remote_decimals(&amount).ok_or(<Error<T>>::ValueOverFlow)?;
-			let token_address = T::RingAddress::get();
+			let remote_amount = value
+				.checked_div(&T::DecimalsDifference::get())
+				.ok_or(<Error<T>>::ValueOverFlow)?;
 
 			let payload = T::OutboundPayloadCreator::create(
 				CallOrigin::SourceAccount(Self::pallet_account_id()),
 				spec_version,
 				weight,
-				CallParams::S2sBackingPalletUnlockFromRemote(
-					T::RingAddress::get(),
-					remote_amount,
-					recipient.encode(),
-				),
+				CallParams::S2sBackingPalletUnlockFromRemote(remote_amount, recipient.clone()),
 				DispatchFeePayment::AtSourceChain,
 			)?;
 			T::MessagesBridge::send_message(
@@ -300,7 +289,6 @@ pub mod pallet {
 			Self::deposit_event(Event::TokenBurnAndRemoteUnlocked(
 				T::MessageLaneId::get(),
 				message_nonce,
-				token_address,
 				user,
 				recipient,
 				value,
@@ -358,7 +346,6 @@ pub mod pallet {
 		TokenBurnAndRemoteUnlocked(
 			LaneId,
 			MessageNonce,
-			H160,
 			AccountId<T>,
 			AccountId<T>,
 			RingBalance<T>,
@@ -425,32 +412,6 @@ pub mod pallet {
 				SourceAccount::Account(backing_account),
 			);
 			T::BridgedAccountIdConverter::convert(hex_id)
-		}
-
-		pub fn convert_to_local_decimals(amount: &U256) -> Option<U256> {
-			let local = T::LocalDecimals::get();
-			let remote = T::RemoteDecimals::get();
-			if remote == 0 || local == 0 {
-				return None;
-			}
-			if local > remote {
-				amount.checked_mul(U256::from(local / remote))
-			} else {
-				amount.checked_div(U256::from(remote / local))
-			}
-		}
-
-		pub fn convert_to_remote_decimals(amount: &U256) -> Option<U256> {
-			let local = T::LocalDecimals::get();
-			let remote = T::RemoteDecimals::get();
-			if remote == 0 || local == 0 {
-				return None;
-			}
-			if local > remote {
-				amount.checked_div(U256::from(local / remote))
-			} else {
-				amount.checked_mul(U256::from(remote / local))
-			}
 		}
 	}
 

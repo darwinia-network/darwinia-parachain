@@ -31,14 +31,14 @@ impl LatestMessageNoncer for ToPangoroMessageSender {
 
 #[derive(Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug, TypeInfo)]
 pub struct ToPangoroOutboundPayLoad;
-impl CreatePayload<AccountId, AccountPublic, Signature> for ToPangoroOutboundPayLoad {
+impl CreatePayload<AccountId, AccountPublic, Signature, Runtime> for ToPangoroOutboundPayLoad {
 	type Payload = ToPangolinMessagePayload;
 
 	fn create(
 		origin: CallOrigin<AccountId, AccountPublic, Signature>,
 		spec_version: u32,
 		weight: u64,
-		call_params: CallParams,
+		call_params: CallParams<Runtime>,
 		dispatch_fee_payment: DispatchFeePayment,
 	) -> Result<Self::Payload, &'static str> {
 		let call = Self::encode_call(PANGOLIN_S2S_BACKING_PALLET_INDEX, call_params)?;
@@ -59,23 +59,20 @@ frame_support::parameter_types! {
 	pub BackingChainName: ChainName = (b"Pangolin").to_vec();
 	//pub RingAddress: H160 = PalletId(*b"da/bring").into_h160();
 	pub RingAddress: H160 = into_h160(&PalletId(*b"da/pring"));
-	pub LocalDecimals: u128 = 1_000_000_000_000_000_000u128;
-	pub RemoteDecimals: u128 = 1_000_000_000u128;
+	pub DecimalsDifference: Balance = 1_000_000_000u128;
 }
 
 impl Config for Runtime {
 	type BackingChainName = BackingChainName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
+	type DecimalsDifference = DecimalsDifference;
 	type Event = Event;
-	type LocalDecimals = LocalDecimals;
 	type MessageLaneId = BridgePangolinLaneId;
 	type MessageNoncer = ToPangoroMessageSender;
 	type MessagesBridge = BridgePangolinMessages;
 	type OutboundPayloadCreator = ToPangoroOutboundPayLoad;
 	type PalletId = ParachainIssuingPalletId;
-	type RemoteDecimals = RemoteDecimals;
-	type RingAddress = RingAddress;
 	type RingCurrency = Ring;
 	type WeightInfo = ();
 }
