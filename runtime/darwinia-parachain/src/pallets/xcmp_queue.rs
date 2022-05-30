@@ -12,5 +12,6 @@ impl Config for Runtime {
 	type Event = Event;
 	type ExecuteOverweightOrigin = EnsureRoot<AccountId>;
 	type VersionWrapper = PolkadotXcm;
+	type WeightInfo = ();
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 }

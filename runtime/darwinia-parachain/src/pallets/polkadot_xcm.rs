@@ -3,10 +3,11 @@ use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
 use frame_support::{
 	traits::{Everything, PalletInfoAccess},
-	weights::{IdentityFee, Weight},
+	weights::Weight,
 };
 use pallet_xcm::{Config, CurrentXcmVersion, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
+use polkadot_runtime_common::impls::ToAuthor;
 use xcm::latest::prelude::*;
 use xcm_builder::*;
 use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
@@ -128,8 +129,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type OriginConverter = XcmOriginToTransactDispatchOrigin;
 	type ResponseHandler = PolkadotXcm;
 	type SubscriptionService = PolkadotXcm;
-	type Trader =
-		UsingComponents<IdentityFee<Balance>, AnchoringSelfReserve, AccountId, Balances, ()>;
+	type Trader = UsingComponents<WeightToFee, DotLocation, AccountId, Balances, ToAuthor<Runtime>>;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
 	type XcmSender = XcmRouter;
 }

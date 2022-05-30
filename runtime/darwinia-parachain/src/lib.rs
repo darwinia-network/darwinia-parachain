@@ -56,6 +56,7 @@ mod benches {
 		[pallet_utility, Utility]
 		[pallet_multisig, Multisig]
 		[pallet_proxy, Proxy]
+		[cumulus_pallet_xcmp_queue, XcmpQueue]
 	);
 }
 
