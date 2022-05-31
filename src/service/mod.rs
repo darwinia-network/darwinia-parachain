@@ -46,7 +46,7 @@ use cumulus_client_service::{
 	prepare_node_config, start_collator, start_full_node, StartCollatorParams, StartFullNodeParams,
 };
 use cumulus_primitives_core::{
-	relay_chain::v1::{Hash as PHash, PersistedValidationData},
+	relay_chain::v2::{Hash as PHash, PersistedValidationData},
 	ParaId,
 };
 use cumulus_primitives_parachain_inherent::ParachainInherentData;
