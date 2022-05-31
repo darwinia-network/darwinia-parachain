@@ -28,8 +28,6 @@ mod mock;
 #[cfg(test)]
 mod tests;
 
-// --- crates.io ---
-use ethereum_types::H256;
 // --- paritytech ---
 use bp_message_dispatch::CallOrigin;
 use bp_messages::{
@@ -46,6 +44,7 @@ use frame_support::{
 	PalletId,
 };
 use frame_system::{ensure_signed, RawOrigin};
+use sp_core::H256;
 use sp_runtime::{
 	traits::{AccountIdConversion, BadOrigin, CheckedDiv, CheckedMul, Convert, Saturating, Zero},
 	DispatchErrorWithPostInfo, MultiSignature, MultiSigner,

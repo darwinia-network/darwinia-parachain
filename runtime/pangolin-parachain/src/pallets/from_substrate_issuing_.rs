@@ -3,7 +3,6 @@ use bp_messages::LaneId;
 use bp_runtime::ChainId;
 use frame_support::PalletId;
 use pallet_bridge_messages::Instance1 as WithPangolinMessages;
-use sp_core::H160;
 // --- darwinia-network ---
 use crate::*;
 use bp_message_dispatch::CallOrigin;
@@ -18,7 +17,6 @@ use dc_common_runtime::helixbridge::{
 };
 use frame_support::RuntimeDebug;
 use scale_info::TypeInfo;
-use sp_runtime::{traits::AccountIdConversion, AccountId32};
 
 use pallet_bridge_messages::outbound_lane;
 
@@ -46,19 +44,11 @@ impl CreatePayload<AccountId, AccountPublic, Signature, Runtime> for ToPangoroOu
 	}
 }
 
-fn into_h160(pallet_id: &PalletId) -> H160 {
-	let account_id: AccountId32 = pallet_id.into_account();
-	let bytes: &[u8] = account_id.as_ref();
-	H160::from_slice(&bytes[0..20])
-}
-
 frame_support::parameter_types! {
 	pub const ParachainIssuingPalletId: PalletId = PalletId(*b"da/paais");
 	pub const PangolinChainId: ChainId = PANGOLIN_CHAIN_ID;
 	pub const BridgePangolinLaneId: LaneId = PANGOLIN_PANGOLIN_PARACHAIN_LANE;
 	pub BackingChainName: ChainName = (b"Pangolin").to_vec();
-	//pub RingAddress: H160 = PalletId(*b"da/bring").into_h160();
-	pub RingAddress: H160 = into_h160(&PalletId(*b"da/pring"));
 	pub DecimalsDifference: Balance = 1_000_000_000u128;
 }
 

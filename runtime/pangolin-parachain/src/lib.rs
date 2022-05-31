@@ -44,6 +44,9 @@ pub mod wasm {
 }
 pub use wasm::*;
 
+mod migrations;
+use migrations::*;
+
 #[cfg(feature = "runtime-benchmarks")]
 #[macro_use]
 extern crate frame_benchmarking;
@@ -62,7 +65,8 @@ mod benches {
 		[pallet_bridge_grandpa, BridgePangolinGrandpa]
 		// TODO: https://github.com/darwinia-network/darwinia-parachain/issues/66
 		// [pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
-		[pallet_fee_market, FeeMarket]
+		[pallet_fee_market, PangolinFeeMarket]
+		[cumulus_pallet_xcmp_queue, XcmpQueue]
 	);
 }
 
@@ -107,6 +111,7 @@ pub type Executive = frame_executive::Executive<
 	frame_system::ChainContext<Runtime>,
 	Runtime,
 	AllPalletsWithSystem,
+	CustomOnRuntimeUpgrade,
 >;
 
 type Ring = Balances;
@@ -118,7 +123,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
 	impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
 	authoring_version: 1,
-	spec_version: 5,
+	spec_version: 5_2_1_0,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -132,7 +137,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
 	impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
 	authoring_version: 1,
-	spec_version: 5,
+	spec_version: 5_2_1_0,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -180,8 +185,7 @@ frame_support::construct_runtime! {
 		BridgePangolinMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
 		BridgePangolinDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
 
-		FeeMarket: pallet_fee_market::{Pallet, Call, Storage, Event<T>} = 23,
-
+		PangolinFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 		FromPangolinIssuing: dc_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
 	}
 }
@@ -292,22 +296,6 @@ sp_api::impl_runtime_apis! {
 		}
 	}
 
-	impl pallet_fee_market_rpc_runtime_api::FeeMarketApi<Block, Balance> for Runtime {
-		fn market_fee() -> Option<pallet_fee_market_rpc_runtime_api::Fee<Balance>> {
-			if let Some(fee) = FeeMarket::market_fee() {
-				return Some(pallet_fee_market_rpc_runtime_api::Fee {
-					amount: fee,
-				});
-			}
-			None
-		}
-		fn in_process_orders() -> pallet_fee_market_rpc_runtime_api::InProcessOrders {
-			return pallet_fee_market_rpc_runtime_api::InProcessOrders {
-				orders: FeeMarket::in_process_orders(),
-			}
-		}
-	}
-
 	impl bp_pangolin::PangolinFinalityApi<Block> for Runtime {
 		fn best_finalized() -> (bp_pangolin::BlockNumber, bp_pangolin::Hash) {
 			let header = BridgePangolinGrandpa::best_finalized();
@@ -401,6 +389,7 @@ sp_api::impl_runtime_apis! {
 				}
 			};
 			use bp_runtime::{messages::DispatchFeePayment};
+			use pallet_fee_market::Instance1;
 
 			impl frame_system_benchmarking::Config for Runtime {}
 			impl MessagesConfig<WithPangolinMessages> for Runtime {
@@ -421,26 +410,26 @@ sp_api::impl_runtime_apis! {
 					use frame_support::traits::Currency;
 
 					// prepare fee_market
-					let collateral = <Runtime as pallet_fee_market::Config>::CollateralPerOrder::get();
+					let collateral = <Runtime as pallet_fee_market::Config<Instance1>>::CollateralPerOrder::get();
 					let caller1: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 1, 0u32);
 					let caller2: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 2, 0u32);
 					let caller3: <Runtime as frame_system::Config>::AccountId = frame_benchmarking::account("source", 3, 0u32);
 
-					<Runtime as pallet_fee_market::Config>::RingCurrency::make_free_balance_be(&caller1, collateral.saturating_mul(10u32.into()));
-					<Runtime as pallet_fee_market::Config>::RingCurrency::make_free_balance_be(&caller2, collateral.saturating_mul(10u32.into()));
-					<Runtime as pallet_fee_market::Config>::RingCurrency::make_free_balance_be(&caller3, collateral.saturating_mul(10u32.into()));
+					<Runtime as pallet_fee_market::Config<Instance1>>::Currency::make_free_balance_be(&caller1, collateral.saturating_mul(10u32.into()));
+					<Runtime as pallet_fee_market::Config<Instance1>>::Currency::make_free_balance_be(&caller2, collateral.saturating_mul(10u32.into()));
+					<Runtime as pallet_fee_market::Config<Instance1>>::Currency::make_free_balance_be(&caller3, collateral.saturating_mul(10u32.into()));
 
-					assert_ok!(pallet_fee_market::Pallet::<Runtime>::enroll_and_lock_collateral(
+					assert_ok!(pallet_fee_market::Pallet::<Runtime, Instance1>::enroll_and_lock_collateral(
 						frame_system::RawOrigin::Signed(caller1).into(),
 						collateral,
 						None
 					));
-					assert_ok!(pallet_fee_market::Pallet::<Runtime>::enroll_and_lock_collateral(
+					assert_ok!(pallet_fee_market::Pallet::<Runtime, Instance1>::enroll_and_lock_collateral(
 						frame_system::RawOrigin::Signed(caller2).into(),
 						collateral,
 						None
 					));
-					assert_ok!(pallet_fee_market::Pallet::<Runtime>::enroll_and_lock_collateral(
+					assert_ok!(pallet_fee_market::Pallet::<Runtime, Instance1>::enroll_and_lock_collateral(
 						frame_system::RawOrigin::Signed(caller3).into(),
 						collateral,
 						None
@@ -465,7 +454,7 @@ sp_api::impl_runtime_apis! {
 						dispatch_fee_payment: DispatchFeePayment::AtSourceChain,
 					};
 
-					(message, <Runtime as pallet_fee_market::Config>::MinimumRelayFee::get())
+					(message, <Runtime as pallet_fee_market::Config<Instance1>>::MinimumRelayFee::get())
 				}
 
 				fn prepare_message_proof(

@@ -1,4 +1,4 @@
-pub use pallet_fee_market::Instance1 as WithPangolinFeeMarket;
+pub use pallet_fee_market::Instance1 as WithCrabFeeMarket;
 
 // --- core ---
 use core::cmp;
@@ -6,15 +6,11 @@ use core::cmp;
 use frame_support::{traits::LockIdentifier, PalletId};
 use sp_runtime::{traits::UniqueSaturatedInto, Permill};
 // --- darwinia ---
-use crate::{weights::pallet_fee_market::WeightInfo, *};
+use crate::*;
 use pallet_fee_market::{BalanceOf, Config, Slasher};
 
 pub struct FeeMarketSlasher;
-impl<T, I> Slasher<T, I> for FeeMarketSlasher
-where
-	T: Config<I>,
-	I: 'static,
-{
+impl<T: Config<I>, I: 'static> Slasher<T, I> for FeeMarketSlasher {
 	fn slash(locked_collateral: BalanceOf<T, I>, timeout: T::BlockNumber) -> BalanceOf<T, I> {
 		let slash_each_block = 2 * COIN;
 		let slash_value = UniqueSaturatedInto::<Balance>::unique_saturated_into(timeout)
@@ -27,7 +23,7 @@ where
 
 frame_support::parameter_types! {
 	pub const TreasuryPalletId: PalletId = PalletId(*b"da/trsry");
-	pub const FeeMarketLockId: LockIdentifier = *b"da/feelf";
+	pub const FeeMarketLockId: LockIdentifier = *b"da/feecr";
 
 	pub const MinimumRelayFee: Balance = 15 * COIN;
 	pub const CollateralPerOrder: Balance = 50 * COIN;
@@ -38,7 +34,7 @@ frame_support::parameter_types! {
 	pub const ConfirmRelayersRewardRatio: Permill = Permill::from_percent(20);
 }
 
-impl Config<WithPangolinFeeMarket> for Runtime {
+impl Config<WithCrabFeeMarket> for Runtime {
 	type AssignedRelayersRewardRatio = AssignedRelayersRewardRatio;
 	type CollateralPerOrder = CollateralPerOrder;
 	type ConfirmRelayersRewardRatio = ConfirmRelayersRewardRatio;
@@ -50,5 +46,5 @@ impl Config<WithPangolinFeeMarket> for Runtime {
 	type Slasher = FeeMarketSlasher;
 	type Slot = Slot;
 	type TreasuryPalletId = TreasuryPalletId;
-	type WeightInfo = WeightInfo<Runtime>;
+	type WeightInfo = ();
 }

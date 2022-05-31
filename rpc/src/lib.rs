@@ -55,23 +55,18 @@ where
 		+ sp_blockchain::HeaderMetadata<Block, Error = BlockChainError>,
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>
 		+ pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>
-		+ sp_block_builder::BlockBuilder<Block>
-		+ pallet_fee_market_rpc::FeeMarketRuntimeApi<Block, Balance>,
-
+		+ sp_block_builder::BlockBuilder<Block>,
 	P: 'static + Send + Sync + sc_transaction_pool_api::TransactionPool,
 {
 	// --- paritytech ---
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
 	use substrate_frame_rpc_system::{FullSystem, SystemApi};
-	// --- darwinia-network ---
-	use pallet_fee_market_rpc::*;
 
 	let mut io = IoHandler::default();
 	let FullDeps { client, pool, deny_unsafe } = deps;
 
 	io.extend_with(SystemApi::to_delegate(FullSystem::new(client.clone(), pool, deny_unsafe)));
 	io.extend_with(TransactionPaymentApi::to_delegate(TransactionPayment::new(client.clone())));
-	io.extend_with(FeeMarketApi::to_delegate(FeeMarket::new(client.clone())));
 
 	io
 }

@@ -18,6 +18,12 @@
 
 // --- paritytech ---
 use sc_executor::{NativeExecutionDispatch, NativeVersion};
+use sp_io::SubstrateHostFunctions;
+
+#[cfg(not(feature = "runtime-benchmarks"))]
+pub type HostFunctions = SubstrateHostFunctions;
+#[cfg(feature = "runtime-benchmarks")]
+pub type HostFunctions = (SubstrateHostFunctions, frame_benchmarking::benchmarking::HostFunctions);
 
 /// Darwinia native executor instance.
 pub struct DarwiniaParachainRuntimeExecutor;

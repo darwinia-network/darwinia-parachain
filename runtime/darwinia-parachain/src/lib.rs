@@ -56,6 +56,7 @@ mod benches {
 		[pallet_utility, Utility]
 		[pallet_multisig, Multisig]
 		[pallet_proxy, Proxy]
+		[cumulus_pallet_xcmp_queue, XcmpQueue]
 	);
 }
 
@@ -110,7 +111,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Darwinia Parachain"),
 	impl_name: sp_runtime::create_runtime_str!("Darwinia Parachain"),
 	authoring_version: 1,
-	spec_version: 3,
+	spec_version: 5_2_1_0,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -264,15 +265,6 @@ sp_api::impl_runtime_apis! {
 	impl cumulus_primitives_core::CollectCollationInfo<Block> for Runtime {
 		fn collect_collation_info(header: &<Block as BlockT>::Header) -> cumulus_primitives_core::CollationInfo {
 			ParachainSystem::collect_collation_info(header)
-		}
-	}
-
-	impl pallet_fee_market_rpc_runtime_api::FeeMarketApi<Block, Balance> for Runtime {
-		fn market_fee() -> Option<pallet_fee_market_rpc_runtime_api::Fee<Balance>> {
-			Default::default()
-		}
-		fn in_process_orders() -> pallet_fee_market_rpc_runtime_api::InProcessOrders {
-			Default::default()
 		}
 	}
 
