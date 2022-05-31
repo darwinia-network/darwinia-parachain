@@ -60,7 +60,7 @@ pub type RingBalance<T> = <<T as Config>::RingCurrency as Currency<AccountId<T>>
 /// The parameters box for the pallet runtime call.
 #[derive(Encode, Decode, Debug, PartialEq, Eq, Clone)]
 pub enum CallParams<T: Config> {
-	#[codec(index = 2)]
+	#[codec(index = 1)]
 	S2sBackingPalletUnlockFromRemote(RingBalance<T>, AccountId<T>),
 }
 /// Creating a concrete message payload which would be relay to target chain.
