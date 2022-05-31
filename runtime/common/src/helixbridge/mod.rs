@@ -196,8 +196,8 @@ pub mod pallet {
 	impl<T: Config> Pallet<T> {
 		/// Handle relay message sent from the source backing pallet with relay message
 		#[pallet::weight(
-            <T as Config>::WeightInfo::issue_from_remote()
-        )]
+			<T as Config>::WeightInfo::issue_from_remote()
+		)]
 		#[transactional]
 		pub fn issue_from_remote(
 			origin: OriginFor<T>,
@@ -233,8 +233,8 @@ pub mod pallet {
 		}
 
 		#[pallet::weight(
-            <T as Config>::WeightInfo::burn_and_remote_unlock()
-        )]
+			<T as Config>::WeightInfo::burn_and_remote_unlock()
+		)]
 		#[transactional]
 		pub fn burn_and_remote_unlock(
 			origin: OriginFor<T>,
@@ -296,8 +296,8 @@ pub mod pallet {
 		}
 
 		#[pallet::weight(
-            <T as Config>::WeightInfo::set_remote_backing_account()
-        )]
+			<T as Config>::WeightInfo::set_remote_backing_account()
+		)]
 		pub fn set_remote_backing_account(
 			origin: OriginFor<T>,
 			account: AccountId<T>,
@@ -323,8 +323,8 @@ pub mod pallet {
 		}
 
 		#[pallet::weight(
-            <T as Config>::WeightInfo::set_security_limitation_ring_amount()
-        )]
+			<T as Config>::WeightInfo::set_security_limitation_ring_amount()
+		)]
 		pub fn set_security_limitation_ring_amount(
 			origin: OriginFor<T>,
 			limitation: RingBalance<T>,
@@ -366,10 +366,6 @@ pub mod pallet {
 		InsufficientBalance,
 		/// Message nonce duplicated.
 		NonceDuplicated,
-		/// Unsupported token
-		UnsupportedToken,
-		/// Invalid recipient
-		InvalidRecipient,
 		/// Backing not configured
 		BackingAccountNone,
 		/// Issue value overflow

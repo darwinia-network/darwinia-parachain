@@ -18,9 +18,6 @@
 
 use crate::helixbridge::{mock::*, *};
 
-// --- std ---
-use std::str::FromStr;
-
 // --- paritytech ---
 use frame_support::{assert_err, assert_ok};
 use frame_system::RawOrigin;
@@ -28,14 +25,12 @@ use frame_system::RawOrigin;
 #[test]
 fn issue_from_remote_backing_not_configured() {
 	new_test_ext().execute_with(|| {
-		let token_address = H160::zero();
-		let (recipient, recipient_vec) = build_account(10);
+		let (recipient, _recipient_vec) = build_account(10);
 		assert_err!(
 			S2sIssuing::issue_from_remote(
 				Origin::signed(build_account(1).0),
-				token_address,
-				U256::from(1u128),
-				recipient_vec,
+				1u64,
+				recipient.clone(),
 			),
 			<Error<Test>>::BackingAccountNone
 		);
@@ -46,8 +41,7 @@ fn issue_from_remote_backing_not_configured() {
 #[test]
 fn issue_from_remote_backing_remote_sender_invalid() {
 	new_test_ext().execute_with(|| {
-		let token_address = H160::zero();
-		let (recipient, recipient_vec) = build_account(10);
+		let (recipient, _recipient_vec) = build_account(10);
 		let (remote_backing_account, _) = build_account(3);
 		assert_ok!(S2sIssuing::set_remote_backing_account(
 			RawOrigin::Root.into(),
@@ -56,9 +50,8 @@ fn issue_from_remote_backing_remote_sender_invalid() {
 		assert_err!(
 			S2sIssuing::issue_from_remote(
 				Origin::signed(build_account(1).0),
-				token_address,
-				U256::from(1u128),
-				recipient_vec,
+				1u64,
+				recipient.clone(),
 			),
 			BadOrigin
 		);
@@ -67,35 +60,9 @@ fn issue_from_remote_backing_remote_sender_invalid() {
 }
 
 #[test]
-fn issue_from_remote_backing_token_address_invalid() {
-	new_test_ext().execute_with(|| {
-		let token_address = H160::zero();
-		let (recipient, recipient_vec) = build_account(10);
-		let (remote_backing_account, _) = build_account(3);
-		let drived_remote_backing_account =
-			S2sIssuing::derived_backing_id(remote_backing_account.clone());
-		assert_ok!(S2sIssuing::set_remote_backing_account(
-			RawOrigin::Root.into(),
-			remote_backing_account.clone()
-		));
-		assert_err!(
-			S2sIssuing::issue_from_remote(
-				Origin::signed(drived_remote_backing_account.clone()),
-				token_address,
-				U256::from(1u128),
-				recipient_vec,
-			),
-			<Error<Test>>::UnsupportedToken
-		);
-		assert_eq!(Balances::free_balance(recipient), 0);
-	});
-}
-
-#[test]
 fn issue_from_remote_backing_success() {
 	new_test_ext().execute_with(|| {
-		let token_address = H160::from_str("1000000000000000000000000000000000000001").unwrap();
-		let (recipient, recipient_vec) = build_account(10);
+		let (recipient, _recipient_vec) = build_account(10);
 		let (remote_backing_account, _) = build_account(3);
 		let drived_remote_backing_account =
 			S2sIssuing::derived_backing_id(remote_backing_account.clone());
@@ -105,9 +72,8 @@ fn issue_from_remote_backing_success() {
 		));
 		assert_ok!(S2sIssuing::issue_from_remote(
 			Origin::signed(drived_remote_backing_account.clone()),
-			token_address,
-			U256::from(1024u128),
-			recipient_vec,
+			1024u64,
+			recipient.clone(),
 		));
 		assert_eq!(Balances::free_balance(recipient), 1024_000_000_000);
 	});

@@ -17,8 +17,6 @@
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 //
 
-// --- std ---
-use std::str::FromStr;
 // --- paritytech ---
 use bp_messages::source_chain::SendMessageArtifacts;
 use frame_support::{
@@ -38,13 +36,13 @@ use crate::helixbridge::{
 };
 
 type Block = MockBlock<Test>;
-type SignedExtra = (frame_system::CheckSpecVersion<Test>,);
-type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test, (), SignedExtra>;
+//type SignedExtra = (frame_system::CheckSpecVersion<Test>,);
+type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test, (), ()>;
 type Balance = u64;
 
 pub fn build_account(x: u8) -> (AccountId32, Vec<u8>) {
 	let origin = [x; 32];
-	(AccountId32::decode(&mut &origin.clone()[..]).unwrap_or_default(), origin.to_vec())
+	(AccountId32::decode(&mut &origin.clone()[..]).unwrap(), origin.to_vec())
 }
 
 frame_support::parameter_types! {
@@ -105,8 +103,7 @@ frame_support::parameter_types! {
 	pub const PangolinChainId: bp_runtime::ChainId = *b"pagl";
 	pub PangolinName: Vec<u8> = (b"Pangolin").to_vec();
 	pub MessageLaneId: [u8; 4] = *b"ptol";
-	pub RingAddress: H160 = H160::from_str("1000000000000000000000000000000000000001").unwrap();
-	pub RelativeDecimals: u128 = 1_000_000_000u128;
+	pub DecimalsDifference: Balance = 1_000_000_000;
 }
 
 pub struct AccountIdConverter;
@@ -138,14 +135,14 @@ impl MessagesBridge<AccountId<Test>, Balance, ()> for MockMessagesBridge {
 	}
 }
 
-impl<AccountId, Signer, Signature> CreatePayload<AccountId, Signer, Signature> for () {
+impl<AccountId, Signer, Signature> CreatePayload<AccountId, Signer, Signature, Test> for () {
 	type Payload = ();
 
 	fn create(
 		_: CallOrigin<AccountId, Signer, Signature>,
 		_: u32,
 		_: u64,
-		_: CallParams,
+		_: CallParams<Test>,
 		_: DispatchFeePayment,
 	) -> Result<Self::Payload, &'static str> {
 		Ok(())
@@ -156,14 +153,13 @@ impl Config for Test {
 	type BackingChainName = PangolinName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
+	type DecimalsDifference = DecimalsDifference;
 	type Event = ();
 	type MessageLaneId = MessageLaneId;
 	type MessageNoncer = MockS2sMessageSender;
 	type MessagesBridge = MockMessagesBridge;
 	type OutboundPayloadCreator = ();
 	type PalletId = S2sRelayPalletId;
-	type RelativeDecimals = RelativeDecimals;
-	type RingAddress = RingAddress;
 	type RingCurrency = Balances;
 	type WeightInfo = ();
 }
@@ -174,10 +170,10 @@ frame_support::construct_runtime! {
 		NodeBlock = Block,
 		UncheckedExtrinsic = UncheckedExtrinsic,
 	{
-		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
-		Timestamp: pallet_timestamp::{Pallet, Call, Inherent, Storage},
-		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
-		S2sIssuing: s2s_issuing::{Pallet, Call, Storage, Config<T>, Event<T>},
+		System: frame_system::{Pallet, Call, Config, Storage, Event<T>} = 0,
+		Timestamp: pallet_timestamp::{Pallet, Call, Inherent, Storage} = 1,
+		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>} = 2,
+		S2sIssuing: s2s_issuing::{Pallet, Call, Storage, Config<T>, Event<T>} = 3,
 	}
 }
 
@@ -186,7 +182,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 
 	s2s_issuing::GenesisConfig::<Test> {
 		secure_limited_period: 10,
-		secure_limited_ring_amount: 1_000_000,
+		secure_limited_ring_amount: 1_000_000_000_000_000,
 	}
 	.assimilate_storage(&mut storage)
 	.unwrap();
