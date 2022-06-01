@@ -13,6 +13,7 @@ use xcm_builder::*;
 use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
 // --- darwinia-network ---
 use crate::*;
+use dc_common_runtime::xcm_config::{DenyReserveTransferToRelayChain, DenyThenTry};
 
 /// Converts a local signed origin into an XCM multilocation.
 /// Forms the basis for local origins sending/executing XCMs.
@@ -41,16 +42,19 @@ pub type XcmRouter = (
 	XcmpQueue,
 );
 
-pub type Barrier = (
-	TakeWeightCredit,
-	AllowTopLevelPaidExecutionFrom<Everything>,
-	// Parent and its plurality get free execution
-	AllowUnpaidExecutionFrom<ParentOrParentsExecutivePlurality>,
-	// Expected responses are OK.
-	AllowKnownQueryResponses<PolkadotXcm>,
-	// Subscriptions for version tracking are OK.
-	AllowSubscriptionsFrom<ParentOrSiblings>,
-);
+pub type Barrier = DenyThenTry<
+	DenyReserveTransferToRelayChain,
+	(
+		TakeWeightCredit,
+		AllowTopLevelPaidExecutionFrom<Everything>,
+		// Parent and its exec plurality get free execution
+		AllowUnpaidExecutionFrom<ParentOrParentsExecutivePlurality>,
+		// Expected responses are OK.
+		AllowKnownQueryResponses<PolkadotXcm>,
+		// Subscriptions for version tracking are OK.
+		AllowSubscriptionsFrom<ParentOrSiblings>,
+	),
+>;
 
 /// Type for specifying how a `MultiLocation` can be converted into an `AccountId`. This is used
 /// when determining ownership of accounts for asset transacting and when attempting to use XCM
