@@ -3,8 +3,8 @@ use cumulus_pallet_parachain_system::ParachainSetCode;
 use frame_support::{
 	traits::{ConstU32, Everything},
 	weights::{
-		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
-		DispatchClass, Weight,
+		constants::WEIGHT_PER_SECOND, DispatchClass, Weight, WeightToFeeCoefficient,
+		WeightToFeeCoefficients, WeightToFeePolynomial,
 	},
 };
 use frame_system::{
@@ -19,6 +19,7 @@ use sp_runtime::{
 use sp_version::RuntimeVersion;
 // --- darwinia-network ---
 use crate::{weights::frame_system::WeightInfo, *};
+use dc_common_runtime::weights::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight};
 
 /// We assume that ~5% of the block weight is consumed by `on_initialize` handlers. This is
 /// used to limit the maximal weight of a single extrinsic.
