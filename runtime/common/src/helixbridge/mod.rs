@@ -47,7 +47,7 @@ use frame_system::{ensure_signed, RawOrigin};
 use sp_core::H256;
 use sp_runtime::{
 	traits::{AccountIdConversion, BadOrigin, CheckedDiv, CheckedMul, Convert, Saturating, Zero},
-	DispatchErrorWithPostInfo, MultiSignature, MultiSigner,
+	DispatchErrorWithPostInfo, MultiSignature, MultiSigner, SaturatedConversion,
 };
 use sp_std::{str, vec, vec::Vec};
 
@@ -131,7 +131,7 @@ pub mod pallet {
 
 		/// The local token decimals.
 		#[pallet::constant]
-		type DecimalsDifference: Get<RingBalance<Self>>;
+		type DecimalMultiplier: Get<u128>;
 
 		type MessagesBridge: MessagesBridge<
 			Self::AccountId,
@@ -214,7 +214,7 @@ pub mod pallet {
 			}
 
 			let value = value
-				.checked_mul(&T::DecimalsDifference::get())
+				.checked_mul(&T::DecimalMultiplier::get().saturated_into())
 				.ok_or(<Error<T>>::ValueOverFlow)?;
 
 			// Make sure the total transfer is less than the security limitation
@@ -263,7 +263,7 @@ pub mod pallet {
 
 			// Send to the target chain
 			let remote_amount = value
-				.checked_div(&T::DecimalsDifference::get())
+				.checked_div(&T::DecimalMultiplier::get().saturated_into())
 				.ok_or(<Error<T>>::ValueOverFlow)?;
 
 			let payload = T::OutboundPayloadCreator::create(

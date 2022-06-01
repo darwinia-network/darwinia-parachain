@@ -45,18 +45,18 @@ impl CreatePayload<AccountId, AccountPublic, Signature, Runtime> for ToPangoroOu
 }
 
 frame_support::parameter_types! {
+	pub const BridgePangolinLaneId: LaneId = PANGOLIN_PANGOLIN_PARACHAIN_LANE;
+	pub const DecimalMultiplier: u128 = 1_000_000_000u128;
 	pub const ParachainIssuingPalletId: PalletId = PalletId(*b"da/paais");
 	pub const PangolinChainId: ChainId = PANGOLIN_CHAIN_ID;
-	pub const BridgePangolinLaneId: LaneId = PANGOLIN_PANGOLIN_PARACHAIN_LANE;
 	pub BackingChainName: ChainName = (b"Pangolin").to_vec();
-	pub DecimalsDifference: Balance = 1_000_000_000u128;
 }
 
 impl Config for Runtime {
 	type BackingChainName = BackingChainName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
-	type DecimalsDifference = DecimalsDifference;
+	type DecimalMultiplier = DecimalMultiplier;
 	type Event = Event;
 	type MessageLaneId = BridgePangolinLaneId;
 	type MessageNoncer = ToPangoroMessageSender;
