@@ -18,6 +18,8 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
+pub mod weights;
+
 // --- core ---
 use core::marker::PhantomData;
 // --- paritytech ---
