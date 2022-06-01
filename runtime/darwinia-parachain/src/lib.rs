@@ -20,6 +20,8 @@
 #![recursion_limit = "256"]
 
 pub mod pallets;
+pub mod weights;
+
 pub use pallets::*;
 
 // pub mod weights;
