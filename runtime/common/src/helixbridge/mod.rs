@@ -340,8 +340,7 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
-		/// TokenBurnAndRemoteUnlocked \[lane_id, message_nonce, token address, sender, recipient,
-		/// amount\]
+		/// TokenBurnAndRemoteUnlocked \[lane_id, message_nonce, sender, recipient, amount\]
 		TokenBurnAndRemoteUnlocked(
 			LaneId,
 			MessageNonce,
@@ -349,7 +348,7 @@ pub mod pallet {
 			AccountId<T>,
 			RingBalance<T>,
 		),
-		/// [backing_address, mapping_token, recipient, amount]
+		/// [recipient, amount]
 		TokenIssued(AccountId<T>, RingBalance<T>),
 		/// Update remote backing address \[account\]
 		RemoteBackingAccountUpdated(AccountId<T>),
