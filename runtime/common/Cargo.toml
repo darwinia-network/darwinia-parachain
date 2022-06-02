@@ -28,7 +28,8 @@ pallet-balances            = { default-features = false, git = "https://github.c
 pallet-transaction-payment = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }
 sp-runtime                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }
 sp-std                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }
-
+# polkadot
+xcm = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
 
 [features]
 default = ["std"]
