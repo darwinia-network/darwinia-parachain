@@ -68,7 +68,7 @@ std = [
 	"pallet-transaction-payment/std",
 	"sp-runtime/std",
 	"sp-std/std",
-
+	"sp-core/std",
 ]
 
 runtime-benchmarks = ["frame-benchmarking"]
