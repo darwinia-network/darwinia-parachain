@@ -48,11 +48,11 @@ serde        = { version = "1.0", features = ["derive"] }
 tempfile     = { version = "3.2" }
 
 # parachain
-crab-parachain-runtime     = { path = "runtime/crab-parachain" }
-darwinia-parachain-runtime = { path = "runtime/darwinia-parachain" }
-dc-primitives              = { path = "primitives" }
-dc-rpc                     = { path = "rpc" }
-pangolin-parachain-runtime = { path = "runtime/pangolin-parachain" }
+crab-parachain-runtime            = { path = "runtime/crab-parachain" }
+darwinia-parachain-runtime        = { path = "runtime/darwinia-parachain" }
+dc-primitives                     = { path = "primitives" }
+dc-rpc                            = { path = "rpc" }
+pangolin-parachain-runtime        = { path = "runtime/pangolin-parachain" }
 
 # substrate
 frame-benchmarking             = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }
