@@ -32,8 +32,7 @@ impl Config<WithPangolinMessages> for Runtime {
 	type MaxMessagesToPruneAtOnce = MaxMessagesToPruneAtOnce;
 	type MaxUnconfirmedMessagesAtInboundLane = MaxUnconfirmedMessagesAtInboundLane;
 	type MaxUnrewardedRelayerEntriesAtInboundLane = MaxUnrewardedRelayerEntriesAtInboundLane;
-	type MessageDeliveryAndDispatchPayment =
-		FeeMarketPayment<Self, WithPangolinFeeMarket, Ring, RootAccountForPayments>;
+	type MessageDeliveryAndDispatchPayment = FeeMarketPayment<Self, WithPangolinFeeMarket, Ring>;
 	type MessageDispatch = bm_pangolin::FromPangolinMessageDispatch;
 	type OnDeliveryConfirmed = (FeeMarketMessageConfirmedHandler<Self, WithPangolinFeeMarket>,);
 	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self, WithPangolinFeeMarket>;

@@ -100,8 +100,9 @@ impl ChainWithMessages for CrabParachain {
 }
 impl ThisChainWithMessages for CrabParachain {
 	type Call = Call;
+	type Origin = Origin;
 
-	fn is_outbound_lane_enabled(lane: &LaneId) -> bool {
+	fn is_message_accepted(send_origin: &Self::Origin, lane: &LaneId) -> bool {
 		*lane == CRAB_CRAB_PARACHAIN_LANE
 	}
 

@@ -194,17 +194,16 @@ dependencies = [
 
 [[package]]
 name = "async-global-executor"
-version = "2.0.4"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c290043c9a95b05d45e952fb6383c67bcb61471f60cfa21e890dba6654234f43"
+checksum = "fd8b508d585e01084059b60f06ade4cb7415cd2e4084b71dd1cb44e7d3fb9880"
 dependencies = [
  "async-channel",
  "async-executor",
  "async-io",
- "async-mutex",
+ "async-lock",
  "blocking",
  "futures-lite",
- "num_cpus",
  "once_cell",
 ]
 
@@ -232,15 +231,6 @@ name = "async-lock"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e97a171d191782fba31bb902b14ad94e24a68145032b7eedf871ab0bc0d077b6"
-dependencies = [
- "event-listener",
-]
-
-[[package]]
-name = "async-mutex"
-version = "1.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "479db852db25d9dbf6204e6cb6253698f175c15726470f78af0d918e99d6156e"
 dependencies = [
  "event-listener",
 ]
@@ -312,9 +302,9 @@ checksum = "30696a84d817107fc028e049980e09d5e140e8da8f1caeb17e8e950658a3cea9"
 
 [[package]]
 name = "async-trait"
-version = "0.1.53"
+version = "0.1.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed6aa3524a2dfcf9fe180c51eae2b58738348d819517ceadf95789c51fff7600"
+checksum = "96cf8829f67d2eab0b2dfa42c5d0ef737e0724e4a82b01b3e292456202b19716"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -440,9 +430,9 @@ checksum = "dea908e7347a8c64e378c17e30ef880ad73e3b4498346b055c2c00ea342f3179"
 
 [[package]]
 name = "beef"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bed554bd50246729a1ec158d08aa3235d1b69d94ad120ebe187e28894787e736"
+checksum = "3a8241f3ebb85c056b509d4327ad0358fbbba6ffb340bf388f26350aeda225b1"
 dependencies = [
  "serde",
 ]
@@ -459,7 +449,7 @@ dependencies = [
  "hex",
  "log",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-chain-spec",
  "sc-client-api",
  "sc-finality-grandpa",
@@ -494,7 +484,7 @@ dependencies = [
  "jsonrpc-pubsub",
  "log",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-rpc",
  "sc-utils",
  "serde",
@@ -727,7 +717,7 @@ dependencies = [
 [[package]]
 name = "bp-crab"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-darwinia-core",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -742,7 +732,7 @@ dependencies = [
 [[package]]
 name = "bp-crab-parachain"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-darwinia-core",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -757,7 +747,7 @@ dependencies = [
 [[package]]
 name = "bp-darwinia-core"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -773,7 +763,7 @@ dependencies = [
 [[package]]
 name = "bp-header-chain"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
  "finality-grandpa",
@@ -807,7 +797,7 @@ dependencies = [
 [[package]]
 name = "bp-message-dispatch"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
  "frame-support",
@@ -831,7 +821,7 @@ dependencies = [
 [[package]]
 name = "bp-messages"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bitvec",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -865,7 +855,7 @@ dependencies = [
 [[package]]
 name = "bp-pangolin"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-darwinia-core",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -880,7 +870,7 @@ dependencies = [
 [[package]]
 name = "bp-pangolin-parachain"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-darwinia-core",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -895,7 +885,7 @@ dependencies = [
 [[package]]
 name = "bp-polkadot-core"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -950,7 +940,7 @@ dependencies = [
 [[package]]
 name = "bp-runtime"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "frame-support",
  "hash-db",
@@ -986,7 +976,7 @@ dependencies = [
 [[package]]
 name = "bp-test-utils"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-header-chain 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
  "ed25519-dalek",
@@ -1031,7 +1021,7 @@ dependencies = [
 [[package]]
 name = "bridge-runtime-common"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -1107,9 +1097,9 @@ dependencies = [
 
 [[package]]
 name = "bumpalo"
-version = "3.9.1"
+version = "3.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a4a45a46ab1f2412e53d3a0ade76ffad2025804294569aae387231a0cd6e0899"
+checksum = "37ccbd214614c6783386c1af30caf03192f17891059cecc394b4fb119e363de3"
 
 [[package]]
 name = "byte-slice-cast"
@@ -1298,9 +1288,9 @@ dependencies = [
 
 [[package]]
 name = "clang-sys"
-version = "1.3.2"
+version = "1.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf6b561dcf059c85bbe388e0a7b0a1469acb3934cc0cfa148613a830629e3049"
+checksum = "5a050e2153c5be08febd6734e29298e844fdb0fa21aeddd63b4eb7baa106c69b"
 dependencies = [
  "glob",
  "libc",
@@ -1760,7 +1750,7 @@ dependencies = [
  "cumulus-relay-chain-interface",
  "futures 0.3.21",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "polkadot-node-primitives",
  "polkadot-node-subsystem",
  "polkadot-overseer",
@@ -1833,7 +1823,7 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-relay-chain-interface",
  "futures 0.3.21",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-client-api",
  "sc-consensus",
  "sp-api",
@@ -1858,7 +1848,7 @@ dependencies = [
  "futures 0.3.21",
  "futures-timer",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "polkadot-node-primitives",
  "polkadot-parachain",
  "polkadot-primitives",
@@ -1908,7 +1898,7 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-relay-chain-interface",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "polkadot-overseer",
  "polkadot-primitives",
  "sc-chain-spec",
@@ -2118,7 +2108,7 @@ dependencies = [
  "cumulus-relay-chain-interface",
  "futures 0.3.21",
  "futures-timer",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "polkadot-client",
  "polkadot-service",
  "sc-client-api",
@@ -2147,7 +2137,7 @@ dependencies = [
  "futures 0.3.21",
  "jsonrpsee-core",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "polkadot-overseer",
  "polkadot-service",
  "sc-client-api",
@@ -2173,7 +2163,7 @@ dependencies = [
  "futures-timer",
  "jsonrpsee",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "polkadot-service",
  "sc-client-api",
  "sc-rpc-api",
@@ -2397,6 +2387,7 @@ dependencies = [
  "sp-runtime",
  "sp-std",
  "xcm",
+ "xcm-executor",
 ]
 
 [[package]]
@@ -2894,13 +2885,11 @@ checksum = "279fb028e20b3c4c320317955b77c5e0c9701f05a1d309905d6fc702cdc5053e"
 
 [[package]]
 name = "flate2"
-version = "1.0.23"
+version = "1.0.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b39522e96686d38f4bc984b9198e3a0613264abaebaff2c5c918bfa6b6da09af"
+checksum = "f82b0f4c27ad9f8bfd1f3208d882da2b09c301bc1c828fd3a00d0216d2fbbff6"
 dependencies = [
- "cfg-if 1.0.0",
  "crc32fast",
- "libc",
  "libz-sys",
  "miniz_oxide",
 ]
@@ -3649,9 +3638,9 @@ checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
 
 [[package]]
 name = "hyper"
-version = "0.14.18"
+version = "0.14.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b26ae0a80afebe130861d90abf98e3814a4f28a4c6ffeb5ab8ebb2be311e0ef2"
+checksum = "42dc3c131584288d375f2d07f822b0cb012d8c6fb899a5b9fdb3cb7eb9b6004f"
 dependencies = [
  "bytes 1.1.0",
  "futures-channel",
@@ -3803,9 +3792,9 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "1.8.1"
+version = "1.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f647032dfaa1f8b6dc29bd3edb7bbef4861b8b8007ebb118d6db284fd59f6ee"
+checksum = "e6012d540c5baa3589337a98ce73408de9b5a25ec9fc2c6fd6be8f0d39e0ca5a"
 dependencies = [
  "autocfg",
  "hashbrown 0.11.2",
@@ -4318,7 +4307,7 @@ checksum = "ece7e668abd21387aeb6628130a6f4c802787f014fa46bc83221448322250357"
 dependencies = [
  "kvdb",
  "parity-util-mem",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
 ]
 
 [[package]]
@@ -4333,7 +4322,7 @@ dependencies = [
  "num_cpus",
  "owning_ref",
  "parity-util-mem",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "regex",
  "rocksdb",
  "smallvec",
@@ -4921,9 +4910,9 @@ dependencies = [
 
 [[package]]
 name = "libz-sys"
-version = "1.1.6"
+version = "1.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92e7e15d7610cce1d9752e137625f14e61a28cd45929b6e12e47b50fe154ee2e"
+checksum = "9702761c3935f8cc2f101793272e202c72b99da8f4224a19ddcf1279a6450bbf"
 dependencies = [
  "cc",
  "pkg-config",
@@ -5090,9 +5079,9 @@ dependencies = [
 
 [[package]]
 name = "memmap2"
-version = "0.5.3"
+version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "057a3db23999c867821a7a59feb06a578fcb03685e983dff90daf9e7d24ac08f"
+checksum = "d5172b50c23043ff43dd53e51392f36519d9b35a8f3a410d30ece5d1aedd58ae"
 dependencies = [
  "libc",
 ]
@@ -5178,9 +5167,9 @@ checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
 
 [[package]]
 name = "miniz_oxide"
-version = "0.5.1"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2b29bd4bc3f33391105ebee3589c19197c4271e3e5a9ec9bfe8127eeff8f082"
+checksum = "6f5c75688da582b8ffc1f1799e9db273f32133c49e048f614d22ec3256773ccc"
 dependencies = [
  "adler",
 ]
@@ -5758,7 +5747,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-dispatch"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -5792,7 +5781,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-grandpa"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bp-header-chain 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
  "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -5837,7 +5826,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-messages"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bitvec",
  "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -5993,7 +5982,7 @@ dependencies = [
 [[package]]
 name = "pallet-fee-market"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#9be5fae118dcdc181204b9bd0275ef6b33ee8cf2"
+source = "git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19#a1a74ff026b4d1cc3e5ca75b68e9e33f054eaf14"
 dependencies = [
  "bitvec",
  "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-bridges-substrate?branch=polkadot-v0.9.19)",
@@ -6733,7 +6722,7 @@ dependencies = [
  "impl-trait-for-tuples",
  "lru 0.7.6",
  "parity-util-mem-derive",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "primitive-types",
  "smallvec",
  "winapi 0.3.9",
@@ -6802,9 +6791,9 @@ dependencies = [
 
 [[package]]
 name = "parking_lot"
-version = "0.12.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87f5ec2493a61ac0506c0f4199f99070cbe83857b0337006a30f3e6719b8ef58"
+checksum = "3742b2c103b9f06bc9fff0a37ff4912935851bee6d36f3c02bcc755bcfec228f"
 dependencies = [
  "lock_api",
  "parking_lot_core 0.9.3",
@@ -6924,9 +6913,9 @@ dependencies = [
 
 [[package]]
 name = "petgraph"
-version = "0.6.0"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a13a2fa9d0b63e5f22328828741e523766fff0ee9e779316902290dff3f824f"
+checksum = "e6d5014253a1331579ce62aa67443b4a658c5e7dd03d4bc6d302b94474888143"
 dependencies = [
  "fixedbitset",
  "indexmap",
@@ -7248,7 +7237,7 @@ dependencies = [
  "async-trait",
  "futures 0.3.21",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "polkadot-node-network-protocol",
  "polkadot-node-subsystem",
  "polkadot-node-subsystem-util",
@@ -7536,7 +7525,7 @@ dependencies = [
  "log",
  "mick-jaeger",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "polkadot-node-primitives",
  "polkadot-primitives",
  "sc-network",
@@ -7674,7 +7663,7 @@ dependencies = [
  "futures-timer",
  "lru 0.7.6",
  "parity-util-mem",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "polkadot-node-metrics",
  "polkadot-node-network-protocol",
  "polkadot-node-primitives",
@@ -8259,7 +8248,7 @@ dependencies = [
  "fnv",
  "lazy_static",
  "memchr",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "thiserror",
 ]
 
@@ -8988,7 +8977,7 @@ version = "4.0.0-dev"
 source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
 dependencies = [
  "impl-trait-for-tuples",
- "memmap2 0.5.3",
+ "memmap2 0.5.4",
  "parity-scale-codec",
  "sc-chain-spec-derive",
  "sc-network",
@@ -9058,7 +9047,7 @@ dependencies = [
  "hash-db",
  "log",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-executor",
  "sc-transaction-pool-api",
  "sc-utils",
@@ -9089,7 +9078,7 @@ dependencies = [
  "log",
  "parity-db",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-client-api",
  "sc-state-db",
  "sp-arithmetic",
@@ -9111,7 +9100,7 @@ dependencies = [
  "futures-timer",
  "libp2p",
  "log",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-client-api",
  "sc-utils",
  "serde",
@@ -9168,7 +9157,7 @@ dependencies = [
  "num-rational 0.2.4",
  "num-traits",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "rand 0.7.3",
  "retain_mut",
  "sc-client-api",
@@ -9278,7 +9267,7 @@ dependencies = [
  "lazy_static",
  "lru 0.7.6",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-executor-common",
  "sc-executor-wasmi",
  "sc-executor-wasmtime",
@@ -9363,7 +9352,7 @@ dependencies = [
  "hex",
  "log",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "rand 0.8.5",
  "sc-block-builder",
  "sc-chain-spec",
@@ -9436,7 +9425,7 @@ source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#17
 dependencies = [
  "async-trait",
  "hex",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "serde_json",
  "sp-application-crypto",
  "sp-core",
@@ -9467,7 +9456,7 @@ dependencies = [
  "log",
  "lru 0.7.6",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "pin-project 1.0.10",
  "prost",
  "prost-build",
@@ -9525,7 +9514,7 @@ dependencies = [
  "num_cpus",
  "once_cell",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "rand 0.7.3",
  "sc-client-api",
  "sc-network",
@@ -9571,7 +9560,7 @@ dependencies = [
  "jsonrpc-pubsub",
  "log",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-block-builder",
  "sc-chain-spec",
  "sc-client-api",
@@ -9603,7 +9592,7 @@ dependencies = [
  "jsonrpc-pubsub",
  "log",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-chain-spec",
  "sc-transaction-pool-api",
  "scale-info",
@@ -9650,7 +9639,7 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "parity-util-mem",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "pin-project 1.0.10",
  "rand 0.7.3",
  "sc-block-builder",
@@ -9707,7 +9696,7 @@ dependencies = [
  "parity-scale-codec",
  "parity-util-mem",
  "parity-util-mem-derive",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sc-client-api",
  "sp-core",
 ]
@@ -9742,7 +9731,7 @@ dependencies = [
  "futures 0.3.21",
  "libp2p",
  "log",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "pin-project 1.0.10",
  "rand 0.7.3",
  "serde",
@@ -9763,7 +9752,7 @@ dependencies = [
  "libc",
  "log",
  "once_cell",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "regex",
  "rustc-hash",
  "sc-client-api",
@@ -9804,7 +9793,7 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "parity-util-mem",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "retain_mut",
  "sc-client-api",
  "sc-transaction-pool-api",
@@ -9842,7 +9831,7 @@ dependencies = [
  "futures-timer",
  "lazy_static",
  "log",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "prometheus",
 ]
 
@@ -10412,7 +10401,7 @@ dependencies = [
  "log",
  "lru 0.7.6",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "sp-api",
  "sp-consensus",
  "sp-database",
@@ -10530,7 +10519,7 @@ dependencies = [
  "num-traits",
  "parity-scale-codec",
  "parity-util-mem",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "primitive-types",
  "rand 0.7.3",
  "regex",
@@ -10584,7 +10573,7 @@ version = "4.0.0-dev"
 source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
 dependencies = [
  "kvdb",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
 ]
 
 [[package]]
@@ -10650,7 +10639,7 @@ dependencies = [
  "libsecp256k1",
  "log",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "secp256k1",
  "sp-core",
  "sp-externalities",
@@ -10685,7 +10674,7 @@ dependencies = [
  "futures 0.3.21",
  "merlin",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "schnorrkel",
  "serde",
  "sp-core",
@@ -10840,7 +10829,7 @@ dependencies = [
  "log",
  "num-traits",
  "parity-scale-codec",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "rand 0.7.3",
  "smallvec",
  "sp-core",
@@ -11012,9 +11001,9 @@ dependencies = [
 
 [[package]]
 name = "ss58-registry"
-version = "1.20.0"
+version = "1.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e1e7c268f5610088463d23188fc9e764cda491784360e5e4ea3a8ce1e0e2ac9"
+checksum = "5d804c8d48aeab838be31570866fce1130d275b563d49af08b4927a0bd561e7c"
 dependencies = [
  "Inflector",
  "num-format",
@@ -11228,9 +11217,9 @@ checksum = "6bdef32e8150c2a081110b42772ffe7d7c9032b606bc226c8260fd97e0976601"
 
 [[package]]
 name = "syn"
-version = "1.0.95"
+version = "1.0.96"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbaf6116ab8924f39d52792136fb74fd60a80194cf1b1c6ffa6453eef1c3f942"
+checksum = "0748dd251e24453cb8717f0354206b91557e4ec8703673a4b30208f2abaf1ebf"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -11414,9 +11403,9 @@ checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
 
 [[package]]
 name = "tokio"
-version = "1.18.2"
+version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4903bf0427cf68dddd5aa6a93220756f8be0c34fcfa9f5e6191e103e15a31395"
+checksum = "0f392c8f16bda3456c0b00c6de39cb100449b98de55ac41c6cdd2bfcf53a1245"
 dependencies = [
  "bytes 1.1.0",
  "libc",
@@ -11424,7 +11413,7 @@ dependencies = [
  "mio 0.8.3",
  "num_cpus",
  "once_cell",
- "parking_lot 0.12.0",
+ "parking_lot 0.12.1",
  "pin-project-lite 0.2.9",
  "signal-hook-registry",
  "socket2 0.4.4",

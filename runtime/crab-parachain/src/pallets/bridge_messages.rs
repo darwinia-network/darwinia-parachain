@@ -32,8 +32,7 @@ impl Config<WithCrabMessages> for Runtime {
 	type MaxMessagesToPruneAtOnce = MaxMessagesToPruneAtOnce;
 	type MaxUnconfirmedMessagesAtInboundLane = MaxUnconfirmedMessagesAtInboundLane;
 	type MaxUnrewardedRelayerEntriesAtInboundLane = MaxUnrewardedRelayerEntriesAtInboundLane;
-	type MessageDeliveryAndDispatchPayment =
-		FeeMarketPayment<Self, WithCrabFeeMarket, Ring, RootAccountForPayments>;
+	type MessageDeliveryAndDispatchPayment = FeeMarketPayment<Self, WithCrabFeeMarket, Ring>;
 	type MessageDispatch = bm_crab::FromCrabMessageDispatch;
 	type OnDeliveryConfirmed = (FeeMarketMessageConfirmedHandler<Self, WithCrabFeeMarket>,);
 	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self, WithCrabFeeMarket>;
