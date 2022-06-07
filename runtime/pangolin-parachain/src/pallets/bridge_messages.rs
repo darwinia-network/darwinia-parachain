@@ -3,6 +3,7 @@ pub use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 // --- darwinia-network ---
 use crate::{weights::pallet_bridge_messages::WeightInfo, *};
 use bp_messages::MessageNonce;
+use bp_messages::source_chain::SenderOrigin;
 use bp_runtime::{ChainId, PANGOLIN_CHAIN_ID};
 use pallet_bridge_messages::Config;
 use pallet_fee_market::s2s::{
@@ -42,4 +43,14 @@ impl Config<WithPangolinMessages> for Runtime {
 	type SourceHeaderChain = bm_pangolin::Pangolin;
 	type TargetHeaderChain = bm_pangolin::Pangolin;
 	type WeightInfo = WeightInfo<Runtime>;
+}
+
+impl SenderOrigin<crate::AccountId> for crate::Origin {
+	fn linked_account(&self) -> Option<crate::AccountId> {
+		match self.caller {
+			crate::OriginCaller::system(frame_system::RawOrigin::Signed(ref submitter)) =>
+				Some(submitter.clone()),
+			_ => None,
+		}
+	}
 }
