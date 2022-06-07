@@ -11,7 +11,6 @@ version     = "5.2.1"
 
 [dependencies]
 # crates.io
-getrandom = { version = "0.2", features = ["js"] }
 smallvec  = { version = "1.8" }
 # cumulus
 pallet-collator-selection = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.19" }
@@ -30,8 +29,8 @@ pallet-transaction-payment = { default-features = false, git = "https://github.c
 sp-runtime                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }
 sp-std                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }
 # polkadot
-xcm          = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
-xcm-executor = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
+xcm          = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
+xcm-executor = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
 
 [features]
 default = ["std"]
@@ -52,4 +51,7 @@ std = [
 	"pallet-transaction-payment/std",
 	"sp-runtime/std",
 	"sp-std/std",
+	# polkadot
+	"xcm/std",
+	"xcm-executor/std"
 ]
