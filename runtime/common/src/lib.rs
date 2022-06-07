@@ -142,6 +142,8 @@ where
 	B: MessageBridge,
 	R: pallet_fee_market::Config<I>,
 	I: 'static,
+	OriginOf<ThisChain<B>>: Clone
+		+ Into<Result<frame_system::RawOrigin<AccountIdOf<ThisChain<B>>>, OriginOf<ThisChain<B>>>>,
 	AccountIdOf<ThisChain<B>>: Clone + PartialEq,
 	pallet_fee_market::BalanceOf<R, I>: From<BalanceOf<ThisChain<B>>>,
 {
