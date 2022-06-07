@@ -2,10 +2,7 @@
 use cumulus_pallet_parachain_system::ParachainSetCode;
 use frame_support::{
 	traits::{ConstU32, Everything},
-	weights::{
-		constants::WEIGHT_PER_SECOND, DispatchClass, Weight, WeightToFeeCoefficient,
-		WeightToFeeCoefficients, WeightToFeePolynomial,
-	},
+	weights::{constants::WEIGHT_PER_SECOND, DispatchClass, Weight},
 };
 use frame_system::{
 	limits::{BlockLength, BlockWeights},

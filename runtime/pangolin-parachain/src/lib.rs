@@ -314,28 +314,6 @@ sp_api::impl_runtime_apis! {
 				bm_pangolin::WithPangolinMessageBridge,
 			>(lane, begin, end)
 		}
-
-		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
-			BridgePangolinMessages::outbound_latest_received_nonce(lane)
-		}
-
-		fn latest_generated_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
-			BridgePangolinMessages::outbound_latest_generated_nonce(lane)
-		}
-	}
-
-	impl bp_pangolin::FromPangolinInboundLaneApi<Block> for Runtime {
-		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
-			BridgePangolinMessages::inbound_latest_received_nonce(lane)
-		}
-
-		fn latest_confirmed_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
-			BridgePangolinMessages::inbound_latest_confirmed_nonce(lane)
-		}
-
-		fn unrewarded_relayers_state(lane: bp_messages::LaneId) -> bp_messages::UnrewardedRelayersState {
-			BridgePangolinMessages::inbound_unrewarded_relayers_state(lane)
-		}
 	}
 
 	#[cfg(feature = "runtime-benchmarks")]

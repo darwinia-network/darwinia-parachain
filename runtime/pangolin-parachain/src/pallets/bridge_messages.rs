@@ -2,8 +2,7 @@ pub use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 
 // --- darwinia-network ---
 use crate::{weights::pallet_bridge_messages::WeightInfo, *};
-use bp_messages::MessageNonce;
-use bp_messages::source_chain::SenderOrigin;
+use bp_messages::{source_chain::SenderOrigin, MessageNonce};
 use bp_runtime::{ChainId, PANGOLIN_CHAIN_ID};
 use pallet_bridge_messages::Config;
 use pallet_fee_market::s2s::{
