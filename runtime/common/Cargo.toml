@@ -41,8 +41,8 @@ xcm          = { default-features = false, git = "https://github.com/paritytech/
 xcm-executor = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
 
 [dev-dependencies]
-pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-sp-io            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
+pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }
+sp-io            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }
 
 [features]
 default = ["std"]
