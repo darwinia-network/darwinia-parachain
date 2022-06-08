@@ -18,8 +18,8 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-pub mod xcm_config;
 pub mod helixbridge;
+pub mod xcm_config;
 // --- core ---
 use core::marker::PhantomData;
 // --- paritytech ---
