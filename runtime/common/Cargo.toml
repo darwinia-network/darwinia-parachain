@@ -18,13 +18,13 @@ scale-info     = { version = "2.0", default-features = false, features = ["deriv
 smallvec       = { version = "1.8" }
 # cumulus
 pallet-collator-selection = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.20" }
-# darwinia-bridges-substrate
-bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.20" }
-bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.20" }
-bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.20" }
-bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.20" }
-pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.20" }
-pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.20" }
+# darwinia-messages-substrate
+bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
 # darwinia-collator
 dc-primitives = { default-features = false, path = "../../primitives" }
 # substrate
@@ -54,7 +54,7 @@ std = [
 	"scale-info/std",
 	# cumulus
 	"pallet-collator-selection/std",
-	# darwinia-bridges-substrate
+	# darwinia-messages-substrate
 	"bp-messages/std",
 	"bp-message-dispatch/std",
 	"bp-runtime/std",
