@@ -35,7 +35,8 @@ impl Config<WithCrabMessages> for Runtime {
 	type MessageDeliveryAndDispatchPayment =
 		FeeMarketPayment<Self, WithCrabFeeMarket, Ring, RootAccountForPayments>;
 	type MessageDispatch = bm_crab::FromCrabMessageDispatch;
-	type OnDeliveryConfirmed = (FeeMarketMessageConfirmedHandler<Self, WithCrabFeeMarket>,);
+	type OnDeliveryConfirmed =
+		(FromCrabIssuing, FeeMarketMessageConfirmedHandler<Self, WithCrabFeeMarket>);
 	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self, WithCrabFeeMarket>;
 	type OutboundMessageFee = bp_crab_parachain::Balance;
 	type OutboundPayload = bm_crab::ToCrabMessagePayload;
