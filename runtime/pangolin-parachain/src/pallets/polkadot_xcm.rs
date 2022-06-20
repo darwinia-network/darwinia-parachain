@@ -89,7 +89,6 @@ pub type XcmOriginToTransactDispatchOrigin = (
 );
 
 frame_support::parameter_types! {
-	pub const RococoLocation: MultiLocation = MultiLocation::parent();
 	pub const RelayNetwork: NetworkId = NetworkId::Kusama;
 	pub const MaxInstructions: u32 = 100;
 	pub AnchoringSelfReserve: MultiLocation = MultiLocation::new(
@@ -131,7 +130,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type ResponseHandler = PolkadotXcm;
 	type SubscriptionService = PolkadotXcm;
 	type Trader =
-		UsingComponents<WeightToFee, RococoLocation, AccountId, Balances, ToAuthor<Runtime>>;
+		UsingComponents<WeightToFee, AnchoringSelfReserve, AccountId, Balances, ToAuthor<Runtime>>;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
 	type XcmSender = XcmRouter;
 }
