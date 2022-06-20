@@ -133,7 +133,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type OriginConverter = XcmOriginToTransactDispatchOrigin;
 	type ResponseHandler = PolkadotXcm;
 	type SubscriptionService = PolkadotXcm;
-	type Trader = UsingComponents<WeightToFee, DotLocation, AccountId, Balances, ToAuthor<Runtime>>;
+	type Trader = UsingComponents<WeightToFee, AnchoringSelfReserve, AccountId, Balances, ToAuthor<Runtime>>;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
 	type XcmSender = XcmRouter;
 }
