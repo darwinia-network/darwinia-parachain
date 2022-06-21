@@ -1,4 +1,5 @@
 // --- paritytech ---
+use frame_support::weights::ConstantMultiplier;
 use pallet_transaction_payment::{Config, CurrencyAdapter, TargetedFeeAdjustment};
 // --- darwinia-network ---
 use crate::*;
@@ -13,8 +14,8 @@ frame_support::parameter_types! {
 
 impl Config for Runtime {
 	type FeeMultiplierUpdate = SlowAdjustingFeeUpdate<Self>;
+	type LengthToFee = ConstantMultiplier<Balance, TransactionByteFee>;
 	type OnChargeTransaction = CurrencyAdapter<Ring, DealWithFees<Runtime>>;
 	type OperationalFeeMultiplier = OperationalFeeMultiplier;
-	type TransactionByteFee = TransactionByteFee;
 	type WeightToFee = WeightToFee;
 }

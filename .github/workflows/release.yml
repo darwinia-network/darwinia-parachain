@@ -74,8 +74,8 @@ jobs:
 
       - name: Install subwasm
         env:
-          # Currently, Same with srtool version v0.9.18
-          # https://github.com/paritytech/srtool/blob/v0.9.18/Dockerfile#L19
+          # Currently, Same with srtool version v0.9.19
+          # https://github.com/paritytech/srtool/blob/v0.9.19/Dockerfile#L19
           SUBWASM_VERSION: 0.15.0
         run: |
           curl -L https://github.com/chevdor/subwasm/releases/download/v${SUBWASM_VERSION}/subwasm_linux_amd64_v${SUBWASM_VERSION}.deb \
