@@ -2259,7 +2259,6 @@ dependencies = [
  "parity-scale-codec 3.1.2",
  "polkadot-cli",
  "polkadot-parachain",
- "polkadot-primitives",
  "polkadot-service",
  "sc-basic-authorship",
  "sc-chain-spec",

@@ -48,11 +48,11 @@ serde        = { version = "1.0", features = ["derive"] }
 tempfile     = { version = "3.2" }
 
 # parachain
-crab-parachain-runtime            = { path = "runtime/crab-parachain" }
-darwinia-parachain-runtime        = { path = "runtime/darwinia-parachain" }
-dc-primitives                     = { path = "primitives" }
-dc-rpc                            = { path = "rpc" }
-pangolin-parachain-runtime        = { path = "runtime/pangolin-parachain" }
+crab-parachain-runtime     = { path = "runtime/crab-parachain" }
+darwinia-parachain-runtime = { path = "runtime/darwinia-parachain" }
+dc-primitives              = { path = "primitives" }
+dc-rpc                     = { path = "rpc" }
+pangolin-parachain-runtime = { path = "runtime/pangolin-parachain" }
 
 # substrate
 frame-benchmarking             = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }
@@ -102,11 +102,10 @@ cumulus-relay-chain-interface           = { git = "https://github.com/paritytech
 cumulus-relay-chain-rpc-interface       = { git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.19" }
 
 # polkadot
-polkadot-cli        = { features = ["rococo-native"], git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
-polkadot-parachain  = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
-polkadot-primitives = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
-polkadot-service    = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
-xcm                 = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
+polkadot-cli       = { features = ["rococo-native"], git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
+polkadot-parachain = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
+polkadot-service   = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
+xcm                = { git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.19" }
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19" }

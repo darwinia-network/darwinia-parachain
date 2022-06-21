@@ -39,7 +39,7 @@ use crate::{
 	cli::*,
 	service::{self, *},
 };
-use dc_primitives::OpaqueBlock as Block;
+use dc_primitives::{AccountId, OpaqueBlock as Block};
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
@@ -267,8 +267,7 @@ pub fn run() -> Result<()> {
 					.chain(cli.relay_chain_args.iter()),
 			);
 			let id = ParaId::from(para_id);
-			let parachain_account =
-				AccountIdConversion::<polkadot_primitives::v2::AccountId>::into_account(&id);
+			let parachain_account = AccountIdConversion::<AccountId>::into_account(&id);
 			let state_version =
 				RelayChainCli::native_runtime_version(&config.chain_spec).state_version();
 			let block: Block = generate_genesis_block(&config.chain_spec, state_version)
