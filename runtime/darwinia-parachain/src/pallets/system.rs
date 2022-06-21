@@ -15,7 +15,10 @@ use sp_runtime::{
 };
 use sp_version::RuntimeVersion;
 // --- darwinia-network ---
-use crate::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, *};
+use crate::{
+	weights::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight},
+	*,
+};
 
 /// We assume that ~5% of the block weight is consumed by `on_initialize` handlers. This is
 /// used to limit the maximal weight of a single extrinsic.
