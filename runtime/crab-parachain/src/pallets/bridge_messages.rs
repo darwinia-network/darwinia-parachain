@@ -9,6 +9,16 @@ use pallet_fee_market::s2s::{
 	FeeMarketMessageAcceptedHandler, FeeMarketMessageConfirmedHandler, FeeMarketPayment,
 };
 
+impl SenderOrigin<AccountId> for Origin {
+	fn linked_account(&self) -> Option<AccountId> {
+		match self.caller {
+			OriginCaller::system(frame_system::RawOrigin::Signed(ref submitter)) =>
+				Some(submitter.clone()),
+			_ => None,
+		}
+	}
+}
+
 frame_support::parameter_types! {
 	pub const MaxMessagesToPruneAtOnce: MessageNonce = 8;
 	pub const BridgedChainId: ChainId = CRAB_CHAIN_ID;
@@ -42,14 +52,4 @@ impl Config<WithCrabMessages> for Runtime {
 	type SourceHeaderChain = bm_crab::Crab;
 	type TargetHeaderChain = bm_crab::Crab;
 	type WeightInfo = ();
-}
-
-impl SenderOrigin<crate::AccountId> for crate::Origin {
-	fn linked_account(&self) -> Option<crate::AccountId> {
-		match self.caller {
-			crate::OriginCaller::system(frame_system::RawOrigin::Signed(ref submitter)) =>
-				Some(submitter.clone()),
-			_ => None,
-		}
-	}
 }

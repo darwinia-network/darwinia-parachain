@@ -9,6 +9,16 @@ use pallet_fee_market::s2s::{
 	FeeMarketMessageAcceptedHandler, FeeMarketMessageConfirmedHandler, FeeMarketPayment,
 };
 
+impl SenderOrigin<AccountId> for Origin {
+	fn linked_account(&self) -> Option<AccountId> {
+		match self.caller {
+			OriginCaller::system(frame_system::RawOrigin::Signed(ref submitter)) =>
+				Some(submitter.clone()),
+			_ => None,
+		}
+	}
+}
+
 frame_support::parameter_types! {
 	pub const MaxMessagesToPruneAtOnce: MessageNonce = 8;
 	pub const BridgedChainId: ChainId = PANGOLIN_CHAIN_ID;
@@ -43,14 +53,4 @@ impl Config<WithPangolinMessages> for Runtime {
 	type SourceHeaderChain = bm_pangolin::Pangolin;
 	type TargetHeaderChain = bm_pangolin::Pangolin;
 	type WeightInfo = WeightInfo<Runtime>;
-}
-
-impl SenderOrigin<crate::AccountId> for crate::Origin {
-	fn linked_account(&self) -> Option<crate::AccountId> {
-		match self.caller {
-			crate::OriginCaller::system(frame_system::RawOrigin::Signed(ref submitter)) =>
-				Some(submitter.clone()),
-			_ => None,
-		}
-	}
 }

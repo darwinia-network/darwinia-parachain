@@ -20,6 +20,7 @@
 
 pub mod helixbridge;
 pub mod xcm_config;
+
 // --- core ---
 use core::marker::PhantomData;
 // --- paritytech ---
