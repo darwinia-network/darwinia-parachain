@@ -123,9 +123,6 @@ pub mod pallet {
 		type OutboundPayloadCreator: Parameter
 			+ CreatePayload<Self::AccountId, MultiSigner, MultiSignature, Self>;
 
-		/// The remote chain name where the backing module in
-		type BackingChainName: Get<ChainName>;
-
 		/// The lane id of the s2s bridge
 		type MessageLaneId: Get<LaneId>;
 

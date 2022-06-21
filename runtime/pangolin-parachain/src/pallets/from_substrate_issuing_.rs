@@ -13,7 +13,7 @@ use bridges_message::pangolin::{
 };
 use codec::{Decode, Encode};
 use dc_common_runtime::helixbridge::{
-	CallParams, ChainName, Config, CreatePayload, LatestMessageNoncer,
+	CallParams, Config, CreatePayload, LatestMessageNoncer,
 };
 use frame_support::RuntimeDebug;
 use scale_info::TypeInfo;
@@ -49,11 +49,9 @@ frame_support::parameter_types! {
 	pub const DecimalMultiplier: u128 = 1_000_000_000u128;
 	pub const ParachainIssuingPalletId: PalletId = PalletId(*b"da/paais");
 	pub const PangolinChainId: ChainId = PANGOLIN_CHAIN_ID;
-	pub BackingChainName: ChainName = (b"Pangolin").to_vec();
 }
 
 impl Config for Runtime {
-	type BackingChainName = BackingChainName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
 	type DecimalMultiplier = DecimalMultiplier;

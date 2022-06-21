@@ -12,7 +12,7 @@ use bridge_runtime_common::lanes::CRAB_CRAB_PARACHAIN_LANE;
 use bridges_message::crab::ToCrabMessagePayload;
 use codec::{Decode, Encode};
 use dc_common_runtime::helixbridge::{
-	CallParams, ChainName, Config, CreatePayload, LatestMessageNoncer,
+	CallParams, Config, CreatePayload, LatestMessageNoncer,
 };
 use frame_support::RuntimeDebug;
 use scale_info::TypeInfo;
@@ -51,11 +51,9 @@ frame_support::parameter_types! {
 	pub const DecimalMultiplier: u128 = 1_000_000_000u128;
 	pub const ParachainIssuingPalletId: PalletId = PalletId(*b"da/paais");
 	pub const CrabChainId: ChainId = CRAB_CHAIN_ID;
-	pub BackingChainName: ChainName = (b"Crab").to_vec();
 }
 
 impl Config for Runtime {
-	type BackingChainName = BackingChainName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = CrabChainId;
 	type DecimalMultiplier = DecimalMultiplier;
