@@ -18,45 +18,53 @@
 
 //! Mocks for the governance module.
 
-#![cfg(test)]
-
-use super::*;
-use frame_support::{construct_runtime, parameter_types, traits::Everything};
-use sp_core::H256;
-use sp_runtime::{testing::Header, traits::IdentityLookup, AccountId32, DispatchError::BadOrigin};
-
-pub type AccountId = AccountId32;
-pub type Balance = u128;
-pub const ALICE: AccountId = AccountId32::new([0; 32]);
-pub const BOB: AccountId = AccountId32::new([1; 32]);
-pub const ALICE_SLASH: AccountId = AccountId32::new([2; 32]);
-pub const BOB_SLASH: AccountId = AccountId32::new([3; 32]);
-
-mod remote_governance {
+mod remote_government {
 	pub use super::super::*;
 }
+
+// --- paritytech ---
+use frame_support::{
+	construct_runtime, parameter_types,
+	traits::{ConstU32, Everything, OnInitialize},
+};
+use frame_system::mocking::*;
+use pallet_balances::AccountData;
+use sp_core::H256;
+use sp_runtime::{
+	testing::Header,
+	traits::{BlakeTwo256, IdentityLookup},
+	AccountId32,
+};
+// --- darwinia-network ---
+use super::*;
+
+pub(crate) type AccountId = AccountId32;
+pub(crate) type BlockNumber = u64;
+pub(crate) type Balance = u128;
+
+pub(crate) const ALICE: AccountId = AccountId32::new([0; 32]);
+pub(crate) const BOB: AccountId = AccountId32::new([1; 32]);
 
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 }
-
 impl frame_system::Config for Test {
-	type AccountData = pallet_balances::AccountData<Balance>;
+	type AccountData = AccountData<Balance>;
 	type AccountId = AccountId;
 	type BaseCallFilter = Everything;
 	type BlockHashCount = BlockHashCount;
 	type BlockLength = ();
-	type BlockNumber = u64;
+	type BlockNumber = BlockNumber;
 	type BlockWeights = ();
 	type Call = Call;
 	type DbWeight = ();
 	type Event = Event;
 	type Hash = H256;
-	type Hashing = ::sp_runtime::traits::BlakeTwo256;
+	type Hashing = BlakeTwo256;
 	type Header = Header;
 	type Index = u64;
 	type Lookup = IdentityLookup<AccountId>;
-	type MaxConsumers = frame_support::traits::ConstU32<16>;
+	type MaxConsumers = ConstU32<16>;
 	type OnKilledAccount = ();
 	type OnNewAccount = ();
 	type OnSetCode = ();
@@ -69,9 +77,7 @@ impl frame_system::Config for Test {
 
 parameter_types! {
 	pub const NativeTokenExistentialDeposit: Balance = 10;
-	pub const MaxReserves: u32 = 50;
 }
-
 impl pallet_balances::Config for Test {
 	type AccountStore = System;
 	type Balance = Balance;
@@ -91,50 +97,47 @@ impl Convert<H256, AccountId32> for AccountIdConverter {
 	}
 }
 
-pub struct RescuerBobSlash;
-impl Rescuer<Origin> for RescuerBobSlash {
-	fn ensure_rescuer(origin: Origin) -> Result<(), DispatchError> {
-		let user = ensure_signed::<Origin, AccountId>(origin.into())?;
-		ensure!(user == BOB_SLASH, BadOrigin);
-		Ok(())
+pub struct EnsureAlice;
+impl<O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>> EnsureOrigin<O>
+	for EnsureAlice
+{
+	type Success = AccountId;
+
+	fn try_origin(o: O) -> Result<Self::Success, O> {
+		o.into().and_then(|o| match o {
+			RawOrigin::Signed(who) if who == ALICE => Ok(who),
+			r => Err(O::from(r)),
+		})
 	}
 }
 
 frame_support::parameter_types! {
 	pub const PangolinChainId: bp_runtime::ChainId = *b"pagl";
+	pub const CheckInterval: BlockNumber = 3;
 }
-
 impl Config for Test {
-	type BridgedAccountIdConverter = AccountIdConverter;
+	type BridgeAccountIdConverter = AccountIdConverter;
+	type BridgeFinalized = ();
 	type BridgedChainId = PangolinChainId;
 	type Call = Call;
+	type CheckInterval = CheckInterval;
+	type EmergencySafeguardOrigin = EnsureAlice;
 	type Event = Event;
-	type Rescuer = RescuerBobSlash;
 }
-
-type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
-type Block = frame_system::mocking::MockBlock<Test>;
 
 construct_runtime!(
 	pub enum Test where
-		Block = Block,
-		NodeBlock = Block,
-		UncheckedExtrinsic = UncheckedExtrinsic
+		Block = MockBlock<Test>,
+		NodeBlock = MockBlock<Test>,
+		UncheckedExtrinsic = MockUncheckedExtrinsic<Test>
 	{
 		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
-		RemoteGovernance: remote_governance::{Pallet, Storage, Call, Event<T>},
 		Balances: pallet_balances::{Pallet, Storage, Call, Event<T>},
+		RemoteGovernment: remote_government::{Pallet, Storage, Call, Event<T>},
 	}
 );
 
-pub struct ExtBuilder;
-
-impl Default for ExtBuilder {
-	fn default() -> Self {
-		ExtBuilder
-	}
-}
-
+pub(crate) struct ExtBuilder;
 impl ExtBuilder {
 	pub fn build(self) -> sp_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
@@ -142,5 +145,17 @@ impl ExtBuilder {
 		pallet_balances::GenesisConfig::<Test> { balances }.assimilate_storage(&mut t).unwrap();
 
 		t.into()
+	}
+}
+impl Default for ExtBuilder {
+	fn default() -> Self {
+		ExtBuilder
+	}
+}
+
+pub fn run_to_block(n: BlockNumber) {
+	for b in System::block_number() + 1..=n {
+		System::set_block_number(b);
+		<remote_government::Pallet<Test> as OnInitialize<BlockNumber>>::on_initialize(b);
 	}
 }

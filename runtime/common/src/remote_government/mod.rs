@@ -82,8 +82,10 @@ pub mod pallet {
 
 	#[pallet::error]
 	pub enum Error<T> {
-		/// Origin MUST be `SourceRoot`
+		/// Origin MUST be `SourceRoot`.
 		RequireSourceRoot,
+		/// Only available on emergency mode.
+		EmergencyOnly,
 	}
 
 	#[pallet::storage]
@@ -132,6 +134,31 @@ pub mod pallet {
 	}
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
+		#[pallet::weight({
+			let dispatch_info = call.get_dispatch_info();
+			(dispatch_info.weight.saturating_add(10_000), dispatch_info.class)
+        })]
+		#[transactional]
+		pub fn emergency_safeguard(
+			origin: OriginFor<T>,
+			call: AnyCall<T>,
+		) -> DispatchResultWithPostInfo {
+			if !Self::emergency() {
+				Err(<Error<T>>::EmergencyOnly)?;
+			}
+
+			T::EmergencySafeguardOrigin::ensure_origin(origin)?;
+
+			let res = call.dispatch_bypass_filter(RawOrigin::Root.into());
+
+			Self::deposit_event(Event::EmergencySafeguardDone {
+				result: res.map(|_| ()).map_err(|e| e.error),
+			});
+
+			// Sudo user does not pay a fee.
+			Ok(Pays::No.into())
+		}
+
 		/// Handle relay message sent from the source backing pallet with relay message
 		#[pallet::weight({
 			let dispatch_info = call.get_dispatch_info();
@@ -156,27 +183,6 @@ pub mod pallet {
 			// Sudo user does not pay a fee.
 			Ok(Pays::No.into())
 		}
-
-		#[pallet::weight({
-			let dispatch_info = call.get_dispatch_info();
-			(dispatch_info.weight.saturating_add(10_000), dispatch_info.class)
-        })]
-		#[transactional]
-		pub fn emergency_safeguard(
-			origin: OriginFor<T>,
-			call: AnyCall<T>,
-		) -> DispatchResultWithPostInfo {
-			T::EmergencySafeguardOrigin::ensure_origin(origin)?;
-
-			let res = call.dispatch_bypass_filter(RawOrigin::Root.into());
-
-			Self::deposit_event(Event::EmergencySafeguardDone {
-				result: res.map(|_| ()).map_err(|e| e.error),
-			});
-
-			// Sudo user does not pay a fee.
-			Ok(Pays::No.into())
-		}
 	}
 	impl<T: Config> Pallet<T> {
 		fn check_sync() -> bool {
@@ -194,7 +200,7 @@ pub mod pallet {
 			.is_ok()
 		}
 
-		fn derived_source_root() -> T::AccountId {
+		pub(crate) fn derived_source_root() -> T::AccountId {
 			let hex_id =
 				derive_account_id::<T::AccountId>(T::BridgedChainId::get(), SourceAccount::Root);
 
