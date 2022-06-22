@@ -18,6 +18,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
+pub mod governance;
 pub mod helixbridge;
 pub mod xcm_config;
 
