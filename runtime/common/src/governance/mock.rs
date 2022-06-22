@@ -23,7 +23,7 @@
 use super::*;
 use frame_support::{construct_runtime, parameter_types, traits::Everything};
 use sp_core::H256;
-use sp_runtime::{testing::Header, traits::IdentityLookup, AccountId32};
+use sp_runtime::{testing::Header, traits::IdentityLookup, AccountId32, DispatchError::BadOrigin};
 
 pub type AccountId = AccountId32;
 pub type Balance = u128;
@@ -93,11 +93,10 @@ impl Convert<H256, AccountId32> for AccountIdConverter {
 
 pub struct RescuerBobSlash;
 impl Rescuer<Origin> for RescuerBobSlash {
-	fn allow(origin: Origin) -> bool {
-		match ensure_signed::<Origin, AccountId>(origin.into()) {
-			Ok(user) => user == BOB_SLASH,
-			_ => false,
-		}
+	fn ensure_rescuer(origin: Origin) -> Result<(), DispatchError> {
+		let user = ensure_signed::<Origin, AccountId>(origin.into())?;
+		ensure!(user == BOB_SLASH, BadOrigin);
+		Ok(())
 	}
 }
 

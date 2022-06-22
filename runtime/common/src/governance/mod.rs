@@ -40,7 +40,7 @@ pub use pallet::*;
 pub type AccountId<T> = <T as frame_system::Config>::AccountId;
 
 pub trait Rescuer<OuterOrigin> {
-	fn allow(user: OuterOrigin) -> bool;
+	fn ensure_rescuer(user: OuterOrigin) -> Result<(), DispatchError>;
 }
 
 #[frame_support::pallet]
@@ -83,8 +83,6 @@ pub mod pallet {
 	#[pallet::error]
 	/// Issuing pallet errors.
 	pub enum Error<T> {
-		/// Origin Must Be Rescuer
-		RequireRescuer,
 		/// Origin Must Be SourceRoot
 		RequireSourceRoot,
 	}
@@ -126,8 +124,7 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			call: Box<<T as Config>::Call>,
 		) -> DispatchResultWithPostInfo {
-			//let user = ensure_signed(origin)?;
-			ensure!(T::Rescuer::allow(origin), Error::<T>::RequireRescuer);
+			T::Rescuer::ensure_rescuer(origin)?;
 
 			let res = call.dispatch_bypass_filter(RawOrigin::Root.into());
 			Self::deposit_event(Event::RescureCall(res.map(|_| ()).map_err(|e| e.error)));

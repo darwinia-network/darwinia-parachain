@@ -23,6 +23,7 @@
 use super::*;
 use frame_support::{assert_noop, assert_ok};
 use mock::*;
+use sp_runtime::DispatchError::BadOrigin;
 
 #[test]
 fn test_accept_remote_call() {
@@ -42,12 +43,14 @@ fn test_accept_remote_call() {
 			),
 			Error::<Test>::RequireSourceRoot
 		);
+		assert_eq!(Balances::free_balance(BOB), 0);
 
 		let source_root = RemoteGovernance::derived_source_root();
 		assert_ok!(RemoteGovernance::accept_remote_call(
 			Origin::signed(source_root),
 			force_balance_transfer
 		));
+		assert_eq!(Balances::free_balance(BOB), 11);
 	});
 }
 
@@ -67,8 +70,9 @@ fn test_rescue_call() {
 				Origin::signed(ALICE_SLASH),
 				force_balance_transfer.clone()
 			),
-			Error::<Test>::RequireRescuer
+			BadOrigin
 		);
+		assert_eq!(Balances::free_balance(BOB), 0);
 
 		assert_ok!(RemoteGovernance::rescue_call(
 			Origin::signed(BOB_SLASH),
