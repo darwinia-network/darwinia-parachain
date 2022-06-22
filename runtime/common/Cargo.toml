@@ -15,31 +15,34 @@ array-bytes    = { version = "1.5" }
 codec          = { package = "parity-scale-codec", version = "3.1", default-features = false, features = ["derive"] }
 ethereum-types = { version = "0.12", default-features = false }
 scale-info     = { version = "2.0", default-features = false, features = ["derive"] }
-smallvec = { version = "1.8" }
+smallvec       = { version = "1.8" }
 # cumulus
-pallet-collator-selection = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.18" }
-# darwinia-bridges-substrate
-bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
-bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
-bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
-bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
-pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
-pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-bridges-substrate", branch = "polkadot-v0.9.18" }
+pallet-collator-selection = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.20" }
+# darwinia-messages-substrate
+bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
 # darwinia-collator
 dc-primitives = { default-features = false, path = "../../primitives" }
 # substrate
-frame-benchmarking         = { default-features = false, optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-frame-support              = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-frame-system               = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-pallet-balances            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-pallet-transaction-payment = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-sp-core                    = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-sp-runtime                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-sp-std                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
+frame-benchmarking         = { default-features = false, optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
+frame-support              = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
+frame-system               = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
+pallet-balances            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
+pallet-transaction-payment = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
+sp-core                    = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
+sp-runtime                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
+sp-std                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
+# polkadot
+xcm          = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.20" }
+xcm-executor = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.20" }
 
 [dev-dependencies]
-pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
-sp-io            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.18" }
+pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
+sp-io            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.20" }
 
 [features]
 default = ["std"]
@@ -51,7 +54,7 @@ std = [
 	"scale-info/std",
 	# cumulus
 	"pallet-collator-selection/std",
-	# darwinia-bridges-substrate
+	# darwinia-messages-substrate
 	"bp-messages/std",
 	"bp-message-dispatch/std",
 	"bp-runtime/std",
@@ -69,6 +72,9 @@ std = [
 	"sp-core/std",
 	"sp-runtime/std",
 	"sp-std/std",
+	# polkadot
+	"xcm/std",
+	"xcm-executor/std"
 ]
 
 runtime-benchmarks = ["frame-benchmarking"]

@@ -1,6 +1,6 @@
 // This file is part of Darwinia.
 //
-// Copyright (C) 2018-2021 Darwinia Network
+// Copyright (C) 2018-2022 Darwinia Network
 // SPDX-License-Identifier: GPL-3.0
 //
 // Darwinia is free software: you can redistribute it and/or modify
@@ -59,8 +59,9 @@ pub enum Subcommand {
 	#[clap(subcommand)]
 	Key(sc_cli::KeySubcommand),
 
-	/// Benchmark runtime pallets.
-	#[cfg(feature = "runtime-benchmarks")]
+	/// Sub-commands concerned with benchmarking.
+	/// The pallet benchmarking moved to the `pallet` sub-command.
+	#[clap(subcommand)]
 	Benchmark(frame_benchmarking_cli::BenchmarkCmd),
 
 	/// Try some experimental command on the runtime. This includes migration and runtime-upgrade

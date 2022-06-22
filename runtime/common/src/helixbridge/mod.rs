@@ -131,6 +131,7 @@ pub mod pallet {
 		type DecimalMultiplier: Get<u128>;
 
 		type MessagesBridge: MessagesBridge<
+			Self::Origin,
 			Self::AccountId,
 			RingBalance<Self>,
 			<<Self as Config>::OutboundPayloadCreator as CreatePayload<
@@ -271,7 +272,7 @@ pub mod pallet {
 				DispatchFeePayment::AtSourceChain,
 			)?;
 			T::MessagesBridge::send_message(
-				RawOrigin::Signed(Self::pallet_account_id()),
+				RawOrigin::Signed(Self::pallet_account_id()).into(),
 				T::MessageLaneId::get(),
 				payload,
 				fee,

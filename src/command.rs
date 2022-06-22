@@ -1,6 +1,6 @@
 // This file is part of Darwinia.
 //
-// Copyright (C) 2018-2021 Darwinia Network
+// Copyright (C) 2018-2022 Darwinia Network
 // SPDX-License-Identifier: GPL-3.0
 //
 // Darwinia is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ use log::info;
 // --- paritytech ---
 use cumulus_client_service::genesis::generate_genesis_block;
 use cumulus_primitives_core::ParaId;
+use frame_benchmarking_cli::BenchmarkCmd;
 use polkadot_parachain::primitives::AccountIdConversion;
 use sc_cli::{
 	ChainSpec, CliConfiguration, DefaultConfigurationValues, ImportParams, KeystoreParams,
@@ -38,7 +39,7 @@ use crate::{
 	cli::*,
 	service::{self, *},
 };
-use dc_primitives::OpaqueBlock as Block;
+use dc_primitives::{AccountId, OpaqueBlock as Block};
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
@@ -184,6 +185,31 @@ fn extract_genesis_wasm(chain_spec: &Box<dyn sc_service::ChainSpec>) -> Result<V
 
 /// Parse command line arguments into service configuration.
 pub fn run() -> Result<()> {
+	/// Creates partial components for the runtimes that are supported by the benchmarks.
+	macro_rules! construct_benchmark_partials {
+		($config:expr, |$partials:ident| $code:expr) => {
+			if $config.chain_spec.is_crab_parachain() {
+				let $partials = new_partial::<CrabParachainRuntimeApi, _>(
+					&$config,
+					service::build_import_queue,
+				)?;
+				$code
+			} else if $config.chain_spec.is_pangolin_parachain() {
+				let $partials = new_partial::<PangolinParachainRuntimeApi, _>(
+					&$config,
+					service::build_import_queue,
+				)?;
+				$code
+			} else {
+				let $partials = new_partial::<DarwiniaParachainRuntimeApi, _>(
+					&$config,
+					service::build_import_queue,
+				)?;
+				$code
+			}
+		};
+	}
+
 	macro_rules! construct_async_run {
 		(|$components:ident, $cli:ident, $cmd:ident, $config:ident| $( $code:tt )* ) => {{
 			let runner = $cli.create_runner($cmd)?;
@@ -241,8 +267,7 @@ pub fn run() -> Result<()> {
 					.chain(cli.relay_chain_args.iter()),
 			);
 			let id = ParaId::from(para_id);
-			let parachain_account =
-				AccountIdConversion::<polkadot_primitives::v0::AccountId>::into_account(&id);
+			let parachain_account = AccountIdConversion::<AccountId>::into_account(&id);
 			let state_version =
 				RelayChainCli::native_runtime_version(&config.chain_spec).state_version();
 			let block: Block = generate_genesis_block(&config.chain_spec, state_version)
@@ -336,7 +361,7 @@ pub fn run() -> Result<()> {
 			})
 		},
 		Some(Subcommand::Revert(cmd)) => construct_async_run!(|components, cli, cmd, config| {
-			Ok(cmd.run(components.client, components.backend))
+			Ok(cmd.run(components.client, components.backend, None))
 		}),
 		Some(Subcommand::ExportGenesisState(params)) => {
 			let mut builder = sc_cli::LoggerBuilder::new("");
@@ -384,19 +409,40 @@ pub fn run() -> Result<()> {
 			Ok(())
 		},
 		Some(Subcommand::Key(cmd)) => Ok(cmd.run(&cli)?),
-		#[cfg(feature = "runtime-benchmarks")]
 		Some(Subcommand::Benchmark(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
-			let chain_spec = &runner.config().chain_spec;
 
-			set_default_ss58_version(chain_spec);
+			// Switch on the concrete benchmark sub-command-
+			match cmd {
+				BenchmarkCmd::Pallet(cmd) =>
+					if cfg!(feature = "runtime-benchmarks") {
+						runner.sync_run(|config| {
+							if config.chain_spec.is_crab_parachain() {
+								cmd.run::<Block, CrabParachainRuntimeExecutor>(config)
+							} else if config.chain_spec.is_pangolin_parachain() {
+								cmd.run::<Block, PangolinParachainRuntimeExecutor>(config)
+							} else {
+								cmd.run::<Block, DarwiniaParachainRuntimeExecutor>(config)
+							}
+						})
+					} else {
+						Err("Benchmarking wasn't enabled when building the node. \
+				You can enable it with `--features runtime-benchmarks`."
+							.into())
+					},
+				BenchmarkCmd::Block(cmd) => runner.sync_run(|config| {
+					construct_benchmark_partials!(config, |partials| cmd.run(partials.client))
+				}),
+				BenchmarkCmd::Storage(cmd) => runner.sync_run(|config| {
+					construct_benchmark_partials!(config, |partials| {
+						let db = partials.backend.expose_db();
+						let storage = partials.backend.expose_storage();
 
-			if chain_spec.is_crab_parachain() {
-				runner.sync_run(|config| cmd.run::<Block>(config))
-			} else if chain_spec.is_pangolin_parachain() {
-				runner.sync_run(|config| cmd.run::<Block>(config))
-			} else {
-				runner.sync_run(|config| cmd.run::<Block>(config))
+						cmd.run(config, partials.client.clone(), db, storage)
+					})
+				}),
+				BenchmarkCmd::Overhead(_) => Err("Unsupported benchmarking command".into()),
+				BenchmarkCmd::Machine(cmd) => runner.sync_run(|config| cmd.run(&config)),
 			}
 		},
 		#[cfg(feature = "try-runtime")]

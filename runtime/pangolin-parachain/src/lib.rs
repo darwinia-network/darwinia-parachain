@@ -1,6 +1,6 @@
 // This file is part of Darwinia.
 //
-// Copyright (C) 2018-2021 Darwinia Network
+// Copyright (C) 2018-2022 Darwinia Network
 // SPDX-License-Identifier: GPL-3.0
 //
 // Darwinia is free software: you can redistribute it and/or modify
@@ -314,28 +314,6 @@ sp_api::impl_runtime_apis! {
 				WithPangolinMessages,
 				bm_pangolin::WithPangolinMessageBridge,
 			>(lane, begin, end)
-		}
-
-		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
-			BridgePangolinMessages::outbound_latest_received_nonce(lane)
-		}
-
-		fn latest_generated_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
-			BridgePangolinMessages::outbound_latest_generated_nonce(lane)
-		}
-	}
-
-	impl bp_pangolin::FromPangolinInboundLaneApi<Block> for Runtime {
-		fn latest_received_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
-			BridgePangolinMessages::inbound_latest_received_nonce(lane)
-		}
-
-		fn latest_confirmed_nonce(lane: bp_messages::LaneId) -> bp_messages::MessageNonce {
-			BridgePangolinMessages::inbound_latest_confirmed_nonce(lane)
-		}
-
-		fn unrewarded_relayers_state(lane: bp_messages::LaneId) -> bp_messages::UnrewardedRelayersState {
-			BridgePangolinMessages::inbound_unrewarded_relayers_state(lane)
 		}
 	}
 

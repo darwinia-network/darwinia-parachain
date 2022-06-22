@@ -1,6 +1,6 @@
 // This file is part of Darwinia.
 //
-// Copyright (C) 2018-2021 Darwinia Network
+// Copyright (C) 2018-2022 Darwinia Network
 // SPDX-License-Identifier: GPL-3.0
 //
 // Darwinia is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ use cumulus_client_service::{
 	prepare_node_config, start_collator, start_full_node, StartCollatorParams, StartFullNodeParams,
 };
 use cumulus_primitives_core::{
-	relay_chain::v1::{Hash as PHash, PersistedValidationData},
+	relay_chain::v2::{Hash as PHash, PersistedValidationData},
 	ParaId,
 };
 use cumulus_primitives_parachain_inherent::ParachainInherentData;

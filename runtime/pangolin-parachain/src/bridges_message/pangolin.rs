@@ -100,8 +100,9 @@ impl ChainWithMessages for PangolinParachain {
 }
 impl ThisChainWithMessages for PangolinParachain {
 	type Call = Call;
+	type Origin = Origin;
 
-	fn is_outbound_lane_enabled(lane: &LaneId) -> bool {
+	fn is_message_accepted(_send_origin: &Self::Origin, lane: &LaneId) -> bool {
 		*lane == [0, 0, 0, 0] || *lane == [0, 0, 0, 1] || *lane == PANGOLIN_PANGOLIN_PARACHAIN_LANE
 	}
 
