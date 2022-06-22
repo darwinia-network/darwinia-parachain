@@ -57,7 +57,7 @@ pub mod pallet {
 
 		type CheckInterval: Get<Self::BlockNumber>;
 
-		type RemoteBestFinalized: Get<Self::BlockNumber>;
+		type BridgeFinalized: Get<Self::BlockNumber>;
 
 		/// The bridged chain id.
 		type BridgedChainId: Get<ChainId>;
@@ -70,7 +70,7 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
-		/// Did not receive any heartbeat for a long time, enter the emergency mode.
+		/// Bridge's GRANDPA finality has stalled for a long time, enter the emergency mode.
 		Emergency,
 		/// Recover from the emergency mode.
 		Recovery,
@@ -81,15 +81,14 @@ pub mod pallet {
 	}
 
 	#[pallet::error]
-	/// Issuing pallet errors.
 	pub enum Error<T> {
 		/// Origin MUST be `SourceRoot`
 		RequireSourceRoot,
 	}
 
 	#[pallet::storage]
-	#[pallet::getter(fn previous_best_finalized)]
-	pub type PreviousBestFinalized<T> = StorageValue<_, BlockNumberFor<T>, ValueQuery>;
+	#[pallet::getter(fn previous_bridge_finalized)]
+	pub type PreviousBridgeFinalized<T> = StorageValue<_, BlockNumberFor<T>, ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn emergency)]
@@ -181,13 +180,13 @@ pub mod pallet {
 	}
 	impl<T: Config> Pallet<T> {
 		fn check_sync() -> bool {
-			<PreviousBestFinalized<T>>::try_mutate(|previous_best_finalized| {
-				let best_finalized = T::RemoteBestFinalized::get();
+			<PreviousBridgeFinalized<T>>::try_mutate(|previous_bridge_finalized| {
+				let best_finalized = T::BridgeFinalized::get();
 
-				if *previous_best_finalized == best_finalized {
+				if *previous_bridge_finalized == best_finalized {
 					Err(())
 				} else {
-					*previous_best_finalized = best_finalized;
+					*previous_bridge_finalized = best_finalized;
 
 					Ok(())
 				}
