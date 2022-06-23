@@ -117,10 +117,10 @@ frame_support::parameter_types! {
 }
 impl Config for Test {
 	type BridgeAccountIdConverter = AccountIdConverter;
-	type BridgeFinalized = ();
+	// type BridgeFinalized = ();
 	type BridgedChainId = PangolinChainId;
 	type Call = Call;
-	type CheckInterval = CheckInterval;
+	// type CheckInterval = CheckInterval;
 	type EmergencySafeguardOrigin = EnsureAlice;
 	type Event = Event;
 }
