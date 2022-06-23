@@ -1,4 +1,7 @@
-// --- paritytech --
+// --- crates.io ---
+use codec::{Decode, Encode};
+use scale_info::TypeInfo;
+// --- paritytech ---
 use bp_messages::LaneId;
 use bp_runtime::ChainId;
 use frame_support::PalletId;
@@ -11,13 +14,10 @@ use bp_runtime::{messages::DispatchFeePayment, PANGOLIN_CHAIN_ID};
 use bridges_message::pangolin::{
 	ToPangolinMessagePayload, PANGOLIN_PANGOLIN_PARACHAIN_LANE, PANGOLIN_S2S_BACKING_PALLET_INDEX,
 };
-use codec::{Decode, Encode};
 use dp_common_runtime::helixbridge::{
 	CallParams, ChainName, Config, CreatePayload, LatestMessageNoncer,
 };
 use frame_support::RuntimeDebug;
-use scale_info::TypeInfo;
-
 use pallet_bridge_messages::outbound_lane;
 
 pub struct ToPangoroMessageSender;
