@@ -255,6 +255,15 @@ pub fn run() -> Result<()> {
 			let chain_spec = &config.chain_spec;
 			let collator_options = cli.run.collator_options();
 
+			let hwbench = if !cli.no_hardware_benchmarks {
+				config.database.path().map(|database_path| {
+					let _ = std::fs::create_dir_all(&database_path);
+					sc_sysinfo::gather_hwbench(Some(database_path))
+				})
+			} else {
+				None
+			};
+
 			set_default_ss58_version(chain_spec);
 
 			let para_id = Extensions::try_get(&*config.chain_spec)
@@ -289,6 +298,7 @@ pub fn run() -> Result<()> {
 					polkadot_config,
 					collator_options,
 					id,
+					hwbench,
 				)
 				.await
 				.map(|r| r.0)
@@ -299,6 +309,7 @@ pub fn run() -> Result<()> {
 					polkadot_config,
 					collator_options,
 					id,
+					hwbench,
 				)
 				.await
 				.map(|r| r.0)
@@ -309,6 +320,7 @@ pub fn run() -> Result<()> {
 					polkadot_config,
 					collator_options,
 					id,
+					hwbench,
 				)
 				.await
 				.map(|r| r.0)
