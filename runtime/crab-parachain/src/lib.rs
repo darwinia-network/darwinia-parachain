@@ -175,6 +175,7 @@ frame_support::construct_runtime! {
 		BridgeCrabDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
 
 		CrabFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
+		FromCrabIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
 	}
 }
 
