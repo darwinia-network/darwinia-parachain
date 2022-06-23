@@ -1453,8 +1453,8 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
- "dc-common-runtime",
  "dc-primitives",
+ "dp-common-runtime",
  "frame-benchmarking",
  "frame-executive",
  "frame-support",
@@ -2334,8 +2334,8 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
- "dc-common-runtime",
  "dc-primitives",
+ "dp-common-runtime",
  "frame-benchmarking",
  "frame-executive",
  "frame-support",
@@ -2404,37 +2404,6 @@ checksum = "a5bbed42daaa95e780b60a50546aa345b8413a1e46f9a40a12907d3598f038db"
 dependencies = [
  "data-encoding",
  "syn",
-]
-
-[[package]]
-name = "dc-common-runtime"
-version = "5.2.1"
-dependencies = [
- "array-bytes",
- "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
- "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
- "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
- "bridge-runtime-common 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
- "dc-primitives",
- "ethereum-types 0.12.1",
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "pallet-bridge-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
- "pallet-collator-selection",
- "pallet-fee-market",
- "pallet-timestamp",
- "pallet-transaction-payment",
- "parity-scale-codec 3.1.5",
- "scale-info",
- "smallvec",
- "sp-core",
- "sp-io",
- "sp-runtime",
- "sp-std",
- "xcm",
- "xcm-executor",
 ]
 
 [[package]]
@@ -2590,6 +2559,37 @@ name = "downcast-rs"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
+
+[[package]]
+name = "dp-common-runtime"
+version = "5.2.1"
+dependencies = [
+ "array-bytes",
+ "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
+ "bp-messages 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
+ "bp-runtime 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
+ "bridge-runtime-common 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
+ "dc-primitives",
+ "ethereum-types 0.12.1",
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "pallet-balances",
+ "pallet-bridge-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
+ "pallet-collator-selection",
+ "pallet-fee-market",
+ "pallet-timestamp",
+ "pallet-transaction-payment",
+ "parity-scale-codec 3.1.5",
+ "scale-info",
+ "smallvec",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+ "xcm",
+ "xcm-executor",
+]
 
 [[package]]
 name = "dtoa"
@@ -6716,8 +6716,8 @@ dependencies = [
  "cumulus-primitives-core",
  "cumulus-primitives-timestamp",
  "cumulus-primitives-utility",
- "dc-common-runtime",
  "dc-primitives",
+ "dp-common-runtime",
  "frame-benchmarking",
  "frame-executive",
  "frame-support",

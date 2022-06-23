@@ -28,7 +28,7 @@ cumulus-primitives-utility      = { default-features = false, git = "https://git
 pallet-collator-selection       = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.20" }
 parachain-info                  = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.20" }
 # darwinia
-dc-common-runtime = { default-features = false, path = "../common" }
+dp-common-runtime = { default-features = false, path = "../common" }
 dc-primitives     = { default-features = false, path = "../../primitives" }
 # darwinia-messages-substrate
 bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
@@ -102,7 +102,7 @@ std = [
 	"pallet-collator-selection/std",
 	"parachain-info/std",
 	# darwinia
-	"dc-common-runtime/std",
+	"dp-common-runtime/std",
 	"dc-primitives/std",
 	# darwinia-messages-substrate
 	"bp-pangolin/std",

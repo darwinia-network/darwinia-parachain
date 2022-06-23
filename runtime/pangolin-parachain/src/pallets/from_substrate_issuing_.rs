@@ -12,7 +12,7 @@ use bridges_message::pangolin::{
 	ToPangolinMessagePayload, PANGOLIN_PANGOLIN_PARACHAIN_LANE, PANGOLIN_S2S_BACKING_PALLET_INDEX,
 };
 use codec::{Decode, Encode};
-use dc_common_runtime::helixbridge::{
+use dp_common_runtime::helixbridge::{
 	CallParams, ChainName, Config, CreatePayload, LatestMessageNoncer,
 };
 use frame_support::RuntimeDebug;

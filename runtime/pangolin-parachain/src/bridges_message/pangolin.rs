@@ -13,7 +13,7 @@ use crate::*;
 use bp_messages::{source_chain::*, target_chain::*, *};
 use bp_runtime::*;
 use bridge_runtime_common::messages::{self, source::*, target::*, BalanceOf, *};
-use dc_common_runtime::FromThisChainMessageVerifier;
+use dp_common_runtime::FromThisChainMessageVerifier;
 use pallet_bridge_messages::EXPECTED_DEFAULT_MESSAGE_LENGTH;
 
 /// Message delivery proof for PangolinParachain -> Pangolin messages.
