@@ -69,3 +69,6 @@ pub use fee_market::*;
 
 pub mod from_substrate_issuing_;
 pub use from_substrate_issuing_::*;
+
+pub mod remote_government;
+pub use remote_government::*;

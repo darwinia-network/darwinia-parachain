@@ -34,6 +34,7 @@ use frame_support::{
 use frame_system::{ensure_signed, RawOrigin};
 use sp_core::H256;
 use sp_runtime::traits::Convert;
+use sp_std::boxed::Box;
 // --- darwinia-network ---
 use bp_runtime::{derive_account_id, ChainId, SourceAccount};
 
