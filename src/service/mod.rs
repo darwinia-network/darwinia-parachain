@@ -30,6 +30,7 @@ pub use pangolin_parachain_runtime::RuntimeApi as PangolinParachainRuntimeApi;
 use std::{error::Error, sync::Arc, time::Duration};
 // --- crates.io ---
 use futures::lock::Mutex;
+use jsonrpsee::RpcModule;
 // --- paritytech ---
 use cumulus_client_cli::CollatorOptions;
 use cumulus_client_consensus_aura::{
@@ -333,7 +334,7 @@ where
 	RuntimeApi::RuntimeApi: RuntimeApiCollection,
 	RB: 'static
 		+ Send
-		+ Fn(Arc<FullClient<RuntimeApi>>) -> Result<jsonrpc_core::IoHandler<sc_rpc::Metadata>>,
+		+ Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcModule<()>, sc_service::Error>,
 	BIQ: FnOnce(
 		Arc<FullClient<RuntimeApi>>,
 		&Configuration,
@@ -394,7 +395,7 @@ where
 			})),
 			warp_sync: None,
 		})?;
-	let rpc_extensions_builder = {
+	let rpc_builder = {
 		let client = client.clone();
 		let transaction_pool = transaction_pool.clone();
 
@@ -402,12 +403,12 @@ where
 			let deps =
 				FullDeps { client: client.clone(), pool: transaction_pool.clone(), deny_unsafe };
 
-			Ok(dc_rpc::create_full(deps))
+			dc_rpc::create_full(deps).map_err(Into::into)
 		})
 	};
 
 	sc_service::spawn_tasks(sc_service::SpawnTasksParams {
-		rpc_extensions_builder,
+		rpc_builder,
 		client: client.clone(),
 		transaction_pool: transaction_pool.clone(),
 		task_manager: &mut task_manager,
@@ -560,7 +561,7 @@ where
 		polkadot_config,
 		collator_options,
 		id,
-		|_| Ok(Default::default()),
+		|_| Ok(RpcModule::new(())),
 		build_import_queue,
 		|client,
 		 prometheus_registry,
