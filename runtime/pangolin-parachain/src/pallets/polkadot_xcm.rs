@@ -13,7 +13,7 @@ use xcm_builder::*;
 use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
 // --- darwinia-network ---
 use crate::*;
-use dc_common_runtime::xcm_config::{DenyReserveTransferToRelayChain, DenyThenTry};
+use dp_common_runtime::xcm_config::{DenyReserveTransferToRelayChain, DenyThenTry};
 
 /// Converts a local signed origin into an XCM multilocation.
 /// Forms the basis for local origins sending/executing XCMs.

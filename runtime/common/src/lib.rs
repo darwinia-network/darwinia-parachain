@@ -19,6 +19,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 pub mod helixbridge;
+pub mod remote_government;
 pub mod xcm_config;
 
 // --- core ---

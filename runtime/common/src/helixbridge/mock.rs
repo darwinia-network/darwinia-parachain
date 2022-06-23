@@ -120,11 +120,11 @@ impl LatestMessageNoncer for MockS2sMessageSender {
 }
 
 pub struct MockMessagesBridge;
-impl MessagesBridge<AccountId<Test>, Balance, ()> for MockMessagesBridge {
+impl MessagesBridge<Origin, AccountId<Test>, Balance, ()> for MockMessagesBridge {
 	type Error = DispatchErrorWithPostInfo<PostDispatchInfo>;
 
 	fn send_message(
-		submitter: RawOrigin<AccountId<Test>>,
+		submitter: Origin,
 		_laneid: [u8; 4],
 		_payload: (),
 		fee: Balance,
@@ -153,7 +153,7 @@ impl Config for Test {
 	type BackingChainName = PangolinName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
-	type DecimalsDifference = DecimalsDifference;
+	type DecimalMultiplier = DecimalsDifference;
 	type Event = ();
 	type MessageLaneId = MessageLaneId;
 	type MessageNoncer = MockS2sMessageSender;

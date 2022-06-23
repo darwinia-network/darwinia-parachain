@@ -1,4 +1,7 @@
-// --- paritytech --
+// --- crates.io ---
+use codec::{Decode, Encode};
+use scale_info::TypeInfo;
+// --- paritytech ---
 use bp_messages::LaneId;
 use bp_runtime::ChainId;
 use frame_support::PalletId;
@@ -6,18 +9,12 @@ use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 // --- darwinia-network ---
 use crate::*;
 use bp_message_dispatch::CallOrigin;
-use bp_pangolin::AccountIdConverter;
 use bp_runtime::{messages::DispatchFeePayment, PANGOLIN_CHAIN_ID};
 use bridges_message::pangolin::{
 	ToPangolinMessagePayload, PANGOLIN_PANGOLIN_PARACHAIN_LANE, PANGOLIN_S2S_BACKING_PALLET_INDEX,
 };
-use codec::{Decode, Encode};
-use dc_common_runtime::helixbridge::{
-	CallParams, Config, CreatePayload, LatestMessageNoncer,
-};
+use dp_common_runtime::helixbridge::{CallParams, Config, CreatePayload, LatestMessageNoncer};
 use frame_support::RuntimeDebug;
-use scale_info::TypeInfo;
-
 use pallet_bridge_messages::outbound_lane;
 
 pub struct ToPangolinMessageSender;
@@ -52,7 +49,7 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type BridgedAccountIdConverter = AccountIdConverter;
+	type BridgedAccountIdConverter = bp_pangolin::AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
 	type DecimalMultiplier = DecimalMultiplier;
 	type Event = Event;
