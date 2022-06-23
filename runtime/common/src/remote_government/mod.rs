@@ -33,7 +33,7 @@ use frame_support::{
 };
 use frame_system::{ensure_signed, RawOrigin};
 use sp_core::H256;
-use sp_runtime::traits::Convert;
+use sp_runtime::traits::{Convert, Zero};
 use sp_std::boxed::Box;
 // --- darwinia-network ---
 use bp_runtime::{derive_account_id, ChainId, SourceAccount};
@@ -56,10 +56,9 @@ pub mod pallet {
 		/// Origin from which the root call can be made under the emergency mode.
 		type EmergencySafeguardOrigin: EnsureOrigin<Self::Origin>;
 
-		// TODO: disable emergency for now
-		// type CheckInterval: Get<Self::BlockNumber>;
-		//
-		// type BridgeFinalized: Get<Self::BlockNumber>;
+		type CheckInterval: Get<Self::BlockNumber>;
+
+		type BridgeFinalized: Get<Self::BlockNumber>;
 
 		/// The bridged chain id.
 		type BridgedChainId: Get<ChainId>;
@@ -72,11 +71,10 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
-		// TODO
-		// /// Bridge's GRANDPA finality has stalled for a long time, enter the emergency mode.
-		// Emergency,
-		// /// Recover from the emergency mode.
-		// Recovery,
+		/// Bridge's GRANDPA finality has stalled for a long time, enter the emergency mode.
+		Emergency,
+		/// Recover from the emergency mode.
+		Recovery,
 		/// Remote call just enacted. \[result\]
 		RemoteCallEnacted { result: DispatchResult },
 		/// Emergency safeguard just took place. \[result\]
@@ -87,56 +85,52 @@ pub mod pallet {
 	pub enum Error<T> {
 		/// Origin MUST be `SourceRoot`.
 		RequireSourceRoot,
-		// TODO: disable emergency for now
-		// /// Only available on emergency mode.
-		// EmergencyOnly,
+		/// Only available on emergency mode.
+		EmergencyOnly,
 	}
 
-	// TODO: disable emergency for now
-	// #[pallet::storage]
-	// #[pallet::getter(fn previous_bridge_finalized)]
-	// pub type PreviousBridgeFinalized<T> = StorageValue<_, BlockNumberFor<T>, ValueQuery>;
-	//
-	// #[pallet::storage]
-	// #[pallet::getter(fn emergency)]
-	// pub type Emergency<T> = StorageValue<_, bool, ValueQuery, DefaultForEmergency>;
-	// #[pallet::type_value]
-	// pub fn DefaultForEmergency() -> bool {
-	// 	false
-	// }
+	#[pallet::storage]
+	#[pallet::getter(fn previous_bridge_finalized)]
+	pub type PreviousBridgeFinalized<T> = StorageValue<_, BlockNumberFor<T>, ValueQuery>;
+
+	#[pallet::storage]
+	#[pallet::getter(fn emergency)]
+	pub type Emergency<T> = StorageValue<_, bool, ValueQuery, DefaultForEmergency>;
+	#[pallet::type_value]
+	pub fn DefaultForEmergency() -> bool {
+		false
+	}
 
 	#[pallet::pallet]
 	#[pallet::generate_store(pub(super) trait Store)]
 	pub struct Pallet<T>(PhantomData<T>);
 	#[pallet::hooks]
 	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
-		fn on_initialize(_: BlockNumberFor<T>) -> Weight {
-			0
-			// TODO: disable emergency for now
+		fn on_initialize(now: BlockNumberFor<T>) -> Weight {
 			// If emergency, we check the sync state each block.
-			// if Self::emergency() {
-			// 	if Self::check_sync() {
-			// 		<Emergency<T>>::kill();
-			//
-			// 		Self::deposit_event(Event::Recovery);
-			//
-			// 		T::DbWeight::get().reads_writes(2, 2)
-			// 	} else {
-			// 		T::DbWeight::get().reads(2)
-			// 	}
-			// } else if (now % T::CheckInterval::get()).is_zero() {
-			// 	if Self::check_sync() {
-			// 		T::DbWeight::get().reads_writes(2, 1)
-			// 	} else {
-			// 		<Emergency<T>>::put(true);
-			//
-			// 		Self::deposit_event(Event::Emergency);
-			//
-			// 		T::DbWeight::get().reads_writes(2, 2)
-			// 	}
-			// } else {
-			// 	T::DbWeight::get().reads(1)
-			// }
+			if Self::emergency() {
+				if Self::try_sync_latest_bridge_finalized() {
+					<Emergency<T>>::kill();
+
+					Self::deposit_event(Event::Recovery);
+
+					T::DbWeight::get().reads_writes(2, 2)
+				} else {
+					T::DbWeight::get().reads(2)
+				}
+			} else if (now % T::CheckInterval::get()).is_zero() {
+				if Self::try_sync_latest_bridge_finalized() {
+					T::DbWeight::get().reads_writes(2, 1)
+				} else {
+					<Emergency<T>>::put(true);
+
+					Self::deposit_event(Event::Emergency);
+
+					T::DbWeight::get().reads_writes(2, 2)
+				}
+			} else {
+				T::DbWeight::get().reads(1)
+			}
 		}
 	}
 	#[pallet::call]
@@ -150,10 +144,9 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			call: AnyCall<T>,
 		) -> DispatchResultWithPostInfo {
-			// TODO: disable emergency for now
-			// if !Self::emergency() {
-			// 	Err(<Error<T>>::EmergencyOnly)?;
-			// }
+			if !Self::emergency() {
+				Err(<Error<T>>::EmergencyOnly)?;
+			}
 
 			T::EmergencySafeguardOrigin::ensure_origin(origin)?;
 
@@ -193,21 +186,20 @@ pub mod pallet {
 		}
 	}
 	impl<T: Config> Pallet<T> {
-		// TODO: disable emergency for now
-		// fn check_sync() -> bool {
-		// 	<PreviousBridgeFinalized<T>>::try_mutate(|previous_bridge_finalized| {
-		// 		let best_finalized = T::BridgeFinalized::get();
-		//
-		// 		if *previous_bridge_finalized == best_finalized {
-		// 			Err(())
-		// 		} else {
-		// 			*previous_bridge_finalized = best_finalized;
-		//
-		// 			Ok(())
-		// 		}
-		// 	})
-		// 	.is_ok()
-		// }
+		fn try_sync_latest_bridge_finalized() -> bool {
+			<PreviousBridgeFinalized<T>>::try_mutate(|previous_bridge_finalized| {
+				let best_finalized = T::BridgeFinalized::get();
+
+				if *previous_bridge_finalized == best_finalized {
+					Err(())
+				} else {
+					*previous_bridge_finalized = best_finalized;
+
+					Ok(())
+				}
+			})
+			.is_ok()
+		}
 
 		pub(crate) fn derived_source_root() -> T::AccountId {
 			let hex_id =
