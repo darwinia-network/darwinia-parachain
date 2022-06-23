@@ -188,7 +188,6 @@ frame_support::construct_runtime! {
 		PangolinFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 		FromPangolinIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
 
-		RemoteGovernment: dp_common_runtime::remote_government::{Pallet, Call, Event<T>} = 25,
 		RemoteGovernment: dp_common_runtime::remote_government::{Pallet, Call, Storage, Event<T>} = 25,
 	}
 }

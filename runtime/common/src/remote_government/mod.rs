@@ -58,7 +58,7 @@ pub mod pallet {
 
 		type CheckInterval: Get<Self::BlockNumber>;
 
-		type BridgeFinalized: Get<Self::BlockNumber>;
+		type BridgeFinalized: Get<H256>;
 
 		/// The bridged chain id.
 		type BridgedChainId: Get<ChainId>;
@@ -91,7 +91,7 @@ pub mod pallet {
 
 	#[pallet::storage]
 	#[pallet::getter(fn previous_bridge_finalized)]
-	pub type PreviousBridgeFinalized<T> = StorageValue<_, BlockNumberFor<T>, ValueQuery>;
+	pub type PreviousBridgeFinalized<T> = StorageValue<_, H256, ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn emergency)]

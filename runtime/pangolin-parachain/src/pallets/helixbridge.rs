@@ -9,7 +9,6 @@ use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 // --- darwinia-network ---
 use crate::*;
 use bp_message_dispatch::CallOrigin;
-use bp_pangolin::AccountIdConverter;
 use bp_runtime::{messages::DispatchFeePayment, PANGOLIN_CHAIN_ID};
 use bridges_message::pangolin::{
 	ToPangolinMessagePayload, PANGOLIN_PANGOLIN_PARACHAIN_LANE, PANGOLIN_S2S_BACKING_PALLET_INDEX,
@@ -54,7 +53,7 @@ frame_support::parameter_types! {
 
 impl Config for Runtime {
 	type BackingChainName = BackingChainName;
-	type BridgedAccountIdConverter = AccountIdConverter;
+	type BridgedAccountIdConverter = bp_pangolin::AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
 	type DecimalMultiplier = DecimalMultiplier;
 	type Event = Event;

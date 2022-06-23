@@ -1,9 +1,8 @@
 // --- paritytech ---
-use frame_support::traits::EnsureOrigin;
+use frame_support::traits::{EnsureOrigin, Get};
 use frame_system::RawOrigin;
 // --- darwinia-network ---
 use crate::*;
-use bp_pangolin::AccountIdConverter;
 use dp_common_runtime::remote_government::Config;
 
 pub struct EnsureSpecific;
@@ -25,10 +24,23 @@ impl<O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>> Ensu
 	}
 }
 
+pub struct PangolinBestFinalized;
+impl Get<Hash> for PangolinBestFinalized {
+	fn get() -> Hash {
+		<pallet_bridge_grandpa::BestFinalized<Runtime, WithPangolinGrandpa>>::get()
+	}
+}
+
+frame_support::parameter_types! {
+	pub const CheckInterval: BlockNumber = 2 * HOURS;
+}
+
 impl Config for Runtime {
-	type BridgeAccountIdConverter = AccountIdConverter;
+	type BridgeAccountIdConverter = bp_pangolin::AccountIdConverter;
+	type BridgeFinalized = PangolinBestFinalized;
 	type BridgedChainId = PangolinChainId;
 	type Call = Call;
+	type CheckInterval = CheckInterval;
 	type EmergencySafeguardOrigin = EnsureSpecific;
 	type Event = Event;
 }
