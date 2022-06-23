@@ -85,7 +85,7 @@ use sp_std::prelude::*;
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
 // --- darwinia-network ---
-use dc_common_runtime::*;
+use dp_common_runtime::*;
 
 /// Block type as expected by this runtime.
 pub type Block = generic::Block<Header, UncheckedExtrinsic>;
@@ -186,7 +186,9 @@ frame_support::construct_runtime! {
 		BridgePangolinDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
 
 		PangolinFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
-		FromPangolinIssuing: dc_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
+		FromPangolinIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
+
+		RemoteGovernment: dp_common_runtime::remote_government::{Pallet, Call, Storage, Event<T>} = 25,
 	}
 }
 

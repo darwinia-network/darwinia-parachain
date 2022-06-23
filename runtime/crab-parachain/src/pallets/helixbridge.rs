@@ -1,22 +1,18 @@
+// --- crates.io ---
+use codec::{Decode, Encode};
+use scale_info::TypeInfo;
 // --- paritytech --
 use bp_messages::LaneId;
 use bp_runtime::ChainId;
-use frame_support::PalletId;
+use frame_support::{PalletId, RuntimeDebug};
 use pallet_bridge_messages::Instance1 as WithCrabMessages;
 // --- darwinia-network ---
 use crate::*;
-use bp_crab::AccountIdConverter;
 use bp_message_dispatch::CallOrigin;
 use bp_runtime::{messages::DispatchFeePayment, CRAB_CHAIN_ID};
 use bridge_runtime_common::lanes::CRAB_CRAB_PARACHAIN_LANE;
 use bridges_message::crab::ToCrabMessagePayload;
-use codec::{Decode, Encode};
-use dc_common_runtime::helixbridge::{
-	CallParams, Config, CreatePayload, LatestMessageNoncer,
-};
-use frame_support::RuntimeDebug;
-use scale_info::TypeInfo;
-
+use dp_common_runtime::helixbridge::{CallParams, Config, CreatePayload, LatestMessageNoncer};
 use pallet_bridge_messages::outbound_lane;
 
 /// The s2s backing pallet index in the crab chain runtime.
@@ -54,7 +50,7 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type BridgedAccountIdConverter = AccountIdConverter;
+	type BridgedAccountIdConverter = bp_crab::AccountIdConverter;
 	type BridgedChainId = CrabChainId;
 	type DecimalMultiplier = DecimalMultiplier;
 	type Event = Event;

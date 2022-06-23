@@ -16,7 +16,7 @@ use bridge_runtime_common::{
 	lanes::*,
 	messages::{self, source::*, target::*, BalanceOf, *},
 };
-use dc_common_runtime::FromThisChainMessageVerifier;
+use dp_common_runtime::FromThisChainMessageVerifier;
 use pallet_bridge_messages::EXPECTED_DEFAULT_MESSAGE_LENGTH;
 
 /// Message delivery proof for CrabParachain -> Crab messages.

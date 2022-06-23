@@ -4,7 +4,7 @@ description = "Darwinia Collator Common Runtime"
 edition     = "2021"
 homepage    = "https://darwinia.network/"
 license     = "GPL-3.0"
-name        = "dc-common-runtime"
+name        = "dp-common-runtime"
 readme      = "README.md"
 repository  = "https://github.com/darwinia-network/darwinia-parachain"
 version     = "5.2.1"
@@ -19,8 +19,8 @@ smallvec       = { version = "1.8" }
 # cumulus
 pallet-collator-selection = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.20" }
 # darwinia-messages-substrate
-bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
 bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
+bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
 bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
 bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
 pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.20" }
@@ -74,7 +74,7 @@ std = [
 	"sp-std/std",
 	# polkadot
 	"xcm/std",
-	"xcm-executor/std"
+	"xcm-executor/std",
 ]
 
 runtime-benchmarks = ["frame-benchmarking"]
