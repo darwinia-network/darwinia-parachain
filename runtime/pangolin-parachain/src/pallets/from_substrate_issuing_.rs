@@ -13,23 +13,23 @@ use bridges_message::pangolin::{
 };
 use codec::{Decode, Encode};
 use dc_common_runtime::helixbridge::{
-	CallParams, ChainName, Config, CreatePayload, LatestMessageNoncer,
+	CallParams, Config, CreatePayload, LatestMessageNoncer,
 };
 use frame_support::RuntimeDebug;
 use scale_info::TypeInfo;
 
 use pallet_bridge_messages::outbound_lane;
 
-pub struct ToPangoroMessageSender;
-impl LatestMessageNoncer for ToPangoroMessageSender {
+pub struct ToPangolinMessageSender;
+impl LatestMessageNoncer for ToPangolinMessageSender {
 	fn outbound_latest_generated_nonce(lane_id: LaneId) -> u64 {
 		outbound_lane::<Runtime, WithPangolinMessages>(lane_id).data().latest_generated_nonce.into()
 	}
 }
 
 #[derive(Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug, TypeInfo)]
-pub struct ToPangoroOutboundPayLoad;
-impl CreatePayload<AccountId, AccountPublic, Signature, Runtime> for ToPangoroOutboundPayLoad {
+pub struct ToPangolinOutboundPayLoad;
+impl CreatePayload<AccountId, AccountPublic, Signature, Runtime> for ToPangolinOutboundPayLoad {
 	type Payload = ToPangolinMessagePayload;
 
 	fn create(
@@ -49,19 +49,17 @@ frame_support::parameter_types! {
 	pub const DecimalMultiplier: u128 = 1_000_000_000u128;
 	pub const ParachainIssuingPalletId: PalletId = PalletId(*b"da/paais");
 	pub const PangolinChainId: ChainId = PANGOLIN_CHAIN_ID;
-	pub BackingChainName: ChainName = (b"Pangolin").to_vec();
 }
 
 impl Config for Runtime {
-	type BackingChainName = BackingChainName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
 	type DecimalMultiplier = DecimalMultiplier;
 	type Event = Event;
 	type MessageLaneId = BridgePangolinLaneId;
-	type MessageNoncer = ToPangoroMessageSender;
+	type MessageNoncer = ToPangolinMessageSender;
 	type MessagesBridge = BridgePangolinMessages;
-	type OutboundPayloadCreator = ToPangoroOutboundPayLoad;
+	type OutboundPayloadCreator = ToPangolinOutboundPayLoad;
 	type PalletId = ParachainIssuingPalletId;
 	type RingCurrency = Ring;
 	type WeightInfo = ();
