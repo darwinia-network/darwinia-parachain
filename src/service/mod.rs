@@ -328,13 +328,13 @@ async fn start_node_impl<RuntimeApi, RB, BIQ, BIC>(
 	build_import_queue: BIQ,
 	build_consensus: BIC,
 	hwbench: Option<sc_sysinfo::HwBench>,
-) -> sc_service::error::Result<(TaskManager, Arc<FullClient<RuntimeApi>>)>
+) -> Result<(TaskManager, Arc<FullClient<RuntimeApi>>)>
 where
 	RuntimeApi: 'static + Send + Sync + sp_api::ConstructRuntimeApi<Block, FullClient<RuntimeApi>>,
 	RuntimeApi::RuntimeApi: RuntimeApiCollection,
 	RB: 'static
 		+ Send
-		+ Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcModule<()>, sc_service::Error>,
+		+ Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcModule<()>>,
 	BIQ: FnOnce(
 		Arc<FullClient<RuntimeApi>>,
 		&Configuration,
