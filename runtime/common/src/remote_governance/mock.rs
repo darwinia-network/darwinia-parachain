@@ -133,7 +133,7 @@ construct_runtime!(
 	{
 		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
 		Balances: pallet_balances::{Pallet, Storage, Call, Event<T>},
-		RemoteGovernment: remote_governance::{Pallet, Storage, Call, Event<T>},
+		RemoteGovernance: remote_governance::{Pallet, Storage, Call, Event<T>},
 	}
 );
 
