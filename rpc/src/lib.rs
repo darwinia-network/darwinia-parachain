@@ -25,7 +25,6 @@ use std::sync::Arc;
 // --- crates.io ---
 use jsonrpsee::RpcModule;
 // --- paritytech ---
-use sc_rpc::Metadata;
 use sp_blockchain::Error as BlockChainError;
 // --- darwinia-network ---
 use dc_primitives::{AccountId, Balance, Nonce, OpaqueBlock as Block};
