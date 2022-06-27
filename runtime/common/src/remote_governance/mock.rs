@@ -18,7 +18,7 @@
 
 //! Mocks for the governance module.
 
-mod remote_government {
+mod remote_governance {
 	pub use super::super::*;
 }
 
@@ -133,7 +133,7 @@ construct_runtime!(
 	{
 		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
 		Balances: pallet_balances::{Pallet, Storage, Call, Event<T>},
-		RemoteGovernment: remote_government::{Pallet, Storage, Call, Event<T>},
+		RemoteGovernment: remote_governance::{Pallet, Storage, Call, Event<T>},
 	}
 );
 
@@ -156,6 +156,6 @@ impl Default for ExtBuilder {
 pub fn run_to_block(n: BlockNumber) {
 	for b in System::block_number() + 1..=n {
 		System::set_block_number(b);
-		<remote_government::Pallet<Test> as OnInitialize<BlockNumber>>::on_initialize(b);
+		<remote_governance::Pallet<Test> as OnInitialize<BlockNumber>>::on_initialize(b);
 	}
 }
