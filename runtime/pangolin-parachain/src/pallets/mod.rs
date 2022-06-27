@@ -70,5 +70,5 @@ pub use fee_market::*;
 pub mod helixbridge;
 pub use helixbridge::*;
 
-pub mod remote_government;
-pub use remote_government::*;
+pub mod remote_governance;
+pub use remote_governance::*;
