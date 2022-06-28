@@ -332,9 +332,7 @@ async fn start_node_impl<RuntimeApi, RB, BIQ, BIC>(
 where
 	RuntimeApi: 'static + Send + Sync + sp_api::ConstructRuntimeApi<Block, FullClient<RuntimeApi>>,
 	RuntimeApi::RuntimeApi: RuntimeApiCollection,
-	RB: 'static
-		+ Send
-		+ Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcModule<()>>,
+	RB: 'static + Send + Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcModule<()>>,
 	BIQ: FnOnce(
 		Arc<FullClient<RuntimeApi>>,
 		&Configuration,
