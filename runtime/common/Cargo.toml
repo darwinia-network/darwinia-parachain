@@ -1,6 +1,6 @@
 [package]
 authors     = ["Darwinia Network <hello@darwinia.network>"]
-description = "Darwinia Collator Common Runtime"
+description = "Darwinia Parachain Common Runtime"
 edition     = "2021"
 homepage    = "https://darwinia.network/"
 license     = "GPL-3.0"
@@ -25,7 +25,7 @@ bp-runtime             = { default-features = false, git = "https://github.com/d
 bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.23" }
 pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.23" }
 pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.23" }
-# darwinia-collator
+# darwinia-parachain
 dc-primitives = { default-features = false, path = "../../primitives" }
 # substrate
 frame-benchmarking         = { default-features = false, optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.23" }
@@ -61,7 +61,7 @@ std = [
 	"bridge-runtime-common/std",
 	"pallet-bridge-dispatch/std",
 	"pallet-fee-market/std",
-	# darwinia-collator
+	# darwinia-parachain
 	"dc-primitives/std",
 	# substrate
 	"frame-benchmarking/std",

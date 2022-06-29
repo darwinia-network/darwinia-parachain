@@ -2234,7 +2234,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "darwinia-collator"
+name = "darwinia-parachain"
 version = "5.2.2-rc1"
 dependencies = [
  "array-bytes",
