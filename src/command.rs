@@ -275,7 +275,7 @@ pub fn run() -> Result<()> {
 					.chain(cli.relay_chain_args.iter()),
 			);
 			let id = ParaId::from(para_id);
-			let parachain_account = AccountIdConversion::<AccountId>::into_account(&id);
+			let parachain_account = AccountIdConversion::<AccountId>::into_account_truncating(&id);
 			let state_version =
 				RelayChainCli::native_runtime_version(&config.chain_spec).state_version();
 			let block: Block = generate_genesis_block(&config.chain_spec, state_version)
