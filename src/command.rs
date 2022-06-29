@@ -25,14 +25,13 @@ use log::info;
 use cumulus_client_service::genesis::generate_genesis_block;
 use cumulus_primitives_core::ParaId;
 use frame_benchmarking_cli::{BenchmarkCmd, SUBSTRATE_REFERENCE_HARDWARE};
-use polkadot_parachain::primitives::AccountIdConversion;
 use sc_cli::{
 	ChainSpec, CliConfiguration, DefaultConfigurationValues, ImportParams, KeystoreParams,
 	NetworkParams, Result, RuntimeVersion, SharedParams, SubstrateCli,
 };
 use sc_service::config::{BasePath, PrometheusConfig};
 use sp_core::{crypto::Ss58AddressFormatRegistry, hexdisplay::HexDisplay};
-use sp_runtime::traits::Block as BlockT;
+use sp_runtime::traits::{AccountIdConversion, Block as BlockT};
 // --- darwinia-network ---
 use crate::{
 	chain_spec::*,
