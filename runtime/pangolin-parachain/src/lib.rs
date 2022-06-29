@@ -298,27 +298,6 @@ sp_api::impl_runtime_apis! {
 		}
 	}
 
-	impl bp_pangolin::PangolinFinalityApi<Block> for Runtime {
-		fn best_finalized() -> (bp_pangolin::BlockNumber, bp_pangolin::Hash) {
-			let header = BridgePangolinGrandpa::best_finalized();
-			(header.number, header.hash())
-		}
-	}
-
-	impl bp_pangolin::ToPangolinOutboundLaneApi<Block, Balance, bm_pangolin::ToPangolinMessagePayload> for Runtime {
-		fn message_details(
-			lane: bp_messages::LaneId,
-			begin: bp_messages::MessageNonce,
-			end: bp_messages::MessageNonce,
-		) -> Vec<bp_messages::MessageDetails<Balance>> {
-			bridge_runtime_common::messages_api::outbound_message_details::<
-				Runtime,
-				WithPangolinMessages,
-				bm_pangolin::WithPangolinMessageBridge,
-			>(lane, begin, end)
-		}
-	}
-
 	#[cfg(feature = "runtime-benchmarks")]
 	impl frame_benchmarking::Benchmark<Block> for Runtime {
 		fn benchmark_metadata(extra: bool) -> (
