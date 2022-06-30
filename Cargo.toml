@@ -118,18 +118,3 @@ members = [
 	"rpc",
 	"runtime/*",
 ]
-
-[patch."https://github.com/darwinia-network/darwinia-messages-substrate"]
-bp-message-dispatch    = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/message-dispatch" }
-bp-messages            = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/messages" }
-bp-pangolin            = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/chain-pangolin" }
-bp-pangolin-parachain  = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/chain-pangolin-parachain" }
-bp-polkadot-core       = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/polkadot-core" }
-bp-runtime             = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/runtime" }
-bp-crab                = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/chain-crab" }
-bp-crab-parachain      = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/chain-crab-parachain" }
-bridge-runtime-common  = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/bin/runtime-common" }
-pallet-bridge-dispatch = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/modules/dispatch" }
-pallet-bridge-grandpa  = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/modules/grandpa" }
-pallet-bridge-messages = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/modules/messages" }
-pallet-fee-market      = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/modules/fee-market" }
