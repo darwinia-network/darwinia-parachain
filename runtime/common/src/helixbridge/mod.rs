@@ -395,7 +395,7 @@ pub mod pallet {
 
 	impl<T: Config> Pallet<T> {
 		pub fn pallet_account_id() -> T::AccountId {
-			T::PalletId::get().into_account()
+			T::PalletId::get().into_account_truncating()
 		}
 
 		pub fn derived_backing_id(backing_account: T::AccountId) -> T::AccountId {
