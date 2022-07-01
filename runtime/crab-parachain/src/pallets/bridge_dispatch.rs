@@ -1,7 +1,7 @@
 pub use pallet_bridge_dispatch::Instance1 as WithCrabDispatch;
 
 // --- paritytech ---
-use sp_runtime::transaction_validity::{TransactionValidityError};
+use sp_runtime::transaction_validity::TransactionValidityError;
 // --- darwinia-network ---
 use crate::*;
 use bp_message_dispatch::{CallValidate, IntoDispatchOrigin as IntoDispatchOriginT};
