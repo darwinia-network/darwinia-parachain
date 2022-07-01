@@ -1,8 +1,7 @@
 pub use pallet_bridge_dispatch::Instance1 as WithPangolinDispatch;
 
 // --- paritytech ---
-use frame_support::traits::Everything;
-use sp_runtime::transaction_validity::{InvalidTransaction, TransactionValidityError};
+use sp_runtime::transaction_validity::{TransactionValidityError};
 // --- darwinia-network ---
 use crate::*;
 use bp_message_dispatch::{CallValidate, IntoDispatchOrigin as IntoDispatchOriginT};
@@ -12,16 +11,16 @@ use pallet_bridge_dispatch::Config;
 pub struct CallValidator;
 impl CallValidate<bp_pangolin_parachain::AccountId, Origin, Call> for CallValidator {
 	fn check_receiving_before_dispatch(
-		relayer_account: &bp_pangolin_parachain::AccountId,
-		call: &Call,
+		_relayer_account: &bp_pangolin_parachain::AccountId,
+		_call: &Call,
 	) -> Result<(), &'static str> {
 		Ok(())
 	}
 
 	fn call_validate(
-		relayer_account: &bp_pangolin_parachain::AccountId,
-		origin: &Origin,
-		call: &Call,
+		_relayer_account: &bp_pangolin_parachain::AccountId,
+		_origin: &Origin,
+		_call: &Call,
 	) -> Result<(), TransactionValidityError> {
 		Ok(())
 	}
