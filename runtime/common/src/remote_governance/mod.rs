@@ -49,7 +49,7 @@ pub mod pallet {
 		/// The overarching event type.
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 
-		/// Remote government call or a emergency call.
+		/// Remote governance call or a emergency call.
 		type Call: Parameter + GetDispatchInfo + UnfilteredDispatchable<Origin = Self::Origin>;
 
 		/// Origin from which the root call can be made under the emergency mode.

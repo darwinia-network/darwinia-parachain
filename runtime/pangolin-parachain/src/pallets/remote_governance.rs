@@ -3,7 +3,7 @@ use frame_support::traits::{EnsureOrigin, Get};
 use frame_system::RawOrigin;
 // --- darwinia-network ---
 use crate::*;
-use dp_common_runtime::remote_government::Config;
+use dp_common_runtime::remote_governance::Config;
 
 pub struct EnsureSpecific;
 impl<O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>> EnsureOrigin<O>
