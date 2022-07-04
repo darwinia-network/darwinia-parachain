@@ -1436,7 +1436,7 @@ dependencies = [
 
 [[package]]
 name = "crab-parachain-runtime"
-version = "5.2.2-rc1"
+version = "5.3.0"
 dependencies = [
  "array-bytes",
  "bp-crab",
@@ -2255,7 +2255,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-collator"
-version = "5.2.2-rc1"
+version = "5.3.0"
 dependencies = [
  "array-bytes",
  "async-trait",
@@ -2323,7 +2323,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-parachain-runtime"
-version = "5.2.2-rc1"
+version = "5.3.0"
 dependencies = [
  "array-bytes",
  "cumulus-pallet-aura-ext",
@@ -2408,7 +2408,7 @@ dependencies = [
 
 [[package]]
 name = "dc-primitives"
-version = "5.2.2-rc1"
+version = "5.3.0"
 dependencies = [
  "sp-core",
  "sp-runtime",
@@ -2416,7 +2416,7 @@ dependencies = [
 
 [[package]]
 name = "dc-rpc"
-version = "5.2.2-rc1"
+version = "5.3.0"
 dependencies = [
  "dc-primitives",
  "jsonrpc-core",
@@ -2562,7 +2562,7 @@ checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 
 [[package]]
 name = "dp-common-runtime"
-version = "5.2.2-rc1"
+version = "5.3.0"
 dependencies = [
  "array-bytes",
  "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
@@ -6698,7 +6698,7 @@ dependencies = [
 
 [[package]]
 name = "pangolin-parachain-runtime"
-version = "5.2.2-rc1"
+version = "5.3.0"
 dependencies = [
  "array-bytes",
  "bp-message-dispatch 0.1.0 (git+https://github.com/darwinia-network/darwinia-messages-substrate?branch=polkadot-v0.9.20)",
