@@ -150,7 +150,6 @@ impl<AccountId, Signer, Signature> CreatePayload<AccountId, Signer, Signature, T
 }
 
 impl Config for Test {
-	type BackingChainName = PangolinName;
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
 	type DecimalMultiplier = DecimalsDifference;
