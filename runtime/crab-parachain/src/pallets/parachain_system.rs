@@ -1,5 +1,5 @@
 // --- paritytech ---
-use cumulus_pallet_parachain_system::Config;
+use cumulus_pallet_parachain_system::{Config, RelayNumberStrictlyIncreases};
 use frame_support::weights::Weight;
 use parachain_info::Pallet as ParachainInfoPallet;
 // --- darwinia-network ---
@@ -19,4 +19,5 @@ impl Config for Runtime {
 	type ReservedXcmpWeight = ReservedXcmpWeight;
 	type SelfParaId = ParachainInfoPallet<Runtime>;
 	type XcmpMessageHandler = XcmpQueue;
+	type CheckAssociatedRelayNumber = RelayNumberStrictlyIncreases;
 }
