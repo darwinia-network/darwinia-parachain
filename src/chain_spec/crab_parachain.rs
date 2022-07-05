@@ -64,7 +64,7 @@ pub fn genesis_config() -> ChainSpec {
 			// @HackFisher
 			"0x7e8672b2c2ad0904ba6137de480eaa3b9476042f3f2ae08da033c4ccf2272d5a",
 			"0xbe7e6c55feca7ffbfd961c93acdf1bc68bea91d758fb8da92f65c66bbf12ea74",
-			// @wi1dcard
+			// @fewensa
 			"0xea0f4185dd32c1278d7bbd3cdd2fbaec3ca29921a88c04c175401a0668d88e66",
 			"0x56695000227fee2b4e2b15e892527250e47d4671e17f6e604cd67fb7213bbc19",
 			// @AurevoirXavier
