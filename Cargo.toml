@@ -10,10 +10,6 @@ readme      = "README.md"
 repository  = "https://github.com/darwinia-network/darwinia-parachain"
 version     = "5.3.0"
 
-[[bin]]
-name = "darwinia-parachain"
-path = "src/main.rs"
-
 [features]
 alpha = ["pangolin-parachain-runtime/alpha"]
 
