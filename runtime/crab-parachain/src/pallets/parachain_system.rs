@@ -11,6 +11,7 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
+	type CheckAssociatedRelayNumber = RelayNumberStrictlyIncreases;
 	type DmpMessageHandler = DmpQueue;
 	type Event = Event;
 	type OnSystemEvent = ();
@@ -19,5 +20,4 @@ impl Config for Runtime {
 	type ReservedXcmpWeight = ReservedXcmpWeight;
 	type SelfParaId = ParachainInfoPallet<Runtime>;
 	type XcmpMessageHandler = XcmpQueue;
-	type CheckAssociatedRelayNumber = RelayNumberStrictlyIncreases;
 }
