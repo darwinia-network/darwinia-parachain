@@ -148,7 +148,7 @@ frame_support::construct_runtime! {
 
 		// Monetary stuff.
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>} = 5,
-		TransactionPayment: pallet_transaction_payment::{Pallet, Storage, Event<T>} = 6,
+		TransactionPayment: pallet_transaction_payment::{Pallet, Storage} = 6,
 
 		// Collator support. the order of these 4 are important and shall not change.
 		Authorship: pallet_authorship::{Pallet, Call, Storage} = 7,

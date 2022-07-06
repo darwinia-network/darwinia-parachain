@@ -13,7 +13,6 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type Event = Event;
 	type FeeMultiplierUpdate = SlowAdjustingFeeUpdate<Self>;
 	type LengthToFee = ConstantMultiplier<Balance, TransactionByteFee>;
 	type OnChargeTransaction = CurrencyAdapter<Ring, DealWithFees<Runtime>>;
