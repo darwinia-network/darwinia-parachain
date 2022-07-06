@@ -2258,7 +2258,6 @@ dependencies = [
  "frame-benchmarking",
  "frame-benchmarking-cli",
  "futures 0.3.21",
- "jsonrpsee",
  "log",
  "pallet-transaction-payment-rpc",
  "pangolin-parachain-runtime",

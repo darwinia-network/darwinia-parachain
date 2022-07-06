@@ -37,15 +37,14 @@ runtime-benchmarks = [
 
 [dependencies]
 # crates.io
-array-bytes  = { version = "2.0" }
-async-trait  = { version = "0.1" }
-clap         = { version = "3.1", features = ["derive"] }
-codec        = { package = "parity-scale-codec", version = "3.1" }
-futures      = { version = "0.3" }
-jsonrpsee    = { version = "0.13", features = ["server"] }
-log          = { version = "0.4" }
-serde        = { version = "1.0", features = ["derive"] }
-tempfile     = { version = "3.3" }
+array-bytes = { version = "2.0" }
+async-trait = { version = "0.1" }
+clap        = { version = "3.1", features = ["derive"] }
+codec       = { package = "parity-scale-codec", version = "3.1" }
+futures     = { version = "0.3" }
+log         = { version = "0.4" }
+serde       = { version = "1.0", features = ["derive"] }
+tempfile    = { version = "3.3" }
 
 # parachain
 crab-parachain-runtime     = { path = "runtime/crab-parachain" }

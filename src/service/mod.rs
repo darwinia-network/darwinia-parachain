@@ -30,7 +30,6 @@ pub use pangolin_parachain_runtime::RuntimeApi as PangolinParachainRuntimeApi;
 use std::{error::Error, sync::Arc, time::Duration};
 // --- crates.io ---
 use futures::lock::Mutex;
-use jsonrpsee::RpcModule;
 // --- paritytech ---
 use cumulus_client_cli::CollatorOptions;
 use cumulus_client_consensus_aura::{
@@ -77,7 +76,7 @@ use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
 use substrate_prometheus_endpoint::Registry;
 // --- darwinia-network ---
 use dc_primitives::{OpaqueBlock as Block, *};
-use dc_rpc::FullDeps;
+use dc_rpc::{FullDeps, RpcExtension};
 
 type FullBackend = TFullBackend<Block>;
 type FullClient<RuntimeApi> = TFullClient<Block, RuntimeApi, WasmExecutor<HostFunctions>>;
@@ -332,7 +331,7 @@ async fn start_node_impl<RuntimeApi, RB, BIQ, BIC>(
 where
 	RuntimeApi: 'static + Send + Sync + sp_api::ConstructRuntimeApi<Block, FullClient<RuntimeApi>>,
 	RuntimeApi::RuntimeApi: RuntimeApiCollection,
-	RB: 'static + Send + Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcModule<()>>,
+	RB: 'static + Send + Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcExtension>,
 	BIQ: FnOnce(
 		Arc<FullClient<RuntimeApi>>,
 		&Configuration,
@@ -559,7 +558,7 @@ where
 		polkadot_config,
 		collator_options,
 		id,
-		|_| Ok(RpcModule::new(())),
+		|_| Ok(RpcExtension::new(())),
 		build_import_queue,
 		|client,
 		 prometheus_registry,

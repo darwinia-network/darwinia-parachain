@@ -254,7 +254,6 @@ pub fn run() -> Result<()> {
 		None => cli.create_runner(&cli.run.normalize())?.run_node_until_exit(|config| async move {
 			let chain_spec = &config.chain_spec;
 			let collator_options = cli.run.collator_options();
-
 			let hwbench = if !cli.no_hardware_benchmarks {
 				config.database.path().map(|database_path| {
 					let _ = std::fs::create_dir_all(&database_path);
