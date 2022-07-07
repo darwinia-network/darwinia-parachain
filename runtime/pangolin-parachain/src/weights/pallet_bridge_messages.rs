@@ -24,7 +24,7 @@
 
 // Executed Command:
 // ./target/release/darwinia-collator
-// benchmark
+// benchmark pallet
 // --chain
 // pangolin-parachain-dev
 // --execution

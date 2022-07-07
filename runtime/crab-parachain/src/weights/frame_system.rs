@@ -24,7 +24,7 @@
 
 // Executed Command:
 // target/release/darwinia-collator
-// benchmark
+// benchmark pallet
 // --header
 // .maintain/lincense-header
 // --execution

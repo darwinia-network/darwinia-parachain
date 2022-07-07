@@ -24,7 +24,7 @@ use log::info;
 // --- paritytech ---
 use cumulus_client_service::genesis::generate_genesis_block;
 use cumulus_primitives_core::ParaId;
-use frame_benchmarking_cli::BenchmarkCmd;
+use frame_benchmarking_cli::{BenchmarkCmd, SUBSTRATE_REFERENCE_HARDWARE};
 use polkadot_parachain::primitives::AccountIdConversion;
 use sc_cli::{
 	ChainSpec, CliConfiguration, DefaultConfigurationValues, ImportParams, KeystoreParams,
@@ -254,6 +254,14 @@ pub fn run() -> Result<()> {
 		None => cli.create_runner(&cli.run.normalize())?.run_node_until_exit(|config| async move {
 			let chain_spec = &config.chain_spec;
 			let collator_options = cli.run.collator_options();
+			let hwbench = if !cli.no_hardware_benchmarks {
+				config.database.path().map(|database_path| {
+					let _ = std::fs::create_dir_all(&database_path);
+					sc_sysinfo::gather_hwbench(Some(database_path))
+				})
+			} else {
+				None
+			};
 
 			set_default_ss58_version(chain_spec);
 
@@ -289,6 +297,7 @@ pub fn run() -> Result<()> {
 					polkadot_config,
 					collator_options,
 					id,
+					hwbench,
 				)
 				.await
 				.map(|r| r.0)
@@ -299,6 +308,7 @@ pub fn run() -> Result<()> {
 					polkadot_config,
 					collator_options,
 					id,
+					hwbench,
 				)
 				.await
 				.map(|r| r.0)
@@ -309,6 +319,7 @@ pub fn run() -> Result<()> {
 					polkadot_config,
 					collator_options,
 					id,
+					hwbench,
 				)
 				.await
 				.map(|r| r.0)
@@ -442,7 +453,8 @@ pub fn run() -> Result<()> {
 					})
 				}),
 				BenchmarkCmd::Overhead(_) => Err("Unsupported benchmarking command".into()),
-				BenchmarkCmd::Machine(cmd) => runner.sync_run(|config| cmd.run(&config)),
+				BenchmarkCmd::Machine(cmd) =>
+					runner.sync_run(|config| cmd.run(&config, SUBSTRATE_REFERENCE_HARDWARE.clone())),
 			}
 		},
 		#[cfg(feature = "try-runtime")]

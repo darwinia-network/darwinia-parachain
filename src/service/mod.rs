@@ -76,7 +76,7 @@ use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
 use substrate_prometheus_endpoint::Registry;
 // --- darwinia-network ---
 use dc_primitives::{OpaqueBlock as Block, *};
-use dc_rpc::FullDeps;
+use dc_rpc::{FullDeps, RpcExtension};
 
 type FullBackend = TFullBackend<Block>;
 type FullClient<RuntimeApi> = TFullClient<Block, RuntimeApi, WasmExecutor<HostFunctions>>;
@@ -299,6 +299,7 @@ async fn build_relay_chain_interface(
 	telemetry_worker_handle: Option<TelemetryWorkerHandle>,
 	task_manager: &mut TaskManager,
 	collator_options: CollatorOptions,
+	hwbench: Option<sc_sysinfo::HwBench>,
 ) -> RelayChainResult<(Arc<(dyn RelayChainInterface + 'static)>, Option<CollatorPair>)> {
 	match collator_options.relay_chain_rpc_url {
 		Some(relay_chain_url) =>
@@ -308,6 +309,7 @@ async fn build_relay_chain_interface(
 			parachain_config,
 			telemetry_worker_handle,
 			task_manager,
+			hwbench,
 		),
 	}
 }
@@ -324,13 +326,12 @@ async fn start_node_impl<RuntimeApi, RB, BIQ, BIC>(
 	_rpc_ext_builder: RB,
 	build_import_queue: BIQ,
 	build_consensus: BIC,
-) -> sc_service::error::Result<(TaskManager, Arc<FullClient<RuntimeApi>>)>
+	hwbench: Option<sc_sysinfo::HwBench>,
+) -> Result<(TaskManager, Arc<FullClient<RuntimeApi>>)>
 where
 	RuntimeApi: 'static + Send + Sync + sp_api::ConstructRuntimeApi<Block, FullClient<RuntimeApi>>,
 	RuntimeApi::RuntimeApi: RuntimeApiCollection,
-	RB: 'static
-		+ Send
-		+ Fn(Arc<FullClient<RuntimeApi>>) -> Result<jsonrpc_core::IoHandler<sc_rpc::Metadata>>,
+	RB: 'static + Send + Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcExtension>,
 	BIQ: FnOnce(
 		Arc<FullClient<RuntimeApi>>,
 		&Configuration,
@@ -366,6 +367,7 @@ where
 		telemetry_worker_handle,
 		&mut task_manager,
 		collator_options.clone(),
+		hwbench.clone(),
 	)
 	.await
 	.map_err(|e| match e {
@@ -390,7 +392,7 @@ where
 			})),
 			warp_sync: None,
 		})?;
-	let rpc_extensions_builder = {
+	let rpc_builder = {
 		let client = client.clone();
 		let transaction_pool = transaction_pool.clone();
 
@@ -398,12 +400,12 @@ where
 			let deps =
 				FullDeps { client: client.clone(), pool: transaction_pool.clone(), deny_unsafe };
 
-			Ok(dc_rpc::create_full(deps))
+			dc_rpc::create_full(deps).map_err(Into::into)
 		})
 	};
 
 	sc_service::spawn_tasks(sc_service::SpawnTasksParams {
-		rpc_extensions_builder,
+		rpc_builder,
 		client: client.clone(),
 		transaction_pool: transaction_pool.clone(),
 		task_manager: &mut task_manager,
@@ -414,6 +416,19 @@ where
 		system_rpc_tx,
 		telemetry: telemetry.as_mut(),
 	})?;
+
+	if let Some(hwbench) = hwbench {
+		sc_sysinfo::print_hwbench(&hwbench);
+
+		if let Some(ref mut telemetry) = telemetry {
+			let telemetry_handle = telemetry.handle();
+			task_manager.spawn_handle().spawn(
+				"telemetry_hwbench",
+				None,
+				sc_sysinfo::initialize_hwbench_telemetry(telemetry_handle, hwbench),
+			);
+		}
+	}
 
 	let announce_block = {
 		let network = network.clone();
@@ -532,6 +547,7 @@ pub async fn start_node<RuntimeApi>(
 	polkadot_config: Configuration,
 	collator_options: CollatorOptions,
 	id: ParaId,
+	hwbench: Option<sc_sysinfo::HwBench>,
 ) -> Result<(TaskManager, Arc<FullClient<RuntimeApi>>)>
 where
 	RuntimeApi: 'static + Send + Sync + sp_api::ConstructRuntimeApi<Block, FullClient<RuntimeApi>>,
@@ -542,7 +558,7 @@ where
 		polkadot_config,
 		collator_options,
 		id,
-		|_| Ok(Default::default()),
+		|_| Ok(RpcExtension::new(())),
 		build_import_queue,
 		|client,
 		 prometheus_registry,
@@ -659,6 +675,7 @@ where
 
 			Ok(parachain_consensus)
 		},
+		hwbench,
 	)
 	.await
 }
