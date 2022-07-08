@@ -1,4 +1,9 @@
-# darwinia-parachain
+# Darwinia Parachain
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Substrate version](https://img.shields.io/badge/Substrate-3.0.0-brightgreen?logo=Parity%20Substrate)](https://substrate.io)
+[![Checks](https://github.com/darwinia-network/darwinia-parachain/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/darwinia-network/darwinia-parachain/actions/workflows/ci.yml)
+[![GitHub code lines](https://tokei.rs/b1/github/darwinia-network/darwinia-parachain)](https://github.com/darwinia-network/darwinia-parachain)
+[![GitHub last commit](https://img.shields.io/github/last-commit/darwinia-network/darwinia-parachain?color=red&style=plastic)](https://github.com/darwinia-network/darwinia-parachain)
 ## Installation
 If you just wish to run a darwinia-parachain node without compiling it yourself, you may run the latest binary from our [releases](https://github.com/darwinia-network/darwinia-parachain/releases) page.
 ### Build from Source
