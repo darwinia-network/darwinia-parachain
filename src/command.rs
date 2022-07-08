@@ -42,7 +42,7 @@ use dc_primitives::{AccountId, OpaqueBlock as Block};
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Darwinia Collator".into()
+		"Darwinia Parachain".into()
 	}
 
 	fn impl_version() -> String {
