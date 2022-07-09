@@ -38,7 +38,7 @@ async-trait  = { version = "0.1" }
 clap         = { version = "3.2.5", features = ["derive"] }
 codec        = { package = "parity-scale-codec", version = "3.1" }
 futures      = { version = "0.3" }
-jsonrpsee    = { version = "0.13", features = ["server"] }
+jsonrpsee    = { version = "0.14", features = ["server"] }
 log          = { version = "0.4" }
 serde        = { version = "1.0", features = ["derive"] }
 tempfile     = { version = "3.3" }
