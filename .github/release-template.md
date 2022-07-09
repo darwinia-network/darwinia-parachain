@@ -12,16 +12,16 @@ Darwinia Parachain
 ### Pre-built Binary
 |  OS   |  Arch  | Glibc | LLVM  |                                                                                                                                      Download                                                                                                                                      |
 | :---: | :----: | :---: | :---: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| Linux | x86_64 | 2.23  |  4.0  | [tar.bz2](https://github.com/darwinia-network/darwinia-parachain/releases/download/{{ tag }}/darwinia-collator-x86_64-linux-gnu.tar.bz2), [tar.zst](https://github.com/darwinia-network/darwinia-parachain/releases/download/{{ tag }}/darwinia-collator-x86_64-linux-gnu.tar.zst) |
+| Linux | x86_64 | 2.23  |  4.0  | [tar.bz2](https://github.com/darwinia-network/darwinia-parachain/releases/download/{{ tag }}/darwinia-parachain-x86_64-linux-gnu.tar.bz2), [tar.zst](https://github.com/darwinia-network/darwinia-parachain/releases/download/{{ tag }}/darwinia-parachain-x86_64-linux-gnu.tar.zst) |
 
 ### Docker
 #### Pull with the Git Tag
 ```docker
-docker pull quay.io/darwinia-network/darwinia-collator:{{ tag }}
+docker pull quay.io/darwinia-network/darwinia-parachain:{{ tag }}
 ```
 #### Pull with the Git Commit SHA
 ```docker
-docker pull quay.io/darwinia-network/darwinia-collator:sha-{{ sha }}
+docker pull quay.io/darwinia-network/darwinia-parachain:sha-{{ sha }}
 ```
 
 ## Proposal Hashes

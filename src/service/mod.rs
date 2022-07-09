@@ -485,7 +485,7 @@ where
 	Ok((task_manager, client))
 }
 
-/// Build the import queue for the darwinia-collator.
+/// Build the import queue for the darwinia-parachain.
 pub fn build_import_queue<RuntimeApi>(
 	client: Arc<FullClient<RuntimeApi>>,
 	config: &Configuration,
@@ -542,7 +542,7 @@ where
 	))
 }
 
-/// Start a darwinia-collator node.
+/// Start a darwinia-parachain node.
 pub async fn start_node<RuntimeApi>(
 	parachain_config: Configuration,
 	polkadot_config: Configuration,
