@@ -40,7 +40,7 @@ jobs:
       matrix:
         action: [build, test]
         task:
-          - target: darwinia-collator
+          - target: darwinia-parachain
             repository: darwinia-network/darwinia-parachain
           - target: subalfred
             repository: hack-ink/subalfred
@@ -102,7 +102,7 @@ jobs:
           path: ${{ matrix.task.target }}.tar.zst
 
       - name: Purge large cache
-        if: matrix.task.target == 'darwinia-collator'
+        if: matrix.task.target == 'darwinia-parachain'
         run: .github/purge-large-cache.sh
 
   code-checks:
@@ -136,6 +136,6 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: |
-            darwinia-collator
+            darwinia-parachain
             subalfred
     runs-on: ubuntu-latest

@@ -17,22 +17,21 @@
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
 // --- std ---
-use std::{env, io::Write, net::SocketAddr, path::PathBuf};
+use std::{env, net::SocketAddr, path::PathBuf};
 // --- crates.io ---
 use codec::Encode;
 use log::info;
 // --- paritytech ---
-use cumulus_client_service::genesis::generate_genesis_block;
+use cumulus_client_cli::generate_genesis_block;
 use cumulus_primitives_core::ParaId;
 use frame_benchmarking_cli::{BenchmarkCmd, SUBSTRATE_REFERENCE_HARDWARE};
-use polkadot_parachain::primitives::AccountIdConversion;
 use sc_cli::{
 	ChainSpec, CliConfiguration, DefaultConfigurationValues, ImportParams, KeystoreParams,
 	NetworkParams, Result, RuntimeVersion, SharedParams, SubstrateCli,
 };
 use sc_service::config::{BasePath, PrometheusConfig};
 use sp_core::{crypto::Ss58AddressFormatRegistry, hexdisplay::HexDisplay};
-use sp_runtime::traits::Block as BlockT;
+use sp_runtime::traits::{AccountIdConversion, Block as BlockT};
 // --- darwinia-network ---
 use crate::{
 	chain_spec::*,
@@ -43,7 +42,7 @@ use dc_primitives::{AccountId, OpaqueBlock as Block};
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Darwinia Collator".into()
+		"Darwinia Parachain".into()
 	}
 
 	fn impl_version() -> String {
@@ -66,7 +65,7 @@ impl SubstrateCli for Cli {
 		2018
 	}
 
-	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
+	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
 		load_spec(id)
 	}
 
@@ -83,7 +82,7 @@ impl SubstrateCli for Cli {
 
 impl SubstrateCli for RelayChainCli {
 	fn impl_name() -> String {
-		"Darwinia Collator".into()
+		"Darwinia Parachain".into()
 	}
 
 	fn impl_version() -> String {
@@ -174,15 +173,6 @@ fn set_default_ss58_version(chain_spec: &Box<dyn ChainSpec>) {
 	sp_core::crypto::set_default_ss58_version(ss58_version);
 }
 
-fn extract_genesis_wasm(chain_spec: &Box<dyn sc_service::ChainSpec>) -> Result<Vec<u8>> {
-	let mut storage = chain_spec.build_storage()?;
-
-	storage
-		.top
-		.remove(sp_core::storage::well_known_keys::CODE)
-		.ok_or_else(|| "Could not find wasm file in genesis state!".into())
-}
-
 /// Parse command line arguments into service configuration.
 pub fn run() -> Result<()> {
 	/// Creates partial components for the runtimes that are supported by the benchmarks.
@@ -254,6 +244,7 @@ pub fn run() -> Result<()> {
 		None => cli.create_runner(&cli.run.normalize())?.run_node_until_exit(|config| async move {
 			let chain_spec = &config.chain_spec;
 			let collator_options = cli.run.collator_options();
+
 			let hwbench = if !cli.no_hardware_benchmarks {
 				config.database.path().map(|database_path| {
 					let _ = std::fs::create_dir_all(&database_path);
@@ -275,10 +266,9 @@ pub fn run() -> Result<()> {
 					.chain(cli.relay_chain_args.iter()),
 			);
 			let id = ParaId::from(para_id);
-			let parachain_account = AccountIdConversion::<AccountId>::into_account(&id);
-			let state_version =
-				RelayChainCli::native_runtime_version(&config.chain_spec).state_version();
-			let block: Block = generate_genesis_block(&config.chain_spec, state_version)
+			let parachain_account = AccountIdConversion::<AccountId>::into_account_truncating(&id);
+			let state_version = Cli::native_runtime_version(&config.chain_spec).state_version();
+			let block: Block = generate_genesis_block(&*config.chain_spec, state_version)
 				.map_err(|e| format!("{:?}", e))?;
 			let genesis_state = format!("0x{:?}", HexDisplay::from(&block.header().encode()));
 			let tokio_handle = config.tokio_handle.clone();
@@ -350,6 +340,9 @@ pub fn run() -> Result<()> {
 				Ok(cmd.run(components.client, components.import_queue))
 			})
 		},
+		Some(Subcommand::Revert(cmd)) => construct_async_run!(|components, cli, cmd, config| {
+			Ok(cmd.run(components.client, components.backend, None))
+		}),
 		Some(Subcommand::PurgeChain(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 
@@ -371,53 +364,20 @@ pub fn run() -> Result<()> {
 				cmd.run(config, polkadot_config)
 			})
 		},
-		Some(Subcommand::Revert(cmd)) => construct_async_run!(|components, cli, cmd, config| {
-			Ok(cmd.run(components.client, components.backend, None))
-		}),
-		Some(Subcommand::ExportGenesisState(params)) => {
-			let mut builder = sc_cli::LoggerBuilder::new("");
-
-			builder.with_profiling(sc_tracing::TracingReceiver::Log, "");
-
-			let _ = builder.init();
-			let spec = load_spec(&params.chain.clone().unwrap_or_default())?;
-			let state_version = Cli::native_runtime_version(&spec).state_version();
-			let block: Block = generate_genesis_block(&spec, state_version)?;
-			let raw_header = block.header().encode();
-			let output_buf = if params.raw {
-				raw_header
-			} else {
-				format!("0x{:?}", HexDisplay::from(&block.header().encode())).into_bytes()
-			};
-
-			if let Some(output) = &params.output {
-				std::fs::write(output, output_buf)?;
-			} else {
-				std::io::stdout().write_all(&output_buf)?;
-			}
-
-			Ok(())
+		Some(Subcommand::ExportGenesisState(cmd)) => {
+			let runner = cli.create_runner(cmd)?;
+			runner.sync_run(|_config| {
+				let spec = cli.load_spec(&cmd.shared_params.chain.clone().unwrap_or_default())?;
+				let state_version = Cli::native_runtime_version(&spec).state_version();
+				cmd.run::<Block>(&*spec, state_version)
+			})
 		},
-		Some(Subcommand::ExportGenesisWasm(params)) => {
-			let mut builder = sc_cli::LoggerBuilder::new("");
-			builder.with_profiling(sc_tracing::TracingReceiver::Log, "");
-			let _ = builder.init();
-
-			let raw_wasm_blob =
-				extract_genesis_wasm(&cli.load_spec(&params.chain.clone().unwrap_or_default())?)?;
-			let output_buf = if params.raw {
-				raw_wasm_blob
-			} else {
-				format!("0x{:?}", HexDisplay::from(&raw_wasm_blob)).into_bytes()
-			};
-
-			if let Some(output) = &params.output {
-				std::fs::write(output, output_buf)?;
-			} else {
-				std::io::stdout().write_all(&output_buf)?;
-			}
-
-			Ok(())
+		Some(Subcommand::ExportGenesisWasm(cmd)) => {
+			let runner = cli.create_runner(cmd)?;
+			runner.sync_run(|_config| {
+				let spec = cli.load_spec(&cmd.shared_params.chain.clone().unwrap_or_default())?;
+				cmd.run(&*spec)
+			})
 		},
 		Some(Subcommand::Key(cmd)) => Ok(cmd.run(&cli)?),
 		Some(Subcommand::Benchmark(cmd)) => {

@@ -23,7 +23,7 @@
 //! EXECUTION: Some(Wasm), WASM-EXECUTION: Compiled, CHAIN: Some("crab-parachain-dev"), DB CACHE: 1024
 
 // Executed Command:
-// ./target/release/darwinia-collator
+// ./target/release/darwinia-parachain
 // benchmark pallet
 // --header
 // .maintain/lincense-header

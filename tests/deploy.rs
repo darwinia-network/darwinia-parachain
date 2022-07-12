@@ -61,7 +61,7 @@ impl Deployer {
 
 	fn get_execs(project_dir: &PathBuf) -> Option<(PathBuf, PathBuf)> {
 		fn get_darwinia_exec(project_dir: &PathBuf) -> Option<PathBuf> {
-			let target_1 = project_dir.join("target/release/darwinia-collator");
+			let target_1 = project_dir.join("target/release/darwinia-parachain");
 
 			if target_1.is_file() {
 				println!("[CHECK] executable: {}", target_1.to_string_lossy());
@@ -69,7 +69,7 @@ impl Deployer {
 				return Some(target_1);
 			}
 
-			let target_2 = project_dir.join("tests/bin/darwinia-collator");
+			let target_2 = project_dir.join("tests/bin/darwinia-parachain");
 
 			if target_2.is_file() {
 				println!("[CHECK] executable: {}", target_2.to_string_lossy());
@@ -78,7 +78,7 @@ impl Deployer {
 			}
 
 			println!(
-				"[WARN] darwinia-collator executable not found, searched:\
+				"[WARN] darwinia-parachain executable not found, searched:\
 				\n       {}\
 				\n       {}",
 				target_1.to_string_lossy(),
