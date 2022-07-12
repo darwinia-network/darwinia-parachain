@@ -1,8 +1,9 @@
 name: Staging
 
 on:
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
+  pull_request:
   workflow_dispatch:
 
 env:
@@ -21,7 +22,7 @@ jobs:
         run: |
           apt update -y
           apt install --no-install-recommends -y \
-            curl ca-certificates make gcc g++ clang-4.0 pkg-config
+            curl git ca-certificates make gcc g++ clang-4.0 pkg-config
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
