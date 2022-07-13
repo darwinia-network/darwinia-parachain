@@ -1,8 +1,6 @@
 Darwinia Parachain
 ===
 
-## [{{ tag }}]
-
 |    Network     |            Native Runtime            | Upgrade Priority |
 | :------------: | :----------------------------------: | :--------------: |
 | Crab Parachain | {{ crab_parachain_runtime_version }} |       LOW        |
