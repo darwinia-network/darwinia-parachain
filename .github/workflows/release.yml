@@ -18,19 +18,20 @@ jobs:
     container:
       image: ubuntu:16.04
     steps:
-      - uses: actions/checkout@v2
-
       - name: Install dependencies
         run: |
           apt update -y
           apt install --no-install-recommends -y \
             curl ca-certificates make gcc g++ clang-4.0 \
-            pkg-config bzip2 zstd
+            pkg-config git bzip2 zstd
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ env.RUST_TOOLCHAIN }}
+
+      - name: Fetch latest code
+        uses: actions/checkout@v2
 
       - name: Build
         run: cargo build --release --target x86_64-unknown-linux-gnu
