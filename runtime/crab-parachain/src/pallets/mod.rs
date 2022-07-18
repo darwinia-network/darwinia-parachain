@@ -55,6 +55,9 @@ pub use proxy::*;
 pub mod sudo;
 pub use sudo::*;
 
+pub mod remote_governance;
+pub use remote_governance::*;
+
 pub mod bridge_dispatch;
 pub use bridge_dispatch::*;
 
