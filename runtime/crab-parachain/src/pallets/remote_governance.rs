@@ -32,7 +32,7 @@ impl Get<Hash> for CrabBestFinalized {
 }
 
 frame_support::parameter_types! {
-	pub const CheckInterval: BlockNumber = 4 * HOURS;
+	pub const CheckInterval: BlockNumber = 1 * DAYS;
 }
 
 impl Config for Runtime {
