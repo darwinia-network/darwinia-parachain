@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - master
     paths:
       - "**.rs"
       - "**.toml"
@@ -14,7 +13,6 @@ on:
     types: [opened, synchronize, ready_for_review]
     branches:
       - main
-      - master
     paths:
       - "**.rs"
       - "**.toml"
@@ -23,31 +21,27 @@ on:
       - "**.yml"
 
 env:
+  GITHUB_CACHE_VERSION: 10
+
   RUST_TOOLCHAIN: nightly
   RUST_BACKTRACE: full
   RUSTC_WRAPPER: sccache
+
   SCCACHE_LINK: https://github.com/mozilla/sccache/releases/download
   SCCACHE_VERSION: v0.2.15
   SCCACHE_DIR: /home/runner/.cache/sccache
-  GITHUB_CACHE_VERSION: 10
+
+  SUBALFRED_LINK: https://github.com/hack-ink/subalfred/releases/download
+  SUBALFRED_VERSION: v0.9.0-rc1
 
 jobs:
   basic-checks:
-    name: Task ${{ matrix.action }} ${{ matrix.task.target }}
+    name: Task ${{ matrix.action }} darwinia-collator
     if: github.event_name == 'push' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     strategy:
       matrix:
         action: [build, test]
-        task:
-          - target: darwinia-collator
-            repository: darwinia-network/darwinia-parachain
-          - target: subalfred
-            repository: hack-ink/subalfred
-        exclude:
-          - action: test
-            task:
-              target: subalfred
 
     steps:
       - name: Install Rust ${{ env.RUST_TOOLCHAIN }} toolchain
@@ -55,19 +49,14 @@ jobs:
         with:
           toolchain: ${{ env.RUST_TOOLCHAIN }}
           default: true
-
       - name: Install Sccache
         run: |
           export SCCACHE_FILE=sccache-${{ env.SCCACHE_VERSION }}-x86_64-unknown-linux-musl
           curl -L ${{ env.SCCACHE_LINK }}/${{ env.SCCACHE_VERSION }}/$SCCACHE_FILE.tar.gz | tar xz
           sudo mv $SCCACHE_FILE/sccache /usr/bin
           sudo chmod u+x /usr/bin/sccache
-
       - name: Fetch latest code
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ matrix.task.repository }}
-
+        uses: actions/checkout@v3
       - name: Cache cargo
         uses: actions/cache@v2
         with:
@@ -75,57 +64,54 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: cargo-${{ matrix.action }}-${{ matrix.task.target }}-${{ env.GITHUB_CACHE_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: cargo-${{ matrix.action }}-${{ matrix.task.target }}-${{ env.GITHUB_CACHE_VERSION }}-
-
+          key: cargo-${{ matrix.action }}-${{ env.GITHUB_CACHE_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-${{ matrix.action }}-${{ env.GITHUB_CACHE_VERSION }}-
       - name: Cache sccache
         uses: actions/cache@v2
         with:
           path: ${{ env.SCCACHE_DIR}}
-          key: sccache-${{ matrix.action }}-${{ matrix.task.target }}-${{ env.GITHUB_CACHE_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: sccache-${{ matrix.action }}-${{ matrix.task.target }}-${{ env.GITHUB_CACHE_VERSION }}-
-
+          key: sccache-${{ matrix.action }}-${{ env.GITHUB_CACHE_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: sccache-${{ matrix.action }}-${{ env.GITHUB_CACHE_VERSION }}-
       - name: Action ${{ matrix.action }}
-        run: cargo ${{ matrix.action }} --release --locked
-
-      - name: Compress ${{ matrix.task.target }}
+        uses: actions-rs/cargo@v1
+        with:
+          command: ${{ matrix.action }}
+          args: --release --locked
+      - name: Compress
         if: matrix.action != 'test'
         run: |
-          mv target/release/${{ matrix.task.target }} .
-          tar cf ${{ matrix.task.target }}.tar.zst ${{ matrix.task.target }} -I pzstd
-
-      - name: Upload ${{ matrix.task.target }}
+          mv target/release/darwinia-collator .
+          tar cf darwinia-collator.tar.zst darwinia-collator -I pzstd
+      - name: Upload
         if: matrix.action != 'test'
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.task.target }}
-          path: ${{ matrix.task.target }}.tar.zst
-
+          name: darwinia-collator
+          path: darwinia-collator.tar.zst
       - name: Purge large cache
-        if: matrix.task.target == 'darwinia-collator'
         run: .github/purge-large-cache.sh
 
   code-checks:
     name: Task check code
     if: github.event_name == 'push' || !github.event.pull_request.draft
-    needs: [basic-checks]
     runs-on: ubuntu-latest
     steps:
-      - name: Download subalfred
-        uses: actions/download-artifact@v2
+      - name: Install Rust ${{ env.RUST_TOOLCHAIN }} toolchain
+        uses: actions-rs/toolchain@v1
         with:
-          name: subalfred
-
-      - name: Uncompress subalfred
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          default: true
+      - name: Install Subalfred
         run: |
-          tar xf subalfred.tar.zst -I pzstd
+          curl -L ${{ env.SUBALFRED_LINK }}/${{ env.SUBALFRED_VERSION }}/subalfred.tar.zst | tar x -I pzstd
           sudo mv subalfred /usr/bin
-
+          sudo chmod u+x /usr/bin/subalfred
       - name: Fetch latest code
-        uses: actions/checkout@v2
-
-      - name: Run checker
-        run: subalfred check default-features -p ../darwinia-parachain
+        uses: actions/checkout@v3
+      - name: Check
+        run: |
+          unset RUSTC_WRAPPER
+          subalfred check std-feature
 
   housekeeping-checks:
     name: Task check housekeeping
