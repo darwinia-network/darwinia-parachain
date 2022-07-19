@@ -113,6 +113,86 @@ jobs:
           unset RUSTC_WRAPPER
           subalfred check std-feature
 
+  runtime-checks:
+    name: Task check runtime
+    if: github.event_name == 'push' || !github.event.pull_request.draft
+    needs: [basic-checks]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Subalfred
+        run: |
+          curl -L ${{ env.SUBALFRED_LINK }}/${{ env.SUBALFRED_VERSION }}/subalfred.tar.zst | tar x -I pzstd
+          sudo mv subalfred /usr/bin
+          sudo chmod u+x /usr/bin/subalfred
+      - name: Download darwinia-collator
+        uses: actions/download-artifact@v2
+        with:
+          name: darwinia-collator
+      - name: Install darwinia-collator
+        run: |
+          tar xf darwinia-collator.tar.zst -I pzstd
+          sudo mv darwinia-collator /usr/bin
+      - id: check-crab-parachain-runtime-version
+        name: Check Crab Parachain runtime version
+        run: |
+          OUTPUT=$(subalfred check runtime --executable darwinia-collator --chain crab-parachain --live https://crab-parachain-rpc.darwinia.network --property version)
+          OUTPUT="${OUTPUT//'%'/'%25'}​"
+          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
+          echo "::set-output name=check-crab-parachain-runtime-version::$OUTPUT"
+      - id: check-crab-parachain-runtime-storage
+        name: Check Crab Parachain storage prefix
+        run: |
+          OUTPUT=$(subalfred check runtime --executable darwinia-collator --chain crab-parachain --live https://crab-parachain-rpc.darwinia.network --property storage)
+          OUTPUT="${OUTPUT//'%'/'%25'}​"
+          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
+          echo "::set-output name=check-crab-parachain-runtime-storage::$OUTPUT"
+      - id: check-darwinia-parachain-runtime-version
+        name: Check Darwinia Parachain runtime version
+        run: |
+          OUTPUT=$(subalfred check runtime --executable darwinia-collator --chain darwinia-parachain --live https://parachain-rpc.darwinia.network --property version)
+          OUTPUT="${OUTPUT//'%'/'%25'}​"
+          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
+          echo "::set-output name=check-darwinia-parachain-runtime-version::$OUTPUT"
+      - id: check-darwinia-parachain-runtime-storage
+        name: Check Darwinia Parachain storage prefix
+        run: |
+          OUTPUT=$(subalfred check runtime --executable darwinia-collator --chain darwinia-parachain --live https://parachain-rpc.darwinia.network --property storage)
+          OUTPUT="${OUTPUT//'%'/'%25'}​"
+          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
+          echo "::set-output name=check-darwinia-parachain-runtime-storage::$OUTPUT"
+      - if: github.ref != 'refs/heads/master'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          append: true
+          message: |
+            <details>
+            <summary>Commit ${{ github.event.pull_request.head.sha }}</summary>
+
+            **Crab Parachain**
+            > Check Runtime Version
+            ```diff
+            ${{ steps.check-crab-parachain-runtime-version.outputs.check-crab-parachain-runtime-version }}
+            ```
+            > Check Storage Prefix
+            ```diff
+            ${{ steps.check-crab-parachain-runtime-storage.outputs.check-crab-parachain-runtime-storage }}
+            ```
+
+            **Darwinia Parachain**
+            > Check Runtime Version
+            ```diff
+            ${{ steps.check-darwinia-parachain-runtime-version.outputs.check-darwinia-parachain-runtime-version }}
+            ```
+            > Check Storage Prefix
+            ```diff
+            ${{ steps.check-darwinia-parachain-runtime-storage.outputs.check-darwinia-parachain-runtime-storage }}
+            ```
+            </details>
+
   housekeeping-checks:
     name: Task check housekeeping
     if: always()
