@@ -15,11 +15,12 @@ jobs:
     container:
       image: ubuntu:18.04
     steps:
-      # - name: Install dependencies
-      #   run: |
-      #     apt update -y
-      #     apt install --no-install-recommends -y \
-      #       curl ca-certificates make gcc g++ clang-4.0 pkg-config git
+      - name: Install dependencies
+        run: |
+          apt update -y
+          apt install --no-install-recommends -y \
+            ca-certificates curl git \
+            clang make gcc
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
