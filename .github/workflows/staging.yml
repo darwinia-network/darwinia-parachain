@@ -68,7 +68,7 @@ jobs:
         run: |
           mkdir -p dist
           tar -xvf shared/darwinia-collator-x86_64-linux-gnu.tar.bz2 -C dist/
-      - name: Hash
+      - name: Hash commit
         uses: benjlevesque/short-sha@v1.2
         id: short-sha
       - name: Build and publish docker image
