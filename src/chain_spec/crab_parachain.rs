@@ -199,7 +199,7 @@ pub fn development_config() -> ChainSpec {
 		None,
 		Some(properties()),
 		Extensions {
-			relay_chain: "kusama-local".into(),
+			relay_chain: "rococo-local".into(),
 			para_id: PARA_ID,
 		},
 	);
