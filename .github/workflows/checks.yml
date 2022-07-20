@@ -201,7 +201,5 @@ jobs:
       - name: Clean artifacts
         uses: geekyeggo/delete-artifact@v1
         with:
-          name: |
-            darwinia-collator
-            subalfred
+          name: darwinia-collator
     runs-on: ubuntu-latest
