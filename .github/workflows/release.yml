@@ -49,8 +49,8 @@ jobs:
             -C \
             target/x86_64-unknown-linux-gnu/release \
             darwinia-collator -I pzstd
-          mv target/x86_64-unknown-linux-gnu/release/wbuild/crab-parachain-runtime/*.wasm shared/crab-parachain-runtime
-          mv target/x86_64-unknown-linux-gnu/release/wbuild/darwinia-parachain-runtime/*.wasm shared/darwinia-parachain-runtime
+          mv target/x86_64-unknown-linux-gnu/release/wbuild/crab-parachain-runtime/*.compressed.wasm shared/crab-parachain-runtime
+          mv target/x86_64-unknown-linux-gnu/release/wbuild/darwinia-parachain-runtime/*.compressed.wasm shared/darwinia-parachain-runtime
       - name: Upload shared
         uses: actions/upload-artifact@v2
         with:
@@ -86,10 +86,7 @@ jobs:
             subwasm --version
       - name: Generate subwasm info for ${{ matrix.runtime }}
         run: |
-          WASM=shared/${{ matrix.runtime }}/*.compact.wasm
           Z_WASM=shared/${{ matrix.runtime }}/*.compact.compressed.wasm
-          echo '${{ matrix.runtime }} compact subwasm info'
-          subwasm -j info $WASM | tee shared/${{ matrix.runtime }}/${{ matrix.runtime }}.compact.json
           echo '${{ matrix.runtime }} compressed compact subwasm info'
           subwasm -j info $Z_WASM | tee shared/${{ matrix.runtime }}/${{ matrix.runtime }}.compact.compressed.json
       - name: Upload shared
