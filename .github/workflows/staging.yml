@@ -43,7 +43,7 @@ jobs:
       - name: Upload shared
         uses: actions/upload-artifact@v2
         with:
-          name: bridger-artifact
+          name: darwinia-artifact
           path: shared
 
   build-docker-image:
@@ -62,7 +62,7 @@ jobs:
       - name: Download shared
         uses: actions/download-artifact@v2
         with:
-          name: bridger-artifact
+          name: darwinia-artifact
           path: shared
       - name: Extract shared
         run: |
@@ -90,4 +90,4 @@ jobs:
     steps:
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: bridger-artifact
+          name: darwinia-artifact
