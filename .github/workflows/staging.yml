@@ -20,7 +20,7 @@ jobs:
           apt update -y
           apt install --no-install-recommends -y \
             ca-certificates curl git \
-            clang make gcc
+            clang make gcc g++
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
