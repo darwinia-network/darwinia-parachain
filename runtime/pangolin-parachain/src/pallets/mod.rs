@@ -55,6 +55,9 @@ pub use proxy::*;
 pub mod sudo;
 pub use sudo::*;
 
+pub mod remote_governance;
+pub use remote_governance::*;
+
 pub mod bridge_grandpa;
 pub use bridge_grandpa::*;
 
@@ -69,6 +72,3 @@ pub use fee_market::*;
 
 pub mod helixbridge;
 pub use helixbridge::*;
-
-pub mod remote_governance;
-pub use remote_governance::*;

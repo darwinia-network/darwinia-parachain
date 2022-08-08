@@ -128,7 +128,10 @@ pub fn genesis_config() -> ChainSpec {
 		"crab_parachain",
 		ChainType::Live,
 		genesis,
-		vec![],
+		["/dns4/r1.crab-parachain-p2p.darwinia.network/tcp/30333/ws/p2p/12D3KooWG4PuU1ysPwi3XTnWzAzv9vf8yEmh3kNnZH2nWW9TVJcQ"]
+		.iter()
+		.filter_map(|s| FromStr::from_str(s).ok())
+		.collect(),
 		Some(
 			TelemetryEndpoints::new(vec![(TELEMETRY_URL.to_string(), 0)])
 				.expect("Crab Parachain telemetry url is valid; qed"),
@@ -190,17 +193,11 @@ pub fn development_config() -> ChainSpec {
 		"crab_parachain_dev",
 		ChainType::Development,
 		genesis,
-		["/dns4/r1.crab-parachain-p2p.darwinia.network/tcp/30333/ws/p2p/12D3KooWG4PuU1ysPwi3XTnWzAzv9vf8yEmh3kNnZH2nWW9TVJcQ"]
-			.iter()
-			.filter_map(|s| FromStr::from_str(s).ok())
-			.collect(),
+		Vec::new(),
 		None,
 		None,
 		None,
 		Some(properties()),
-		Extensions {
-			relay_chain: "kusama-local".into(),
-			para_id: PARA_ID,
-		},
+		Extensions { relay_chain: "rococo-local".into(), para_id: PARA_ID },
 	);
 }
