@@ -16,11 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
-// --- std ---
-use std::path::PathBuf;
+// crates.io
+use clap::{Parser, SubCommand};
 
 /// Sub-commands supported by the collator.
-#[derive(Debug, clap::Subcommand)]
+#[derive(Debug, Subcommand)]
 pub enum Subcommand {
 	/// Build a chain specification.
 	BuildSpec(sc_cli::BuildSpecCmd),
@@ -64,7 +64,7 @@ pub enum Subcommand {
 	TryRuntime(try_runtime_cli::TryRuntimeCmd),
 }
 
-#[derive(Debug, clap::Parser)]
+#[derive(Debug, Parser)]
 #[clap(
 	propagate_version = true,
 	args_conflicts_with_subcommands = true,
@@ -101,7 +101,7 @@ pub struct RelayChainCli {
 	pub chain_id: Option<String>,
 
 	/// The base path that should be used by the relay chain.
-	pub base_path: Option<PathBuf>,
+	pub base_path: Option<std::path::PathBuf>,
 }
 impl RelayChainCli {
 	/// Parse the relay chain CLI parameters using the para chain `Configuration`.
