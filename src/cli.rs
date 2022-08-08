@@ -16,11 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
-// crates.io
-use clap::{Parser, SubCommand};
-
 /// Sub-commands supported by the collator.
-#[derive(Debug, Subcommand)]
+#[derive(Debug, clap::Subcommand)]
 pub enum Subcommand {
 	/// Build a chain specification.
 	BuildSpec(sc_cli::BuildSpecCmd),
@@ -64,7 +61,7 @@ pub enum Subcommand {
 	TryRuntime(try_runtime_cli::TryRuntimeCmd),
 }
 
-#[derive(Debug, Parser)]
+#[derive(Debug, clap::Parser)]
 #[clap(
 	propagate_version = true,
 	args_conflicts_with_subcommands = true,
