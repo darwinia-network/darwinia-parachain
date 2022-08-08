@@ -36,7 +36,7 @@ env:
 
 jobs:
   basic-checks:
-    name: Task ${{ matrix.action }} darwinia-collator
+    name: Task ${{ matrix.action }} darwinia-parachain
     if: github.event_name == 'push' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     strategy:
@@ -80,14 +80,14 @@ jobs:
       - name: Compress
         if: matrix.action != 'test'
         run: |
-          mv target/release/darwinia-collator .
-          tar cf darwinia-collator.tar.zst darwinia-collator -I pzstd
+          mv target/release/darwinia-parachain .
+          tar cf darwinia-parachain.tar.zst darwinia-parachain -I pzstd
       - name: Upload
         if: matrix.action != 'test'
         uses: actions/upload-artifact@v2
         with:
-          name: darwinia-collator
-          path: darwinia-collator.tar.zst
+          name: darwinia-parachain
+          path: darwinia-parachain.tar.zst
       - name: Purge large cache
         run: .github/purge-large-cache.sh
 
@@ -124,18 +124,18 @@ jobs:
           curl -L ${{ env.SUBALFRED_LINK }}/${{ env.SUBALFRED_VERSION }}/subalfred.tar.zst | tar x -I pzstd
           sudo mv subalfred /usr/bin
           sudo chmod u+x /usr/bin/subalfred
-      - name: Download darwinia-collator
+      - name: Download darwinia-parachain
         uses: actions/download-artifact@v2
         with:
-          name: darwinia-collator
-      - name: Install darwinia-collator
+          name: darwinia-parachain
+      - name: Install darwinia-parachain
         run: |
-          tar xf darwinia-collator.tar.zst -I pzstd
-          sudo mv darwinia-collator /usr/bin
+          tar xf darwinia-parachain.tar.zst -I pzstd
+          sudo mv darwinia-parachain /usr/bin
       - id: check-crab-parachain-runtime-version
         name: Check Crab Parachain runtime version
         run: |
-          OUTPUT=$(subalfred check runtime --executable darwinia-collator --chain crab-parachain --live https://crab-parachain-rpc.darwinia.network --property version)
+          OUTPUT=$(subalfred check runtime --executable darwinia-parachain --chain crab-parachain --live https://crab-parachain-rpc.darwinia.network --property version)
           OUTPUT="${OUTPUT//'%'/'%25'}​"
           OUTPUT="${OUTPUT//$'\n'/'%0A'}"
           OUTPUT="${OUTPUT//$'\r'/'%0D'}"
@@ -143,7 +143,7 @@ jobs:
       - id: check-crab-parachain-runtime-storage
         name: Check Crab Parachain storage prefix
         run: |
-          OUTPUT=$(subalfred check runtime --executable darwinia-collator --chain crab-parachain --live https://crab-parachain-rpc.darwinia.network --property storage)
+          OUTPUT=$(subalfred check runtime --executable darwinia-parachain --chain crab-parachain --live https://crab-parachain-rpc.darwinia.network --property storage)
           OUTPUT="${OUTPUT//'%'/'%25'}​"
           OUTPUT="${OUTPUT//$'\n'/'%0A'}"
           OUTPUT="${OUTPUT//$'\r'/'%0D'}"
@@ -151,7 +151,7 @@ jobs:
       - id: check-darwinia-parachain-runtime-version
         name: Check Darwinia Parachain runtime version
         run: |
-          OUTPUT=$(subalfred check runtime --executable darwinia-collator --chain darwinia-parachain --live https://parachain-rpc.darwinia.network --property version)
+          OUTPUT=$(subalfred check runtime --executable darwinia-parachain --chain darwinia-parachain --live https://parachain-rpc.darwinia.network --property version)
           OUTPUT="${OUTPUT//'%'/'%25'}​"
           OUTPUT="${OUTPUT//$'\n'/'%0A'}"
           OUTPUT="${OUTPUT//$'\r'/'%0D'}"
@@ -159,7 +159,7 @@ jobs:
       - id: check-darwinia-parachain-runtime-storage
         name: Check Darwinia Parachain storage prefix
         run: |
-          OUTPUT=$(subalfred check runtime --executable darwinia-collator --chain darwinia-parachain --live https://parachain-rpc.darwinia.network --property storage)
+          OUTPUT=$(subalfred check runtime --executable darwinia-parachain --chain darwinia-parachain --live https://parachain-rpc.darwinia.network --property storage)
           OUTPUT="${OUTPUT//'%'/'%25'}​"
           OUTPUT="${OUTPUT//$'\n'/'%0A'}"
           OUTPUT="${OUTPUT//$'\r'/'%0D'}"
@@ -201,5 +201,5 @@ jobs:
       - name: Clean artifacts
         uses: geekyeggo/delete-artifact@v1
         with:
-          name: darwinia-collator
+          name: darwinia-parachain
     runs-on: ubuntu-latest

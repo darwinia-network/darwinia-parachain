@@ -1,5 +1,5 @@
 // --- paritytech ---
-use cumulus_pallet_parachain_system::Config;
+use cumulus_pallet_parachain_system::{Config, RelayNumberStrictlyIncreases};
 use frame_support::weights::Weight;
 use parachain_info::Pallet as ParachainInfoPallet;
 // --- darwinia-network ---
@@ -11,6 +11,7 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
+	type CheckAssociatedRelayNumber = RelayNumberStrictlyIncreases;
 	type DmpMessageHandler = DmpQueue;
 	type Event = Event;
 	type OnSystemEvent = ();

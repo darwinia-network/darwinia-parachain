@@ -39,7 +39,6 @@ use frame_support::{
 	ensure,
 	pallet_prelude::*,
 	traits::{Currency, ExistenceRequirement, Get, WithdrawReasons},
-	transactional,
 	weights::PostDispatchInfo,
 	PalletId,
 };
@@ -196,7 +195,6 @@ pub mod pallet {
 		#[pallet::weight(
 			<T as Config>::WeightInfo::issue_from_remote()
 		)]
-		#[transactional]
 		pub fn issue_from_remote(
 			origin: OriginFor<T>,
 			value: RingBalance<T>,
@@ -233,7 +231,6 @@ pub mod pallet {
 		#[pallet::weight(
 			<T as Config>::WeightInfo::burn_and_remote_unlock()
 		)]
-		#[transactional]
 		pub fn burn_and_remote_unlock(
 			origin: OriginFor<T>,
 			spec_version: u32,
@@ -395,7 +392,7 @@ pub mod pallet {
 
 	impl<T: Config> Pallet<T> {
 		pub fn pallet_account_id() -> T::AccountId {
-			T::PalletId::get().into_account()
+			T::PalletId::get().into_account_truncating()
 		}
 
 		pub fn derived_backing_id(backing_account: T::AccountId) -> T::AccountId {

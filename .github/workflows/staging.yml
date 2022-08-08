@@ -36,10 +36,10 @@ jobs:
         run: |
           mkdir -p shared
           tar cjSf \
-            shared/darwinia-collator-x86_64-linux-gnu.tar.bz2 \
+            shared/darwinia-parachain-x86_64-linux-gnu.tar.bz2 \
             -C \
             target/release \
-            darwinia-collator
+            darwinia-parachain
       - name: Upload shared
         uses: actions/upload-artifact@v2
         with:
@@ -67,13 +67,13 @@ jobs:
       - name: Extract shared
         run: |
           mkdir -p dist
-          tar -xvf shared/darwinia-collator-x86_64-linux-gnu.tar.bz2 -C dist/
+          tar -xvf shared/darwinia-parachain-x86_64-linux-gnu.tar.bz2 -C dist/
       - name: Hash commit
         uses: benjlevesque/short-sha@v1.2
         id: short-sha
       - name: Build and publish docker image
         run: |
-          IMAGE_NAME=darwinia-collator
+          IMAGE_NAME=darwinia-parachain
           IMAGE_PREFIX=quay.io/darwinia-network
           IMAGE_PUSH_NAME_SHA=${IMAGE_PREFIX}/${IMAGE_NAME}:sha-${SHA}
           docker build \
