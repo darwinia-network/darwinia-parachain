@@ -21,7 +21,7 @@ jobs:
           apt install --no-install-recommends -y \
             ca-certificates curl git python3-pip python3-setuptools \
             clang make gcc g++
-          pip3 install cmake --upgrade
+          sudo pip3 install cmake --upgrade
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
