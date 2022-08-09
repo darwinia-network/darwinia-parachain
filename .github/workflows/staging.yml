@@ -20,7 +20,8 @@ jobs:
           apt update -y
           apt install --no-install-recommends -y \
             ca-certificates curl git \
-            clang cmake make gcc g++
+            clang python3-pip make gcc g++
+          pip install cmake --upgrade
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
