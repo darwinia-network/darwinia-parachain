@@ -26,16 +26,16 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type Event = Event;
 	type AssetModifierOrigin = EnsureRoot<AccountId>;
-	type MoonbeamWeigher = FixedWeightBounds<MoonbeamUnitWeightCost, Call, MoonbeamMaxInstructions>;
-	type LocalWeigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
-	type LocalAssetId = AnchoringSelfReserve;
-	type LocationInverter = LocationInverter<Ancestry>;
-	type SelfLocationInSibl = SelfLocationInSibl;
 	type AssetTransactor = LocalAssetTransactor;
-	type MoonbeamLocation = MoonbeamLocation;
+	type Event = Event;
 	type ExecuteXcmOrigin = EnsureXcmOrigin<Origin, LocalOriginToLocation>;
+	type LocalAssetId = AnchoringSelfReserve;
+	type LocalWeigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
+	type LocationInverter = LocationInverter<Ancestry>;
+	type MoonbeamLocation = MoonbeamLocation;
+	type MoonbeamWeigher = FixedWeightBounds<MoonbeamUnitWeightCost, Call, MoonbeamMaxInstructions>;
+	type SelfLocationInSibl = SelfLocationInSibl;
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 	type XcmSender = XcmRouter;
 }

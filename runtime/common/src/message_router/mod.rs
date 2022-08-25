@@ -129,9 +129,10 @@ pub mod pallet {
 			let local_asset_units_per_second =
 				TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
 					.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
-			let remote_weight = T::MoonbeamWeigher::weight(
-				&mut Self::extend_remote_xcm_for_weight(remote_xcm.clone()),
-			)
+			let remote_weight = T::MoonbeamWeigher::weight(&mut Self::extend_remote_xcm(
+				remote_xcm.clone(),
+				MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(0) },
+			))
 			.map_err(|()| Error::<T>::UnweighableMessage)?;
 			let amount = local_asset_units_per_second.saturating_mul(remote_weight as u128)
 				/ (WEIGHT_PER_SECOND as u128);
@@ -157,18 +158,37 @@ pub mod pallet {
 				Error::<T>::XcmExecutionFailed
 			})?;
 
-			// Extend remote xcm to buy execution and handle error remotely
+			// Toggle the xcm_fee relative to a target context
 			let ancestry = T::LocationInverter::ancestry();
 			let mut remote_xcm_fee_anchor_dest = remote_xcm_fee.clone();
 			remote_xcm_fee_anchor_dest
 				.reanchor(&T::MoonbeamLocation::get(), &ancestry)
 				.map_err(|()| Error::<T>::MultiLocationFull)?;
-			let mut extend_remote_xcm = Xcm(vec![
-				ReserveAssetDeposited(remote_xcm_fee_anchor_dest.clone().into()),
-				BuyExecution {
-					fees: remote_xcm_fee_anchor_dest,
-					weight_limit: WeightLimit::Unlimited,
-				},
+			let remote_xcm = Self::extend_remote_xcm(remote_xcm, remote_xcm_fee_anchor_dest);
+
+			// Send remote xcm to moonbeam
+			T::XcmSender::send_xcm(T::MoonbeamLocation::get(), remote_xcm.clone().into())
+				.map_err(|_| Error::<T>::XcmSendFailed)?;
+
+			Self::deposit_event(Event::Route(
+				origin_location,
+				remote_xcm.into(),
+				remote_weight,
+				amount,
+			));
+			Ok(().into())
+		}
+	}
+
+	impl<T: Config> Pallet<T> {
+		/// Extend xcm to pay for remote execution
+		fn extend_remote_xcm(
+			xcm: Xcm<<T as frame_system::Config>::Call>,
+			fee: MultiAsset,
+		) -> Xcm<<T as frame_system::Config>::Call> {
+			let mut extend_xcm = Xcm(vec![
+				ReserveAssetDeposited(fee.clone().into()),
+				BuyExecution { fees: fee, weight_limit: WeightLimit::Unlimited },
 				SetAppendix(Xcm(vec![
 					RefundSurplus,
 					DepositAsset {
@@ -178,47 +198,8 @@ pub mod pallet {
 					},
 				])),
 			]);
-			extend_remote_xcm.0.extend(remote_xcm.0.into_iter());
-
-			// Send remote xcm to moonbeam
-			T::XcmSender::send_xcm(T::MoonbeamLocation::get(), extend_remote_xcm.clone().into())
-				.map_err(|_| Error::<T>::XcmSendFailed)?;
-
-			Self::deposit_event(Event::Route(
-				origin_location,
-				extend_remote_xcm.into(),
-				remote_weight,
-				amount,
-			));
-			Ok(().into())
-		}
-	}
-
-	impl<T: Config> Pallet<T> {
-		/// Extend xcm to make weight calculation more accurate.
-		/// These extended instructions are the instructions that will be executed remotely
-		fn extend_remote_xcm_for_weight(
-			xcm: Xcm<<T as frame_system::Config>::Call>,
-		) -> Xcm<<T as frame_system::Config>::Call> {
-			let mut extend_xcm_for_weight = Xcm(vec![
-				ReserveAssetDeposited(
-					MultiAsset { id: Concrete(T::LocalAssetId::get()), fun: Fungible(0) }.into(),
-				),
-				BuyExecution {
-					fees: MultiAsset { id: Concrete(T::LocalAssetId::get()), fun: Fungible(0) },
-					weight_limit: WeightLimit::Unlimited,
-				},
-				SetAppendix(Xcm(vec![
-					RefundSurplus,
-					DepositAsset {
-						assets: Wild(All),
-						max_assets: 1,
-						beneficiary: Default::default(),
-					},
-				])),
-			]);
-			extend_xcm_for_weight.0.extend(xcm.0.into_iter());
-			return extend_xcm_for_weight;
+			extend_xcm.0.extend(xcm.0.into_iter());
+			return extend_xcm;
 		}
 	}
 }
