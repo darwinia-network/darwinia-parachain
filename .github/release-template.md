@@ -19,7 +19,7 @@ docker pull quay.io/darwinia-network/darwinia-parachain:{{ tag }}
 ```
 
 ## Proposal Hashes
-|      Network       |              Proposal Hash               |
-| :----------------: | :--------------------------------------: |
-| Darwinia Parachain | {{ crab_parachain_proposal_compressed }} |
-|   Crab Parachain   | {{ crab_parachain_proposal_compressed }} |
+|      Network       |             Code Hash              |
+| :----------------: | :--------------------------------: |
+| Darwinia Parachain | {{ darwinia_parachain_code_hash }} |
+|   Crab Parachain   |   {{ crab_parachain_code_hash }}   |

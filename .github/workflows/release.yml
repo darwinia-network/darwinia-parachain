@@ -188,22 +188,22 @@ jobs:
           FILE_CRAB_PARACHAIN=deploy/crab-parachain-runtime.compact.compressed.json
           FILE_DARWINIA_PARACHAIN=deploy/darwinia-parachain-runtime.compact.compressed.json
 
-          PROPOSAL_CRAB_PARACHAIN_COMPRESSED=$(cat ${FILE_CRAB_PARACHAIN} | jq -r .proposal_hash)
-          PROPOSAL_DARWINIA_PARACHAIN_COMPRESSED=$(cat ${FILE_DARWINIA_PARACHAIN} | jq -r .proposal_hash)
+          CODE_HASH_CRAB_PARACHAIN=$(cat ${FILE_CRAB_PARACHAIN} | jq -r .blake2_256)
+          CODE_HASH_DARWINIA_PARACHAIN=$(cat ${FILE_DARWINIA_PARACHAIN} | jq -r .blake2_256)
           RUNTIME_VERSION_CRAB_PARACHAIN=$(cat ${FILE_CRAB_PARACHAIN} | jq -r .core_version | sed "${REGEX_RUNTIME_VERSION}")
           RUNTIME_VERSION_DARWINIA_PARACHAIN=$(cat ${FILE_DARWINIA_PARACHAIN} | jq -r .core_version | sed "${REGEX_RUNTIME_VERSION}")
 
           echo 'Template data:'
           jq -n \
-            --arg crab_parachain_proposal_compressed "$PROPOSAL_CRAB_PARACHAIN_COMPRESSED" \
-            --arg darwinia_parachain_proposal_compressed "$PROPOSAL_DARWINIA_PARACHAIN_COMPRESSED" \
+            --arg crab_parachain_code_hash "$CODE_HASH_CRAB_PARACHAIN" \
+            --arg darwinia_parachain_code_hash "$CODE_HASH_DARWINIA_PARACHAIN" \
             --arg crab_parachain_runtime_version "$RUNTIME_VERSION_CRAB_PARACHAIN" \
             --arg darwinia_parachain_runtime_version "$RUNTIME_VERSION_DARWINIA_PARACHAIN" \
             --arg tag "$GIT_TAG_NAME" \
             --arg sha "$SHA" \
             '{
-              crab_parachain_proposal_compressed: $crab_parachain_proposal_compressed,
-              darwinia_parachain_proposal_compressed: $darwinia_parachain_proposal_compressed,
+              crab_parachain_code_hash: $crab_parachain_code_hash,
+              darwinia_parachain_code_hash: $darwinia_parachain_code_hash,
               crab_parachain_runtime_version: $crab_parachain_runtime_version,
               darwinia_parachain_runtime_version: $darwinia_parachain_runtime_version,
               tag: $tag,
