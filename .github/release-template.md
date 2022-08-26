@@ -1,10 +1,10 @@
 Darwinia Parachain
 ===
 
-|      Network       |              Native Runtime              | Upgrade Priority |
-| :----------------: | :--------------------------------------: | :--------------: |
-| Darwinia Parachain | {{ darwinia_parachain_runtime_version }} |       LOW        |
-|   Crab Parachain   |   {{ crab_parachain_runtime_version }}   |       LOW        |
+|      Network       |               Native Runtime               | Upgrade Priority |
+| :----------------: | :----------------------------------------: | :--------------: |
+| Darwinia Parachain | `{{ darwinia_parachain_runtime_version }}` |       LOW        |
+|   Crab Parachain   |   `{{ crab_parachain_runtime_version }}`   |       LOW        |
 
 ## Resources
 
@@ -19,7 +19,7 @@ docker pull quay.io/darwinia-network/darwinia-parachain:{{ tag }}
 ```
 
 ## Proposal Hashes
-|      Network       |             Code Hash              |
-| :----------------: | :--------------------------------: |
-| Darwinia Parachain | {{ darwinia_parachain_code_hash }} |
-|   Crab Parachain   |   {{ crab_parachain_code_hash }}   |
+|      Network       |              Code Hash               |
+| :----------------: | :----------------------------------: |
+| Darwinia Parachain | `{{ darwinia_parachain_code_hash }}` |
+|   Crab Parachain   |   `{{ crab_parachain_code_hash }}`   |
