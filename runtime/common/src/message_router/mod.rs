@@ -26,10 +26,6 @@ use xcm_executor::traits::WeightBounds;
 
 pub type AssetUnitsPerSecond = u128;
 
-pub trait ConvertXcm<Call> {
-	fn convert(xcm: Xcm<()>) -> Option<Xcm<Call>>;
-}
-
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
@@ -65,7 +61,7 @@ pub mod pallet {
 			target_location: MultiLocation,
 			local_asset_units_per_second: AssetUnitsPerSecond,
 		},
-		Route(MultiLocation, Xcm<()>, Weight, u128),
+		RouteToMoonbeam(MultiLocation, Xcm<()>, Weight, u128),
 	}
 
 	#[pallet::error]
@@ -82,10 +78,10 @@ pub mod pallet {
 		XcmSendFailed,
 	}
 
-	/// Stores the units per second for target chain execution for local asset(e.g. CRAB).
+	/// Stores the units per second executed by the target chain for local asset(e.g. CRAB).
 	/// This is used to know how to charge for XCM execution in local asset.
 	/// For example:
-	/// key: 2023, val: 14719736222326895902025
+	/// key: {parents: 1, Parachain(2023)}, val: 14719736222326895902025
 	/// represents the units per second of CRAB token on moonriver
 	#[pallet::storage]
 	#[pallet::getter(fn target_xcm_exec_config)]
@@ -170,7 +166,7 @@ pub mod pallet {
 			T::XcmSender::send_xcm(T::MoonbeamLocation::get(), remote_xcm.clone().into())
 				.map_err(|_| Error::<T>::XcmSendFailed)?;
 
-			Self::deposit_event(Event::Route(
+			Self::deposit_event(Event::RouteToMoonbeam(
 				origin_location,
 				remote_xcm.into(),
 				remote_weight,
