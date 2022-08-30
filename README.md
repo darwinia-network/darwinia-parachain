@@ -51,17 +51,17 @@ cargo build --release
 - Connect to the global Darwinia Parachain Mainnet network
 
     ```shell
-    ./target/release/darwinia-parachain
+    ./target/release/darwinia-collator
     ```
 
 - Connect to the global Crab Parachain canary network
 
     ```shell
-    ./target/release/darwinia-parachain --chain crab-parachain
+    ./target/release/darwinia-collator --chain crab-parachain
     ```
 
 - Connect to the global Pangolin Parachain testnet
     
     ```shell
-    ./target/release/darwinia-parachain --chain pangolin-parachain
+    ./target/release/darwinia-collator --chain pangolin-parachain
     ```
