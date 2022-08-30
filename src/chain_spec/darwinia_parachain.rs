@@ -126,7 +126,7 @@ pub fn genesis_config() -> ChainSpec {
 		"darwinia_parachain",
 		ChainType::Live,
 		genesis,
-		vec![],
+		Vec::new(),
 		Some(
 			TelemetryEndpoints::new(vec![(TELEMETRY_URL.to_string(), 0)])
 				.expect("Darwinia Parachain telemetry url is valid; qed"),

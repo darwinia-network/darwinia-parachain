@@ -1,5 +1,5 @@
 // --- paritytech ---
-use frame_support::{traits::EnsureOneOf, PalletId};
+use frame_support::{traits::EitherOfDiverse, PalletId};
 use frame_system::EnsureRoot;
 use pallet_collator_selection::{Config, IdentityCollator};
 use pallet_xcm::{EnsureXcm, IsMajorityOfBody};
@@ -12,13 +12,13 @@ frame_support::parameter_types! {
 	pub const ExecutiveBody: BodyId = BodyId::Executive;
 	pub const PotId: PalletId = PalletId(*b"PotStake");
 	pub const MaxCandidates: u32 = 1000;
-	pub const MinCandidates: u32 = 5;
+	pub const MinCandidates: u32 = 3;
 	pub const MaxInvulnerables: u32 = 100;
 }
 
 /// We allow root and the Relay Chain council to execute privileged collator selection operations.
 pub type CollatorSelectionUpdateOrigin =
-	EnsureOneOf<EnsureRoot<AccountId>, EnsureXcm<IsMajorityOfBody<KsmLocation, ExecutiveBody>>>;
+	EitherOfDiverse<EnsureRoot<AccountId>, EnsureXcm<IsMajorityOfBody<KsmLocation, ExecutiveBody>>>;
 
 impl Config for Runtime {
 	type Currency = Ring;

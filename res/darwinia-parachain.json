@@ -2,7 +2,9 @@
 	"name": "Darwinia Parachain",
 	"id": "darwinia_parachain",
 	"chainType": "Live",
-	"bootNodes": [],
+	"bootNodes": [
+		"/dns/r1.darwinia-parachain-p2p.darwinia.network/tcp/30333/ws/p2p/12D3KooWR7ZBgXNUEGQMnPXurVT8b4LMEW9ZSk6K6sL2zdA1sLuB"
+	],
 	"telemetryEndpoints": [
 		[
 			"/dns/telemetry.polkadot.io/tcp/443/x-parity-wss/%2Fsubmit%2F",

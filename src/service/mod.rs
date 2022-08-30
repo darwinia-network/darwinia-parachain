@@ -30,6 +30,7 @@ pub use pangolin_parachain_runtime::RuntimeApi as PangolinParachainRuntimeApi;
 use std::{error::Error, sync::Arc, time::Duration};
 // --- crates.io ---
 use futures::lock::Mutex;
+use jsonrpsee::RpcModule;
 // --- paritytech ---
 use cumulus_client_cli::CollatorOptions;
 use cumulus_client_consensus_aura::{
@@ -76,7 +77,7 @@ use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
 use substrate_prometheus_endpoint::Registry;
 // --- darwinia-network ---
 use dc_primitives::{OpaqueBlock as Block, *};
-use dc_rpc::{FullDeps, RpcExtension};
+use dc_rpc::FullDeps;
 
 type FullBackend = TFullBackend<Block>;
 type FullClient<RuntimeApi> = TFullClient<Block, RuntimeApi, WasmExecutor<HostFunctions>>;
@@ -331,7 +332,7 @@ async fn start_node_impl<RuntimeApi, RB, BIQ, BIC>(
 where
 	RuntimeApi: 'static + Send + Sync + sp_api::ConstructRuntimeApi<Block, FullClient<RuntimeApi>>,
 	RuntimeApi::RuntimeApi: RuntimeApiCollection,
-	RB: 'static + Send + Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcExtension>,
+	RB: 'static + Send + Fn(Arc<FullClient<RuntimeApi>>) -> Result<RpcModule<()>>,
 	BIQ: FnOnce(
 		Arc<FullClient<RuntimeApi>>,
 		&Configuration,
@@ -484,7 +485,7 @@ where
 	Ok((task_manager, client))
 }
 
-/// Build the import queue for the darwinia-collator.
+/// Build the import queue for the darwinia-parachain.
 pub fn build_import_queue<RuntimeApi>(
 	client: Arc<FullClient<RuntimeApi>>,
 	config: &Configuration,
@@ -541,7 +542,7 @@ where
 	))
 }
 
-/// Start a darwinia-collator node.
+/// Start a darwinia-parachain node.
 pub async fn start_node<RuntimeApi>(
 	parachain_config: Configuration,
 	polkadot_config: Configuration,
@@ -558,7 +559,7 @@ where
 		polkadot_config,
 		collator_options,
 		id,
-		|_| Ok(RpcExtension::new(())),
+		|_| Ok(RpcModule::new(())),
 		build_import_queue,
 		|client,
 		 prometheus_registry,

@@ -28,7 +28,6 @@ use frame_support::{
 	ensure,
 	pallet_prelude::*,
 	traits::{Get, UnfilteredDispatchable},
-	transactional,
 	weights::GetDispatchInfo,
 };
 use frame_system::{ensure_signed, RawOrigin};
@@ -139,7 +138,6 @@ pub mod pallet {
 			let dispatch_info = call.get_dispatch_info();
 			(dispatch_info.weight.saturating_add(10_000), dispatch_info.class)
         })]
-		#[transactional]
 		pub fn emergency_safeguard(
 			origin: OriginFor<T>,
 			call: AnyCall<T>,
@@ -165,7 +163,6 @@ pub mod pallet {
 			let dispatch_info = call.get_dispatch_info();
 			(dispatch_info.weight.saturating_add(10_000), dispatch_info.class)
         })]
-		#[transactional]
 		pub fn enact_remote_call(
 			origin: OriginFor<T>,
 			call: AnyCall<T>,

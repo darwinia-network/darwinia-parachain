@@ -123,7 +123,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
 	impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
 	authoring_version: 1,
-	spec_version: 5_3_0_0,
+	spec_version: 5_3_2_0,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -137,7 +137,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
 	impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
 	authoring_version: 1,
-	spec_version: 5_3_0_0,
+	spec_version: 5_3_2_0,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -179,6 +179,7 @@ frame_support::construct_runtime! {
 		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
 		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
+		RemoteGovernance: dp_common_runtime::remote_governance::{Pallet, Call, Storage, Event<T>} = 25,
 
 		// S2S bridges.
 		BridgePangolinGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20,
@@ -187,8 +188,6 @@ frame_support::construct_runtime! {
 
 		PangolinFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 		FromPangolinIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
-
-		RemoteGovernance: dp_common_runtime::remote_governance::{Pallet, Call, Storage, Event<T>} = 25,
 	}
 }
 
@@ -295,27 +294,6 @@ sp_api::impl_runtime_apis! {
 	impl cumulus_primitives_core::CollectCollationInfo<Block> for Runtime {
 		fn collect_collation_info(header: &<Block as BlockT>::Header) -> cumulus_primitives_core::CollationInfo {
 			ParachainSystem::collect_collation_info(header)
-		}
-	}
-
-	impl bp_pangolin::PangolinFinalityApi<Block> for Runtime {
-		fn best_finalized() -> (bp_pangolin::BlockNumber, bp_pangolin::Hash) {
-			let header = BridgePangolinGrandpa::best_finalized();
-			(header.number, header.hash())
-		}
-	}
-
-	impl bp_pangolin::ToPangolinOutboundLaneApi<Block, Balance, bm_pangolin::ToPangolinMessagePayload> for Runtime {
-		fn message_details(
-			lane: bp_messages::LaneId,
-			begin: bp_messages::MessageNonce,
-			end: bp_messages::MessageNonce,
-		) -> Vec<bp_messages::MessageDetails<Balance>> {
-			bridge_runtime_common::messages_api::outbound_message_details::<
-				Runtime,
-				WithPangolinMessages,
-				bm_pangolin::WithPangolinMessageBridge,
-			>(lane, begin, end)
 		}
 	}
 

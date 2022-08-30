@@ -22,13 +22,15 @@ pub use sc_rpc::{DenyUnsafe, SubscriptionTaskExecutor};
 
 // --- std ---
 use std::sync::Arc;
+// --- crates.io ---
+use jsonrpsee::RpcModule;
 // --- paritytech ---
 use sp_blockchain::Error as BlockChainError;
 // --- darwinia-network ---
 use dc_primitives::{AccountId, Balance, Nonce, OpaqueBlock as Block};
 
 /// A type representing all RPC extensions.
-pub type RpcExtension = jsonrpsee::RpcModule<()>;
+pub type RpcExtension = RpcModule<()>;
 
 /// Full client dependencies
 pub struct FullDeps<C, P> {
@@ -58,14 +60,13 @@ where
 	P: 'static + Send + Sync + sc_transaction_pool_api::TransactionPool,
 {
 	// --- paritytech ---
-	use pallet_transaction_payment_rpc::{TransactionPaymentApiServer, TransactionPaymentRpc};
-	use substrate_frame_rpc_system::{SystemApiServer, SystemRpc};
+	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
+	use substrate_frame_rpc_system::{System, SystemApiServer};
 
 	let mut module = RpcExtension::new(());
 	let FullDeps { client, pool, deny_unsafe } = deps;
 
-	module.merge(SystemRpc::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
-	module.merge(TransactionPaymentRpc::new(client.clone()).into_rpc())?;
-
+	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
+	module.merge(TransactionPayment::new(client.clone()).into_rpc())?;
 	Ok(module)
 }
