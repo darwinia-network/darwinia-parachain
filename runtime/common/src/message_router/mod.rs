@@ -32,11 +32,11 @@ pub type AssetUnitsPerSecond = u128;
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
+	use crate::message_router::weights::WeightInfo;
 	use frame_support::{log, weights::constants::WEIGHT_PER_SECOND};
 	use frame_system::pallet_prelude::*;
 	use sp_std::{boxed::Box, vec};
 	use xcm_executor::traits::{InvertLocation, TransactAsset};
-	use crate::message_router::weights::WeightInfo;
 
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
