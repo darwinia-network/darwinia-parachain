@@ -81,6 +81,7 @@ pub mod pallet {
 		MultiLocationFull,
 		/// Failed to send xcm.
 		XcmSendFailed,
+		AccountIdConversionFailed,
 	}
 
 	/// Stores the units per second executed by the target chain for local asset(e.g. CRAB).
@@ -126,7 +127,11 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			message: Box<VersionedXcm<<T as frame_system::Config>::Call>>,
 		) -> DispatchResultWithPostInfo {
-			let origin_location = T::ExecuteXcmOrigin::ensure_origin(origin)?;
+			let origin_location = T::ExecuteXcmOrigin::ensure_origin(origin.clone())?;
+			let account_id = ensure_signed(origin)?;
+			let account_u8 = <[u8; 32]>::try_from(account_id.encode())
+				.map_err(|_| Error::<T>::AccountIdConversionFailed)?;
+
 			let remote_xcm: Xcm<<T as frame_system::Config>::Call> =
 				(*message).try_into().map_err(|()| Error::<T>::BadVersion)?;
 
@@ -135,6 +140,7 @@ pub mod pallet {
 				TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
 					.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
 			let remote_weight = T::MoonbeamWeigher::weight(&mut Self::extend_remote_xcm(
+				account_u8.clone(),
 				remote_xcm.clone(),
 				MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(0) },
 			))
@@ -169,7 +175,8 @@ pub mod pallet {
 			remote_xcm_fee_anchor_dest
 				.reanchor(&T::MoonbeamLocation::get(), &ancestry)
 				.map_err(|()| Error::<T>::MultiLocationFull)?;
-			let remote_xcm = Self::extend_remote_xcm(remote_xcm, remote_xcm_fee_anchor_dest);
+			let remote_xcm =
+				Self::extend_remote_xcm(account_u8, remote_xcm, remote_xcm_fee_anchor_dest);
 
 			// Send remote xcm to moonbeam
 			T::XcmSender::send_xcm(T::MoonbeamLocation::get(), remote_xcm.clone().into())
@@ -188,6 +195,7 @@ pub mod pallet {
 	impl<T: Config> Pallet<T> {
 		/// Extend xcm to pay for remote execution
 		fn extend_remote_xcm(
+			account_u8: [u8; 32],
 			xcm: Xcm<<T as frame_system::Config>::Call>,
 			fee: MultiAsset,
 		) -> Xcm<<T as frame_system::Config>::Call> {
@@ -202,6 +210,7 @@ pub mod pallet {
 						beneficiary: T::SelfLocationInSibl::get(),
 					},
 				])),
+				DescendOrigin(X1(AccountId32 { network: NetworkId::Any, id: account_u8 })),
 			]);
 			extend_xcm.0.extend(xcm.0.into_iter());
 			return extend_xcm;
