@@ -36,6 +36,7 @@ impl Config for Runtime {
 	type MoonbeamLocation = MoonbeamLocation;
 	type MoonbeamWeigher = FixedWeightBounds<MoonbeamUnitWeightCost, Call, MoonbeamMaxInstructions>;
 	type SelfLocationInSibl = SelfLocationInSibl;
+	type WeightInfo = ();
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 	type XcmSender = XcmRouter;
 }

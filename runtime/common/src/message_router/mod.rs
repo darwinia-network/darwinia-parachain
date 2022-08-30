@@ -18,9 +18,12 @@
 
 //! Prototype module for message router.
 
+#[cfg(feature = "runtime-benchmarks")]
+mod benchmarking;
+mod weights;
+
 // --- paritytech ---
 use frame_support::{pallet_prelude::*, traits::Get};
-pub use pallet::*;
 use xcm::prelude::*;
 use xcm_executor::traits::WeightBounds;
 
@@ -33,6 +36,7 @@ pub mod pallet {
 	use frame_system::pallet_prelude::*;
 	use sp_std::{boxed::Box, vec};
 	use xcm_executor::traits::{InvertLocation, TransactAsset};
+	use crate::message_router::weights::WeightInfo;
 
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
@@ -51,6 +55,7 @@ pub mod pallet {
 		>;
 		type XcmExecutor: ExecuteXcm<Self::Call>;
 		type XcmSender: SendXcm;
+		type WeightInfo: WeightInfo;
 	}
 
 	#[pallet::event]
@@ -94,7 +99,9 @@ pub mod pallet {
 
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
-		#[pallet::weight(T::DbWeight::get().reads_writes(0, 1))]
+		#[pallet::weight(
+			<T as Config>::WeightInfo::set_target_xcm_exec_config()
+		)]
 		pub fn set_target_xcm_exec_config(
 			origin: OriginFor<T>,
 			target_location: MultiLocation,
@@ -112,7 +119,9 @@ pub mod pallet {
 			Ok(().into())
 		}
 
-		#[pallet::weight(0)]
+		#[pallet::weight(
+			<T as Config>::WeightInfo::forward_to_moonbeam()
+		)]
 		pub fn forward_to_moonbeam(
 			origin: OriginFor<T>,
 			message: Box<VersionedXcm<<T as frame_system::Config>::Call>>,
@@ -199,3 +208,5 @@ pub mod pallet {
 		}
 	}
 }
+
+pub use pallet::*;
