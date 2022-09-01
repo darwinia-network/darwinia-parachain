@@ -65,3 +65,5 @@ cargo build --release
     ```shell
     ./target/release/darwinia-collator --chain pangolin-parachain
     ```
+
+# Run local testnet with parachain-launch

@@ -1,0 +1,46 @@
+# Relaychain Configuration
+relaychain:
+  image: parity/polkadot:v0.9.25 # the docker image to use
+  chain: rococo-local # the chain to use
+  env: # environment variables for all relaychain nodes
+    RUST_LOG: parachain::candidate-backing=trace
+  flags: # additional CLI flags for all relaychain nodes
+    - --rpc-methods=unsafe
+    - --execution=wasm
+    - --no-beefy
+  nodes: # nodes config
+    - name: alice
+      wsPort: 9946
+      rpcPort: 9936
+      port: 30336
+    - name: bob
+      wsPort: 9947
+      rpcPort: 9937
+      port: 30337
+
+# Parachain Configuration
+parachains:
+# Config for first parachain
+- image: quay.io/darwinia-network/darwinia-parachain:v5.3.2-rc1
+  chain: # this could be a string like `dev` or a config object
+    base: pangolin-parachain-dev
+  id: 2000 # override parachain id
+  parachain: true # this is parachain, not parathread
+  flags: # CLI flags for this parachain nodes
+    - --rpc-methods=unsafe
+    - --force-authoring
+    - --execution=wasm
+  relaychainFlags: # CLI flags for the relaychain port
+    - --execution=wasm
+    - --execution=wasm
+    - --no-beefy
+  volumePath: /darwinia/data # The path to mount volume and base path, default to /data
+  env: # environment variables for this parachain nodes
+    RUST_LOG: sc_basic_authorship=trace
+  nodes:
+    - flags:
+      - --alice
+    - flags:
+      - --bob
+    - flags:
+      - --charlie
