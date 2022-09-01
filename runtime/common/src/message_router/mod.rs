@@ -20,11 +20,11 @@
 
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
-mod weights;
 #[cfg(test)]
 mod mock;
 #[cfg(test)]
 mod test;
+mod weights;
 
 // --- paritytech ---
 use frame_support::{pallet_prelude::*, traits::Get};
