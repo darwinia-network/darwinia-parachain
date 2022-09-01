@@ -2,26 +2,24 @@
 use codec::{Decode, Encode};
 use scale_info::TypeInfo;
 // --- paritytech --
-use bp_messages::LaneId;
-use bp_runtime::ChainId;
 use frame_support::{PalletId, RuntimeDebug};
-use pallet_bridge_messages::Instance1 as WithCrabMessages;
 // --- darwinia-network ---
 use crate::*;
 use bp_message_dispatch::CallOrigin;
-use bp_runtime::{messages::DispatchFeePayment, CRAB_CHAIN_ID};
+use bp_messages::{LaneId, MessageNonce};
+use bp_runtime::{messages::DispatchFeePayment, ChainId, CRAB_CHAIN_ID};
 use bridge_runtime_common::lanes::CRAB_CRAB_PARACHAIN_LANE;
 use bridges_message::crab::ToCrabMessagePayload;
 use dp_common_runtime::helixbridge::{CallParams, Config, CreatePayload, LatestMessageNoncer};
-use pallet_bridge_messages::outbound_lane;
+use pallet_bridge_messages::{outbound_lane, Instance1 as WithCrabMessages};
 
 /// The s2s backing pallet index in the crab chain runtime.
 const CRAB_S2S_BACKING_PALLET_INDEX: u8 = 57;
 
 pub struct ToCrabMessageSender;
 impl LatestMessageNoncer for ToCrabMessageSender {
-	fn outbound_latest_generated_nonce(lane_id: LaneId) -> u64 {
-		outbound_lane::<Runtime, WithCrabMessages>(lane_id).data().latest_generated_nonce.into()
+	fn outbound_latest_generated_nonce(lane_id: LaneId) -> MessageNonce {
+		outbound_lane::<Runtime, WithCrabMessages>(lane_id).data().latest_generated_nonce
 	}
 }
 

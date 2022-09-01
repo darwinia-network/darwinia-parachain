@@ -42,7 +42,7 @@ type Balance = u64;
 
 pub fn build_account(x: u8) -> (AccountId32, Vec<u8>) {
 	let origin = [x; 32];
-	(AccountId32::decode(&mut &origin.clone()[..]).unwrap(), origin.to_vec())
+	(AccountId32::decode(&mut &origin[..]).unwrap(), origin.to_vec())
 }
 
 frame_support::parameter_types! {
@@ -130,7 +130,7 @@ impl MessagesBridge<Origin, AccountId<Test>, Balance, ()> for MockMessagesBridge
 		fee: Balance,
 	) -> Result<SendMessageArtifacts, Self::Error> {
 		// send fee to fund account [2;32]
-		Balances::transfer(submitter.into(), build_account(2).0, fee)?;
+		Balances::transfer(submitter, build_account(2).0, fee)?;
 		Ok(SendMessageArtifacts { nonce: 0, weight: 0 })
 	}
 }

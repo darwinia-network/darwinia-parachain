@@ -194,7 +194,7 @@ pub fn development_config() -> ChainSpec {
 		}
 	}
 
-	return ChainSpec::from_genesis(
+	ChainSpec::from_genesis(
 		NAME,
 		ID,
 		ChainType::Development,
@@ -205,5 +205,5 @@ pub fn development_config() -> ChainSpec {
 		None,
 		Some(properties()),
 		Extensions { relay_chain: "rococo-local".into(), para_id: PARA_ID },
-	);
+	)
 }

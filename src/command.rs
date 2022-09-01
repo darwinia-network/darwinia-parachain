@@ -106,7 +106,7 @@ impl SubstrateCli for RelayChainCli {
 	}
 
 	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
-		polkadot_cli::Cli::from_iter([RelayChainCli::executable_name().to_string()].iter())
+		polkadot_cli::Cli::from_iter([RelayChainCli::executable_name()].iter())
 			.load_spec(id)
 	}
 
@@ -116,7 +116,7 @@ impl SubstrateCli for RelayChainCli {
 }
 
 fn load_spec(id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
-	let id = if id == "" {
+	let id = if id.is_empty() {
 		let n = get_exec_name().unwrap_or_default();
 		["darwinia-parachain", "crab-parachain", "pangolin-parachain"]
 			.iter()
@@ -160,10 +160,8 @@ fn get_exec_name() -> Option<String> {
 		.and_then(|s| s.into_string().ok())
 }
 
-fn set_default_ss58_version(chain_spec: &Box<dyn ChainSpec>) {
-	let ss58_version = if chain_spec.is_crab_parachain() {
-		Ss58AddressFormatRegistry::SubstrateAccount
-	} else if chain_spec.is_pangolin_parachain() {
+fn set_default_ss58_version(chain_spec: &dyn IdentifyVariant) {
+	let ss58_version = if chain_spec.is_crab_parachain() || chain_spec.is_pangolin_parachain() {
 		Ss58AddressFormatRegistry::SubstrateAccount
 	} else {
 		Ss58AddressFormatRegistry::DarwiniaAccount
@@ -258,10 +256,10 @@ pub fn run() -> Result<()> {
 
 			let para_id = Extensions::try_get(&*config.chain_spec)
 				.map(|e| e.para_id)
-				.ok_or_else(|| "Could not find parachain ID in chain-spec.")?;
+				.ok_or("Could not find parachain ID in chain-spec.")?;
 			let polkadot_cli = RelayChainCli::new(
 				&config,
-				[RelayChainCli::executable_name().to_string()]
+				[RelayChainCli::executable_name()]
 					.iter()
 					.chain(cli.relay_chain_args.iter()),
 			);
@@ -349,7 +347,7 @@ pub fn run() -> Result<()> {
 			runner.sync_run(|config| {
 				let polkadot_cli = RelayChainCli::new(
 					&config,
-					[RelayChainCli::executable_name().to_string()]
+					[RelayChainCli::executable_name()]
 						.iter()
 						.chain(cli.relay_chain_args.iter()),
 				);

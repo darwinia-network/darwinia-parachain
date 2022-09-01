@@ -121,7 +121,7 @@ pub fn genesis_config() -> ChainSpec {
 		}
 	}
 
-	return ChainSpec::from_genesis(
+	ChainSpec::from_genesis(
 		"Darwinia Parachain",
 		"darwinia_parachain",
 		ChainType::Live,
@@ -135,7 +135,7 @@ pub fn genesis_config() -> ChainSpec {
 		None,
 		Some(properties()),
 		Extensions { relay_chain: "polkadot".into(), para_id: PARA_ID },
-	);
+	)
 }
 
 pub fn development_config() -> ChainSpec {
@@ -183,7 +183,7 @@ pub fn development_config() -> ChainSpec {
 		}
 	}
 
-	return ChainSpec::from_genesis(
+	ChainSpec::from_genesis(
 		"Darwinia Parachain Dev",
 		"darwinia_parachain_dev",
 		ChainType::Development,
@@ -194,5 +194,5 @@ pub fn development_config() -> ChainSpec {
 		None,
 		Some(properties()),
 		Extensions { relay_chain: "rococo-local".into(), para_id: PARA_ID },
-	);
+	)
 }
