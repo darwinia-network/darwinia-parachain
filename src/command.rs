@@ -258,7 +258,7 @@ pub fn run() -> Result<()> {
 				.ok_or("Could not find parachain ID in chain-spec.")?;
 			let polkadot_cli = RelayChainCli::new(
 				&config,
-				[RelayChainCli::executable_name().to_string()]
+				[RelayChainCli::executable_name()]
 					.iter()
 					.chain(cli.relay_chain_args.iter()),
 			);
@@ -346,7 +346,7 @@ pub fn run() -> Result<()> {
 			runner.sync_run(|config| {
 				let polkadot_cli = RelayChainCli::new(
 					&config,
-					[RelayChainCli::executable_name().to_string()]
+					[RelayChainCli::executable_name()]
 						.iter()
 						.chain(cli.relay_chain_args.iter()),
 				);
