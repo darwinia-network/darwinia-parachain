@@ -2,25 +2,23 @@
 use codec::{Decode, Encode};
 use scale_info::TypeInfo;
 // --- paritytech ---
-use bp_messages::LaneId;
-use bp_runtime::ChainId;
 use frame_support::PalletId;
-use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 // --- darwinia-network ---
 use crate::*;
 use bp_message_dispatch::CallOrigin;
-use bp_runtime::{messages::DispatchFeePayment, PANGOLIN_CHAIN_ID};
+use bp_messages::{LaneId, MessageNonce};
+use bp_runtime::{messages::DispatchFeePayment, ChainId, PANGOLIN_CHAIN_ID};
 use bridges_message::pangolin::{
 	ToPangolinMessagePayload, PANGOLIN_PANGOLIN_PARACHAIN_LANE, PANGOLIN_S2S_BACKING_PALLET_INDEX,
 };
 use dp_common_runtime::helixbridge::{CallParams, Config, CreatePayload, LatestMessageNoncer};
 use frame_support::RuntimeDebug;
-use pallet_bridge_messages::outbound_lane;
+use pallet_bridge_messages::{outbound_lane, Instance1 as WithPangolinMessages};
 
 pub struct ToPangolinMessageSender;
 impl LatestMessageNoncer for ToPangolinMessageSender {
-	fn outbound_latest_generated_nonce(lane_id: LaneId) -> u64 {
-		outbound_lane::<Runtime, WithPangolinMessages>(lane_id).data().latest_generated_nonce.into()
+	fn outbound_latest_generated_nonce(lane_id: LaneId) -> MessageNonce {
+		outbound_lane::<Runtime, WithPangolinMessages>(lane_id).data().latest_generated_nonce
 	}
 }
 

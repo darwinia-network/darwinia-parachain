@@ -204,7 +204,7 @@ pub mod pallet {
 
 			if let Some(backing) = <RemoteBackingAccount<T>>::get() {
 				let target_id = Self::derived_backing_id(backing);
-				ensure!(&target_id == &user, BadOrigin);
+				ensure!(target_id == user, BadOrigin);
 			} else {
 				return Err(Error::<T>::BackingAccountNone.into());
 			}
