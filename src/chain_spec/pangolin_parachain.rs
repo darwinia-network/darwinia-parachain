@@ -85,7 +85,7 @@ pub fn config() -> Result<ChainSpec, String> {
 
 pub fn genesis_config() -> ChainSpec {
 	fn genesis() -> GenesisConfig {
-		let root: AccountId = array_bytes::hex_into_unchecked(
+		let root: AccountId = array_bytes::hex_n_into_unchecked(
 			"0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
 		);
 		let invulnerables = [
@@ -95,7 +95,7 @@ pub fn genesis_config() -> ChainSpec {
 		.iter()
 		.map(|hex| {
 			(
-				array_bytes::hex_into_unchecked(hex),
+				array_bytes::hex_n_into_unchecked(hex),
 				array_bytes::hex2array_unchecked(hex).unchecked_into(),
 			)
 		})

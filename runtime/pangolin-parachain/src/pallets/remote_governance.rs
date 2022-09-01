@@ -15,7 +15,7 @@ impl<O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>> Ensu
 		o.into().and_then(|o| match o {
 			RawOrigin::Signed(who)
 				if who
-					== array_bytes::hex_into_unchecked(
+					== array_bytes::hex_n_into_unchecked(
 						"0x72819fbc1b93196fa230243947c1726cbea7e33044c7eb6f736ff345561f9e4c",
 					) =>
 				Ok(who),

@@ -57,7 +57,7 @@ pub fn config() -> Result<ChainSpec, String> {
 
 pub fn genesis_config() -> ChainSpec {
 	fn genesis() -> GenesisConfig {
-		let root: AccountId = array_bytes::hex_into_unchecked(
+		let root: AccountId = array_bytes::hex_n_into_unchecked(
 			"0x129d025b24257aabdefac93d00419f06a38e3a5e2314dd6866b16e8f205ce074",
 		);
 		let invulnerables = [
@@ -74,7 +74,7 @@ pub fn genesis_config() -> ChainSpec {
 		.iter()
 		.map(|hex| {
 			(
-				array_bytes::hex_into_unchecked(hex),
+				array_bytes::hex_n_into_unchecked(hex),
 				array_bytes::hex2array_unchecked(hex).unchecked_into(),
 			)
 		})
@@ -88,7 +88,7 @@ pub fn genesis_config() -> ChainSpec {
 					(root.clone(), 100_000 * COIN),
 					// Darwinia Dev
 					(
-						array_bytes::hex_into_unchecked(
+						array_bytes::hex_n_into_unchecked(
 							"0x0a66532a23c418cca12183fee5f6afece770a0bb8725f459d7d1b1b598f91c49",
 						),
 						100_000 * COIN,
