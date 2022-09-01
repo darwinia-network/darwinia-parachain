@@ -257,7 +257,7 @@ where
 	);
 	let (client, backend, keystore_container, task_manager) =
 		sc_service::new_full_parts::<Block, RuntimeApi, _>(
-			&config,
+			config,
 			telemetry.as_ref().map(|(_, telemetry)| telemetry.handle()),
 			executor,
 		)?;
@@ -530,12 +530,12 @@ where
 		aura_verifier: BuildOnAccess::Uninitialized(Some(Box::new(aura_verifier))),
 	};
 
-	let registry = config.prometheus_registry().clone();
+	let registry = config.prometheus_registry();
 	let spawner = task_manager.spawn_essential_handle();
 
 	Ok(BasicQueue::new(
 		verifier,
-		Box::new(ParachainBlockImport::new(client.clone())),
+		Box::new(ParachainBlockImport::new(client)),
 		None,
 		&spawner,
 		registry,
@@ -634,8 +634,8 @@ where
 				task_manager.spawn_handle(),
 				client.clone(),
 				transaction_pool,
-				prometheus_registry.clone(),
-				telemetry.clone(),
+				prometheus_registry,
+				telemetry,
 			);
 			let relay_chain_consensus =
 				cumulus_client_consensus_relay_chain::build_relay_chain_consensus(
@@ -669,7 +669,7 @@ where
 				);
 
 			let parachain_consensus = Box::new(WaitForAuraConsensus {
-				client: client.clone(),
+				client,
 				aura_consensus: Arc::new(Mutex::new(aura_consensus)),
 				relay_chain_consensus: Arc::new(Mutex::new(relay_chain_consensus)),
 			});

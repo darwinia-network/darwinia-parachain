@@ -45,7 +45,7 @@ fn issue_from_remote_backing_remote_sender_invalid() {
 		let (remote_backing_account, _) = build_account(3);
 		assert_ok!(S2sIssuing::set_remote_backing_account(
 			RawOrigin::Root.into(),
-			remote_backing_account.clone()
+			remote_backing_account
 		));
 		assert_err!(
 			S2sIssuing::issue_from_remote(
@@ -68,14 +68,14 @@ fn issue_from_remote_backing_success() {
 			S2sIssuing::derived_backing_id(remote_backing_account.clone());
 		assert_ok!(S2sIssuing::set_remote_backing_account(
 			RawOrigin::Root.into(),
-			remote_backing_account.clone()
+			remote_backing_account
 		));
 		assert_ok!(S2sIssuing::issue_from_remote(
-			Origin::signed(drived_remote_backing_account.clone()),
+			Origin::signed(drived_remote_backing_account),
 			1024u64,
 			recipient.clone(),
 		));
-		assert_eq!(Balances::free_balance(recipient), 1024_000_000_000);
+		assert_eq!(Balances::free_balance(recipient), 1_024_000_000_000);
 	});
 }
 
