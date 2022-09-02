@@ -66,4 +66,26 @@ cargo build --release
     ./target/release/darwinia-collator --chain pangolin-parachain
     ```
 
-# Run local testnet with parachain-launch
+# Run local testnet with [parachain-launch](https://github.com/open-web3-stack/parachain-launch)
+
+1. Install the package globally
+
+    ```sh
+    yarn global add @open-web3/parachain-launch
+    ```
+
+2. Generate docker compose files
+
+    ```sh
+    parachain-launch generate --config config.yml --yes
+    ```
+
+    It will pull images and generate required docker compose files in a folder called `output` in your current working directory.
+
+3. Start relaychain and parachain
+
+    ```sh
+    cd ./output # OR custom output directory
+
+    docker-compose up -d --build
+    ```

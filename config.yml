@@ -1,22 +1,23 @@
 # Relaychain Configuration
 relaychain:
-  image: parity/polkadot:v0.9.25 # the docker image to use
-  chain: rococo-local # the chain to use
-  env: # environment variables for all relaychain nodes
+  image: parity/polkadot:v0.9.25
+  chain: rococo-local
+  env:
     RUST_LOG: parachain::candidate-backing=trace
-  flags: # additional CLI flags for all relaychain nodes
+  flags:
     - --rpc-methods=unsafe
     - --execution=wasm
-    - --no-beefy
-  nodes: # nodes config
+  nodes:
     - name: alice
-      wsPort: 9946
-      rpcPort: 9936
-      port: 30336
+      wsPort: 9944
+      rpcPort: 9933
+      port: 30333
+      flags:
+        - --force-authoring
+      env:
+        RUST_LOG: babe=debug
     - name: bob
-      wsPort: 9947
-      rpcPort: 9937
-      port: 30337
+    - name: charlie
 
 # Parachain Configuration
 parachains:
@@ -26,18 +27,19 @@ parachains:
     base: pangolin-parachain-dev
   id: 2000 # override parachain id
   parachain: true # this is parachain, not parathread
-  flags: # CLI flags for this parachain nodes
+  flags:
     - --rpc-methods=unsafe
     - --force-authoring
     - --execution=wasm
-  relaychainFlags: # CLI flags for the relaychain port
+  relaychainFlags:
     - --execution=wasm
-    - --execution=wasm
-    - --no-beefy
-  volumePath: /darwinia/data # The path to mount volume and base path, default to /data
-  env: # environment variables for this parachain nodes
+  volumePath: /darwinia/data
+  env:
     RUST_LOG: sc_basic_authorship=trace
   nodes:
+    - wsPort: 9947
+      rpcPort: 9936
+      port: 30336
     - flags:
       - --alice
     - flags:
