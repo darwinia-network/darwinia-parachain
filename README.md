@@ -17,20 +17,23 @@ This repo contains runitmes for darwinia-parachain, crab-parachain, pangolin-par
 
 If you'd like to build from source, first install the support software.
 
-```shell
+```sh
 ### Debian
 sudo apt install --assume-yes git clang curl libssl-dev llvm libudev-dev make protobuf-compiler
+
 ### Arch
 pacman -Syu --needed --noconfirm curl git clang protobuf
+
 ### Fedora
 sudo dnf update
 sudo dnf install clang curl git openssl-devel protobuf-compiler
+
 ### Opensuse
 sudo zypper install clang curl git openssl-devel llvm-devel libudev-devel protobuf
 ```
 Once done, Install the Rust toolchain by following Substrate [installation instructions](https://docs.substrate.io/main-docs/install/):
 
-```shell
+```sh
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source $HOME/.cargo/env
 rustup default stable
@@ -41,7 +44,7 @@ rustup target add wasm32-unknown-unknown --toolchain nightly
 
 Build the client by cloning this repository and running the following commands from the root directory of the repo:
 
-```shell
+```sh
 git checkout <latest tagged release>
 cargo build --release
 ```
@@ -50,20 +53,20 @@ cargo build --release
 
 - Connect to the global Darwinia Parachain Mainnet network
 
-    ```shell
-    ./target/release/darwinia-collator
+    ```sh
+    ./target/release/darwinia-parachain
     ```
 
 - Connect to the global Crab Parachain canary network
 
-    ```shell
-    ./target/release/darwinia-collator --chain crab-parachain
+    ```sh
+    ./target/release/darwinia-parachain --chain crab-parachain
     ```
 
 - Connect to the global Pangolin Parachain testnet
     
-    ```shell
-    ./target/release/darwinia-collator --chain pangolin-parachain
+    ```sh
+    ./target/release/darwinia-parachain --chain pangolin-parachain
     ```
 
 # Run local testnet with [parachain-launch](https://github.com/open-web3-stack/parachain-launch)
