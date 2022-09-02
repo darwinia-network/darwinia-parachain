@@ -18,6 +18,7 @@
 
 //! Prototype module for message router.
 
+pub mod barriers;
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
 #[cfg(test)]

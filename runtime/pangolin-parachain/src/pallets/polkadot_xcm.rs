@@ -14,7 +14,10 @@ use xcm_builder::*;
 use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
 // --- darwinia-network ---
 use crate::*;
-use dp_common_runtime::xcm_config::{DenyReserveTransferToRelayChain, DenyThenTry};
+use dp_common_runtime::{
+	message_router::barriers::AllowDescendOriginPaidExecutionFrom,
+	xcm_config::{DenyReserveTransferToRelayChain, DenyThenTry},
+};
 
 /// Converts a local signed origin into an XCM multilocation.
 /// Forms the basis for local origins sending/executing XCMs.
@@ -48,6 +51,7 @@ pub type Barrier = DenyThenTry<
 	(
 		TakeWeightCredit,
 		AllowTopLevelPaidExecutionFrom<Everything>,
+		AllowDescendOriginPaidExecutionFrom<AllowDescendOrigin>,
 		// Parent and its exec plurality get free execution
 		AllowUnpaidExecutionFrom<ParentOrParentsExecutivePlurality>,
 		// Expected responses are OK.
@@ -110,6 +114,13 @@ frame_support::match_types! {
 	pub type ParentOrParentsExecutivePlurality: impl Contains<MultiLocation> = {
 		MultiLocation { parents: 1, interior: Here } |
 		MultiLocation { parents: 1, interior: X1(Plurality { id: BodyId::Executive, .. }) }
+	};
+	pub type AllowDescendOrigin: impl Contains<MultiLocation> = {
+		// MoonbeamLocation
+		MultiLocation {
+			parents: 1,
+			interior: X1(Parachain(1000))
+		}
 	};
 }
 frame_support::match_types! {
