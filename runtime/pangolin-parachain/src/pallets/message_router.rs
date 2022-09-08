@@ -10,7 +10,7 @@ use dp_common_runtime::message_router::Config;
 
 frame_support::parameter_types! {
 	pub const MoonbeamMaxInstructions: u32 = 100;
-	pub MoonbeamUnitWeightCost: Weight = 100_000_000;
+	pub MoonbeamUnitWeightCost: Weight = 200_000_000;
 	pub SelfLocationInSibl: MultiLocation = MultiLocation::new(
 		1,
 		X1(Parachain(ParachainInfo::parachain_id().into()))
