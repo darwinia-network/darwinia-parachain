@@ -5,9 +5,11 @@ use frame_support::{
 	traits::{Everything, PalletInfoAccess},
 	weights::Weight,
 };
+use frame_support::weights::ConstantMultiplier;
 use pallet_xcm::{Config, CurrentXcmVersion, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
 use polkadot_runtime_common::impls::ToAuthor;
+use sp_runtime::traits::ConstU128;
 use xcm::latest::prelude::*;
 use xcm_builder::*;
 use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
@@ -134,7 +136,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type ResponseHandler = PolkadotXcm;
 	type SubscriptionService = PolkadotXcm;
 	type Trader =
-		UsingComponents<WeightToFee, AnchoringSelfReserve, AccountId, Balances, ToAuthor<Runtime>>;
+		UsingComponents<ConstantMultiplier<Balance, ConstU128<WEIGHT_FEE>>, AnchoringSelfReserve, AccountId, Balances, ToAuthor<Runtime>>;
 	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
 	type XcmSender = XcmRouter;
 }
