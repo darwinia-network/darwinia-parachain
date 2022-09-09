@@ -10,11 +10,11 @@
 This repo contains runitmes for darwinia-parachain, crab-parachain, pangolin-parachain.
 
 ## Installation
-### Download the Prebuilt Binary
+### Download the Pre-built Binary
 [GitHub Release page](https://github.com/darwinia-network/darwinia-parachain/releases)
 
 ### Build from Source
-Follow the Substrate official [installation instructions](https://docs.substrate.io/main-docs/install/) to install the dependencies first.
+Follow the Substrate official [installation instructions](https://docs.substrate.io/main-docs/install) to install the dependencies first.
 
 ```sh
 git clone https://github.com/darwinia-network/darwinia-parachain.git
@@ -44,7 +44,9 @@ cargo build --release
     ```
 2. Generate docker compose files
     ```sh
-    parachain-launch generate --config config.yml --yes
+	git clone https://github.com/darwinia-network/darwinia-parachain.git
+	cd darwinia-parachain
+    parachain-launch generate --config .maintain/config.yml --yes
     ```
     This command will pull images and generate required docker compose files in a folder called `output` in your current working directory.
 3. Start relaychain and parachain
