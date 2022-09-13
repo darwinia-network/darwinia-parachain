@@ -135,7 +135,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type ResponseHandler = PolkadotXcm;
 	type SubscriptionService = PolkadotXcm;
 	type Trader = UsingComponents<
-		ConstantMultiplier<Balance, ConstU128<{ BASE_WEIGHT_FEE * 10 }>>,
+		ConstantMultiplier<Balance, ConstU128<{ BASE_WEIGHT_FEE }>>,
 		AnchoringSelfReserve,
 		AccountId,
 		Balances,
