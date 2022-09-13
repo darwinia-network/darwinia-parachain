@@ -258,9 +258,7 @@ pub fn run() -> Result<()> {
 				.ok_or("Could not find parachain ID in chain-spec.")?;
 			let polkadot_cli = RelayChainCli::new(
 				&config,
-				[RelayChainCli::executable_name()]
-					.iter()
-					.chain(cli.relay_chain_args.iter()),
+				[RelayChainCli::executable_name()].iter().chain(cli.relay_chain_args.iter()),
 			);
 			let id = ParaId::from(para_id);
 			let parachain_account = AccountIdConversion::<AccountId>::into_account_truncating(&id);
@@ -346,9 +344,7 @@ pub fn run() -> Result<()> {
 			runner.sync_run(|config| {
 				let polkadot_cli = RelayChainCli::new(
 					&config,
-					[RelayChainCli::executable_name()]
-						.iter()
-						.chain(cli.relay_chain_args.iter()),
+					[RelayChainCli::executable_name()].iter().chain(cli.relay_chain_args.iter()),
 				);
 
 				let polkadot_config = SubstrateCli::create_configuration(
