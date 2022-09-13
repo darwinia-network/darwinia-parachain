@@ -96,8 +96,6 @@ pub type XcmOriginToTransactDispatchOrigin = (
 frame_support::parameter_types! {
 	pub const RelayNetwork: NetworkId = NetworkId::Kusama;
 	pub const MaxInstructions: u32 = 100;
-	// Balance required for the xcm unit weight
-	pub const WEIGHT_FEE: Balance = 10 * G_WEI;
 	pub AnchoringSelfReserve: MultiLocation = MultiLocation::new(
 		0,
 		X1(PalletInstance(<Balances as PalletInfoAccess>::index() as u8))
@@ -137,7 +135,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type ResponseHandler = PolkadotXcm;
 	type SubscriptionService = PolkadotXcm;
 	type Trader = UsingComponents<
-		ConstantMultiplier<Balance, ConstU128<WEIGHT_FEE>>,
+		ConstantMultiplier<Balance, ConstU128<{ BASE_WEIGHT_FEE * 10 }>>,
 		AnchoringSelfReserve,
 		AccountId,
 		Balances,

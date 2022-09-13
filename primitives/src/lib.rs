@@ -92,6 +92,8 @@ pub const MICRO_COIN: Balance = 1_000 * G_WEI;
 pub const MILLI_COIN: Balance = 1_000 * MICRO_COIN;
 /// `1_000_000_000_000_000_000` in `u128`.
 pub const COIN: Balance = 1_000 * MILLI_COIN;
+/// Base balance required for the xcm unit weight
+pub const BASE_WEIGHT_FEE: Balance = G_WEI;
 
 /// Block time of Darwinia Parachain.
 pub const MILLISECS_PER_BLOCK: Moment = 12000;
