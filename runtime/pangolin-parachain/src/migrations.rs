@@ -23,8 +23,6 @@ impl OnRuntimeUpgrade for CustomOnRuntimeUpgrade {
 }
 
 fn migrate() -> Weight {
-	migration::move_pallet(b"RemoteGovernment", b"RemoteGovernance");
-
-	// 0
-	RuntimeBlockWeights::get().max_block
+	0
+	// RuntimeBlockWeights::get().max_block
 }

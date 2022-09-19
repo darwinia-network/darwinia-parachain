@@ -1253,7 +1253,7 @@ dependencies = [
 
 [[package]]
 name = "crab-parachain-runtime"
-version = "5.3.2"
+version = "5.3.3"
 dependencies = [
  "array-bytes",
  "bp-crab",
@@ -2064,7 +2064,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-parachain"
-version = "5.3.2"
+version = "5.3.3"
 dependencies = [
  "array-bytes",
  "async-trait",
@@ -2133,7 +2133,7 @@ dependencies = [
 
 [[package]]
 name = "darwinia-parachain-runtime"
-version = "5.3.2"
+version = "5.3.3"
 dependencies = [
  "array-bytes",
  "cumulus-pallet-aura-ext",
@@ -2218,7 +2218,7 @@ dependencies = [
 
 [[package]]
 name = "dc-primitives"
-version = "5.3.2"
+version = "5.3.3"
 dependencies = [
  "sp-core",
  "sp-runtime",
@@ -2226,7 +2226,7 @@ dependencies = [
 
 [[package]]
 name = "dc-rpc"
-version = "5.3.2"
+version = "5.3.3"
 dependencies = [
  "dc-primitives",
  "jsonrpsee",
@@ -2361,7 +2361,7 @@ checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 
 [[package]]
 name = "dp-common-runtime"
-version = "5.3.2"
+version = "5.3.3"
 dependencies = [
  "array-bytes",
  "bp-message-dispatch",
@@ -6338,7 +6338,7 @@ dependencies = [
 
 [[package]]
 name = "pangolin-parachain-runtime"
-version = "5.3.2"
+version = "5.3.3"
 dependencies = [
  "array-bytes",
  "bp-message-dispatch",

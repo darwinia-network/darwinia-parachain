@@ -113,7 +113,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Darwinia Parachain"),
 	impl_name: sp_runtime::create_runtime_str!("Darwinia Parachain"),
 	authoring_version: 1,
-	spec_version: 5_3_2_0,
+	spec_version: 5_3_3_0,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
