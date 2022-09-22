@@ -142,8 +142,9 @@ pub mod pallet {
 
 			// Calculate the execution fee required for remote xcm execution
 			// fee = fee_per_second * (weight/weight_per_second)
-			let local_asset_units_per_second = TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
-				.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
+			let local_asset_units_per_second =
+				TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
+					.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
 			let remote_weight = T::MoonbeamWeigher::weight(&mut Self::extend_remote_xcm(
 				account_u8.clone(),
 				remote_xcm.clone(),
