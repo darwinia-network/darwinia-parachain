@@ -73,6 +73,7 @@ pub mod pallet {
 
 	#[pallet::error]
 	pub enum Error<T> {
+		/// Not config the target paraId's info for XCM execution.
 		TargetXcmExecNotConfig,
 		/// The message's weight could not be determined.
 		UnweighableMessage,
@@ -129,18 +130,20 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			message: Box<VersionedXcm<<T as frame_system::Config>::Call>>,
 		) -> DispatchResultWithPostInfo {
+			// MultiLocation origin used to execute xcm
 			let origin_location = T::ExecuteXcmOrigin::ensure_origin(origin.clone())?;
 			let account_id = ensure_signed(origin)?;
+			// u8 account used in DescendOrigin instruction
 			let account_u8 = <[u8; 32]>::try_from(account_id.encode())
 				.map_err(|_| Error::<T>::AccountIdConversionFailed)?;
 
 			let remote_xcm: Xcm<<T as frame_system::Config>::Call> =
 				(*message).try_into().map_err(|()| Error::<T>::BadVersion)?;
 
-			// Calculate the execution fee required to execute remote xcm
-			let local_asset_units_per_second =
-				TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
-					.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
+			/// Calculate the execution fee required for remote xcm execution
+			/// fee = fee_per_second * (weight/weight_per_second)
+			let local_asset_units_per_second = TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
+				.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
 			let remote_weight = T::MoonbeamWeigher::weight(&mut Self::extend_remote_xcm(
 				account_u8.clone(),
 				remote_xcm.clone(),
