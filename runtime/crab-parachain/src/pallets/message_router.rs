@@ -10,7 +10,7 @@ use dp_common_runtime::message_router::Config;
 
 frame_support::parameter_types! {
 	pub const MoonbeamMaxInstructions: u32 = 100;
-	// https://github.com/PureStake/moonbeam/blob/master/runtime/moonbase/src/xcm_config.rs#L214
+	// https://github.com/PureStake/moonbeam/blob/master/runtime/moonriver/src/xcm_config.rs#L208
 	pub MoonbeamUnitWeightCost: Weight = 200_000_000;
 	pub SelfLocationInSibl: MultiLocation = MultiLocation::new(
 		1,
@@ -20,9 +20,9 @@ frame_support::parameter_types! {
 		0,
 		X1(PalletInstance(<Balances as PalletInfoAccess>::index() as u8))
 	);
-	pub MoonbaseAlphaLocation: MultiLocation = MultiLocation::new(
+	pub MoonriverLocation: MultiLocation = MultiLocation::new(
 		1,
-		X1(Parachain(1000))
+		X1(Parachain(2023))
 	);
 }
 
@@ -34,7 +34,7 @@ impl Config for Runtime {
 	type LocalAssetId = AnchoringSelfReserve;
 	type LocalWeigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
 	type LocationInverter = LocationInverter<Ancestry>;
-	type MoonbeamLocation = MoonbaseAlphaLocation;
+	type MoonbeamLocation = MoonriverLocation;
 	type MoonbeamWeigher = FixedWeightBounds<MoonbeamUnitWeightCost, Call, MoonbeamMaxInstructions>;
 	type SelfLocationInSibl = SelfLocationInSibl;
 	type WeightInfo = ();

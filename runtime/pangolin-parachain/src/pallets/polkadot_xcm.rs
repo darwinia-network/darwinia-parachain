@@ -119,18 +119,20 @@ frame_support::match_types! {
 		MultiLocation { parents: 1, interior: Here } |
 		MultiLocation { parents: 1, interior: X1(Plurality { id: BodyId::Executive, .. }) }
 	};
-	pub type AllowDescendOrigin: impl Contains<MultiLocation> = {
-		// MoonbeamLocation
-		MultiLocation {
-			parents: 1,
-			interior: X1(Parachain(1000))
-		}
-	};
 }
 frame_support::match_types! {
 	pub type ParentOrSiblings: impl Contains<MultiLocation> = {
 		MultiLocation { parents: 1, interior: Here } |
 		MultiLocation { parents: 1, interior: X1(_) }
+	};
+}
+frame_support::match_types! {
+	pub type AllowDescendOrigin: impl Contains<MultiLocation> = {
+		// MoonbaseAlpha location
+		MultiLocation {
+			parents: 1,
+			interior: X1(Parachain(1000))
+		}
 	};
 }
 
