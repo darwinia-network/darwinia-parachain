@@ -28,6 +28,8 @@ use xcm_executor::traits::ShouldExecute;
 ///
 /// Only allows for `TeleportAsset`, `WithdrawAsset`, `ClaimAsset` and `ReserveAssetDeposit` XCMs
 /// because they are the only ones that place assets in the Holding Register to pay for execution.
+/// Copy from https://github.com/paritytech/polkadot/blob/release-v0.9.26/xcm/xcm-builder/src/barriers.rs#L53
+/// Allow `DescendOrigin` as the first instruction to specify the payment account
 pub struct AllowDescendOriginPaidExecutionFrom<T>(PhantomData<T>);
 impl<T: Contains<MultiLocation>> ShouldExecute for AllowDescendOriginPaidExecutionFrom<T> {
 	fn should_execute<Call>(
@@ -44,6 +46,7 @@ impl<T: Contains<MultiLocation>> ShouldExecute for AllowDescendOriginPaidExecuti
 		ensure!(T::contains(origin), ());
 		let mut iter = message.0.iter_mut();
 		let i = iter.next().ok_or(())?;
+		// Modified: Only allows `DescendOrigin` as the first instruction
 		match i {
 			DescendOrigin(_) => (),
 			_ => return Err(()),
