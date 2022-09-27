@@ -132,6 +132,11 @@ frame_support::match_types! {
 		MultiLocation {
 			parents: 1,
 			interior: X1(Parachain(2023))
+		} |
+		// Astar Shiden Location
+		MultiLocation {
+			parents: 1,
+			interior: X1(Parachain(2007))
 		}
 	};
 }

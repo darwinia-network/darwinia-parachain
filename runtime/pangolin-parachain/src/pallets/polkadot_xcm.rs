@@ -132,6 +132,11 @@ frame_support::match_types! {
 		MultiLocation {
 			parents: 1,
 			interior: X1(Parachain(1000))
+		} |
+		// Astar RocstarTestnet location
+		MultiLocation {
+			parents: 1,
+			interior: X1(Parachain(2006))
 		}
 	};
 }
