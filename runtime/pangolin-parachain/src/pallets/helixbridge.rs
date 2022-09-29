@@ -8,9 +8,8 @@ use crate::*;
 use bp_message_dispatch::CallOrigin;
 use bp_messages::{LaneId, MessageNonce};
 use bp_runtime::{messages::DispatchFeePayment, ChainId, PANGOLIN_CHAIN_ID};
-use bridges_message::pangolin::{
-	ToPangolinMessagePayload, PANGOLIN_PANGOLIN_PARACHAIN_LANE, PANGOLIN_S2S_BACKING_PALLET_INDEX,
-};
+use bridge_runtime_common::lanes::PANGOLIN_PANGOLIN_PARACHAIN_LANE;
+use bridges_message::pangolin::{ToPangolinMessagePayload, PANGOLIN_S2S_BACKING_PALLET_INDEX};
 use dp_common_runtime::helixbridge::{CallParams, Config, CreatePayload, LatestMessageNoncer};
 use frame_support::RuntimeDebug;
 use pallet_bridge_messages::{outbound_lane, Instance1 as WithPangolinMessages};
