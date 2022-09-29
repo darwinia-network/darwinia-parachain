@@ -9,7 +9,10 @@ use sp_std::ops::RangeInclusive;
 use crate::*;
 use bp_messages::{source_chain::*, target_chain::*, *};
 use bp_runtime::*;
-use bridge_runtime_common::messages::{source::*, target::*, *};
+use bridge_runtime_common::{
+	lanes::PANGOLIN_PANGOLIN_PARACHAIN_LANE,
+	messages::{self, source::*, target::*, BalanceOf, *},
+};
 use dp_common_runtime::FromThisChainMessageVerifier;
 
 /// Message delivery proof for PangolinParachain -> Pangolin messages.
@@ -35,9 +38,6 @@ pub type FromPangolinMessageDispatch =
 
 pub const INITIAL_PANGOLIN_TO_PANGOLIN_PARACHAIN_CONVERSION_RATE: FixedU128 =
 	FixedU128::from_inner(FixedU128::DIV);
-
-/// Identifier of bridge between pangolin and pangolin parachain.
-pub const PANGOLIN_PANGOLIN_PARACHAIN_LANE: [u8; 4] = *b"pali";
 
 frame_support::parameter_types! {
 	/// PangolinParachain to Pangolin conversion rate. Initially we trate both tokens as equal.
