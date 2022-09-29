@@ -70,16 +70,16 @@ sp-std                                     = { default-features = false, git = "
 sp-transaction-pool                        = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
 sp-version                                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
 # darwinia-messages-substrate
-bp-crab                = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-bp-crab-parachain      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-pallet-bridge-grandpa  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-pallet-bridge-messages = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
+bp-crab                = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
+bp-crab-parachain      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
+bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
+bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
+bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
+bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
+pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
+pallet-bridge-grandpa  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
+pallet-bridge-messages = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
+pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "prepare-polkadot-v0.9.27" }
 
 [build-dependencies]
 substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
