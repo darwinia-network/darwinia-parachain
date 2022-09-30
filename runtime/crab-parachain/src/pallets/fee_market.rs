@@ -29,13 +29,13 @@ frame_support::parameter_types! {
 	pub const CollateralPerOrder: Balance = 50 * COIN;
 	pub const Slot: BlockNumber = 600;
 
-	pub const GuardRelayersRewardRatio: Permill = Permill::from_percent(60);
+	pub const DutyRelayersRewardRatio: Permill = Permill::from_percent(60);
 	pub const MessageRelayersRewardRatio: Permill = Permill::from_percent(80);
 	pub const ConfirmRelayersRewardRatio: Permill = Permill::from_percent(20);
 }
 
 impl Config<WithCrabFeeMarket> for Runtime {
-	type GuardRelayersRewardRatio = GuardRelayersRewardRatio;
+	type DutyRelayersRewardRatio = DutyRelayersRewardRatio;
 	type CollateralPerOrder = CollateralPerOrder;
 	type ConfirmRelayersRewardRatio = ConfirmRelayersRewardRatio;
 	type Currency = Ring;
