@@ -76,13 +76,6 @@ impl MessageBridge for WithCrabMessageBridge {
 		bp_crab_parachain::WITH_CRAB_PARACHAIN_MESSAGES_PALLET_NAME;
 	const RELAYER_FEE_PERCENT: u32 = 10;
 	const THIS_CHAIN_ID: ChainId = CRAB_PARACHAIN_CHAIN_ID;
-
-	fn bridged_balance_to_this_balance(
-		bridged_balance: BalanceOf<Self::BridgedChain>,
-		_bridged_to_this_conversion_rate_override: Option<FixedU128>,
-	) -> BalanceOf<Self::ThisChain> {
-		CrabToCrabParachainConversionRate::get().saturating_mul_int(bridged_balance)
-	}
 }
 
 #[derive(Clone, Copy, RuntimeDebug)]
@@ -105,22 +98,6 @@ impl ThisChainWithMessages for CrabParachain {
 
 	fn maximal_pending_messages_at_outbound_lane() -> MessageNonce {
 		MessageNonce::MAX
-	}
-
-	fn estimate_delivery_confirmation_transaction() -> MessageTransaction<Weight> {
-		let inbound_data_size = InboundLaneData::<Self::AccountId>::encoded_size_hint(
-			bp_crab_parachain::MAXIMAL_ENCODED_ACCOUNT_ID_SIZE,
-			1,
-			1,
-		)
-		.unwrap_or(u32::MAX);
-
-		MessageTransaction {
-			dispatch_weight: bp_crab_parachain::MAX_SINGLE_MESSAGE_DELIVERY_CONFIRMATION_TX_WEIGHT,
-			size: inbound_data_size
-				.saturating_add(bp_crab_parachain::EXTRA_STORAGE_PROOF_SIZE)
-				.saturating_add(bp_crab_parachain::TX_EXTRA_BYTES),
-		}
 	}
 
 	fn transaction_payment(transaction: MessageTransaction<Weight>) -> Balance {
