@@ -2,11 +2,8 @@
 use codec::{Decode, Encode};
 use scale_info::TypeInfo;
 // --- paritytech ---
-use frame_support::{
-	weights::{DispatchClass, Weight},
-	RuntimeDebug,
-};
-use sp_runtime::{traits::Zero, FixedPointNumber, FixedU128};
+use frame_support::{weights::Weight, RuntimeDebug};
+use sp_runtime::{FixedPointNumber, FixedU128};
 use sp_std::ops::RangeInclusive;
 // --- darwinia-network ---
 use crate::*;
@@ -14,10 +11,9 @@ use bp_messages::{source_chain::*, target_chain::*, *};
 use bp_runtime::*;
 use bridge_runtime_common::{
 	lanes::*,
-	messages::{self, source::*, target::*, BalanceOf, *},
+	messages::{source::*, target::*, *},
 };
 use dp_common_runtime::FromThisChainMessageVerifier;
-use pallet_bridge_messages::EXPECTED_DEFAULT_MESSAGE_LENGTH;
 
 /// Message delivery proof for CrabParachain -> Crab messages.
 pub type ToCrabMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_crab::Hash>;

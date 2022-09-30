@@ -11,7 +11,10 @@ use pallet_fee_market::{BalanceOf, Config, Slasher};
 
 pub struct FeeMarketSlasher;
 impl<T: Config<I>, I: 'static> Slasher<T, I> for FeeMarketSlasher {
-	fn cal_slash_amount(locked_collateral: BalanceOf<T, I>, timeout: T::BlockNumber) -> BalanceOf<T, I> {
+	fn cal_slash_amount(
+		locked_collateral: BalanceOf<T, I>,
+		timeout: T::BlockNumber,
+	) -> BalanceOf<T, I> {
 		let slash_each_block = 2 * COIN;
 		let slash_value = UniqueSaturatedInto::<Balance>::unique_saturated_into(timeout)
 			.saturating_mul(UniqueSaturatedInto::<Balance>::unique_saturated_into(slash_each_block))
@@ -36,10 +39,11 @@ frame_support::parameter_types! {
 }
 
 impl Config<WithCrabFeeMarket> for Runtime {
-	type DutyRelayersRewardRatio = DutyRelayersRewardRatio;
+	type AssignedRelayerSlashRatio = AssignedRelayerSlashRatio;
 	type CollateralPerOrder = CollateralPerOrder;
 	type ConfirmRelayersRewardRatio = ConfirmRelayersRewardRatio;
 	type Currency = Ring;
+	type DutyRelayersRewardRatio = DutyRelayersRewardRatio;
 	type Event = Event;
 	type LockId = FeeMarketLockId;
 	type MessageRelayersRewardRatio = MessageRelayersRewardRatio;
@@ -48,5 +52,4 @@ impl Config<WithCrabFeeMarket> for Runtime {
 	type Slot = Slot;
 	type TreasuryPalletId = TreasuryPalletId;
 	type WeightInfo = ();
-	type AssignedRelayerSlashRatio = AssignedRelayerSlashRatio;
 }
