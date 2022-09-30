@@ -32,6 +32,7 @@ frame_support::parameter_types! {
 	pub const DutyRelayersRewardRatio: Permill = Permill::from_percent(60);
 	pub const MessageRelayersRewardRatio: Permill = Permill::from_percent(80);
 	pub const ConfirmRelayersRewardRatio: Permill = Permill::from_percent(20);
+	pub const AssignedRelayerSlashRatio: Permill = Permill::from_percent(20);
 }
 
 impl Config<WithCrabFeeMarket> for Runtime {
@@ -47,4 +48,5 @@ impl Config<WithCrabFeeMarket> for Runtime {
 	type Slot = Slot;
 	type TreasuryPalletId = TreasuryPalletId;
 	type WeightInfo = ();
+	type AssignedRelayerSlashRatio = AssignedRelayerSlashRatio;
 }
