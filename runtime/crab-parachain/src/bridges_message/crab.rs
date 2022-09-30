@@ -99,17 +99,6 @@ impl ThisChainWithMessages for CrabParachain {
 	fn maximal_pending_messages_at_outbound_lane() -> MessageNonce {
 		MessageNonce::MAX
 	}
-
-	fn transaction_payment(transaction: MessageTransaction<Weight>) -> Balance {
-		// in our testnets, both per-byte fee and weight-to-fee are 1:1
-		messages::transaction_payment(
-			RuntimeBlockWeights::get().get(DispatchClass::Normal).base_extrinsic,
-			1,
-			FixedU128::zero(),
-			|weight| weight as _,
-			transaction,
-		)
-	}
 }
 
 #[derive(Clone, Copy, RuntimeDebug)]
@@ -131,42 +120,6 @@ impl BridgedChainWithMessages for Crab {
 		let upper_limit =
 			target::maximal_incoming_message_dispatch_weight(bp_crab::Crab::max_extrinsic_weight());
 		0..=upper_limit
-	}
-
-	fn estimate_delivery_transaction(
-		message_payload: &[u8],
-		include_pay_dispatch_fee_cost: bool,
-		message_dispatch_weight: Weight,
-	) -> MessageTransaction<Weight> {
-		let message_payload_len = u32::try_from(message_payload.len()).unwrap_or(u32::MAX);
-		let extra_bytes_in_payload = Weight::from(message_payload_len)
-			.saturating_sub(EXPECTED_DEFAULT_MESSAGE_LENGTH.into());
-
-		MessageTransaction {
-			dispatch_weight: extra_bytes_in_payload
-				.saturating_mul(bp_crab::ADDITIONAL_MESSAGE_BYTE_DELIVERY_WEIGHT)
-				.saturating_add(bp_crab::DEFAULT_MESSAGE_DELIVERY_TX_WEIGHT)
-				.saturating_add(message_dispatch_weight)
-				.saturating_sub(if include_pay_dispatch_fee_cost {
-					0
-				} else {
-					bp_crab::PAY_INBOUND_DISPATCH_FEE_WEIGHT
-				}),
-			size: message_payload_len
-				.saturating_add(bp_crab::EXTRA_STORAGE_PROOF_SIZE)
-				.saturating_add(bp_crab::TX_EXTRA_BYTES),
-		}
-	}
-
-	fn transaction_payment(transaction: MessageTransaction<Weight>) -> Self::Balance {
-		// in our testnets, both per-byte fee and weight-to-fee are 1:1
-		messages::transaction_payment(
-			bp_crab::RuntimeBlockWeights::get().get(DispatchClass::Normal).base_extrinsic,
-			1,
-			FixedU128::zero(),
-			|weight| weight as _,
-			transaction,
-		)
 	}
 }
 impl TargetHeaderChain<ToCrabMessagePayload, <Self as ChainWithMessages>::AccountId> for Crab {
