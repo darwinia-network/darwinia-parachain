@@ -15,7 +15,7 @@ where
 	T: Config<I>,
 	I: 'static,
 {
-	fn slash(locked_collateral: BalanceOf<T, I>, timeout: T::BlockNumber) -> BalanceOf<T, I> {
+	fn cal_slash_amount(locked_collateral: BalanceOf<T, I>, timeout: T::BlockNumber) -> BalanceOf<T, I> {
 		let slash_each_block = 2 * COIN;
 		let slash_value = UniqueSaturatedInto::<Balance>::unique_saturated_into(timeout)
 			.saturating_mul(UniqueSaturatedInto::<Balance>::unique_saturated_into(slash_each_block))
@@ -33,13 +33,13 @@ frame_support::parameter_types! {
 	pub const CollateralPerOrder: Balance = 50 * COIN;
 	pub const Slot: BlockNumber = 600;
 
-	pub const AssignedRelayersRewardRatio: Permill = Permill::from_percent(60);
+	pub const GuardRelayersRewardRatio: Permill = Permill::from_percent(60);
 	pub const MessageRelayersRewardRatio: Permill = Permill::from_percent(80);
 	pub const ConfirmRelayersRewardRatio: Permill = Permill::from_percent(20);
 }
 
 impl Config<WithPangolinFeeMarket> for Runtime {
-	type AssignedRelayersRewardRatio = AssignedRelayersRewardRatio;
+	type GuardRelayersRewardRatio = GuardRelayersRewardRatio;
 	type CollateralPerOrder = CollateralPerOrder;
 	type ConfirmRelayersRewardRatio = ConfirmRelayersRewardRatio;
 	type Currency = Ring;
