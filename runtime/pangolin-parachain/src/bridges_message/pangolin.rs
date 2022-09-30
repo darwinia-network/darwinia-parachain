@@ -11,7 +11,7 @@ use bp_messages::{source_chain::*, target_chain::*, *};
 use bp_runtime::*;
 use bridge_runtime_common::{
 	lanes::PANGOLIN_PANGOLIN_PARACHAIN_LANE,
-	messages::{self, source::*, target::*, BalanceOf, *},
+	messages::{source::*, target::*, *},
 };
 use dp_common_runtime::FromThisChainMessageVerifier;
 
