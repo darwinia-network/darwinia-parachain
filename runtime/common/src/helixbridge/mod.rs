@@ -21,7 +21,7 @@
 pub mod weight;
 pub use weight::WeightInfo;
 
-mod evm;
+pub mod evm;
 use evm::DeriveEthereumAddress;
 
 #[cfg(feature = "runtime-benchmarks")]
@@ -39,6 +39,7 @@ use bp_message_dispatch::CallOrigin;
 use bp_messages::{source_chain::MessagesBridge, BridgeMessageId, LaneId, MessageNonce};
 use bp_runtime::{derive_account_id, messages::DispatchFeePayment, ChainId, SourceAccount};
 use frame_support::{
+	dispatch::DispatchErrorWithPostInfo,
 	ensure,
 	pallet_prelude::*,
 	traits::{Currency, ExistenceRequirement, Get},
@@ -136,7 +137,7 @@ pub mod pallet {
 				MultiSigner,
 				MultiSignature,
 			>>::Payload,
-			Error = DispatchError,
+			Error = DispatchErrorWithPostInfo,
 		>;
 		type MessageNoncer: LatestMessageNoncer;
 
@@ -510,7 +511,7 @@ pub mod pallet {
 			fee: RingBalance<T>,
 			gas_limit: u128,
 			input: Vec<u8>,
-		) -> Result<MessageNonce, DispatchError> {
+		) -> Result<MessageNonce, DispatchErrorWithPostInfo> {
 			if let Some(backing) = <RemoteBackingAccount<T>>::get() {
 				let ethereum_account = T::IntoEthereumAccount::derive_ethereum_address(backing);
 				let ethereum_transaction = evm::new_ethereum_transaction(
