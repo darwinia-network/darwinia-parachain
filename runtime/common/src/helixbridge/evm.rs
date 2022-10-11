@@ -17,62 +17,64 @@
 // along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
 
 // --- crates.io ---
-use ethereum::TransactionV2 as Transaction;
-use ethereum_types::{H160, U256};
 use ethabi::{
 	param_type::ParamType, token::Token, Bytes, Function, Param, Result as AbiResult,
 	StateMutability,
 };
+use ethereum::{
+	LegacyTransaction, TransactionAction, TransactionSignature, TransactionV2 as Transaction,
+};
+use ethereum_types::{H160, H256, U256};
 // --- paritytech ---
-use sp_runtime::AccountId32;
+use frame_support::pallet_prelude::PhantomData;
+use sp_runtime::DispatchError;
+use sp_std::{vec, vec::Vec};
 
-/// The address prefix for dvm address
-const ADDR_PREFIX: &[u8] = b"dvm:";
-
-fn checksum_of(account_id: &[u8; 32]) -> u8 {
-	account_id[1..31].iter().fold(account_id[0], |sum, &byte| sum ^ byte)
+/// A trait for converting from Substrate account_id to Ethereum address.
+pub trait DeriveEthereumAddress<AccountId> {
+	fn derive_ethereum_address(account: AccountId) -> H160;
 }
 
-fn derive_substrate_address(address: &H160) -> AccountId32 {
-    let mut raw_account = [0u8; 32];
+pub struct ConcatConverter<AccountId>(PhantomData<AccountId>);
 
-    raw_account[0..4].copy_from_slice(ADDR_PREFIX);
-    raw_account[11..31].copy_from_slice(&address[..]);
-    raw_account[31] = checksum_of(&raw_account);
-
-    raw_account.into()
+impl<AccountId> DeriveEthereumAddress<AccountId> for ConcatConverter<AccountId>
+where
+	AccountId: Into<[u8; 32]>,
+{
+	fn derive_ethereum_address(account: AccountId) -> H160 {
+		let bytes: [u8; 32] = account.into();
+		H160::from_slice(&bytes[11..31])
+	}
 }
 
 pub fn new_ethereum_transaction(
-    chain_id: u32,
-    contractAddress: H160,
-    gasLimit: U256,
-    input: Vec<u8>,
-    ) -> Result<TransactionV2, DispatchError> {
-    let sig = TransactionSignature::new(
-        chain_id * 2 + 36,
-        H256::from_slice(&sig[0..32]),
-        H256::from_slice(&sig[32..64]),
-        )?;
+	chain_id: u64,
+	contract_address: H160,
+	gas_limit: U256,
+	input: Vec<u8>,
+) -> Result<Transaction, DispatchError> {
+	let sig = TransactionSignature::new(
+		chain_id * 2 + 36,
+		H256::from_slice(&[55u8; 32]),
+		H256::from_slice(&[55u8; 32]),
+	)
+	.unwrap();
 
-    Ok(TransactionV2::Legacy(LegacyTransaction {
-        nonce: 0,
-        gas_price: 0,
-        gas_limit: gasLimit,
-        action: TransactionAction::Call(contractAddress),
-        value: 0,
-        input: input,
-        signature: sig,
-    }))
+	Ok(Transaction::Legacy(LegacyTransaction {
+		nonce: U256::zero(),
+		gas_price: U256::zero(),
+		gas_limit,
+		action: TransactionAction::Call(contract_address),
+		value: U256::zero(),
+		input,
+		signature: sig,
+	}))
 }
 
 pub struct ToParachainBacking;
 impl ToParachainBacking {
-    pub fn encode_unlock_from_remote(
-        recipient: H160,
-        amount: U256,
-    ) -> AbiResult<Bytes> {
-        let inputs = vec![
+	pub fn encode_unlock_from_remote(recipient: H160, amount: U256) -> AbiResult<Bytes> {
+		let inputs = vec![
 			Param {
 				name: "recipient".into(),
 				kind: ParamType::Address,
@@ -84,49 +86,33 @@ impl ToParachainBacking {
 				internal_type: Some("uint256".into()),
 			},
 		];
-        
-        #[allow(deprecated)]
+
+		#[allow(deprecated)]
 		Function {
 			name: "unlockFromRemote".into(),
 			inputs,
 			outputs: vec![],
-			constant: false,
+			constant: Some(false),
 			state_mutability: StateMutability::NonPayable,
 		}
-		.encode_input(
-			vec![
-				Token::Address(recipient),
-				Token::Uint(amount),
-			]
-			.as_slice(),
-		)
-    }
+		.encode_input(vec![Token::Address(recipient), Token::Uint(amount)].as_slice())
+	}
 
-    pub fn encode_handle_unlock_failure_from_remote(
-        nonce: u64,
-    ) -> AbiResult<Bytes> {
-        let inputs = vec![
-			Param {
-				name: "nonce".into(),
-				kind: ParamType::Uint(64),
-				internal_type: Some("uint64".into()),
-			},
-		];
-        
-        #[allow(deprecated)]
+	pub fn encode_handle_unlock_failure_from_remote(nonce: u64) -> AbiResult<Bytes> {
+		let inputs = vec![Param {
+			name: "nonce".into(),
+			kind: ParamType::Uint(64),
+			internal_type: Some("uint64".into()),
+		}];
+
+		#[allow(deprecated)]
 		Function {
 			name: "handleUnlockFailureFromRemote".into(),
 			inputs,
 			outputs: vec![],
-			constant: false,
+			constant: Some(false),
 			state_mutability: StateMutability::NonPayable,
 		}
-		.encode_input(
-			vec![
-				Token::Uint(nonce.into()),
-			]
-			.as_slice(),
-		)
-    }
+		.encode_input(vec![Token::Uint(nonce.into())].as_slice())
+	}
 }
-

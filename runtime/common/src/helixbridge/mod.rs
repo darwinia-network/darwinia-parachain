@@ -22,6 +22,7 @@ pub mod weight;
 pub use weight::WeightInfo;
 
 mod evm;
+use evm::DeriveEthereumAddress;
 
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
@@ -30,27 +31,28 @@ mod mock;
 #[cfg(test)]
 mod tests;
 
+use ethereum::TransactionV2 as Transaction;
+use ethereum_types::{H160, U256};
+
 // --- paritytech ---
 use bp_message_dispatch::CallOrigin;
-use bp_messages::{
-	source_chain::{MessagesBridge, OnDeliveryConfirmed},
-	BridgeMessageId, DeliveredMessages, LaneId, MessageNonce,
-};
+use bp_messages::{source_chain::MessagesBridge, BridgeMessageId, LaneId, MessageNonce};
 use bp_runtime::{derive_account_id, messages::DispatchFeePayment, ChainId, SourceAccount};
 use frame_support::{
 	ensure,
 	pallet_prelude::*,
-	traits::{Currency, ExistenceRequirement, Get, WithdrawReasons},
-	weights::PostDispatchInfo,
+	traits::{Currency, ExistenceRequirement, Get},
 	PalletId,
 };
 use frame_system::{ensure_signed, RawOrigin};
 use sp_core::H256;
 use sp_runtime::{
-	traits::{AccountIdConversion, BadOrigin, CheckedDiv, CheckedMul, Convert, Saturating, Zero},
-	DispatchErrorWithPostInfo, MultiSignature, MultiSigner, SaturatedConversion,
+	traits::{AccountIdConversion, BadOrigin, Convert, Saturating, Zero},
+	MultiSignature, MultiSigner, SaturatedConversion,
 };
 use sp_std::{str, vec, vec::Vec};
+//use sp_std::prelude::*;
+use codec::{Decode, Encode};
 
 pub use pallet::*;
 pub type ChainName = Vec<u8>;
@@ -59,21 +61,15 @@ pub type RingBalance<T> = <<T as Config>::RingCurrency as Currency<AccountId<T>>
 
 /// The parameters box for the pallet runtime call.
 #[derive(Encode, Decode, Debug, PartialEq, Eq, Clone)]
-pub enum CallParams<T: Config> {
+pub enum CallParams {
 	#[codec(index = 1)]
-    EthereumPalletMessageTransact(Transaction),
+	EthereumPalletMessageTransact(Transaction),
 }
 /// Creating a concrete message payload which would be relay to target chain.
-pub trait CreatePayload<
-	SourceChainAccountId,
-	TargetChainAccountPublic,
-	TargetChainSignature,
-	T: Config,
->
-{
+pub trait CreatePayload<SourceChainAccountId, TargetChainAccountPublic, TargetChainSignature> {
 	type Payload: Encode;
 
-	fn encode_call(pallet_index: u8, call_params: CallParams<T>) -> Result<Vec<u8>, &'static str> {
+	fn encode_call(pallet_index: u8, call_params: CallParams) -> Result<Vec<u8>, &'static str> {
 		let mut encoded = vec![pallet_index];
 		encoded.append(&mut call_params.encode());
 		Ok(encoded)
@@ -83,14 +79,14 @@ pub trait CreatePayload<
 		origin: CallOrigin<SourceChainAccountId, TargetChainAccountPublic, TargetChainSignature>,
 		spec_version: u32,
 		weight: u64,
-		call_params: CallParams<T>,
+		call_params: CallParams,
 		dispatch_fee_payment: DispatchFeePayment,
 	) -> Result<Self::Payload, &'static str>;
 }
 
 pub trait LatestMessageNoncer {
 	fn outbound_latest_generated_nonce(lane_id: LaneId) -> MessageNonce;
-    fn inbound_latest_received_nonce(lane_id: LaneId) -> MessageNonce;
+	fn inbound_latest_received_nonce(lane_id: LaneId) -> MessageNonce;
 }
 
 #[frame_support::pallet]
@@ -121,12 +117,12 @@ pub mod pallet {
 		/// The bridged chain id
 		type BridgedChainId: Get<ChainId>;
 
-        /// The bridged smart chain id
-        type BridgedSmartChainId: Get<u32>;
+		/// The bridged smart chain id
+		type BridgedSmartChainId: Get<u64>;
 
 		/// Outbound payload creator used for s2s message
 		type OutboundPayloadCreator: Parameter
-			+ CreatePayload<Self::AccountId, MultiSigner, MultiSignature, Self>;
+			+ CreatePayload<Self::AccountId, MultiSigner, MultiSignature>;
 
 		/// The lane id of the s2s bridge
 		type MessageLaneId: Get<LaneId>;
@@ -139,17 +135,22 @@ pub mod pallet {
 				Self::AccountId,
 				MultiSigner,
 				MultiSignature,
-				Self,
 			>>::Payload,
-			Error = DispatchErrorWithPostInfo<PostDispatchInfo>,
+			Error = DispatchError,
 		>;
 		type MessageNoncer: LatestMessageNoncer;
+
+		type IntoEthereumAccount: evm::DeriveEthereumAddress<Self::AccountId>;
+
+		/// The maximum number of named reserves that can exist on an account.
+		#[pallet::constant]
+		type MaxReserves: Get<u32>;
 	}
 
 	/// Remote Backing Address, this used to verify the remote caller
 	#[pallet::storage]
 	#[pallet::getter(fn remote_backing_account)]
-	pub type RemoteBackingAccount = StorageValue<_, H160, OptionQuery>;
+	pub type RemoteBackingAccount<T: Config> = StorageValue<_, AccountId<T>, OptionQuery>;
 
 	/// `(sender, amount)` the user *sender* lock and remote issuing amount of asset
 	#[pallet::storage]
@@ -162,11 +163,10 @@ pub mod pallet {
 		OptionQuery,
 	>;
 
-    pub type ReceivedNonce = StorageValue<
-        _,
-        Vec<MessageNonce>,
-        ValueQuery,
-    >;
+	#[pallet::storage]
+	#[pallet::getter(fn received_nonces)]
+	pub type ReceivedNonces<T: Config> =
+		StorageValue<_, BoundedVec<u64, T::MaxReserves>, ValueQuery>;
 
 	/// Period between security limitation. Zero means there is no period limitation.
 	#[pallet::storage]
@@ -207,14 +207,13 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			value: RingBalance<T>,
 			recipient: AccountId<T>,
-            burn_pruned_messages: Vec<MessageNonce>,
-            max_lock_pruned_nonce: MessageNonce,
+			burn_pruned_messages: Vec<MessageNonce>,
+			max_lock_pruned_nonce: MessageNonce,
 		) -> DispatchResultWithPostInfo {
 			let user = ensure_signed(origin)?;
 
 			if let Some(backing) = <RemoteBackingAccount<T>>::get() {
-                let backingAccount = T::AccountId::decode(evm::derive_substrate_address(backing)[..])?;
-				let target_id = Self::derived_backing_id(backingAccount);
+				let target_id = Self::derived_backing_id(backing);
 				ensure!(target_id == user, BadOrigin);
 			} else {
 				return Err(Error::<T>::BackingAccountNone.into());
@@ -230,7 +229,7 @@ pub mod pallet {
 				);
 			}
 
-            Self::prun_message(burn_pruned_messages, max_lock_pruned_nonce);
+			Self::prun_message(burn_pruned_messages, max_lock_pruned_nonce)?;
 
 			T::RingCurrency::deposit_creating(&recipient, value);
 			Self::deposit_event(Event::TokenIssued(recipient, value));
@@ -244,7 +243,7 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			spec_version: u32,
 			weight: u64,
-            gasLimit: U256,
+			gas_limit: u128,
 			#[pallet::compact] value: RingBalance<T>,
 			#[pallet::compact] fee: RingBalance<T>,
 			recipient: H160,
@@ -266,14 +265,14 @@ pub mod pallet {
 				ExistenceRequirement::KeepAlive,
 			)?;
 
-            let remote_unlock_input = evm::ToParachainBacking::encode_unlock_from_remote(recipient, value.into())?;
-            let message_id = Self::remote_evm_call(
-                spec_version,
-                weight,
-                fee,
-                gasLimit,
-                remote_unlock_input,
-                )?;
+			let remote_unlock_input = evm::ToParachainBacking::encode_unlock_from_remote(
+				recipient,
+				U256::from(value.saturated_into::<u128>()),
+			)
+			.map_err(|_| <Error<T>>::EvmEncodeFailed)?;
+			let message_nonce =
+				Self::remote_evm_call(spec_version, weight, fee, gas_limit, remote_unlock_input)?;
+			let message_id: BridgeMessageId = (T::MessageLaneId::get(), message_nonce);
 			ensure!(!<TransactionInfos<T>>::contains_key(message_id), Error::<T>::NonceDuplicated);
 			<TransactionInfos<T>>::insert(message_id, (user.clone(), value));
 			Self::deposit_event(Event::TokenBurnAndRemoteUnlocked(
@@ -286,71 +285,97 @@ pub mod pallet {
 			Ok(().into())
 		}
 
-        #[pallet::weight(100)]
+		#[pallet::weight(100)]
 		pub fn handle_issuing_failure_from_remote(
 			origin: OriginFor<T>,
-            failure_nonce: MessageNonce,
-            burn_pruned_messages: Vec<MessageNonce>,
-            max_lock_pruned_nonce: MessageNonce,
+			failure_nonce: MessageNonce,
+			burn_pruned_messages: Vec<MessageNonce>,
+			max_lock_pruned_nonce: MessageNonce,
 		) -> DispatchResultWithPostInfo {
 			let user = ensure_signed(origin)?;
 
 			if let Some(backing) = <RemoteBackingAccount<T>>::get() {
-                let backingAccount = T::AccountId::decode(evm::derive_substrate_address(backing)[..])?;
-				let target_id = Self::derived_backing_id(backingAccount);
+				let target_id = Self::derived_backing_id(backing);
 				ensure!(target_id == user, BadOrigin);
 			} else {
 				return Err(Error::<T>::BackingAccountNone.into());
 			}
 
-            // verify message
-            let failure_message_id: BridgeMessageId = (T::MessageLaneId::get(), failure_nonce);
-			ensure!(<TransactionInfos<T>>::contains_key(failure_message_id), Error::<T>::NonceNE);
-            <TransactionInfos<T>>::remove(failure_message_id);
+			// verify message
+			let failure_message_id: BridgeMessageId = (T::MessageLaneId::get(), failure_nonce);
+			if let Some((user, amount)) = <TransactionInfos<T>>::take(failure_message_id) {
+				T::RingCurrency::deposit_creating(&user, amount);
+				Self::deposit_event(Event::TokenIssuedForFailure(
+					T::MessageLaneId::get(),
+					failure_nonce,
+					user,
+					amount,
+				));
+			} else {
+				return Err(Error::<T>::FailureInfoNE.into());
+			}
 
-            Self::prun_message(burn_pruned_messages, max_lock_pruned_nonce);
+			Self::prun_message(burn_pruned_messages, max_lock_pruned_nonce)?;
 
-			T::RingCurrency::deposit_creating(&recipient, value);
-			Self::deposit_event(Event::TokenIssuedForFailure(T::MessageLaneId::get(), failure_nonce, recipient, value));
 			Ok(().into())
-        }
-			
-        #[pallet::weight(100)]
-        pub fn remote_unlock_failure(
+		}
+
+		#[pallet::weight(100)]
+		pub fn remote_unlock_failure(
 			origin: OriginFor<T>,
 			spec_version: u32,
 			weight: u64,
-            failure_nonce: MessageNonce,
+			gas_limit: u128,
+			failure_nonce: MessageNonce,
 			#[pallet::compact] fee: RingBalance<T>,
-        ) {
-            // check message
-            // 1. message must not be issued
-            let received_nonces = <ReceivedNonce<T>>::get();
-            ensure!(received_nonces.binary_search(&failure_nonce).is_err(), Error::<T>::MessageAlreadyIssued);
-            // 2. message must be delived
-            let message_nonce =
-                T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get());
-            ensure!(message_nonce >= failure_nonce, Error::<T>::MessageNotDelived);
+		) -> DispatchResultWithPostInfo {
+			let user = ensure_signed(origin)?;
 
-            // send refund message
-            let remote_unlock_for_failure_input = evm::ToParachainBacking::encode_handle_unlock_failure_from_remote(failure_nonce)?;
-            let message_id = Self::remote_evm_call(
-                spec_version,
-                weight,
-                fee,
-                gasLimit,
-                remote_unlock_for_failure_input,
-                )?;
-			Self::deposit_event(Event::RemoteUnlockForFailure(failure_nonce));
+			// Make sure the user's balance is enough to lock
+			ensure!(T::RingCurrency::free_balance(&user) > fee, <Error<T>>::InsufficientBalance);
+
+			// this pallet account as the submitter of the remote message
+			// we need to transfer fee from user to this account to pay the bridge fee
+			T::RingCurrency::transfer(
+				&user,
+				&Self::pallet_account_id(),
+				fee,
+				ExistenceRequirement::KeepAlive,
+			)?;
+
+			// check message
+			// 1. message must not be issued
+			let received_nonces = <ReceivedNonces<T>>::get();
+			ensure!(
+				received_nonces.binary_search(&failure_nonce).is_err(),
+				Error::<T>::MessageAlreadyIssued
+			);
+			// 2. message must be delived
+			let message_nonce =
+				T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get());
+			ensure!(message_nonce >= failure_nonce, Error::<T>::MessageNotDelived);
+
+			// send refund message
+			let remote_unlock_for_failure_input =
+				evm::ToParachainBacking::encode_handle_unlock_failure_from_remote(failure_nonce)
+					.map_err(|_| Error::<T>::EvmEncodeFailed)?;
+			let request_nonce = Self::remote_evm_call(
+				spec_version,
+				weight,
+				fee,
+				gas_limit,
+				remote_unlock_for_failure_input,
+			)?;
+			Self::deposit_event(Event::RemoteUnlockForFailure(request_nonce, failure_nonce));
 			Ok(().into())
-        }
+		}
 
 		#[pallet::weight(
 			<T as Config>::WeightInfo::set_remote_backing_account()
 		)]
 		pub fn set_remote_backing_account(
 			origin: OriginFor<T>,
-			account: H160,
+			account: AccountId<T>,
 		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
 			<RemoteBackingAccount<T>>::put(account.clone());
@@ -391,21 +416,15 @@ pub mod pallet {
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
 		/// TokenBurnAndRemoteUnlocked \[lane_id, message_nonce, sender, recipient, amount\]
-		TokenBurnAndRemoteUnlocked(
-			LaneId,
-			MessageNonce,
-			AccountId<T>,
-			AccountId<T>,
-			RingBalance<T>,
-		),
+		TokenBurnAndRemoteUnlocked(LaneId, MessageNonce, AccountId<T>, H160, RingBalance<T>),
 		/// [recipient, amount]
 		TokenIssued(AccountId<T>, RingBalance<T>),
 		/// Update remote backing address \[account\]
-		RemoteBackingAccountUpdated(H160),
-        /// issue for failure unlock [lane_id, failure_nonce, recipient, amount]
+		RemoteBackingAccountUpdated(AccountId<T>),
+		/// issue for failure unlock [lane_id, failure_nonce, recipient, amount]
 		TokenIssuedForFailure(LaneId, MessageNonce, AccountId<T>, RingBalance<T>),
-        /// request remote unlock for failure issue [[failure_nonce]
-        RemoteUnlockForFailure(MessageNonce);
+		/// request remote unlock for failure issue [request_nonce, failure_nonce]
+		RemoteUnlockForFailure(MessageNonce, MessageNonce),
 	}
 
 	#[pallet::error]
@@ -419,8 +438,12 @@ pub mod pallet {
 		NonceDuplicated,
 		/// Backing not configured
 		BackingAccountNone,
-        /// Message nonce is not exist
-        NonceNE,
+		/// Failure message not exist
+		FailureInfoNE,
+		MessageAlreadyIssued,
+		MessageNotDelived,
+		EvmEncodeFailed,
+		TooManyNonces,
 	}
 
 	#[pallet::genesis_config]
@@ -460,58 +483,62 @@ pub mod pallet {
 			T::BridgedAccountIdConverter::convert(hex_id)
 		}
 
-        pub fn prun_message(
-            pruned_messages: Vec<MessageNonce>,
-            max_lock_pruned_nonce: MessageNonce
-        ) {
-            <ReceivedNonce<T>>::mutate(|received| {
-                received.retain(|&r| r > max_lock_pruned_nonce);
-                let message_nonce =
-                    T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get());
-                received.push(message_nonce);
-            });
-            for nonce in pruned_messages {
-                let message_id: BridgeMessageId = (T::MessageLaneId::get(), nonce);
-                if (<TransactionInfos<T>>::contains_key(message_id)) {
-                    <TransactionInfos<T>>::remove(message_id);
-                }
-            }
-        }
+		pub fn prun_message(
+			pruned_messages: Vec<MessageNonce>,
+			max_lock_pruned_nonce: MessageNonce,
+		) -> Result<(), DispatchError> {
+			<ReceivedNonces<T>>::try_mutate(|nonces| -> DispatchResult {
+				nonces.retain(|&r| r > max_lock_pruned_nonce);
+				let message_nonce =
+					T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get());
+				nonces.try_push(message_nonce).map_err(|_| <Error<T>>::TooManyNonces)?;
+				Ok(())
+			})?;
 
-        pub fn remote_evm_call(
-            spec_version: u32,
-            weight: u64,
+			for nonce in pruned_messages {
+				let message_id: BridgeMessageId = (T::MessageLaneId::get(), nonce);
+				if <TransactionInfos<T>>::contains_key(message_id) {
+					<TransactionInfos<T>>::remove(message_id);
+				}
+			}
+			Ok(())
+		}
+
+		pub fn remote_evm_call(
+			spec_version: u32,
+			weight: u64,
 			fee: RingBalance<T>,
-            gasLimit: U256,
-            input: Vec<u8>,
-        ) -> Result<BridgeMessageId, DispatchError> {
+			gas_limit: u128,
+			input: Vec<u8>,
+		) -> Result<MessageNonce, DispatchError> {
 			if let Some(backing) = <RemoteBackingAccount<T>>::get() {
-                let ethereum_transaction = evm::new_ethereum_transaction(
-                    T::BridgedSmartChainId::get(),
-                    backing,
-                    gasLimit,
-                    input)?;
-                let payload = T::OutboundPayloadCreator::create(
-                    CallOrigin::SourceAccount(Self::pallet_account_id()),
-                    spec_version,
-                    weight,
-                    CallParams::EthereumPalletMessageTransact(ethereum_transaction),
-                    DispatchFeePayment::AtSourceChain,
-                    )?;
-                T::MessagesBridge::send_message(
-                    RawOrigin::Signed(Self::pallet_account_id()).into(),
-                    T::MessageLaneId::get(),
-                    payload,
-                    fee,
-                    )?;
+				let ethereum_account = T::IntoEthereumAccount::derive_ethereum_address(backing);
+				let ethereum_transaction = evm::new_ethereum_transaction(
+					T::BridgedSmartChainId::get(),
+					ethereum_account,
+					U256::from(gas_limit),
+					input,
+				)?;
+				let payload = T::OutboundPayloadCreator::create(
+					CallOrigin::SourceAccount(Self::pallet_account_id()),
+					spec_version,
+					weight,
+					CallParams::EthereumPalletMessageTransact(ethereum_transaction),
+					DispatchFeePayment::AtSourceChain,
+				)?;
+				T::MessagesBridge::send_message(
+					RawOrigin::Signed(Self::pallet_account_id()).into(),
+					T::MessageLaneId::get(),
+					payload,
+					fee,
+				)?;
 
-                let message_nonce =
-                    T::MessageNoncer::outbound_latest_generated_nonce(T::MessageLaneId::get());
-                let message_id: BridgeMessageId = (T::MessageLaneId::get(), message_nonce);
-                return Ok(message_id);
-            } else {
+				let message_nonce =
+					T::MessageNoncer::outbound_latest_generated_nonce(T::MessageLaneId::get());
+				return Ok(message_nonce);
+			} else {
 				return Err(Error::<T>::BackingAccountNone.into());
-            }
-        }
+			}
+		}
 	}
 }
