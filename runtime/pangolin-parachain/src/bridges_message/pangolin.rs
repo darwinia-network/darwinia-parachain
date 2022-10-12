@@ -10,8 +10,8 @@ use crate::*;
 use bp_messages::{source_chain::*, target_chain::*, *};
 use bp_runtime::*;
 use bridge_runtime_common::{
-	lanes::PANGOLIN_PANGOLIN_PARACHAIN_LANE,
-	messages::{source::*, target::*, *},
+	lanes::*,
+	messages::{self, source::*, target::*, BalanceOf, *},
 };
 use dp_common_runtime::FromThisChainMessageVerifier;
 
@@ -71,7 +71,17 @@ impl MessageBridge for WithPangolinMessageBridge {
 	const BRIDGED_MESSAGES_PALLET_NAME: &'static str =
 		bp_pangolin_parachain::WITH_PANGOLIN_PARACHAIN_MESSAGES_PALLET_NAME;
 	const RELAYER_FEE_PERCENT: u32 = 10;
+	#[cfg(not(feature = "alpha"))]
 	const THIS_CHAIN_ID: ChainId = PANGOLIN_PARACHAIN_CHAIN_ID;
+	#[cfg(feature = "alpha")]
+	const THIS_CHAIN_ID: ChainId = PANGOLIN_PARACHAIN_ALPHA_CHAIN_ID;
+
+	fn bridged_balance_to_this_balance(
+		bridged_balance: BalanceOf<Self::BridgedChain>,
+		_bridged_to_this_conversion_rate: Option<FixedU128>,
+	) -> BalanceOf<Self::ThisChain> {
+		PangolinToPangolinParachainConversionRate::get().saturating_mul_int(bridged_balance)
+	}
 }
 
 #[derive(Clone, Copy, RuntimeDebug)]
@@ -88,8 +98,14 @@ impl ThisChainWithMessages for PangolinParachain {
 	type Call = Call;
 	type Origin = Origin;
 
+	#[cfg(not(feature = "alpha"))]
 	fn is_message_accepted(_send_origin: &Self::Origin, lane: &LaneId) -> bool {
 		*lane == [0, 0, 0, 0] || *lane == [0, 0, 0, 1] || *lane == PANGOLIN_PANGOLIN_PARACHAIN_LANE
+	}
+
+	#[cfg(feature = "alpha")]
+	fn is_message_accepted(_send_origin: &Self::Origin, lane: &LaneId) -> bool {
+		*lane == [0, 0, 0, 0] || *lane == [0, 0, 0, 1] || *lane == PANGOLIN_PANGOLIN_PARACHAIN_ALPHA_LANE
 	}
 
 	fn maximal_pending_messages_at_outbound_lane() -> MessageNonce {
