@@ -42,7 +42,7 @@ use frame_support::{
 	dispatch::DispatchErrorWithPostInfo,
 	ensure,
 	pallet_prelude::*,
-	traits::{Currency, ExistenceRequirement, Get},
+	traits::{Currency, ExistenceRequirement, Get, WithdrawReasons},
 	PalletId,
 };
 use frame_system::{ensure_signed, RawOrigin};
@@ -209,7 +209,7 @@ pub mod pallet {
 			value: RingBalance<T>,
 			recipient: AccountId<T>,
 			burn_pruned_messages: Vec<MessageNonce>,
-			max_lock_pruned_nonce: MessageNonce,
+			min_retain_received_nonce: MessageNonce,
 		) -> DispatchResultWithPostInfo {
 			let user = ensure_signed(origin)?;
 
@@ -230,7 +230,7 @@ pub mod pallet {
 				);
 			}
 
-			Self::prun_message(burn_pruned_messages, max_lock_pruned_nonce)?;
+			Self::prun_message(burn_pruned_messages, min_retain_received_nonce)?;
 
 			T::RingCurrency::deposit_creating(&recipient, value);
 			Self::deposit_event(Event::TokenIssued(recipient, value));
@@ -276,6 +276,12 @@ pub mod pallet {
 			let message_id: BridgeMessageId = (T::MessageLaneId::get(), message_nonce);
 			ensure!(!<TransactionInfos<T>>::contains_key(message_id), Error::<T>::NonceDuplicated);
 			<TransactionInfos<T>>::insert(message_id, (user.clone(), value));
+			T::RingCurrency::withdraw(
+				&Self::pallet_account_id(),
+				value,
+				WithdrawReasons::TRANSFER,
+				ExistenceRequirement::AllowDeath,
+			)?;
 			Self::deposit_event(Event::TokenBurnAndRemoteUnlocked(
 				T::MessageLaneId::get(),
 				message_nonce,
@@ -291,7 +297,7 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			failure_nonce: MessageNonce,
 			burn_pruned_messages: Vec<MessageNonce>,
-			max_lock_pruned_nonce: MessageNonce,
+			min_retain_received_nonce: MessageNonce,
 		) -> DispatchResultWithPostInfo {
 			let user = ensure_signed(origin)?;
 
@@ -316,7 +322,7 @@ pub mod pallet {
 				return Err(Error::<T>::FailureInfoNE.into());
 			}
 
-			Self::prun_message(burn_pruned_messages, max_lock_pruned_nonce)?;
+			Self::prun_message(burn_pruned_messages, min_retain_received_nonce)?;
 
 			Ok(().into())
 		}
@@ -486,10 +492,10 @@ pub mod pallet {
 
 		pub fn prun_message(
 			pruned_messages: Vec<MessageNonce>,
-			max_lock_pruned_nonce: MessageNonce,
+			min_retain_received_nonce: MessageNonce,
 		) -> Result<(), DispatchError> {
 			<ReceivedNonces<T>>::try_mutate(|nonces| -> DispatchResult {
-				nonces.retain(|&r| r > max_lock_pruned_nonce);
+				nonces.retain(|&r| r >= min_retain_received_nonce);
 				let message_nonce =
 					T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get());
 				nonces.try_push(message_nonce).map_err(|_| <Error<T>>::TooManyNonces)?;

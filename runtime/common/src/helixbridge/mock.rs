@@ -20,7 +20,7 @@
 // --- paritytech ---
 use bp_messages::source_chain::SendMessageArtifacts;
 use frame_support::{
-	traits::{Everything, GenesisBuild},
+	traits::{Everything, GenesisBuild, StorageInstance},
 	PalletId,
 };
 use frame_system::mocking::*;
@@ -103,7 +103,8 @@ frame_support::parameter_types! {
 	pub const PangolinChainId: bp_runtime::ChainId = *b"pagl";
 	pub PangolinName: Vec<u8> = (b"Pangolin").to_vec();
 	pub MessageLaneId: [u8; 4] = *b"ptol";
-	pub DecimalsDifference: Balance = 1_000_000_000;
+	pub const PangolinSmartChainId: u64 = 43;
+	pub const MaxNonceReserves: u32 = 1024;
 }
 
 pub struct AccountIdConverter;
@@ -112,16 +113,55 @@ impl Convert<H256, AccountId32> for AccountIdConverter {
 		hash.to_fixed_bytes().into()
 	}
 }
+
+struct InboundNonceInstance;
+impl StorageInstance for InboundNonceInstance {
+	const STORAGE_PREFIX: &'static str = "Nonce";
+
+	fn pallet_prefix() -> &'static str {
+		"InboundNonceMock"
+	}
+}
+
+struct OutboundNonceInstance;
+impl StorageInstance for OutboundNonceInstance {
+	const STORAGE_PREFIX: &'static str = "Nonce";
+
+	fn pallet_prefix() -> &'static str {
+		"OutboundNonceMock"
+	}
+}
+
+type OutboundNonceStorage = StorageValue<OutboundNonceInstance, u64, ValueQuery>;
+
+type InboundNonceStorage = StorageValue<InboundNonceInstance, u64, ValueQuery>;
+
 pub struct MockS2sMessageSender;
 impl LatestMessageNoncer for MockS2sMessageSender {
 	fn outbound_latest_generated_nonce(_lane_id: [u8; 4]) -> u64 {
-		0
+		OutboundNonceStorage::get()
+	}
+
+	fn inbound_latest_received_nonce(_lane_id: [u8; 4]) -> u64 {
+		InboundNonceStorage::get()
+	}
+}
+
+impl MockS2sMessageSender {
+	pub fn increase_outbound_nonce() {
+		let nonce = OutboundNonceStorage::get();
+		OutboundNonceStorage::put(nonce + 1);
+	}
+
+	pub fn increase_inbound_nonce() {
+		let nonce = InboundNonceStorage::get();
+		InboundNonceStorage::put(nonce + 1);
 	}
 }
 
 pub struct MockMessagesBridge;
 impl MessagesBridge<Origin, AccountId<Test>, Balance, ()> for MockMessagesBridge {
-	type Error = DispatchErrorWithPostInfo<PostDispatchInfo>;
+	type Error = DispatchErrorWithPostInfo;
 
 	fn send_message(
 		submitter: Origin,
@@ -135,14 +175,14 @@ impl MessagesBridge<Origin, AccountId<Test>, Balance, ()> for MockMessagesBridge
 	}
 }
 
-impl<AccountId, Signer, Signature> CreatePayload<AccountId, Signer, Signature, Test> for () {
+impl<AccountId, Signer, Signature> CreatePayload<AccountId, Signer, Signature> for () {
 	type Payload = ();
 
 	fn create(
 		_: CallOrigin<AccountId, Signer, Signature>,
 		_: u32,
 		_: u64,
-		_: CallParams<Test>,
+		_: CallParams,
 		_: DispatchFeePayment,
 	) -> Result<Self::Payload, &'static str> {
 		Ok(())
@@ -152,8 +192,10 @@ impl<AccountId, Signer, Signature> CreatePayload<AccountId, Signer, Signature, T
 impl Config for Test {
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
-	type DecimalMultiplier = DecimalsDifference;
+	type BridgedSmartChainId = PangolinSmartChainId;
 	type Event = ();
+	type IntoEthereumAccount = evm::ConcatConverter<Self::AccountId>;
+	type MaxReserves = MaxNonceReserves;
 	type MessageLaneId = MessageLaneId;
 	type MessageNoncer = MockS2sMessageSender;
 	type MessagesBridge = MockMessagesBridge;
