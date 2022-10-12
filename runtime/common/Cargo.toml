@@ -45,7 +45,6 @@ polkadot-runtime-parachains = { default-features = false, git = "https://github.
 xcm                         = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
 xcm-builder                 = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
 xcm-executor                = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
-xcm-simulator               = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
 
 [dev-dependencies]
 pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }

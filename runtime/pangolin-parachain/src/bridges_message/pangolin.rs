@@ -11,7 +11,7 @@ use bp_messages::{source_chain::*, target_chain::*, *};
 use bp_runtime::*;
 use bridge_runtime_common::{
 	lanes::*,
-	messages::{self, source::*, target::*, BalanceOf, *},
+	messages::{source::*, target::*, *},
 };
 use dp_common_runtime::FromThisChainMessageVerifier;
 
@@ -75,13 +75,6 @@ impl MessageBridge for WithPangolinMessageBridge {
 	const THIS_CHAIN_ID: ChainId = PANGOLIN_PARACHAIN_CHAIN_ID;
 	#[cfg(feature = "alpha")]
 	const THIS_CHAIN_ID: ChainId = PANGOLIN_PARACHAIN_ALPHA_CHAIN_ID;
-
-	fn bridged_balance_to_this_balance(
-		bridged_balance: BalanceOf<Self::BridgedChain>,
-		_bridged_to_this_conversion_rate: Option<FixedU128>,
-	) -> BalanceOf<Self::ThisChain> {
-		PangolinToPangolinParachainConversionRate::get().saturating_mul_int(bridged_balance)
-	}
 }
 
 #[derive(Clone, Copy, RuntimeDebug)]

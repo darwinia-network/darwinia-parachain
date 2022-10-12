@@ -2451,7 +2451,11 @@ dependencies = [
  "pallet-fee-market",
  "pallet-timestamp",
  "pallet-transaction-payment",
+ "pallet-xcm",
  "parity-scale-codec 3.2.1",
+ "polkadot-core-primitives",
+ "polkadot-parachain",
+ "polkadot-runtime-parachains",
  "scale-info",
  "smallvec",
  "sp-core",
@@ -2459,6 +2463,7 @@ dependencies = [
  "sp-runtime",
  "sp-std",
  "xcm",
+ "xcm-builder",
  "xcm-executor",
 ]
 
