@@ -15,7 +15,9 @@ use xcm_executor::{Config as XcmCExecutorConfig, XcmExecutor};
 // --- darwinia-network ---
 use crate::*;
 use dp_common_runtime::{
-	message_router::barriers::AllowDescendOriginPaidExecutionFrom,
+	message_router::{
+		barriers::AllowDescendOriginPaidExecutionFrom, location_conversion::AccountKey20Derive,
+	},
 	xcm_config::{DenyReserveTransferToRelayChain, DenyThenTry},
 };
 
@@ -71,6 +73,8 @@ pub type LocationToAccountId = (
 	SiblingParachainConvertsVia<Sibling, AccountId>,
 	// Straight up local `AccountId32` origins just alias directly to `AccountId`.
 	AccountId32Aliases<RelayNetwork, AccountId>,
+	// Derive AccountKey20 to AccountId32
+	AccountKey20Derive<AccountId>,
 );
 
 /// This is the type we use to convert an (incoming) XCM origin into a local `Origin` instance,

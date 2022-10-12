@@ -20,9 +20,7 @@
 
 use frame_support::{ensure, log, traits::Contains, weights::Weight};
 use sp_std::{marker::PhantomData, result::Result};
-use xcm::latest::{
-	Instruction::*, MultiLocation, WeightLimit::*, Xcm,
-};
+use xcm::latest::{Instruction::*, MultiLocation, WeightLimit::*, Xcm};
 use xcm_executor::traits::ShouldExecute;
 
 /// Allows execution from `origin` if it is contained in `T` (i.e. `T::Contains(origin)`) taking

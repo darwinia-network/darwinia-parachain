@@ -21,10 +21,7 @@
 pub mod barriers;
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
-#[cfg(test)]
-mod mock;
-#[cfg(test)]
-mod test;
+pub mod location_conversion;
 mod weights;
 
 // --- paritytech ---
