@@ -37,8 +37,11 @@ sp-core                    = { default-features = false, git = "https://github.c
 sp-runtime                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
 sp-std                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
 # polkadot
-xcm          = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
-xcm-executor = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
+pallet-xcm         = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
+polkadot-parachain = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
+xcm                = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
+xcm-builder        = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
+xcm-executor       = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
 
 [dev-dependencies]
 pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }

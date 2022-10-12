@@ -19,42 +19,42 @@
 //! Prototype module for message router.
 
 // --- paritytech ---
-use frame_support::{
-	ensure,
-	pallet_prelude::*,
-	traits::{Currency, ExistenceRequirement, Get, WithdrawReasons},
-	weights::GetDispatchInfo,
-};
+use frame_support::{pallet_prelude::*, traits::Get};
 pub use pallet::*;
-use polkadot_parachain::primitives::Sibling;
-use xcm::{
-	prelude::*
-};
+use xcm::prelude::*;
 use xcm_executor::traits::WeightBounds;
-use xcm_builder::FixedWeightBounds;
-use xcm_builder::SiblingParachainConvertsVia;
-use xcm_executor::traits::Convert;
 
-pub type AccountId<T> = <T as frame_system::Config>::AccountId;
-pub type RingBalance<T> = <<T as Config>::RingCurrency as Currency<AccountId<T>>>::Balance;
-pub type XcmUnitWeightCost = Weight;
 pub type AssetUnitsPerSecond = u128;
+
+pub trait ConvertXcm<Call> {
+	fn convert(xcm: Xcm<()>) -> Option<Xcm<Call>>;
+}
 
 #[frame_support::pallet]
 pub mod pallet {
-	use frame_support::dispatch::PostDispatchInfo;
-	use frame_support::weights::constants::WEIGHT_PER_SECOND;
 	use super::*;
+	use frame_support::{log, weights::constants::WEIGHT_PER_SECOND};
 	use frame_system::pallet_prelude::*;
-	use sp_runtime::traits::Dispatchable;
+	use sp_std::{boxed::Box, vec};
+	use xcm_executor::traits::{InvertLocation, TransactAsset};
 
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 		type AssetModifierOrigin: EnsureOrigin<Self::Origin>;
-		type Weigher: WeightBounds<Self::Call>;
-		type RingCurrency: Currency<AccountId<Self>>;
+		type MoonbeamWeigher: WeightBounds<Self::Call>;
+		type LocalWeigher: WeightBounds<Self::Call>;
+		type LocalAssetId: Get<MultiLocation>;
+		type LocationInverter: InvertLocation;
+		type SelfLocationInSibl: Get<MultiLocation>;
+		type AssetTransactor: TransactAsset;
 		type MoonbeamLocation: Get<MultiLocation>;
+		type ExecuteXcmOrigin: EnsureOrigin<
+			<Self as frame_system::Config>::Origin,
+			Success = MultiLocation,
+		>;
+		type XcmExecutor: ExecuteXcm<Self::Call>;
+		type XcmSender: SendXcm;
 	}
 
 	#[pallet::event]
@@ -65,14 +65,21 @@ pub mod pallet {
 			target_location: MultiLocation,
 			local_asset_units_per_second: AssetUnitsPerSecond,
 		},
+		Route(MultiLocation, Xcm<()>, Weight, u128),
 	}
 
 	#[pallet::error]
 	pub enum Error<T> {
 		TargetXcmExecNotConfig,
-		WeightCalculationError,
-		InsufficientBalance,
-		AccountIdConversionFailed
+		/// The message's weight could not be determined.
+		UnweighableMessage,
+		/// XCM execution failed. https://github.com/paritytech/substrate/pull/10242
+		XcmExecutionFailed,
+		BadVersion,
+		/// MultiLocation value too large to descend further.
+		MultiLocationFull,
+		/// Failed to send xcm.
+		XcmSendFailed,
 	}
 
 	/// Stores the units per second for target chain execution for local asset(e.g. CRAB).
@@ -83,7 +90,7 @@ pub mod pallet {
 	#[pallet::storage]
 	#[pallet::getter(fn target_xcm_exec_config)]
 	pub type TargetXcmExecConfig<T: Config> =
-	StorageMap<_, Blake2_128Concat, MultiLocation, AssetUnitsPerSecond>;
+		StorageMap<_, Blake2_128Concat, MultiLocation, AssetUnitsPerSecond>;
 
 	#[pallet::pallet]
 	#[pallet::generate_store(pub (super) trait Store)]
@@ -99,9 +106,7 @@ pub mod pallet {
 		) -> DispatchResultWithPostInfo {
 			T::AssetModifierOrigin::ensure_origin(origin)?;
 
-			TargetXcmExecConfig::<T>::insert(&target_location,
-				                            &local_asset_units_per_second
-			                            );
+			TargetXcmExecConfig::<T>::insert(&target_location, &local_asset_units_per_second);
 
 			Self::deposit_event(Event::TargetXcmExecConfigChanged {
 				target_location,
@@ -112,40 +117,108 @@ pub mod pallet {
 		}
 
 		#[pallet::weight(0)]
-		pub fn forward_to_moonbeam(origin: OriginFor<T>, mut message: Xcm<T::Call>)
-		                           -> DispatchResultWithPostInfo {
-			let user = ensure_signed(origin)?;
+		pub fn forward_to_moonbeam(
+			origin: OriginFor<T>,
+			message: Box<VersionedXcm<<T as frame_system::Config>::Call>>,
+		) -> DispatchResultWithPostInfo {
+			let origin_location = T::ExecuteXcmOrigin::ensure_origin(origin)?;
+			let remote_xcm: Xcm<<T as frame_system::Config>::Call> =
+				(*message).try_into().map_err(|()| Error::<T>::BadVersion)?;
 
+			// Calculate the execution fee required to execute remote xcm
 			let local_asset_units_per_second =
 				TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
-				.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
+					.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
+			let remote_weight = T::MoonbeamWeigher::weight(
+				&mut Self::extend_remote_xcm_for_weight(remote_xcm.clone()),
+			)
+			.map_err(|()| Error::<T>::UnweighableMessage)?;
+			let amount = local_asset_units_per_second.saturating_mul(remote_weight as u128)
+				/ (WEIGHT_PER_SECOND as u128);
+			let remote_xcm_fee =
+				MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(amount) };
 
-			let mut amount:u128 = 0;
-			let weight = T::Weigher::weight(&mut message)
-				.map_err(|()| Error::<T>::WeightCalculationError)?;
+			// Transfer xcm execution fee to moonbeam sovereign account
+			let mut local_xcm = Xcm(vec![TransferAsset {
+				assets: remote_xcm_fee.clone().into(),
+				beneficiary: T::MoonbeamLocation::get(),
+			}]);
+			let local_weight = T::LocalWeigher::weight(&mut local_xcm)
+				.map_err(|()| Error::<T>::UnweighableMessage)?;
+			T::XcmExecutor::execute_xcm_in_credit(
+				origin_location.clone(),
+				local_xcm,
+				local_weight,
+				local_weight,
+			)
+			.ensure_complete()
+			.map_err(|error| {
+				log::error!("Failed execute route message with {:?}", error);
+				Error::<T>::XcmExecutionFailed
+			})?;
 
-			amount = local_asset_units_per_second.saturating_mul(weight as u128)
-					/ (WEIGHT_PER_SECOND as u128);
+			// Extend remote xcm to buy execution and handle error remotely
+			let ancestry = T::LocationInverter::ancestry();
+			let mut remote_xcm_fee_anchor_dest = remote_xcm_fee.clone();
+			remote_xcm_fee_anchor_dest
+				.reanchor(&T::MoonbeamLocation::get(), &ancestry)
+				.map_err(|()| Error::<T>::MultiLocationFull)?;
+			let mut extend_remote_xcm = Xcm(vec![
+				ReserveAssetDeposited(remote_xcm_fee_anchor_dest.clone().into()),
+				BuyExecution {
+					fees: remote_xcm_fee_anchor_dest,
+					weight_limit: WeightLimit::Unlimited,
+				},
+				SetAppendix(Xcm(vec![
+					RefundSurplus,
+					DepositAsset {
+						assets: Wild(All),
+						max_assets: 1,
+						beneficiary: T::SelfLocationInSibl::get(),
+					},
+				])),
+			]);
+			extend_remote_xcm.0.extend(remote_xcm.0.into_iter());
 
-			// Make sure the user's balance is enough to transfer
-			ensure!(
-				T::RingCurrency::free_balance(&user) > amount,
-				Error::<T>::InsufficientBalance
-			);
+			// Send remote xcm to moonbeam
+			T::XcmSender::send_xcm(T::MoonbeamLocation::get(), extend_remote_xcm.clone().into())
+				.map_err(|_| Error::<T>::XcmSendFailed)?;
 
-			let sovereign_account =
-				SiblingParachainConvertsVia::<Sibling, dc_primitives::AccountId>::convert_ref(T::MoonbeamLocation::get())
-				.map_err(|()| Error::AccountIdConversionFailed)?;
-
-			// We need to transfer XCM execution fee from user to moonbeam sovereign account
-			T::RingCurrency::transfer(
-				&user,
-				&sovereign_account,
+			Self::deposit_event(Event::Route(
+				origin_location,
+				extend_remote_xcm.into(),
+				remote_weight,
 				amount,
-				ExistenceRequirement::KeepAlive,
-			)?;
-
+			));
 			Ok(().into())
+		}
+	}
+
+	impl<T: Config> Pallet<T> {
+		/// Extend xcm to make weight calculation more accurate.
+		/// These extended instructions are the instructions that will be executed remotely
+		fn extend_remote_xcm_for_weight(
+			xcm: Xcm<<T as frame_system::Config>::Call>,
+		) -> Xcm<<T as frame_system::Config>::Call> {
+			let mut extend_xcm_for_weight = Xcm(vec![
+				ReserveAssetDeposited(
+					MultiAsset { id: Concrete(T::LocalAssetId::get()), fun: Fungible(0) }.into(),
+				),
+				BuyExecution {
+					fees: MultiAsset { id: Concrete(T::LocalAssetId::get()), fun: Fungible(0) },
+					weight_limit: WeightLimit::Unlimited,
+				},
+				SetAppendix(Xcm(vec![
+					RefundSurplus,
+					DepositAsset {
+						assets: Wild(All),
+						max_assets: 1,
+						beneficiary: Default::default(),
+					},
+				])),
+			]);
+			extend_xcm_for_weight.0.extend(xcm.0.into_iter());
+			return extend_xcm_for_weight;
 		}
 	}
 }
