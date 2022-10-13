@@ -18,46 +18,79 @@
 
 #![cfg(feature = "runtime-benchmarks")]
 
-// --- crates.io ---
-use array_bytes::hex2bytes_unchecked;
 // --- paritytech ---
 use frame_benchmarking::benchmarks;
 use frame_support::assert_ok;
 use frame_system::{pallet_prelude::BlockNumberFor, RawOrigin};
 use sp_runtime::traits::Zero;
 // --- darwinia-network ---
-use crate::*;
+use codec::Decode;
+use ethereum_types::H160;
+use sp_std::str::FromStr;
 
-use crate::Pallet as ParaIssuing;
+use crate::helixbridge::{Pallet as ParaIssuing, *};
+
+pub fn build_account<AccountId: Decode>(x: u8) -> AccountId {
+	let origin = [x; 32];
+	AccountId::decode(&mut &origin[..]).unwrap()
+}
 
 benchmarks! {
 	issue_from_remote {
-		let caller_bytes = hex2bytes_unchecked("0x28f900e9928c356287bb8806c9044168560dee80b91d2015653c9639a4998d8d");
-		let caller: T::AccountId = T::AccountId::decode(&mut &caller_bytes[..]).unwrap_or_default();
-		let addr_bytes = hex2bytes_unchecked("0x6d6f646c64612f73327362610000000000000000000000000000000000000000");
-		let pallet_account_id: T::AccountId = T::AccountId::decode(&mut &addr_bytes[..]).unwrap_or_default();
-		<T as Config>::RingCurrency::deposit_creating(&pallet_account_id, U256::from(5000).low_u128().saturated_into());
-		let recipient_bytes = hex2bytes_unchecked("0x8e13b96a9c9e3b1832f07935be76c2b331251e26445f520ad1c56b24477ed8d6");
-		let token_address = <T as Config>::RingAddress::get();
+		let remote_backing = build_account::<T::AccountId>(1);
+		let recipient = build_account::<T::AccountId>(2);
 		assert_ok!(<ParaIssuing<T>>::set_remote_backing_account(
 				RawOrigin::Root.into(),
-				pallet_account_id
+				remote_backing.clone()
 		));
-	}:_(RawOrigin::Signed(caller), token_address, recipient_bytes, 1000.into())
+		let caller = <ParaIssuing<T>>::derived_backing_id(remote_backing.clone());
+	}:_(RawOrigin::Signed(caller), 1000u128.saturated_into(), recipient, vec![], 0)
+
+	handle_issuing_failure_from_remote {
+		let remote_backing = build_account::<T::AccountId>(1);
+		let recipient = build_account::<T::AccountId>(2);
+		assert_ok!(<ParaIssuing<T>>::set_remote_backing_account(
+				RawOrigin::Root.into(),
+				remote_backing.clone()
+		));
+		let caller = <ParaIssuing<T>>::derived_backing_id(remote_backing.clone());
+		let message_id = (T::MessageLaneId::get(), 1);
+		let value: RingBalance<T> = Zero::zero();
+		TransactionInfos::<T>::insert(message_id, (caller.clone(), value));
+	}:_(RawOrigin::Signed(caller), 1, vec![], 0)
 
 	burn_and_remote_unlock {
-		let caller_bytes = hex2bytes_unchecked("0x28f900e9928c356287bb8806c9044168560dee80b91d2015653c9639a4998d8d");
-		let caller: T::AccountId = T::AccountId::decode(&mut &caller_bytes[..]).unwrap_or_default();
+		let remote_backing = build_account::<T::AccountId>(1);
+		assert_ok!(<ParaIssuing<T>>::set_remote_backing_account(
+				RawOrigin::Root.into(),
+				remote_backing.clone()
+		));
+		let recipient = H160::from_str("1234500000000000000000000000000000000000").unwrap();
+		let caller = build_account::<T::AccountId>(2);
 		<T as Config>::RingCurrency::deposit_creating(&caller, U256::from(5000).low_u128().saturated_into());
-		let recipient = caller.clone();
 	}:_(RawOrigin::Signed(caller), 1, 1,
+	1000000,
 	100u128.saturated_into(),
 	10u128.saturated_into(),
 	recipient)
 
+	remote_unlock_failure {
+		let remote_backing = build_account::<T::AccountId>(1);
+		assert_ok!(<ParaIssuing<T>>::set_remote_backing_account(
+				RawOrigin::Root.into(),
+				remote_backing.clone()
+		));
+		let caller = build_account::<T::AccountId>(2);
+		<T as Config>::RingCurrency::deposit_creating(&caller, U256::from(5000).low_u128().saturated_into());
+		//ReceivedNonces::<T>::try_mutate(|nonces| -> DispatchResult {
+			//nonces.try_push(1).map_err(|_| <Error<T>>::TooManyNonces)?;
+			//Ok(())
+		//})?;
+	}:_(RawOrigin::Signed(caller), 1, 1, 1000000, 0, 10u128.saturated_into())
+
 	set_remote_backing_account {
-		let backing: T::AccountId = Default::default();
-	}:_(RawOrigin::Root, backing)
+		let remote_backing = build_account::<T::AccountId>(1);
+	}:_(RawOrigin::Root, remote_backing)
 
 	set_secure_limited_period {
 		let period: BlockNumberFor<T> = Zero::zero();

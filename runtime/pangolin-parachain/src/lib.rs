@@ -67,6 +67,7 @@ mod benches {
 		// [pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
 		[pallet_fee_market, PangolinFeeMarket]
 		[cumulus_pallet_xcmp_queue, XcmpQueue]
+		[dp_common_runtime, FromPangolinIssuing]
 	);
 }
 
@@ -468,6 +469,7 @@ sp_api::impl_runtime_apis! {
 			let params = (&config, &whitelist);
 
 			add_benchmarks!(params, batches);
+			add_benchmark!(params, batches, dp_common_runtime, FromPangolinIssuing);
 
 			Ok(batches)
 		}

@@ -9,7 +9,7 @@ use bp_message_dispatch::CallOrigin;
 use bp_messages::{LaneId, MessageNonce};
 use bp_runtime::{messages::DispatchFeePayment, ChainId, PANGOLIN_CHAIN_ID};
 use bridge_runtime_common::lanes::PANGOLIN_PANGOLIN_PARACHAIN_LANE;
-use bridges_message::pangolin::{ToPangolinMessagePayload, PANGOLIN_S2S_BACKING_PALLET_INDEX};
+use bridges_message::pangolin::{ToPangolinMessagePayload, ETHEREUM_PALLET_INDEX};
 use dp_common_runtime::helixbridge::{
 	evm::ConcatConverter, CallParams, Config, CreatePayload, LatestMessageNoncer,
 };
@@ -41,7 +41,7 @@ impl CreatePayload<AccountId, AccountPublic, Signature> for ToPangolinOutboundPa
 		call_params: CallParams,
 		dispatch_fee_payment: DispatchFeePayment,
 	) -> Result<Self::Payload, &'static str> {
-		let call = Self::encode_call(PANGOLIN_S2S_BACKING_PALLET_INDEX, call_params)?;
+		let call = Self::encode_call(ETHEREUM_PALLET_INDEX, call_params)?;
 		Ok(ToPangolinMessagePayload { spec_version, weight, origin, call, dispatch_fee_payment })
 	}
 }

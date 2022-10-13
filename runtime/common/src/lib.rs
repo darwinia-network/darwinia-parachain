@@ -133,6 +133,7 @@ where
 /// - check that the sender has paid enough funds for both message delivery and dispatch.
 #[derive(RuntimeDebug)]
 pub struct FromThisChainMessageVerifier<B, R, I>(PhantomData<(B, R, I)>);
+#[cfg(not(feature = "runtime-benchmarks"))]
 impl<B, R, I>
 	LaneMessageVerifier<
 		OriginOf<ThisChain<B>>,
@@ -207,6 +208,36 @@ where
 			return Err(NO_MARKET_FEE);
 		}
 
+		Ok(())
+	}
+}
+
+#[cfg(feature = "runtime-benchmarks")]
+impl<B, R, I>
+	LaneMessageVerifier<
+		OriginOf<ThisChain<B>>,
+		AccountIdOf<ThisChain<B>>,
+		FromThisChainMessagePayload<B>,
+		BalanceOf<ThisChain<B>>,
+	> for FromThisChainMessageVerifier<B, R, I>
+where
+	B: MessageBridge,
+	R: pallet_fee_market::Config<I>,
+	I: 'static,
+	OriginOf<ThisChain<B>>: Clone
+		+ Into<Result<frame_system::RawOrigin<AccountIdOf<ThisChain<B>>>, OriginOf<ThisChain<B>>>>,
+	AccountIdOf<ThisChain<B>>: Clone + PartialEq,
+	pallet_fee_market::BalanceOf<R, I>: From<BalanceOf<ThisChain<B>>>,
+{
+	type Error = &'static str;
+
+	fn verify_message(
+		_submitter: &OriginOf<ThisChain<B>>,
+		_delivery_and_dispatch_fee: &BalanceOf<ThisChain<B>>,
+		_lane: &LaneId,
+		_lane_outbound_data: &OutboundLaneData,
+		_payload: &FromThisChainMessagePayload<B>,
+	) -> Result<(), Self::Error> {
 		Ok(())
 	}
 }

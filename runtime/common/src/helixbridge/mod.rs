@@ -292,7 +292,9 @@ pub mod pallet {
 			Ok(().into())
 		}
 
-		#[pallet::weight(100)]
+		#[pallet::weight(
+			<T as Config>::WeightInfo::handle_issuing_failure_from_remote()
+		)]
 		pub fn handle_issuing_failure_from_remote(
 			origin: OriginFor<T>,
 			failure_nonce: MessageNonce,
@@ -327,7 +329,9 @@ pub mod pallet {
 			Ok(().into())
 		}
 
-		#[pallet::weight(100)]
+		#[pallet::weight(
+			<T as Config>::WeightInfo::remote_unlock_failure()
+		)]
 		pub fn remote_unlock_failure(
 			origin: OriginFor<T>,
 			spec_version: u32,
