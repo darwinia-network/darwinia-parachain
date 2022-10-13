@@ -68,8 +68,12 @@ impl MessageBridge for WithPangolinMessageBridge {
 	type ThisChain = PangolinParachain;
 
 	const BRIDGED_CHAIN_ID: ChainId = PANGOLIN_CHAIN_ID;
+	#[cfg(not(feature = "alpha"))]
 	const BRIDGED_MESSAGES_PALLET_NAME: &'static str =
 		bp_pangolin_parachain::WITH_PANGOLIN_PARACHAIN_MESSAGES_PALLET_NAME;
+	#[cfg(feature = "alpha")]
+	const BRIDGED_MESSAGES_PALLET_NAME: &'static str =
+		bp_pangolin_parachain_alpha::WITH_PANGOLIN_PARACHAIN_MESSAGES_PALLET_NAME;
 	const RELAYER_FEE_PERCENT: u32 = 10;
 	#[cfg(not(feature = "alpha"))]
 	const THIS_CHAIN_ID: ChainId = PANGOLIN_PARACHAIN_CHAIN_ID;
