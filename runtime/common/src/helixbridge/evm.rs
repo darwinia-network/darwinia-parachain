@@ -28,7 +28,7 @@ use ethereum_types::{H160, H256, U256};
 // --- paritytech ---
 use frame_support::pallet_prelude::PhantomData;
 use sp_runtime::DispatchError;
-use sp_std::{vec, vec::Vec};
+use sp_std::{boxed::Box, vec, vec::Vec};
 
 /// A trait for converting from Substrate account_id to Ethereum address.
 pub trait DeriveEthereumAddress<AccountId> {
@@ -73,7 +73,12 @@ pub fn new_ethereum_transaction(
 
 pub struct ToParachainBacking;
 impl ToParachainBacking {
-	pub fn encode_unlock_from_remote(recipient: H160, amount: U256) -> AbiResult<Bytes> {
+	pub fn encode_unlock_from_remote(
+		recipient: H160,
+		amount: U256,
+		prun_nonces: Vec<u64>,
+		min_reserved_burn_nonce: u64,
+	) -> AbiResult<Bytes> {
 		let inputs = vec![
 			Param {
 				name: "recipient".into(),
@@ -85,6 +90,16 @@ impl ToParachainBacking {
 				kind: ParamType::Uint(256),
 				internal_type: Some("uint256".into()),
 			},
+			Param {
+				name: "prunNonces".into(),
+				kind: ParamType::Array(Box::new(ParamType::Uint(64))),
+				internal_type: Some("uint64[]".into()),
+			},
+			Param {
+				name: "minReservedBurnNonce".into(),
+				kind: ParamType::Uint(64),
+				internal_type: Some("uint64".into()),
+			},
 		];
 
 		#[allow(deprecated)]
@@ -95,15 +110,39 @@ impl ToParachainBacking {
 			constant: Some(false),
 			state_mutability: StateMutability::NonPayable,
 		}
-		.encode_input(vec![Token::Address(recipient), Token::Uint(amount)].as_slice())
+		.encode_input(
+			vec![
+				Token::Address(recipient),
+				Token::Uint(amount),
+				Token::Array(prun_nonces.iter().map(|n| Token::Uint((*n).into())).collect()),
+				Token::Uint(min_reserved_burn_nonce.into()),
+			]
+			.as_slice(),
+		)
 	}
 
-	pub fn encode_handle_unlock_failure_from_remote(nonce: u64) -> AbiResult<Bytes> {
-		let inputs = vec![Param {
-			name: "nonce".into(),
-			kind: ParamType::Uint(64),
-			internal_type: Some("uint64".into()),
-		}];
+	pub fn encode_handle_unlock_failure_from_remote(
+		nonce: u64,
+		prun_nonces: Vec<u64>,
+		min_reserved_burn_nonce: u64,
+	) -> AbiResult<Bytes> {
+		let inputs = vec![
+			Param {
+				name: "nonce".into(),
+				kind: ParamType::Uint(64),
+				internal_type: Some("uint64".into()),
+			},
+			Param {
+				name: "prunNonces".into(),
+				kind: ParamType::Array(Box::new(ParamType::Uint(64))),
+				internal_type: Some("uint64[]".into()),
+			},
+			Param {
+				name: "minReservedBurnNonce".into(),
+				kind: ParamType::Uint(64),
+				internal_type: Some("uint64".into()),
+			},
+		];
 
 		#[allow(deprecated)]
 		Function {
@@ -113,6 +152,13 @@ impl ToParachainBacking {
 			constant: Some(false),
 			state_mutability: StateMutability::NonPayable,
 		}
-		.encode_input(vec![Token::Uint(nonce.into())].as_slice())
+		.encode_input(
+			vec![
+				Token::Uint(nonce.into()),
+				Token::Array(prun_nonces.iter().map(|n| Token::Uint((*n).into())).collect()),
+				Token::Uint(min_reserved_burn_nonce.into()),
+			]
+			.as_slice(),
+		)
 	}
 }

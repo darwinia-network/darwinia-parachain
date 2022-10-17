@@ -169,6 +169,10 @@ pub mod pallet {
 	pub type ReceivedNonces<T: Config> =
 		StorageValue<_, BoundedVec<u64, T::MaxReserves>, ValueQuery>;
 
+	#[pallet::storage]
+	#[pallet::getter(fn min_reserved_burn_nonce)]
+	pub type MinReservedBurnNonce<T: Config> = StorageValue<_, u64, ValueQuery>;
+
 	/// Period between security limitation. Zero means there is no period limitation.
 	#[pallet::storage]
 	#[pallet::getter(fn secure_limited_period)]
@@ -266,9 +270,13 @@ pub mod pallet {
 				ExistenceRequirement::KeepAlive,
 			)?;
 
+			let received_nonces = <ReceivedNonces<T>>::get();
+
 			let remote_unlock_input = evm::ToParachainBacking::encode_unlock_from_remote(
 				recipient,
 				U256::from(value.saturated_into::<u128>()),
+				received_nonces.to_vec(),
+				<MinReservedBurnNonce<T>>::get(),
 			)
 			.map_err(|_| <Error<T>>::EvmEncodeFailed)?;
 			let message_nonce =
@@ -366,10 +374,16 @@ pub mod pallet {
 				T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get());
 			ensure!(message_nonce >= failure_nonce, Error::<T>::MessageNotDelived);
 
+			let received_nonces = <ReceivedNonces<T>>::get();
+
 			// send refund message
 			let remote_unlock_for_failure_input =
-				evm::ToParachainBacking::encode_handle_unlock_failure_from_remote(failure_nonce)
-					.map_err(|_| Error::<T>::EvmEncodeFailed)?;
+				evm::ToParachainBacking::encode_handle_unlock_failure_from_remote(
+					failure_nonce,
+					received_nonces.to_vec(),
+					<MinReservedBurnNonce<T>>::get(),
+				)
+				.map_err(|_| Error::<T>::EvmEncodeFailed)?;
 			let request_nonce = Self::remote_evm_call(
 				spec_version,
 				weight,
@@ -506,11 +520,18 @@ pub mod pallet {
 				Ok(())
 			})?;
 
+			let mut min_reserved_nonce = 0;
 			for nonce in pruned_messages {
 				let message_id: BridgeMessageId = (T::MessageLaneId::get(), nonce);
 				if <TransactionInfos<T>>::contains_key(message_id) {
 					<TransactionInfos<T>>::remove(message_id);
+					if nonce > min_reserved_nonce {
+						min_reserved_nonce = nonce;
+					}
 				}
+			}
+			if min_reserved_nonce > 0 {
+				<MinReservedBurnNonce<T>>::put(min_reserved_nonce + 1);
 			}
 			Ok(())
 		}
