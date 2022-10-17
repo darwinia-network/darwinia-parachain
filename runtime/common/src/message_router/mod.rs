@@ -31,6 +31,12 @@ use xcm_executor::traits::WeightBounds;
 
 pub type AssetUnitsPerSecond = u128;
 
+/// router target
+#[derive(Clone, Encode, Decode, TypeInfo, PartialEq, Debug)]
+pub enum Target {
+	Moonbeam,
+}
+
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
@@ -68,7 +74,7 @@ pub mod pallet {
 			target_location: MultiLocation,
 			local_asset_units_per_second: AssetUnitsPerSecond,
 		},
-		RouteToMoonbeam(MultiLocation, Xcm<()>, Weight, u128),
+		ForwardTo(MultiLocation, Target, Xcm<()>, Weight, u128),
 	}
 
 	#[pallet::error]
@@ -124,10 +130,11 @@ pub mod pallet {
 		}
 
 		#[pallet::weight(
-			<T as Config>::WeightInfo::forward_to_moonbeam()
+			<T as Config>::WeightInfo::forward()
 		)]
-		pub fn forward_to_moonbeam(
+		pub fn forward(
 			origin: OriginFor<T>,
+			target: Target,
 			message: Box<VersionedXcm<<T as frame_system::Config>::Call>>,
 		) -> DispatchResultWithPostInfo {
 			// MultiLocation origin used to execute xcm
@@ -137,30 +144,41 @@ pub mod pallet {
 			let account_u8 = <[u8; 32]>::try_from(account_id.encode())
 				.map_err(|_| Error::<T>::AccountIdConversionFailed)?;
 
-			let remote_xcm: Xcm<<T as frame_system::Config>::Call> =
+			let mut remote_xcm: Xcm<<T as frame_system::Config>::Call> =
 				(*message).try_into().map_err(|()| Error::<T>::BadVersion)?;
 
 			// Calculate the execution fee required for remote xcm execution
 			// fee = fee_per_second * (weight/weight_per_second)
-			let local_asset_units_per_second =
-				TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
-					.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
-			let remote_weight = T::MoonbeamWeigher::weight(&mut Self::extend_remote_xcm(
-				account_u8.clone(),
-				remote_xcm.clone(),
-				MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(0) },
-			))
-			.map_err(|()| Error::<T>::UnweighableMessage)?;
+			let local_asset_units_per_second: AssetUnitsPerSecond;
+			let remote_weight: Weight;
+			match target {
+				Target::Moonbeam => {
+					local_asset_units_per_second =
+						TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
+							.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
+					remote_weight = T::MoonbeamWeigher::weight(&mut Self::extend_remote_xcm(
+						account_u8.clone(),
+						remote_xcm.clone(),
+						MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(0) },
+					))
+					.map_err(|()| Error::<T>::UnweighableMessage)?;
+				},
+			}
 			let amount = local_asset_units_per_second.saturating_mul(remote_weight as u128)
 				/ (WEIGHT_PER_SECOND as u128);
 			let remote_xcm_fee =
 				MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(amount) };
 
-			// Transfer xcm execution fee to moonbeam sovereign account
-			let mut local_xcm = Xcm(vec![TransferAsset {
-				assets: remote_xcm_fee.clone().into(),
-				beneficiary: T::MoonbeamLocation::get(),
-			}]);
+			// Transfer xcm execution fee to target sovereign account
+			let mut local_xcm;
+			match target {
+				Target::Moonbeam => {
+					local_xcm = Xcm(vec![TransferAsset {
+						assets: remote_xcm_fee.clone().into(),
+						beneficiary: T::MoonbeamLocation::get(),
+					}]);
+				},
+			}
 			let local_weight = T::LocalWeigher::weight(&mut local_xcm)
 				.map_err(|()| Error::<T>::UnweighableMessage)?;
 			T::XcmExecutor::execute_xcm_in_credit(
@@ -178,18 +196,22 @@ pub mod pallet {
 			// Toggle the xcm_fee relative to a target context
 			let ancestry = T::LocationInverter::ancestry();
 			let mut remote_xcm_fee_anchor_dest = remote_xcm_fee.clone();
-			remote_xcm_fee_anchor_dest
-				.reanchor(&T::MoonbeamLocation::get(), &ancestry)
-				.map_err(|()| Error::<T>::MultiLocationFull)?;
-			let remote_xcm =
-				Self::extend_remote_xcm(account_u8, remote_xcm, remote_xcm_fee_anchor_dest);
+			match target {
+				Target::Moonbeam => {
+					remote_xcm_fee_anchor_dest
+						.reanchor(&T::MoonbeamLocation::get(), &ancestry)
+						.map_err(|()| Error::<T>::MultiLocationFull)?;
+					remote_xcm =
+						Self::extend_remote_xcm(account_u8, remote_xcm, remote_xcm_fee_anchor_dest);
+					// Send remote xcm to moonbeam
+					T::XcmSender::send_xcm(T::MoonbeamLocation::get(), remote_xcm.clone().into())
+						.map_err(|_| Error::<T>::XcmSendFailed)?;
+				},
+			}
 
-			// Send remote xcm to moonbeam
-			T::XcmSender::send_xcm(T::MoonbeamLocation::get(), remote_xcm.clone().into())
-				.map_err(|_| Error::<T>::XcmSendFailed)?;
-
-			Self::deposit_event(Event::RouteToMoonbeam(
+			Self::deposit_event(Event::ForwardTo(
 				origin_location,
+				target,
 				remote_xcm.into(),
 				remote_weight,
 				amount,

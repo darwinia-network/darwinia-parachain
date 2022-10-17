@@ -56,7 +56,7 @@ use sp_std::marker::PhantomData;
 
 pub trait WeightInfo {
 	fn set_target_xcm_exec_config() -> Weight;
-	fn forward_to_moonbeam() -> Weight;
+	fn forward() -> Weight;
 }
 
 /// Weight functions for `message_router`.
@@ -74,7 +74,7 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeightInfo<T> {
 	// Storage: PolkadotXcm VersionDiscoveryQueue (r:1 w:1)
 	// Storage: PolkadotXcm SafeXcmVersion (r:1 w:0)
 	// Storage: ParachainSystem RelevantMessagingState (r:1 w:0)
-	fn forward_to_moonbeam() -> Weight {
+	fn forward() -> Weight {
 		(37_239_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(8 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
@@ -94,7 +94,7 @@ impl WeightInfo for () {
 	// Storage: PolkadotXcm VersionDiscoveryQueue (r:1 w:1)
 	// Storage: PolkadotXcm SafeXcmVersion (r:1 w:0)
 	// Storage: ParachainSystem RelevantMessagingState (r:1 w:0)
-	fn forward_to_moonbeam() -> Weight {
+	fn forward() -> Weight {
 		(37_239_000 as Weight)
 			.saturating_add(RocksDbWeight::get().reads(8 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
