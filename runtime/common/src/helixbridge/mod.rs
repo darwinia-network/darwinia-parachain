@@ -279,6 +279,7 @@ pub mod pallet {
 				<MinReservedBurnNonce<T>>::get(),
 			)
 			.map_err(|_| <Error<T>>::EvmEncodeFailed)?;
+
 			let message_nonce =
 				Self::remote_evm_call(spec_version, weight, fee, gas_limit, remote_unlock_input)?;
 			let message_id: BridgeMessageId = (T::MessageLaneId::get(), message_nonce);
@@ -544,12 +545,15 @@ pub mod pallet {
 			input: Vec<u8>,
 		) -> Result<MessageNonce, DispatchErrorWithPostInfo> {
 			if let Some(backing) = <RemoteBackingAccount<T>>::get() {
+				let remote_call = evm::MessageEndpoint::encode_recv_message(input)
+					.map_err(|_| <Error<T>>::EvmEncodeFailed)?;
+
 				let ethereum_account = T::IntoEthereumAccount::derive_ethereum_address(backing);
 				let ethereum_transaction = evm::new_ethereum_transaction(
 					T::BridgedSmartChainId::get(),
 					ethereum_account,
 					U256::from(gas_limit),
-					input,
+					remote_call,
 				)?;
 				let payload = T::OutboundPayloadCreator::create(
 					CallOrigin::SourceAccount(Self::pallet_account_id()),

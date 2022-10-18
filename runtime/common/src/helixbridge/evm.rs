@@ -71,6 +71,27 @@ pub fn new_ethereum_transaction(
 	}))
 }
 
+pub struct MessageEndpoint;
+impl MessageEndpoint {
+	pub fn encode_recv_message(calldata: Bytes) -> AbiResult<Bytes> {
+		let inputs = vec![Param {
+			name: "message".into(),
+			kind: ParamType::Bytes,
+			internal_type: Some("bytes".into()),
+		}];
+
+		#[allow(deprecated)]
+		Function {
+			name: "recvMessage".into(),
+			inputs,
+			outputs: vec![],
+			constant: Some(false),
+			state_mutability: StateMutability::NonPayable,
+		}
+		.encode_input(vec![Token::Bytes(calldata)].as_slice())
+	}
+}
+
 pub struct ToParachainBacking;
 impl ToParachainBacking {
 	pub fn encode_unlock_from_remote(
