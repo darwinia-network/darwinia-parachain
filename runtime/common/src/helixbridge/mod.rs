@@ -516,7 +516,7 @@ pub mod pallet {
 			<ReceivedNonces<T>>::try_mutate(|nonces| -> DispatchResult {
 				nonces.retain(|&r| r >= min_retain_received_nonce);
 				let message_nonce =
-					T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get());
+					T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get()) + 1;
 				nonces.try_push(message_nonce).map_err(|_| <Error<T>>::TooManyNonces)?;
 				Ok(())
 			})?;
