@@ -8,7 +8,7 @@ use crate::*;
 use bp_message_dispatch::CallOrigin;
 use bp_messages::{LaneId, MessageNonce};
 use bp_runtime::{messages::DispatchFeePayment, ChainId, PANGOLIN_CHAIN_ID};
-use bridge_runtime_common::lanes::PANGOLIN_PANGOLIN_PARACHAIN_LANE;
+use bridge_runtime_common::lanes::PANGOLIN_PANGOLIN_PARACHAIN_ALPHA_LANE;
 use bridges_message::pangolin::{ToPangolinMessagePayload, ETHEREUM_PALLET_INDEX};
 use dp_common_runtime::helixbridge::{
 	evm::ConcatConverter, CallParams, Config, CreatePayload, LatestMessageNoncer,
@@ -47,7 +47,7 @@ impl CreatePayload<AccountId, AccountPublic, Signature> for ToPangolinOutboundPa
 }
 
 frame_support::parameter_types! {
-	pub const BridgePangolinLaneId: LaneId = PANGOLIN_PANGOLIN_PARACHAIN_LANE;
+	pub const BridgePangolinLaneId: LaneId = PANGOLIN_PANGOLIN_PARACHAIN_ALPHA_LANE;
 	pub const ParachainIssuingPalletId: PalletId = PalletId(*b"da/paais");
 	pub const PangolinChainId: ChainId = PANGOLIN_CHAIN_ID;
 	pub const PangolinSmartChainId: u64 = 43;
