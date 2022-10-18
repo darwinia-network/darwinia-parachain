@@ -16,7 +16,7 @@ use dp_common_runtime::helixbridge::{
 use pallet_bridge_messages::Instance1 as WithCrabMessages;
 
 /// The s2s backing pallet index in the crab chain runtime.
-const CRAB_S2S_BACKING_PALLET_INDEX: u8 = 57;
+const CRAB_ETHEREUM_PALLET_INDEX: u8 = 40;
 
 pub struct ToCrabMessageSender;
 impl LatestMessageNoncer for ToCrabMessageSender {
@@ -43,7 +43,7 @@ impl CreatePayload<AccountId, AccountPublic, Signature> for ToCrabOutboundPayLoa
 		call_params: CallParams,
 		dispatch_fee_payment: DispatchFeePayment,
 	) -> Result<Self::Payload, &'static str> {
-		let call = Self::encode_call(CRAB_S2S_BACKING_PALLET_INDEX, call_params)?;
+		let call = Self::encode_call(CRAB_ETHEREUM_PALLET_INDEX, call_params)?;
 		Ok(ToCrabMessagePayload { spec_version, weight, origin, call, dispatch_fee_payment })
 	}
 }
