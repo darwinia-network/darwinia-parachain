@@ -30,8 +30,6 @@ use xcm::prelude::*;
 use xcm_executor::traits::WeightBounds;
 
 pub type AssetUnitsPerSecond = u128;
-/// Fee type of xcm message fee, paid on this chain.
-pub type XcmFee = u128;
 
 /// router target
 #[derive(Clone, Encode, Decode, TypeInfo, PartialEq, Debug)]
@@ -76,7 +74,7 @@ pub mod pallet {
 			target_location: MultiLocation,
 			local_asset_units_per_second: AssetUnitsPerSecond,
 		},
-		ForwardTo(MultiLocation, Target, Xcm<()>, Weight, XcmFee),
+		ForwardTo(MultiLocation, Target, Xcm<()>, Weight, u128),
 	}
 
 	#[pallet::error]
@@ -85,17 +83,14 @@ pub mod pallet {
 		TargetXcmExecNotConfig,
 		/// The message's weight could not be determined.
 		UnweighableMessage,
-		/// Failed to transfer xcm fee.
-		FailedPayXcmFee,
+		/// XCM execution failed. https://github.com/paritytech/substrate/pull/10242
+		XcmExecutionFailed,
 		BadVersion,
 		/// MultiLocation value too large to descend further.
 		MultiLocationFull,
 		/// Failed to send xcm.
 		XcmSendFailed,
-		/// Failed to convert account id to [u8; 32].
 		AccountIdConversionFailed,
-		/// When the `xcm_fee_limit` is less than required.
-		TooExpensive,
 	}
 
 	/// Stores the units per second executed by the target chain for local asset(e.g. CRAB).
@@ -141,7 +136,6 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			target: Target,
 			message: Box<VersionedXcm<<T as frame_system::Config>::Call>>,
-			xcm_fee_limit: Option<XcmFee>,
 		) -> DispatchResultWithPostInfo {
 			// MultiLocation origin used to execute xcm
 			let origin_location = T::ExecuteXcmOrigin::ensure_origin(origin.clone())?;
@@ -170,12 +164,8 @@ pub mod pallet {
 					.map_err(|()| Error::<T>::UnweighableMessage)?;
 				},
 			}
-			let amount: XcmFee = local_asset_units_per_second
-				.saturating_mul(remote_weight as XcmFee)
-				/ (WEIGHT_PER_SECOND as XcmFee);
-			if let Some(fee_limit) = xcm_fee_limit {
-				ensure!(amount <= fee_limit, Error::<T>::TooExpensive);
-			}
+			let amount = local_asset_units_per_second.saturating_mul(remote_weight as u128)
+				/ (WEIGHT_PER_SECOND as u128);
 			let remote_xcm_fee =
 				MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(amount) };
 
@@ -199,8 +189,8 @@ pub mod pallet {
 			)
 			.ensure_complete()
 			.map_err(|error| {
-				log::error!("Failed transfer xcm fee with {:?}", error);
-				Error::<T>::FailedPayXcmFee
+				log::error!("Failed execute route message with {:?}", error);
+				Error::<T>::XcmExecutionFailed
 			})?;
 
 			// Toggle the xcm_fee relative to a target context
