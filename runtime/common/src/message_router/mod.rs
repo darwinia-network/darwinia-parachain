@@ -83,13 +83,14 @@ pub mod pallet {
 		TargetXcmExecNotConfig,
 		/// The message's weight could not be determined.
 		UnweighableMessage,
-		/// XCM execution failed. https://github.com/paritytech/substrate/pull/10242
-		XcmExecutionFailed,
+		/// Failed to transfer xcm fee.
+		FailedPayXcmFee,
 		BadVersion,
 		/// MultiLocation value too large to descend further.
 		MultiLocationFull,
 		/// Failed to send xcm.
 		XcmSendFailed,
+		/// Failed to convert account id to [u8; 32].
 		AccountIdConversionFailed,
 	}
 
@@ -189,8 +190,8 @@ pub mod pallet {
 			)
 			.ensure_complete()
 			.map_err(|error| {
-				log::error!("Failed execute route message with {:?}", error);
-				Error::<T>::XcmExecutionFailed
+				log::error!("Failed transfer xcm fee with {:?}", error);
+				Error::<T>::FailedPayXcmFee
 			})?;
 
 			// Toggle the xcm_fee relative to a target context
