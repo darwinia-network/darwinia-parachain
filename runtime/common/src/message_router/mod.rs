@@ -154,7 +154,7 @@ pub mod pallet {
 			let origin_location = T::ExecuteXcmOrigin::ensure_origin(origin.clone())?;
 			let account_id = ensure_signed(origin)?;
 			// U8 account used in DescendOrigin instruction
-			let account_u8 = <[u8; 32]>::try_from(account_id.encode())
+			let raw_account = <[u8; 32]>::try_from(account_id.encode())
 				.map_err(|_| Error::<T>::AccountIdConversionFailed)?;
 
 			let mut remote_xcm: Xcm<<T as frame_system::Config>::Call> =
@@ -170,7 +170,7 @@ pub mod pallet {
 						TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
 							.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
 					remote_weight = T::MoonbeamWeigher::weight(&mut Self::extend_remote_xcm(
-						account_u8.clone(),
+						raw_account.clone(),
 						remote_xcm.clone(),
 						MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(0) },
 					))
@@ -215,7 +215,7 @@ pub mod pallet {
 						.reanchor(&T::MoonbeamLocation::get(), &ancestry)
 						.map_err(|()| Error::<T>::MultiLocationFull)?;
 					remote_xcm =
-						Self::extend_remote_xcm(account_u8, remote_xcm, remote_xcm_fee_anchor_dest);
+						Self::extend_remote_xcm(raw_account, remote_xcm, remote_xcm_fee_anchor_dest);
 					// Send remote xcm to moonbeam
 					T::XcmSender::send_xcm(T::MoonbeamLocation::get(), remote_xcm.clone().into())
 						.map_err(|_| Error::<T>::XcmSendFailed)?;
@@ -236,7 +236,7 @@ pub mod pallet {
 	impl<T: Config> Pallet<T> {
 		/// Extend xcm for remote execution
 		fn extend_remote_xcm(
-			account_u8: [u8; 32],
+			raw_account: [u8; 32],
 			xcm: Xcm<<T as frame_system::Config>::Call>,
 			fee: MultiAsset,
 		) -> Xcm<<T as frame_system::Config>::Call> {
@@ -252,7 +252,7 @@ pub mod pallet {
 						beneficiary: T::SelfLocationInSibl::get(),
 					},
 				])),
-				DescendOrigin(X1(AccountId32 { network: NetworkId::Any, id: account_u8 })),
+				DescendOrigin(X1(AccountId32 { network: NetworkId::Any, id: raw_account })),
 			]);
 			extend_xcm.0.extend(xcm.0.into_iter());
 			return extend_xcm;
