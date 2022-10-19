@@ -23,11 +23,14 @@ use xcm_executor::traits::Convert;
 /// The address prefix for dvm address
 const ADDR_PREFIX: &[u8] = b"dvm:";
 
+/// Derive AccountKey20 in MultiLocation to AccountId32
+/// Refer to https://github.com/darwinia-network/darwinia-common/blob/main/frame/support/src/evm.rs#L85
 pub struct AccountKey20Derive<AccountId>(PhantomData<AccountId>);
 impl<AccountId: From<[u8; 32]> + Into<[u8; 32]> + Clone> Convert<MultiLocation, AccountId>
 	for AccountKey20Derive<AccountId>
 {
 	fn convert(location: MultiLocation) -> Result<AccountId, MultiLocation> {
+		// Extract AccountKey20 from MultiLocation
 		let key = match location {
 			MultiLocation { parents: 0, interior: X1(AccountKey20 { key, network: _ }) } => key,
 			MultiLocation {
