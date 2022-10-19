@@ -48,22 +48,21 @@ pub mod pallet {
 
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
+		type ConfigModifierOrigin: EnsureOrigin<Self::Origin>;
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
-		type AssetModifierOrigin: EnsureOrigin<Self::Origin>;
-		type MoonbeamWeigher: WeightBounds<Self::Call>;
-		type LocalWeigher: WeightBounds<Self::Call>;
-		type LocalAssetId: Get<MultiLocation>;
-		type LocationInverter: InvertLocation;
-		type SelfLocationInSibl: Get<MultiLocation>;
-		type AssetTransactor: TransactAsset;
-		type MoonbeamLocation: Get<MultiLocation>;
 		type ExecuteXcmOrigin: EnsureOrigin<
 			<Self as frame_system::Config>::Origin,
 			Success = MultiLocation,
 		>;
+		type LocalAssetId: Get<MultiLocation>;
+		type LocalWeigher: WeightBounds<Self::Call>;
+		type LocationInverter: InvertLocation;
+		type MoonbeamLocation: Get<MultiLocation>;
+		type MoonbeamWeigher: WeightBounds<Self::Call>;
+		type SelfLocationInSibl: Get<MultiLocation>;
+		type WeightInfo: WeightInfo;
 		type XcmExecutor: ExecuteXcm<Self::Call>;
 		type XcmSender: SendXcm;
-		type WeightInfo: WeightInfo;
 	}
 
 	#[pallet::event]
@@ -118,7 +117,7 @@ pub mod pallet {
 			target_location: MultiLocation,
 			local_asset_units_per_second: AssetUnitsPerSecond,
 		) -> DispatchResultWithPostInfo {
-			T::AssetModifierOrigin::ensure_origin(origin)?;
+			T::ConfigModifierOrigin::ensure_origin(origin)?;
 
 			TargetXcmExecConfig::<T>::insert(&target_location, &local_asset_units_per_second);
 
