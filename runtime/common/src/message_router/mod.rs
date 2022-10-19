@@ -101,7 +101,7 @@ pub mod pallet {
 	}
 
 	/// Stores the units per second executed by the target chain for local asset(e.g. CRAB).
-	/// This is used to know how to pay for XCM execution use local asset.
+	/// This is used to know how to pay for XCM remote execution use local asset.
 	/// For example:
 	/// key: {parents: 1, Parachain(2023)}, val: 14719736222326895902025
 	/// represents the units per second of CRAB token on moonriver
