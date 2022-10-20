@@ -279,7 +279,6 @@ pub mod pallet {
 				<MinReservedBurnNonce<T>>::get(),
 			)
 			.map_err(|_| <Error<T>>::EvmEncodeFailed)?;
-
 			let message_nonce =
 				Self::remote_evm_call(spec_version, weight, fee, gas_limit, remote_unlock_input)?;
 			let message_id: BridgeMessageId = (T::MessageLaneId::get(), message_nonce);
@@ -321,12 +320,12 @@ pub mod pallet {
 
 			// verify message
 			let failure_message_id: BridgeMessageId = (T::MessageLaneId::get(), failure_nonce);
-			if let Some((user, amount)) = <TransactionInfos<T>>::take(failure_message_id) {
-				T::RingCurrency::deposit_creating(&user, amount);
+			if let Some((receiver, amount)) = <TransactionInfos<T>>::take(failure_message_id) {
+				T::RingCurrency::deposit_creating(&receiver, amount);
 				Self::deposit_event(Event::TokenIssuedForFailure(
 					T::MessageLaneId::get(),
 					failure_nonce,
-					user,
+					receiver,
 					amount,
 				));
 			} else {
@@ -335,6 +334,36 @@ pub mod pallet {
 
 			Self::prun_message(burn_pruned_messages, min_retain_received_nonce)?;
 
+			Ok(().into())
+		}
+
+		#[pallet::weight(
+			<T as Config>::WeightInfo::handle_issuing_failure_local()
+		)]
+		pub fn handle_issuing_failure_local(
+			origin: OriginFor<T>,
+			failure_nonce: MessageNonce,
+		) -> DispatchResultWithPostInfo {
+			let _ = ensure_signed(origin)?;
+
+			ensure!(
+				failure_nonce < <MinReservedBurnNonce<T>>::get(),
+				Error::<T>::FailureNonceInvalid
+			);
+
+			// verify message
+			let failure_message_id: BridgeMessageId = (T::MessageLaneId::get(), failure_nonce);
+			if let Some((receiver, amount)) = <TransactionInfos<T>>::take(failure_message_id) {
+				T::RingCurrency::deposit_creating(&receiver, amount);
+				Self::deposit_event(Event::TokenIssuedForFailure(
+					T::MessageLaneId::get(),
+					failure_nonce,
+					receiver,
+					amount,
+				));
+			} else {
+				return Err(Error::<T>::FailureInfoNE.into());
+			}
 			Ok(().into())
 		}
 
@@ -466,9 +495,15 @@ pub mod pallet {
 		BackingAccountNone,
 		/// Failure message not exist
 		FailureInfoNE,
+		/// Failure message verify failed
+		FailureNonceInvalid,
+		/// Message has already issued
 		MessageAlreadyIssued,
+		/// the message has not delived
 		MessageNotDelived,
+		/// encode evm method failed
 		EvmEncodeFailed,
+		/// too many nonces received
 		TooManyNonces,
 	}
 
@@ -545,10 +580,9 @@ pub mod pallet {
 			input: Vec<u8>,
 		) -> Result<MessageNonce, DispatchErrorWithPostInfo> {
 			if let Some(backing) = <RemoteBackingAccount<T>>::get() {
+				let ethereum_account = T::IntoEthereumAccount::derive_ethereum_address(backing);
 				let remote_call = evm::MessageEndpoint::encode_recv_message(input)
 					.map_err(|_| <Error<T>>::EvmEncodeFailed)?;
-
-				let ethereum_account = T::IntoEthereumAccount::derive_ethereum_address(backing);
 				let ethereum_transaction = evm::new_ethereum_transaction(
 					T::BridgedSmartChainId::get(),
 					ethereum_account,

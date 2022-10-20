@@ -59,6 +59,20 @@ benchmarks! {
 		TransactionInfos::<T>::insert(message_id, (caller.clone(), value));
 	}:_(RawOrigin::Signed(caller), 1, vec![], 0)
 
+	handle_issuing_failure_local {
+		let remote_backing = build_account::<T::AccountId>(1);
+		let recipient = build_account::<T::AccountId>(2);
+		assert_ok!(<ParaIssuing<T>>::set_remote_backing_account(
+				RawOrigin::Root.into(),
+				remote_backing.clone()
+		));
+		let caller = build_account::<T::AccountId>(2);
+		let message_id = (T::MessageLaneId::get(), 1);
+		let value: RingBalance<T> = Zero::zero();
+		TransactionInfos::<T>::insert(message_id, (caller.clone(), value));
+		<MinReservedBurnNonce<T>>::put(2);
+	}:_(RawOrigin::Signed(caller), 1)
+
 	burn_and_remote_unlock {
 		let remote_backing = build_account::<T::AccountId>(1);
 		assert_ok!(<ParaIssuing<T>>::set_remote_backing_account(
