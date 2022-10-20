@@ -50,6 +50,7 @@ xcm-executor                = { default-features = false, git = "https://github.
 
 [dev-dependencies]
 pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+hex = { version = "0.4.3"}
 
 [features]
 default = ["std"]
