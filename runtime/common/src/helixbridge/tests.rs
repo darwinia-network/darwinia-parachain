@@ -43,6 +43,24 @@ fn issue_from_remote_backing_not_configured() {
 }
 
 #[test]
+fn encode_evm_abi() {
+	let unlock_bytes = evm::ToParachainBacking::encode_unlock_from_remote(
+		H160::from_str("88a39B052d477CfdE47600a7C9950a441Ce61cb4").unwrap(),
+		U256::from(10000000000000000000u128),
+		vec![],
+		1,
+	)
+	.unwrap();
+	assert_eq!(
+            hex::encode(unlock_bytes.clone()),
+            "c1031ea300000000000000000000000088a39b052d477cfde47600a7c9950a441ce61cb40000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000");
+	let recv_bytes = evm::MessageEndpoint::encode_recv_message(unlock_bytes).unwrap();
+	assert_eq!(
+            hex::encode(recv_bytes.clone()),
+            "b953c2e1000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000a4c1031ea300000000000000000000000088a39b052d477cfde47600a7c9950a441ce61cb40000000000000000000000000000000000000000000000008ac7230489e8000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+}
+
+#[test]
 fn issue_from_remote_backing_remote_sender_invalid() {
 	new_test_ext().execute_with(|| {
 		let (recipient, _recipient_vec) = build_account(10);
@@ -348,7 +366,7 @@ fn prun_message() {
 			vec![],
 			0,
 		));
-		// in: 5, 6
+		// in: 6, 7
 		assert_ok!(S2sIssuing::remote_unlock_failure(
 			Origin::signed(build_account(1).0),
 			1,
@@ -371,17 +389,6 @@ fn prun_message() {
 				1,
 				1,
 				1000000,
-				5,
-				1,
-			),
-			<Error<Test>>::MessageAlreadyIssued,
-		);
-		assert_err!(
-			S2sIssuing::remote_unlock_failure(
-				Origin::signed(build_account(1).0),
-				1,
-				1,
-				1000000,
 				6,
 				1,
 			),
@@ -394,6 +401,17 @@ fn prun_message() {
 				1,
 				1000000,
 				7,
+				1,
+			),
+			<Error<Test>>::MessageAlreadyIssued,
+		);
+		assert_err!(
+			S2sIssuing::remote_unlock_failure(
+				Origin::signed(build_account(1).0),
+				1,
+				1,
+				1000000,
+				8,
 				1,
 			),
 			<Error<Test>>::MessageNotDelived,

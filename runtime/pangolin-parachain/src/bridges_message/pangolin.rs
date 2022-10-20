@@ -229,4 +229,4 @@ impl SourceHeaderChain<<Self as ChainWithMessages>::Balance> for Pangolin {
 	}
 }
 
-pub const ETHEREUM_PALLET_INDEX: u8 = 65;
+pub const ETHEREUM_PALLET_INDEX: u8 = 41;

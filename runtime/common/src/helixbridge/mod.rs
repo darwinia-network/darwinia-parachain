@@ -515,7 +515,7 @@ pub mod pallet {
 			<ReceivedNonces<T>>::try_mutate(|nonces| -> DispatchResult {
 				nonces.retain(|&r| r >= min_retain_received_nonce);
 				let message_nonce =
-					T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get());
+					T::MessageNoncer::inbound_latest_received_nonce(T::MessageLaneId::get()) + 1;
 				nonces.try_push(message_nonce).map_err(|_| <Error<T>>::TooManyNonces)?;
 				Ok(())
 			})?;
@@ -545,11 +545,13 @@ pub mod pallet {
 		) -> Result<MessageNonce, DispatchErrorWithPostInfo> {
 			if let Some(backing) = <RemoteBackingAccount<T>>::get() {
 				let ethereum_account = T::IntoEthereumAccount::derive_ethereum_address(backing);
+				let remote_call = evm::MessageEndpoint::encode_recv_message(input)
+					.map_err(|_| <Error<T>>::EvmEncodeFailed)?;
 				let ethereum_transaction = evm::new_ethereum_transaction(
 					T::BridgedSmartChainId::get(),
 					ethereum_account,
 					U256::from(gas_limit),
-					input,
+					remote_call,
 				)?;
 				let payload = T::OutboundPayloadCreator::create(
 					CallOrigin::SourceAccount(Self::pallet_account_id()),
