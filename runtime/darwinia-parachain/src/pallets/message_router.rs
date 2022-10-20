@@ -27,8 +27,7 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type AssetModifierOrigin = EnsureRoot<AccountId>;
-	type AssetTransactor = LocalAssetTransactor;
+	type ConfigModifierOrigin = EnsureRoot<AccountId>;
 	type Event = Event;
 	type ExecuteXcmOrigin = EnsureXcmOrigin<Origin, LocalOriginToLocation>;
 	type LocalAssetId = AnchoringSelfReserve;

@@ -44,26 +44,30 @@ pub mod pallet {
 	use frame_support::{log, weights::constants::WEIGHT_PER_SECOND};
 	use frame_system::pallet_prelude::*;
 	use sp_std::{boxed::Box, vec};
-	use xcm_executor::traits::{InvertLocation, TransactAsset};
+	use xcm_executor::traits::InvertLocation;
 
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
+		type ConfigModifierOrigin: EnsureOrigin<Self::Origin>;
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
-		type AssetModifierOrigin: EnsureOrigin<Self::Origin>;
-		type MoonbeamWeigher: WeightBounds<Self::Call>;
-		type LocalWeigher: WeightBounds<Self::Call>;
-		type LocalAssetId: Get<MultiLocation>;
-		type LocationInverter: InvertLocation;
-		type SelfLocationInSibl: Get<MultiLocation>;
-		type AssetTransactor: TransactAsset;
-		type MoonbeamLocation: Get<MultiLocation>;
+		/// Required origin for executing XCM messages.
 		type ExecuteXcmOrigin: EnsureOrigin<
 			<Self as frame_system::Config>::Origin,
 			Success = MultiLocation,
 		>;
+		type LocalAssetId: Get<MultiLocation>;
+		/// Used to calculate the weight required for the local execution of xcm.
+		type LocalWeigher: WeightBounds<Self::Call>;
+		/// Means of inverting a location.
+		type LocationInverter: InvertLocation;
+		type MoonbeamLocation: Get<MultiLocation>;
+		/// Used to calculate the weight required for the moonbeam execution of xcm.
+		type MoonbeamWeigher: WeightBounds<Self::Call>;
+		/// This chain location relative to sibling chain
+		type SelfLocationInSibl: Get<MultiLocation>;
+		type WeightInfo: WeightInfo;
 		type XcmExecutor: ExecuteXcm<Self::Call>;
 		type XcmSender: SendXcm;
-		type WeightInfo: WeightInfo;
 	}
 
 	#[pallet::event]
@@ -74,6 +78,8 @@ pub mod pallet {
 			target_location: MultiLocation,
 			local_asset_units_per_second: AssetUnitsPerSecond,
 		},
+		/// Deposited when successfully routed.
+		/// (send origin, route target, remote xcm, required weight, tokens used)
 		ForwardTo(MultiLocation, Target, Xcm<()>, Weight, u128),
 	}
 
@@ -95,7 +101,7 @@ pub mod pallet {
 	}
 
 	/// Stores the units per second executed by the target chain for local asset(e.g. CRAB).
-	/// This is used to know how to charge for XCM execution in local asset.
+	/// This is used to know how to pay for XCM execution use local asset.
 	/// For example:
 	/// key: {parents: 1, Parachain(2023)}, val: 14719736222326895902025
 	/// represents the units per second of CRAB token on moonriver
@@ -110,6 +116,7 @@ pub mod pallet {
 
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
+		/// Update the units per second of local asset used in target chain.
 		#[pallet::weight(
 			<T as Config>::WeightInfo::set_target_xcm_exec_config()
 		)]
@@ -118,7 +125,7 @@ pub mod pallet {
 			target_location: MultiLocation,
 			local_asset_units_per_second: AssetUnitsPerSecond,
 		) -> DispatchResultWithPostInfo {
-			T::AssetModifierOrigin::ensure_origin(origin)?;
+			T::ConfigModifierOrigin::ensure_origin(origin)?;
 
 			TargetXcmExecConfig::<T>::insert(&target_location, &local_asset_units_per_second);
 
@@ -130,6 +137,11 @@ pub mod pallet {
 			Ok(().into())
 		}
 
+		/// Deliver received LCMP messages to other parachains.
+		/// 1. Calculate the fee for xcm remote execution
+		/// 2. Transfer xcm fee to target sovereign account
+		/// 3. Assemble xcm that needs to be executed remotely
+		/// 4. Send xcm to target chain
 		#[pallet::weight(
 			<T as Config>::WeightInfo::forward()
 		)]
@@ -141,7 +153,7 @@ pub mod pallet {
 			// MultiLocation origin used to execute xcm
 			let origin_location = T::ExecuteXcmOrigin::ensure_origin(origin.clone())?;
 			let account_id = ensure_signed(origin)?;
-			// u8 account used in DescendOrigin instruction
+			// U8 account used in DescendOrigin instruction
 			let account_u8 = <[u8; 32]>::try_from(account_id.encode())
 				.map_err(|_| Error::<T>::AccountIdConversionFailed)?;
 
@@ -222,7 +234,7 @@ pub mod pallet {
 	}
 
 	impl<T: Config> Pallet<T> {
-		/// Extend xcm to pay for remote execution
+		/// Extend xcm for remote execution
 		fn extend_remote_xcm(
 			account_u8: [u8; 32],
 			xcm: Xcm<<T as frame_system::Config>::Call>,
@@ -231,6 +243,7 @@ pub mod pallet {
 			let mut extend_xcm = Xcm(vec![
 				ReserveAssetDeposited(fee.clone().into()),
 				BuyExecution { fees: fee, weight_limit: WeightLimit::Unlimited },
+				// Deposit surplus tokens back into our sovereign account
 				SetAppendix(Xcm(vec![
 					RefundSurplus,
 					DepositAsset {
