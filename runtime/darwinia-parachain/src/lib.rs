@@ -133,30 +133,28 @@ frame_support::construct_runtime! {
 		NodeBlock = OpaqueBlock,
 		UncheckedExtrinsic = UncheckedExtrinsic,
 	{
-		// System support stuff.
 		System: frame_system::{Pallet, Call, Storage, Config, Event<T>} = 0,
 		ParachainSystem: cumulus_pallet_parachain_system::{Pallet, Call, Inherent, Storage, Config, Event<T>, ValidateUnsigned} = 1,
 		Timestamp: pallet_timestamp::{Pallet, Call, Inherent, Storage} = 3,
 		ParachainInfo: parachain_info::{Pallet, Storage, Config} = 4,
 
-		// Monetary stuff.
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>} = 5,
 		TransactionPayment: pallet_transaction_payment::{Pallet, Storage, Event<T>} = 6,
 
-		// Collator support. the order of these 4 are important and shall not change.
+		// Collator things. the order of these 4 are important and shall not change.
 		Authorship: pallet_authorship::{Pallet, Call, Storage} = 7,
 		CollatorSelection: pallet_collator_selection::{Pallet, Call, Storage, Event<T>, Config<T>} = 8,
 		Session: pallet_session::{Pallet, Call, Storage, Event, Config<T>} = 9,
 		Aura: pallet_aura::{Pallet, Storage, Config<T>} = 10,
 		AuraExt: cumulus_pallet_aura_ext::{Pallet, Storage, Config} = 11,
+		RemoteGovernance: dp_common_runtime::remote_governance::{Pallet, Call, Storage, Event<T>} = 20,
 
-		// XCM helpers.
+		// XCM things.
 		XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Call, Storage, Event<T>} = 12,
 		PolkadotXcm: pallet_xcm::{Pallet, Call, Storage, Event<T>, Origin, Config} = 13,
 		CumulusXcm: cumulus_pallet_xcm::{Pallet, Event<T>, Origin} = 14,
 		DmpQueue: cumulus_pallet_dmp_queue::{Pallet, Call, Storage, Event<T>} = 15,
 
-		// Handy utilities.
 		Utility: pallet_utility::{Pallet, Call, Event} = 16,
 		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
 		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,

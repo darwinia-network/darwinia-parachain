@@ -12,7 +12,7 @@ version     = "5.3.3"
 
 [dependencies]
 # crates.io
-array-bytes = { version = "3.0", optional = true }
+array-bytes = { version = "3.0" }
 codec       = { package = "parity-scale-codec", version = "3.1", default-features = false, features = ["derive"] }
 scale-info  = { version = "2.1", default-features = false, features = ["derive"] }
 smallvec    = { version = "1.9" }
@@ -30,6 +30,8 @@ parachain-info                  = { default-features = false, git = "https://git
 # darwinia
 dc-primitives     = { default-features = false, path = "../../primitives" }
 dp-common-runtime = { default-features = false, path = "../common" }
+# darwinia-messages-substrate
+bp-darwinia = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 # polkadot
 pallet-xcm              = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
 pallet-xcm-benchmarks   = { optional = true, default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
@@ -87,8 +89,9 @@ std = [
 	"cumulus-primitives-utility/std",
 	"pallet-collator-selection/std",
 	"parachain-info/std",
-	"dp-common-runtime/std",
 	"dc-primitives/std",
+	"dp-common-runtime/std",
+	"bp-darwinia/std",
 	"pallet-xcm/std",
 	"polkadot-parachain/std",
 	"polkadot-runtime-common/std",
@@ -124,8 +127,6 @@ std = [
 ]
 
 runtime-benchmarks = [
-	# crates.io
-	"array-bytes",
 	# cumulus
 	"cumulus-pallet-xcmp-queue/runtime-benchmarks",
 	# polkadot

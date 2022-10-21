@@ -31,6 +31,9 @@ pub use aura::*;
 pub mod aura_ext;
 pub use aura_ext::*;
 
+pub mod remote_governance;
+pub use remote_governance::*;
+
 pub mod xcmp_queue;
 pub use xcmp_queue::*;
 
