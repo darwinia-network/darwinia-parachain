@@ -254,6 +254,65 @@ fn handle_issuing_failure_from_remote_failed() {
 			<Error<Test>>::FailureInfoNE,
 		);
 		MockS2sMessageSender::increase_inbound_nonce();
+		// test local refund
+		assert_ok!(S2sIssuing::burn_and_remote_unlock(
+			Origin::signed(build_account(1).0),
+			1,
+			1,
+			1000000,
+			10,
+			1,
+			H160::from_str("1234500000000000000000000000000000000000").unwrap(),
+		));
+		MockS2sMessageSender::increase_outbound_nonce();
+		assert_eq!(Balances::free_balance(build_account(1).0), 87);
+		assert_eq!(Balances::free_balance(S2sIssuing::pallet_account_id()), 0);
+		assert_ok!(S2sIssuing::burn_and_remote_unlock(
+			Origin::signed(build_account(1).0),
+			1,
+			1,
+			1000000,
+			10,
+			1,
+			H160::from_str("1234500000000000000000000000000000000000").unwrap(),
+		));
+		MockS2sMessageSender::increase_outbound_nonce();
+		assert_eq!(Balances::free_balance(build_account(1).0), 76);
+		assert_eq!(Balances::free_balance(S2sIssuing::pallet_account_id()), 0);
+		assert_ok!(S2sIssuing::burn_and_remote_unlock(
+			Origin::signed(build_account(1).0),
+			1,
+			1,
+			1000000,
+			10,
+			1,
+			H160::from_str("1234500000000000000000000000000000000000").unwrap(),
+		));
+		MockS2sMessageSender::increase_outbound_nonce();
+		assert_eq!(Balances::free_balance(build_account(1).0), 65);
+		assert_eq!(Balances::free_balance(S2sIssuing::pallet_account_id()), 0);
+		assert_ok!(S2sIssuing::issue_from_remote(
+			Origin::signed(drived_remote_backing_account),
+			100u64,
+			build_account(1).0,
+			vec![4],
+			0,
+		));
+		MockS2sMessageSender::increase_inbound_nonce();
+		assert_eq!(Balances::free_balance(build_account(1).0), 165);
+		assert_eq!(Balances::free_balance(S2sIssuing::pallet_account_id()), 0);
+		// failed
+		assert_ok!(S2sIssuing::handle_issuing_failure_local(Origin::signed(build_account(1).0), 3));
+		assert_err!(
+			S2sIssuing::handle_issuing_failure_local(Origin::signed(build_account(1).0), 4),
+			<Error<Test>>::FailureInfoNE
+		);
+		assert_err!(
+			S2sIssuing::handle_issuing_failure_local(Origin::signed(build_account(1).0), 5),
+			<Error<Test>>::FailureNonceInvalid
+		);
+		assert_eq!(Balances::free_balance(build_account(1).0), 175);
+		assert_eq!(Balances::free_balance(S2sIssuing::pallet_account_id()), 0);
 	})
 }
 
