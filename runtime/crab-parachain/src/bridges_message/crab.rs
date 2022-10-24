@@ -2,11 +2,8 @@
 use codec::{Decode, Encode};
 use scale_info::TypeInfo;
 // --- paritytech ---
-use frame_support::{
-	weights::{DispatchClass, Weight},
-	RuntimeDebug,
-};
-use sp_runtime::{traits::Zero, FixedPointNumber, FixedU128};
+use frame_support::{weights::Weight, RuntimeDebug};
+use sp_runtime::{FixedPointNumber, FixedU128};
 use sp_std::ops::RangeInclusive;
 // --- darwinia-network ---
 use crate::*;
@@ -14,10 +11,9 @@ use bp_messages::{source_chain::*, target_chain::*, *};
 use bp_runtime::*;
 use bridge_runtime_common::{
 	lanes::*,
-	messages::{self, source::*, target::*, BalanceOf, *},
+	messages::{source::*, target::*, *},
 };
 use dp_common_runtime::FromThisChainMessageVerifier;
-use pallet_bridge_messages::EXPECTED_DEFAULT_MESSAGE_LENGTH;
 
 /// Message delivery proof for CrabParachain -> Crab messages.
 pub type ToCrabMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_crab::Hash>;
@@ -76,13 +72,6 @@ impl MessageBridge for WithCrabMessageBridge {
 		bp_crab_parachain::WITH_CRAB_PARACHAIN_MESSAGES_PALLET_NAME;
 	const RELAYER_FEE_PERCENT: u32 = 10;
 	const THIS_CHAIN_ID: ChainId = CRAB_PARACHAIN_CHAIN_ID;
-
-	fn bridged_balance_to_this_balance(
-		bridged_balance: BalanceOf<Self::BridgedChain>,
-		_bridged_to_this_conversion_rate_override: Option<FixedU128>,
-	) -> BalanceOf<Self::ThisChain> {
-		CrabToCrabParachainConversionRate::get().saturating_mul_int(bridged_balance)
-	}
 }
 
 #[derive(Clone, Copy, RuntimeDebug)]
@@ -106,33 +95,6 @@ impl ThisChainWithMessages for CrabParachain {
 	fn maximal_pending_messages_at_outbound_lane() -> MessageNonce {
 		MessageNonce::MAX
 	}
-
-	fn estimate_delivery_confirmation_transaction() -> MessageTransaction<Weight> {
-		let inbound_data_size = InboundLaneData::<Self::AccountId>::encoded_size_hint(
-			bp_crab_parachain::MAXIMAL_ENCODED_ACCOUNT_ID_SIZE,
-			1,
-			1,
-		)
-		.unwrap_or(u32::MAX);
-
-		MessageTransaction {
-			dispatch_weight: bp_crab_parachain::MAX_SINGLE_MESSAGE_DELIVERY_CONFIRMATION_TX_WEIGHT,
-			size: inbound_data_size
-				.saturating_add(bp_crab_parachain::EXTRA_STORAGE_PROOF_SIZE)
-				.saturating_add(bp_crab_parachain::TX_EXTRA_BYTES),
-		}
-	}
-
-	fn transaction_payment(transaction: MessageTransaction<Weight>) -> Balance {
-		// in our testnets, both per-byte fee and weight-to-fee are 1:1
-		messages::transaction_payment(
-			RuntimeBlockWeights::get().get(DispatchClass::Normal).base_extrinsic,
-			1,
-			FixedU128::zero(),
-			|weight| weight as _,
-			transaction,
-		)
-	}
 }
 
 #[derive(Clone, Copy, RuntimeDebug)]
@@ -154,42 +116,6 @@ impl BridgedChainWithMessages for Crab {
 		let upper_limit =
 			target::maximal_incoming_message_dispatch_weight(bp_crab::Crab::max_extrinsic_weight());
 		0..=upper_limit
-	}
-
-	fn estimate_delivery_transaction(
-		message_payload: &[u8],
-		include_pay_dispatch_fee_cost: bool,
-		message_dispatch_weight: Weight,
-	) -> MessageTransaction<Weight> {
-		let message_payload_len = u32::try_from(message_payload.len()).unwrap_or(u32::MAX);
-		let extra_bytes_in_payload = Weight::from(message_payload_len)
-			.saturating_sub(EXPECTED_DEFAULT_MESSAGE_LENGTH.into());
-
-		MessageTransaction {
-			dispatch_weight: extra_bytes_in_payload
-				.saturating_mul(bp_crab::ADDITIONAL_MESSAGE_BYTE_DELIVERY_WEIGHT)
-				.saturating_add(bp_crab::DEFAULT_MESSAGE_DELIVERY_TX_WEIGHT)
-				.saturating_add(message_dispatch_weight)
-				.saturating_sub(if include_pay_dispatch_fee_cost {
-					0
-				} else {
-					bp_crab::PAY_INBOUND_DISPATCH_FEE_WEIGHT
-				}),
-			size: message_payload_len
-				.saturating_add(bp_crab::EXTRA_STORAGE_PROOF_SIZE)
-				.saturating_add(bp_crab::TX_EXTRA_BYTES),
-		}
-	}
-
-	fn transaction_payment(transaction: MessageTransaction<Weight>) -> Self::Balance {
-		// in our testnets, both per-byte fee and weight-to-fee are 1:1
-		messages::transaction_payment(
-			bp_crab::RuntimeBlockWeights::get().get(DispatchClass::Normal).base_extrinsic,
-			1,
-			FixedU128::zero(),
-			|weight| weight as _,
-			transaction,
-		)
 	}
 }
 impl TargetHeaderChain<ToCrabMessagePayload, <Self as ChainWithMessages>::AccountId> for Crab {

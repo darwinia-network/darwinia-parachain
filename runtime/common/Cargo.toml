@@ -17,35 +17,34 @@ ethereum       = { version = "0.12", default-features = false, features = ["with
 ethereum-types = { version = "0.13.1", default-features = false, features = ["rlp", "codec"] }
 ethabi         = { version = "17.0", default-features = false }
 scale-info     = { version = "2.0", default-features = false, features = ["derive"] }
-smallvec       = { version = "1.8" }
+smallvec       = { version = "1.9" }
 # cumulus
-pallet-collator-selection = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.26" }
+pallet-collator-selection = { default-features = false, git = "https://github.com/paritytech/cumulus", branch = "polkadot-v0.9.27" }
 # darwinia-messages-substrate
-bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.26" }
-bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.26" }
-bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.26" }
-bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.26" }
-pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.26" }
-pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.26" }
+bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
+bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
+bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
+bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
+pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
+pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 # darwinia-parachain
 dc-primitives = { default-features = false, path = "../../primitives" }
 # substrate
-frame-benchmarking         = { default-features = false, optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
-frame-support              = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
-frame-system               = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
-pallet-balances            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
-pallet-transaction-payment = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
-sp-core                    = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
-sp-runtime                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
-sp-std                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
+frame-benchmarking         = { default-features = false, optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+frame-support              = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+frame-system               = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+pallet-balances            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+pallet-transaction-payment = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+sp-core                    = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+sp-runtime                 = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+sp-std                     = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
 # polkadot
-xcm          = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.26" }
-xcm-executor = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.26" }
+xcm          = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
+xcm-executor = { default-features = false, git = "https://github.com/paritytech/polkadot", branch = "release-v0.9.27" }
 
 [dev-dependencies]
-pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
-sp-io            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.26" }
-hex              = { version = "0.4.3"}
+pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+sp-io            = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
 
 [features]
 default = ["std"]

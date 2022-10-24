@@ -64,7 +64,7 @@ use sc_consensus::{
 use sc_executor::WasmExecutor;
 use sc_network::NetworkService;
 use sc_service::{
-	error::Result, ChainSpec, Configuration, PartialComponents, Role, TFullBackend, TFullClient,
+	error::Result, ChainSpec, Configuration, PartialComponents, TFullBackend, TFullClient,
 	TaskManager,
 };
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
@@ -354,10 +354,6 @@ where
 	) -> Result<Box<dyn ParachainConsensus<Block>>>,
 	StateBackend: sp_api::StateBackend<BlakeTwo256>,
 {
-	if matches!(parachain_config.role, Role::Light) {
-		return Err("Light client not supported!".into());
-	}
-
 	let parachain_config = prepare_node_config(parachain_config);
 	let params = new_partial::<RuntimeApi, BIQ>(&parachain_config, build_import_queue)?;
 	let (mut telemetry, telemetry_worker_handle) = params.other;
