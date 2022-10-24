@@ -35,6 +35,7 @@ pub type AssetUnitsPerSecond = u128;
 #[derive(Clone, Encode, Decode, TypeInfo, PartialEq, Debug)]
 pub enum Target {
 	Moonbeam,
+	Astar,
 }
 
 #[frame_support::pallet]
@@ -63,6 +64,9 @@ pub mod pallet {
 		type MoonbeamLocation: Get<MultiLocation>;
 		/// Used to calculate the weight required for the moonbeam execution of xcm.
 		type MoonbeamWeigher: WeightBounds<Self::Call>;
+		type AstarLocation: Get<MultiLocation>;
+		/// Used to calculate the weight required for the moonbeam execution of xcm.
+		type AstarWeigher: WeightBounds<Self::Call>;
 		/// This chain location relative to sibling chain
 		type SelfLocationInSibl: Get<MultiLocation>;
 		type WeightInfo: WeightInfo;
@@ -176,6 +180,17 @@ pub mod pallet {
 					))
 					.map_err(|()| Error::<T>::UnweighableMessage)?;
 				},
+				Target::Astar => {
+					local_asset_units_per_second =
+						TargetXcmExecConfig::<T>::get(T::AstarLocation::get())
+							.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
+					remote_weight = T::AstarWeigher::weight(&mut Self::extend_remote_xcm(
+						raw_account.clone(),
+						remote_xcm.clone(),
+						MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(0) },
+					))
+					.map_err(|()| Error::<T>::UnweighableMessage)?;
+				},
 			}
 			let amount = local_asset_units_per_second.saturating_mul(remote_weight as u128)
 				/ (WEIGHT_PER_SECOND as u128);
@@ -189,6 +204,12 @@ pub mod pallet {
 					local_xcm = Xcm(vec![TransferAsset {
 						assets: remote_xcm_fee.clone().into(),
 						beneficiary: T::MoonbeamLocation::get(),
+					}]);
+				},
+				Target::Astar => {
+					local_xcm = Xcm(vec![TransferAsset {
+						assets: remote_xcm_fee.clone().into(),
+						beneficiary: T::AstarLocation::get(),
 					}]);
 				},
 			}
@@ -214,10 +235,26 @@ pub mod pallet {
 					remote_xcm_fee_anchor_dest
 						.reanchor(&T::MoonbeamLocation::get(), &ancestry)
 						.map_err(|()| Error::<T>::MultiLocationFull)?;
-					remote_xcm =
-						Self::extend_remote_xcm(raw_account, remote_xcm, remote_xcm_fee_anchor_dest);
-					// Send remote xcm to moonbeam
+					remote_xcm = Self::extend_remote_xcm(
+						raw_account,
+						remote_xcm,
+						remote_xcm_fee_anchor_dest,
+					);
+					// Send remote xcm to target
 					T::XcmSender::send_xcm(T::MoonbeamLocation::get(), remote_xcm.clone().into())
+						.map_err(|_| Error::<T>::XcmSendFailed)?;
+				},
+				Target::Astar => {
+					remote_xcm_fee_anchor_dest
+						.reanchor(&T::AstarLocation::get(), &ancestry)
+						.map_err(|()| Error::<T>::MultiLocationFull)?;
+					remote_xcm = Self::extend_remote_xcm(
+						raw_account,
+						remote_xcm,
+						remote_xcm_fee_anchor_dest,
+					);
+					// Send remote xcm to target
+					T::XcmSender::send_xcm(T::AstarLocation::get(), remote_xcm.clone().into())
 						.map_err(|_| Error::<T>::XcmSendFailed)?;
 				},
 			}
