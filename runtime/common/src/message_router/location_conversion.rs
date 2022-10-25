@@ -48,7 +48,7 @@ impl<AccountId: From<[u8; 32]> + Into<[u8; 32]> + Clone> Convert<MultiLocation, 
 	}
 
 	fn reverse(who: AccountId) -> Result<MultiLocation, AccountId> {
-		Ok(AccountId32 { id: who.into(), network: Any }.into())
+		Err(who)
 	}
 }
 
