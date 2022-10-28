@@ -168,5 +168,4 @@ impl SourceHeaderChain<<Self as ChainWithMessages>::Balance> for Pangolin {
 	}
 }
 
-/// The s2s backing pallet index in the pangoro chain runtime.
-pub const PANGOLIN_S2S_BACKING_PALLET_INDEX: u8 = 65;
+pub const ETHEREUM_PALLET_INDEX: u8 = 41;

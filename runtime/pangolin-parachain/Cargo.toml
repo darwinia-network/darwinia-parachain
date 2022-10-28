@@ -181,4 +181,5 @@ runtime-benchmarks = [
 	"pallet-proxy/runtime-benchmarks",
 	"pallet-session-benchmarking",
 	"sp-runtime/runtime-benchmarks",
+	"dp-common-runtime/runtime-benchmarks",
 ]
