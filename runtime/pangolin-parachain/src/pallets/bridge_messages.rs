@@ -1,7 +1,7 @@
 pub use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 
 // --- darwinia-network ---
-use crate::{weights::pallet_bridge_messages::WeightInfo, *};
+use crate::*;
 use bp_messages::{source_chain::SenderOrigin, MessageNonce};
 use bp_runtime::{ChainId, PANGOLIN_CHAIN_ID};
 use pallet_bridge_messages::Config;
@@ -51,5 +51,5 @@ impl Config<WithPangolinMessages> for Runtime {
 	type Parameter = bm_pangolin::PangolinParachainToPangolinParameter;
 	type SourceHeaderChain = bm_pangolin::Pangolin;
 	type TargetHeaderChain = bm_pangolin::Pangolin;
-	type WeightInfo = WeightInfo<Runtime>;
+	type WeightInfo = ();
 }

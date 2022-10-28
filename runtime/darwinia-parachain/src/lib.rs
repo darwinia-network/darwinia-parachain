@@ -161,6 +161,8 @@ frame_support::construct_runtime! {
 		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
 		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
+
+		MessageRouter: dp_common_runtime::message_router::{Pallet, Call, Storage, Event<T>} = 26,
 	}
 }
 

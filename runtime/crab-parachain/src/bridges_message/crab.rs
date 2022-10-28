@@ -13,7 +13,6 @@ use bridge_runtime_common::{
 	lanes::*,
 	messages::{source::*, target::*, *},
 };
-use dp_common_runtime::FromThisChainMessageVerifier;
 
 /// Message delivery proof for CrabParachain -> Crab messages.
 pub type ToCrabMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_crab::Hash>;
