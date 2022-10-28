@@ -13,7 +13,6 @@ use bridge_runtime_common::{
 	lanes::PANGOLIN_PANGOLIN_PARACHAIN_LANE,
 	messages::{source::*, target::*, *},
 };
-use dp_common_runtime::FromThisChainMessageVerifier;
 
 /// Message delivery proof for PangolinParachain -> Pangolin messages.
 pub type ToPangolinMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_pangolin::Hash>;
