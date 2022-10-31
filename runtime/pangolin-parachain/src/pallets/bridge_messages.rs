@@ -11,11 +11,8 @@ use pallet_fee_market::s2s::{
 
 impl SenderOrigin<AccountId> for Origin {
 	fn linked_account(&self) -> Option<AccountId> {
-		match self.caller {
-			OriginCaller::system(frame_system::RawOrigin::Signed(ref submitter)) =>
-				Some(submitter.clone()),
-			_ => None,
-		}
+		// XCM deals wit fees in our deployments
+		None
 	}
 }
 

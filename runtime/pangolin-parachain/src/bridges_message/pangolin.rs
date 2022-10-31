@@ -23,18 +23,28 @@ pub type FromPangolinMessagesProof = FromBridgedChainMessagesProof<bp_pangolin::
 /// Message payload for PangolinParachain -> Pangolin messages.
 pub type ToPangolinMessagePayload = FromThisChainMessagePayload;
 /// Message payload for Pangolin -> PangolinParachain messages.
-pub type FromPangolinMessagePayload = FromBridgedChainMessagePayload;
+pub type FromPangolinMessagePayload = FromBridgedChainMessagePayload<Call>;
 
 /// Message verifier for PangolinParachain -> Pangolin messages.
 pub type ToPangolinMessageVerifier<R> =
 	FromThisChainMessageVerifier<WithPangolinMessageBridge, R, WithPangolinFeeMarket>;
 
 /// Call-dispatch based message dispatch for Pangolin -> PangolinParachain messages.
-pub type FromPangolinMessageDispatch =
-	FromBridgedChainMessageDispatch<WithPangolinMessageBridge, Runtime, Ring, WithPangolinDispatch>;
+pub type FromPangolinMessageDispatch = FromBridgedChainMessageDispatch<
+	WithPangolinMessageBridge,
+	xcm_executor::XcmExecutor<crate::polkadot_xcm::XcmConfig>,
+	crate::polkadot_xcm::XcmWeigher,
+	// 2 XCM instructions is for simple `Trap(42)` program, coming through bridge
+	// (it is prepended with `UniversalOrigin` instruction)
+	frame_support::traits::ConstU64<BASE_XCM_WEIGHT_TWICE>,
+>;
 
 pub const INITIAL_PANGOLIN_TO_PANGOLIN_PARACHAIN_CONVERSION_RATE: FixedU128 =
 	FixedU128::from_inner(FixedU128::DIV);
+/// Weight of 2 XCM instructions is for simple `Trap(42)` program, coming through bridge
+/// (it is prepended with `UniversalOrigin` instruction). It is used just for simplest manual
+/// tests, confirming that we don't break encoding somewhere between.
+pub const BASE_XCM_WEIGHT_TWICE: Weight = 2 * crate::xcm_config::BASE_XCM_WEIGHT;
 
 frame_support::parameter_types! {
 	/// PangolinParachain to Pangolin conversion rate. Initially we trate both tokens as equal.
@@ -85,8 +95,24 @@ impl ThisChainWithMessages for PangolinParachain {
 	type Call = Call;
 	type Origin = Origin;
 
-	fn is_message_accepted(_send_origin: &Self::Origin, lane: &LaneId) -> bool {
-		*lane == [0, 0, 0, 0] || *lane == [0, 0, 0, 1] || *lane == PANGOLIN_PANGOLIN_PARACHAIN_LANE
+	fn is_message_accepted(send_origin: &Self::Origin, lane: &LaneId) -> bool {
+		let here_location =
+			xcm::v3::MultiLocation::from(crate::xcm_config::UniversalLocation::get());
+		match send_origin.caller {
+			OriginCaller::PolkadotXcm(pallet_xcm::Origin::Xcm(ref location))
+			if *location == here_location =>
+				{
+					log::trace!(target: "runtime::bridge", "Verifying message sent using XCM pallet");
+				},
+			_ => {
+				// keep in mind that in this case all messages are free (in term of fees)
+				// => it's just to keep testing bridge on our test deployments until we'll have a
+				// better option
+				log::trace!(target: "runtime::bridge", "Verifying message sent using messages pallet");
+			},
+		}
+
+		*lane == [0, 0, 0, 0] || *lane == [0, 0, 0, 1]
 	}
 
 	fn maximal_pending_messages_at_outbound_lane() -> MessageNonce {
@@ -150,3 +176,60 @@ impl SourceHeaderChain<<Self as ChainWithMessages>::Balance> for Pangolin {
 
 /// The s2s backing pallet index in the pangoro chain runtime.
 pub const PANGOLIN_S2S_BACKING_PALLET_INDEX: u8 = 65;
+
+/// With-pangolin bridge
+pub struct ToPangolinBridge<MB>(PhantomData<MB>);
+
+impl<MB: MessagesBridge<Origin, AccountId, Balance, FromThisChainMessagePayload>> SendXcm
+for ToPangolinBridge<MB>
+{
+	type Ticket = (Balance, FromThisChainMessagePayload);
+
+	fn validate(
+		dest: &mut Option<MultiLocation>,
+		msg: &mut Option<Xcm<()>>,
+	) -> SendResult<Self::Ticket> {
+		let d = dest.take().ok_or(SendError::MissingArgument)?;
+		if !matches!(d, MultiLocation { parents: 1, interior: X1(GlobalConsensus(r)) } if r == PangolinNetwork::get())
+		{
+			*dest = Some(d);
+			return Err(SendError::NotApplicable)
+		};
+
+		let dest: InteriorMultiLocation = PangolinNetwork::get().into();
+		let here = UniversalLocation::get();
+		let route = dest.relative_to(&here);
+		let msg = (route, msg.take().unwrap()).encode();
+
+		let fee = estimate_message_dispatch_and_delivery_fee::<WithPangolinMessageBridge>(
+			&msg,
+			WithPangolinMessageBridge::RELAYER_FEE_PERCENT,
+			None,
+		)
+			.map_err(SendError::Transport)?;
+		let fee_assets = MultiAssets::from((Here, fee));
+
+		Ok(((fee, msg), fee_assets))
+	}
+
+	fn deliver(ticket: Self::Ticket) -> Result<XcmHash, SendError> {
+		let lane = [0, 0, 0, 0];
+		let (fee, msg) = ticket;
+		let result = MB::send_message(
+			pallet_xcm::Origin::from(MultiLocation::from(UniversalLocation::get())).into(),
+			lane,
+			msg,
+			fee,
+		);
+		result
+			.map(|artifacts| {
+				let hash = (lane, artifacts.nonce).using_encoded(sp_io::hashing::blake2_256);
+				log::debug!(target: "runtime::bridge", "Sent XCM message {:?}/{} to Pangolin parachain: {:?}", lane, artifacts.nonce, hash);
+				hash
+			})
+			.map_err(|e| {
+				log::debug!(target: "runtime::bridge", "Failed to send XCM message over lane {:?} to Pangolin Parachain: {:?}", lane, e);
+				SendError::Transport("Bridge has rejected the message")
+			})
+	}
+}

@@ -41,6 +41,8 @@ pub type XcmRouter = (
 	ParentAsUmp<ParachainSystem, PolkadotXcm>,
 	// ..and XCMP to communicate with the sibling chains.
 	XcmpQueue,
+	// Router to send message to Crab
+	ToCrabBridge<BridgeCrabMessages>,
 );
 
 pub type Barrier = DenyThenTry<

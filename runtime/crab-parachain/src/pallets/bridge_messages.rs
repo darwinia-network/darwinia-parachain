@@ -11,11 +11,8 @@ use pallet_fee_market::s2s::{
 
 impl SenderOrigin<AccountId> for Origin {
 	fn linked_account(&self) -> Option<AccountId> {
-		match self.caller {
-			OriginCaller::system(frame_system::RawOrigin::Signed(ref submitter)) =>
-				Some(submitter.clone()),
-			_ => None,
-		}
+		// XCM deals wit fees in our deployments
+		None
 	}
 }
 
@@ -54,3 +51,10 @@ impl Config<WithCrabMessages> for Runtime {
 	type TargetHeaderChain = bm_crab::Crab;
 	type WeightInfo = ();
 }
+
+/// The XCM router. When we want to send an XCM message, we use this type. It amalgamates all of our
+/// individual routers.
+pub type XcmRouter = (
+	// Router to send message to Crab
+	ToCrabBridge<BridgeCrabMessages>,
+);

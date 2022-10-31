@@ -41,6 +41,8 @@ pub type XcmRouter = (
 	ParentAsUmp<ParachainSystem, PolkadotXcm>,
 	// ..and XCMP to communicate with the sibling chains.
 	XcmpQueue,
+	// Router to send message to Pangolin
+	ToPangolinBridge<BridgePangolinMessages>,
 );
 
 pub type Barrier = DenyThenTry<

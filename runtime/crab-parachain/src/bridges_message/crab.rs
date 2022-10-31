@@ -23,18 +23,28 @@ pub type FromCrabMessagesProof = FromBridgedChainMessagesProof<bp_crab::Hash>;
 /// Message payload for CrabParachain -> Crab messages.
 pub type ToCrabMessagePayload = FromThisChainMessagePayload;
 /// Message payload for Crab -> CrabParachain messages.
-pub type FromCrabMessagePayload = FromBridgedChainMessagePayload;
+pub type FromCrabMessagePayload = FromBridgedChainMessagePayload<Call>;
 
 /// Message verifier for CrabParachain -> Crab messages.
 pub type ToCrabMessageVerifier<R> =
 	FromThisChainMessageVerifier<WithCrabMessageBridge, R, WithCrabFeeMarket>;
 
 /// Call-dispatch based message dispatch for Crab -> CrabParachain messages.
-pub type FromCrabMessageDispatch =
-	FromBridgedChainMessageDispatch<WithCrabMessageBridge, Runtime, Ring, WithCrabDispatch>;
+pub type FromCrabMessageDispatch = FromBridgedChainMessageDispatch<
+	WithCrabMessageBridge,
+	xcm_executor::XcmExecutor<crate::polkadot_xcm::XcmConfig>,
+	crate::polkadot_xcm::XcmWeigher,
+	// 2 XCM instructions is for simple `Trap(42)` program, coming through bridge
+	// (it is prepended with `UniversalOrigin` instruction)
+	frame_support::traits::ConstU64<BASE_XCM_WEIGHT_TWICE>,
+>;
 
 pub const INITIAL_CRAB_TO_CRAB_PARACHAIN_CONVERSION_RATE: FixedU128 =
 	FixedU128::from_inner(FixedU128::DIV);
+/// Weight of 2 XCM instructions is for simple `Trap(42)` program, coming through bridge
+/// (it is prepended with `UniversalOrigin` instruction). It is used just for simplest manual
+/// tests, confirming that we don't break encoding somewhere between.
+pub const BASE_XCM_WEIGHT_TWICE: Weight = 2 * crate::xcm_config::BASE_XCM_WEIGHT;
 
 frame_support::parameter_types! {
 	/// CrabParachain to Crab conversion rate. Initially we trate both tokens as equal.
@@ -85,8 +95,24 @@ impl ThisChainWithMessages for CrabParachain {
 	type Call = Call;
 	type Origin = Origin;
 
-	fn is_message_accepted(_send_origin: &Self::Origin, lane: &LaneId) -> bool {
-		*lane == CRAB_CRAB_PARACHAIN_LANE
+	fn is_message_accepted(send_origin: &Self::Origin, lane: &LaneId) -> bool {
+		let here_location =
+			xcm::v3::MultiLocation::from(crate::xcm_config::UniversalLocation::get());
+		match send_origin.caller {
+			OriginCaller::PolkadotXcm(pallet_xcm::Origin::Xcm(ref location))
+			if *location == here_location =>
+				{
+					log::trace!(target: "runtime::bridge", "Verifying message sent using XCM pallet");
+				},
+			_ => {
+				// keep in mind that in this case all messages are free (in term of fees)
+				// => it's just to keep testing bridge on our test deployments until we'll have a
+				// better option
+				log::trace!(target: "runtime::bridge", "Verifying message sent using messages pallet");
+			},
+		}
+
+		*lane == [0, 0, 0, 0] || *lane == [0, 0, 0, 1]
 	}
 
 	fn maximal_pending_messages_at_outbound_lane() -> MessageNonce {
@@ -141,5 +167,62 @@ impl SourceHeaderChain<<Self as ChainWithMessages>::Balance> for Crab {
 			proof,
 			messages_count,
 		)
+	}
+}
+
+/// With-Crab bridge
+pub struct ToCrabBridge<MB>(PhantomData<MB>);
+
+impl<MB: MessagesBridge<Origin, AccountId, Balance, FromThisChainMessagePayload>> SendXcm
+for ToCrabBridge<MB>
+{
+	type Ticket = (Balance, FromThisChainMessagePayload);
+
+	fn validate(
+		dest: &mut Option<MultiLocation>,
+		msg: &mut Option<Xcm<()>>,
+	) -> SendResult<Self::Ticket> {
+		let d = dest.take().ok_or(SendError::MissingArgument)?;
+		if !matches!(d, MultiLocation { parents: 1, interior: X1(GlobalConsensus(r)) } if r == CrabNetwork::get())
+		{
+			*dest = Some(d);
+			return Err(SendError::NotApplicable)
+		};
+
+		let dest: InteriorMultiLocation = CrabNetwork::get().into();
+		let here = UniversalLocation::get();
+		let route = dest.relative_to(&here);
+		let msg = (route, msg.take().unwrap()).encode();
+
+		let fee = estimate_message_dispatch_and_delivery_fee::<WithCrabMessageBridge>(
+			&msg,
+			WithCrabMessageBridge::RELAYER_FEE_PERCENT,
+			None,
+		)
+			.map_err(SendError::Transport)?;
+		let fee_assets = MultiAssets::from((Here, fee));
+
+		Ok(((fee, msg), fee_assets))
+	}
+
+	fn deliver(ticket: Self::Ticket) -> Result<XcmHash, SendError> {
+		let lane = [0, 0, 0, 0];
+		let (fee, msg) = ticket;
+		let result = MB::send_message(
+			pallet_xcm::Origin::from(MultiLocation::from(UniversalLocation::get())).into(),
+			lane,
+			msg,
+			fee,
+		);
+		result
+			.map(|artifacts| {
+				let hash = (lane, artifacts.nonce).using_encoded(sp_io::hashing::blake2_256);
+				log::debug!(target: "runtime::bridge", "Sent XCM message {:?}/{} to Crab parachain: {:?}", lane, artifacts.nonce, hash);
+				hash
+			})
+			.map_err(|e| {
+				log::debug!(target: "runtime::bridge", "Failed to send XCM message over lane {:?} to Crab Parachain: {:?}", lane, e);
+				SendError::Transport("Bridge has rejected the message")
+			})
 	}
 }
