@@ -112,7 +112,7 @@ impl ThisChainWithMessages for PangolinParachain {
 			},
 		}
 
-		*lane == [0, 0, 0, 0] || *lane == [0, 0, 0, 1]
+		*lane == PANGOLIN_PANGOLIN_PARACHAIN_LANE || *lane == [0, 0, 0, 1]
 	}
 
 	fn maximal_pending_messages_at_outbound_lane() -> MessageNonce {
@@ -178,58 +178,29 @@ impl SourceHeaderChain<<Self as ChainWithMessages>::Balance> for Pangolin {
 pub const PANGOLIN_S2S_BACKING_PALLET_INDEX: u8 = 65;
 
 /// With-pangolin bridge
-pub struct ToPangolinBridge<MB>(PhantomData<MB>);
+pub struct ToPangolinBridge;
 
-impl<MB: MessagesBridge<Origin, AccountId, Balance, FromThisChainMessagePayload>> SendXcm
-	for ToPangolinBridge<MB>
-{
-	type Ticket = (Balance, FromThisChainMessagePayload);
+impl XcmBridge for ToPangolinBridge {
+	type MessageBridge = WithPangolinMessageBridge;
+	type MessageSender = pallet_bridge_messages::Pallet<Runtime, WithPangolinMessagesInstance>;
 
-	fn validate(
-		dest: &mut Option<MultiLocation>,
-		msg: &mut Option<Xcm<()>>,
-	) -> SendResult<Self::Ticket> {
-		let d = dest.take().ok_or(SendError::MissingArgument)?;
-		if !matches!(d, MultiLocation { parents: 1, interior: X1(GlobalConsensus(r)) } if r == PangolinNetwork::get())
-		{
-			*dest = Some(d);
-			return Err(SendError::NotApplicable);
-		};
-
-		let dest: InteriorMultiLocation = PangolinNetwork::get().into();
-		let here = UniversalLocation::get();
-		let route = dest.relative_to(&here);
-		let msg = (route, msg.take().unwrap()).encode();
-
-		let fee = estimate_message_dispatch_and_delivery_fee::<WithPangolinMessageBridge>(
-			&msg,
-			WithPangolinMessageBridge::RELAYER_FEE_PERCENT,
-			None,
-		)
-		.map_err(SendError::Transport)?;
-		let fee_assets = MultiAssets::from((Here, fee));
-
-		Ok(((fee, msg), fee_assets))
+	fn universal_location() -> InteriorMultiLocation {
+		UniversalLocation::get()
 	}
 
-	fn deliver(ticket: Self::Ticket) -> Result<XcmHash, SendError> {
-		let lane = [0, 0, 0, 0];
-		let (fee, msg) = ticket;
-		let result = MB::send_message(
-			pallet_xcm::Origin::from(MultiLocation::from(UniversalLocation::get())).into(),
-			lane,
-			msg,
-			fee,
-		);
-		result
-			.map(|artifacts| {
-				let hash = (lane, artifacts.nonce).using_encoded(sp_io::hashing::blake2_256);
-				log::debug!(target: "runtime::bridge", "Sent XCM message {:?}/{} to Pangolin parachain: {:?}", lane, artifacts.nonce, hash);
-				hash
-			})
-			.map_err(|e| {
-				log::debug!(target: "runtime::bridge", "Failed to send XCM message over lane {:?} to Pangolin Parachain: {:?}", lane, e);
-				SendError::Transport("Bridge has rejected the message")
-			})
+	fn verify_destination(dest: &MultiLocation) -> bool {
+		// matches!(*dest, MultiLocation { parents: 1, interior: X2(GlobalConsensus(r),
+		// Parachain(RIALTO_PARACHAIN_ID)) } if r == RialtoNetwork::get())
+		unimplemented!("TODO")
+	}
+
+	fn build_destination() -> MultiLocation {
+		let dest: InteriorMultiLocation = PangolinNetwork::get().into();
+		let here = UniversalLocation::get();
+		dest.relative_to(&here)
+	}
+
+	fn xcm_lane() -> LaneId {
+		PANGOLIN_PANGOLIN_PARACHAIN_LANE
 	}
 }

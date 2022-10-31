@@ -42,7 +42,7 @@ pub type XcmRouter = (
 	// ..and XCMP to communicate with the sibling chains.
 	XcmpQueue,
 	// Router to send message to Crab
-	ToCrabBridge<BridgeCrabMessages>,
+	XcmBridgeAdapter<ToCrabBridge>,
 );
 
 pub type Barrier = DenyThenTry<

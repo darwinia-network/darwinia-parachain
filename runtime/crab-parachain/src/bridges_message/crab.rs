@@ -112,7 +112,7 @@ impl ThisChainWithMessages for CrabParachain {
 			},
 		}
 
-		*lane == [0, 0, 0, 0] || *lane == [0, 0, 0, 1]
+		*lane == CRAB_CRAB_PARACHAIN_LANE || *lane == [0, 0, 0, 1]
 	}
 
 	fn maximal_pending_messages_at_outbound_lane() -> MessageNonce {
@@ -170,59 +170,30 @@ impl SourceHeaderChain<<Self as ChainWithMessages>::Balance> for Crab {
 	}
 }
 
-/// With-Crab bridge
-pub struct ToCrabBridge<MB>(PhantomData<MB>);
+/// With-crab bridge
+pub struct ToCrabBridge;
 
-impl<MB: MessagesBridge<Origin, AccountId, Balance, FromThisChainMessagePayload>> SendXcm
-	for ToCrabBridge<MB>
-{
-	type Ticket = (Balance, FromThisChainMessagePayload);
+impl XcmBridge for ToCrabBridge {
+	type MessageBridge = WithCrabMessageBridge;
+	type MessageSender = pallet_bridge_messages::Pallet<Runtime, WithCrabMessagesInstance>;
 
-	fn validate(
-		dest: &mut Option<MultiLocation>,
-		msg: &mut Option<Xcm<()>>,
-	) -> SendResult<Self::Ticket> {
-		let d = dest.take().ok_or(SendError::MissingArgument)?;
-		if !matches!(d, MultiLocation { parents: 1, interior: X1(GlobalConsensus(r)) } if r == CrabNetwork::get())
-		{
-			*dest = Some(d);
-			return Err(SendError::NotApplicable);
-		};
-
-		let dest: InteriorMultiLocation = CrabNetwork::get().into();
-		let here = UniversalLocation::get();
-		let route = dest.relative_to(&here);
-		let msg = (route, msg.take().unwrap()).encode();
-
-		let fee = estimate_message_dispatch_and_delivery_fee::<WithCrabMessageBridge>(
-			&msg,
-			WithCrabMessageBridge::RELAYER_FEE_PERCENT,
-			None,
-		)
-		.map_err(SendError::Transport)?;
-		let fee_assets = MultiAssets::from((Here, fee));
-
-		Ok(((fee, msg), fee_assets))
+	fn universal_location() -> InteriorMultiLocation {
+		UniversalLocation::get()
 	}
 
-	fn deliver(ticket: Self::Ticket) -> Result<XcmHash, SendError> {
-		let lane = [0, 0, 0, 0];
-		let (fee, msg) = ticket;
-		let result = MB::send_message(
-			pallet_xcm::Origin::from(MultiLocation::from(UniversalLocation::get())).into(),
-			lane,
-			msg,
-			fee,
-		);
-		result
-			.map(|artifacts| {
-				let hash = (lane, artifacts.nonce).using_encoded(sp_io::hashing::blake2_256);
-				log::debug!(target: "runtime::bridge", "Sent XCM message {:?}/{} to Crab parachain: {:?}", lane, artifacts.nonce, hash);
-				hash
-			})
-			.map_err(|e| {
-				log::debug!(target: "runtime::bridge", "Failed to send XCM message over lane {:?} to Crab Parachain: {:?}", lane, e);
-				SendError::Transport("Bridge has rejected the message")
-			})
+	fn verify_destination(dest: &MultiLocation) -> bool {
+		// matches!(*dest, MultiLocation { parents: 1, interior: X2(GlobalConsensus(r),
+		// Parachain(RIALTO_PARACHAIN_ID)) } if r == RialtoNetwork::get())
+		unimplemented!("TODO")
+	}
+
+	fn build_destination() -> MultiLocation {
+		let dest: InteriorMultiLocation = CrabNetwork::get().into();
+		let here = UniversalLocation::get();
+		dest.relative_to(&here)
+	}
+
+	fn xcm_lane() -> LaneId {
+		CRAB_CRAB_PARACHAIN_LANE
 	}
 }
