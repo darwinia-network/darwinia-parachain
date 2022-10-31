@@ -100,10 +100,10 @@ impl ThisChainWithMessages for CrabParachain {
 			xcm::v3::MultiLocation::from(crate::xcm_config::UniversalLocation::get());
 		match send_origin.caller {
 			OriginCaller::PolkadotXcm(pallet_xcm::Origin::Xcm(ref location))
-			if *location == here_location =>
-				{
-					log::trace!(target: "runtime::bridge", "Verifying message sent using XCM pallet");
-				},
+				if *location == here_location =>
+			{
+				log::trace!(target: "runtime::bridge", "Verifying message sent using XCM pallet");
+			},
 			_ => {
 				// keep in mind that in this case all messages are free (in term of fees)
 				// => it's just to keep testing bridge on our test deployments until we'll have a
@@ -174,7 +174,7 @@ impl SourceHeaderChain<<Self as ChainWithMessages>::Balance> for Crab {
 pub struct ToCrabBridge<MB>(PhantomData<MB>);
 
 impl<MB: MessagesBridge<Origin, AccountId, Balance, FromThisChainMessagePayload>> SendXcm
-for ToCrabBridge<MB>
+	for ToCrabBridge<MB>
 {
 	type Ticket = (Balance, FromThisChainMessagePayload);
 
@@ -186,7 +186,7 @@ for ToCrabBridge<MB>
 		if !matches!(d, MultiLocation { parents: 1, interior: X1(GlobalConsensus(r)) } if r == CrabNetwork::get())
 		{
 			*dest = Some(d);
-			return Err(SendError::NotApplicable)
+			return Err(SendError::NotApplicable);
 		};
 
 		let dest: InteriorMultiLocation = CrabNetwork::get().into();
@@ -199,7 +199,7 @@ for ToCrabBridge<MB>
 			WithCrabMessageBridge::RELAYER_FEE_PERCENT,
 			None,
 		)
-			.map_err(SendError::Transport)?;
+		.map_err(SendError::Transport)?;
 		let fee_assets = MultiAssets::from((Here, fee));
 
 		Ok(((fee, msg), fee_assets))
