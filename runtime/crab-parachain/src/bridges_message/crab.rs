@@ -21,16 +21,13 @@ pub type ToCrabMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_
 pub type FromCrabMessagesProof = FromBridgedChainMessagesProof<bp_crab::Hash>;
 
 /// Message payload for CrabParachain -> Crab messages.
-pub type ToCrabMessagePayload = FromThisChainMessagePayload<WithCrabMessageBridge>;
+pub type ToCrabMessagePayload = FromThisChainMessagePayload;
 /// Message payload for Crab -> CrabParachain messages.
-pub type FromCrabMessagePayload = FromBridgedChainMessagePayload<WithCrabMessageBridge>;
+pub type FromCrabMessagePayload = FromBridgedChainMessagePayload;
 
 /// Message verifier for CrabParachain -> Crab messages.
 pub type ToCrabMessageVerifier<R> =
 	FromThisChainMessageVerifier<WithCrabMessageBridge, R, WithCrabFeeMarket>;
-
-/// Encoded Crab Call as it comes from Crab.
-pub type FromCrabEncodedCall = FromBridgedChainEncodedMessageCall<Call>;
 
 /// Call-dispatch based message dispatch for Crab -> CrabParachain messages.
 pub type FromCrabMessageDispatch =
@@ -112,10 +109,8 @@ impl BridgedChainWithMessages for Crab {
 		bp_crab::Crab::max_extrinsic_size()
 	}
 
-	fn message_weight_limits(_message_payload: &[u8]) -> RangeInclusive<Self::Weight> {
-		let upper_limit =
-			target::maximal_incoming_message_dispatch_weight(bp_crab::Crab::max_extrinsic_weight());
-		0..=upper_limit
+	fn verify_dispatch_weight(_message_payload: &[u8]) -> bool {
+		true
 	}
 }
 impl TargetHeaderChain<ToCrabMessagePayload, <Self as ChainWithMessages>::AccountId> for Crab {

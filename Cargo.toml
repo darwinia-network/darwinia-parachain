@@ -347,14 +347,10 @@ xcm-executor = { git = "https://github.com/paritytech//polkadot", branch = "lock
 xcm-procedural = { git = "https://github.com/paritytech//polkadot", branch = "locked-for-gav-xcm-v3-and-bridges-2" }
 
 [patch."https://github.com/darwinia-network/darwinia-messages-substrate"]
-bp-messages            = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-bp-pangolin            = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-bp-pangolin-parachain  = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-bp-polkadot-core       = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-bp-runtime             = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-bp-crab                = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-bp-crab-parachain      = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-bridge-runtime-common  = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-pallet-bridge-grandpa  = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-pallet-bridge-messages = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
-pallet-fee-market      = { git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "guantong-xcm" }
+bp-messages            = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/messages" }
+bp-polkadot-core       = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/polkadot-core" }
+bp-runtime             = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/primitives/runtime" }
+bridge-runtime-common  = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/runtime-common" }
+pallet-bridge-grandpa  = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/modules/grandpa" }
+pallet-bridge-messages = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/modules/messages" }
+pallet-fee-market      = { path = "/home/workspace/darwinia-git/darwinia-messages-substrate/modules/fee-market" }

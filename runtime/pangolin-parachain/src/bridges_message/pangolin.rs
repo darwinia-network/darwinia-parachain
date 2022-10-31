@@ -21,16 +21,13 @@ pub type ToPangolinMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof
 pub type FromPangolinMessagesProof = FromBridgedChainMessagesProof<bp_pangolin::Hash>;
 
 /// Message payload for PangolinParachain -> Pangolin messages.
-pub type ToPangolinMessagePayload = FromThisChainMessagePayload<WithPangolinMessageBridge>;
+pub type ToPangolinMessagePayload = FromThisChainMessagePayload;
 /// Message payload for Pangolin -> PangolinParachain messages.
-pub type FromPangolinMessagePayload = FromBridgedChainMessagePayload<WithPangolinMessageBridge>;
+pub type FromPangolinMessagePayload = FromBridgedChainMessagePayload;
 
 /// Message verifier for PangolinParachain -> Pangolin messages.
 pub type ToPangolinMessageVerifier<R> =
 	FromThisChainMessageVerifier<WithPangolinMessageBridge, R, WithPangolinFeeMarket>;
-
-/// Encoded Pangolin Call as it comes from Pangolin.
-pub type FromPangolinEncodedCall = FromBridgedChainEncodedMessageCall<Call>;
 
 /// Call-dispatch based message dispatch for Pangolin -> PangolinParachain messages.
 pub type FromPangolinMessageDispatch =
@@ -112,11 +109,8 @@ impl BridgedChainWithMessages for Pangolin {
 		bp_pangolin::Pangolin::max_extrinsic_size()
 	}
 
-	fn message_weight_limits(_message_payload: &[u8]) -> RangeInclusive<Self::Weight> {
-		let upper_limit = target::maximal_incoming_message_dispatch_weight(
-			bp_pangolin::Pangolin::max_extrinsic_weight(),
-		);
-		0..=upper_limit
+	fn verify_dispatch_weight(_message_payload: &[u8]) -> bool {
+		true
 	}
 }
 impl TargetHeaderChain<ToPangolinMessagePayload, <Self as ChainWithMessages>::AccountId>

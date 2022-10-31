@@ -184,7 +184,6 @@ frame_support::construct_runtime! {
 		// S2S bridges.
 		BridgePangolinGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20,
 		BridgePangolinMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
-		BridgePangolinDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
 
 		PangolinFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 		FromPangolinIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,

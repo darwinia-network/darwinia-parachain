@@ -58,9 +58,6 @@ pub use sudo::*;
 pub mod remote_governance;
 pub use remote_governance::*;
 
-pub mod bridge_dispatch;
-pub use bridge_dispatch::*;
-
 pub mod bridge_grandpa;
 pub use bridge_grandpa::*;
 

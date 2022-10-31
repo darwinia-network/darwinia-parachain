@@ -173,7 +173,6 @@ frame_support::construct_runtime! {
 		// Crab Parachain <> Crab.
 		BridgeCrabGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20,
 		BridgeCrabMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
-		BridgeCrabDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
 
 		CrabFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 		FromCrabIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
