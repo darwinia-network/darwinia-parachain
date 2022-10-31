@@ -31,14 +31,12 @@ parachain-info                  = { default-features = false, git = "https://git
 dc-primitives     = { default-features = false, path = "../../primitives" }
 dp-common-runtime = { default-features = false, path = "../common" }
 # darwinia-messages-substrate
-bp-message-dispatch    = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 bp-messages            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 bp-pangolin            = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 bp-pangolin-parachain  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 bp-polkadot-core       = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 bp-runtime             = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 bridge-runtime-common  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
-pallet-bridge-dispatch = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 pallet-bridge-grandpa  = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 pallet-bridge-messages = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
 pallet-fee-market      = { default-features = false, git = "https://github.com/darwinia-network/darwinia-messages-substrate", branch = "polkadot-v0.9.27" }
@@ -106,13 +104,11 @@ std = [
 	"dc-primitives/std",
 	# darwinia-messages-substrate
 	"bp-pangolin/std",
-	"bp-message-dispatch/std",
 	"bp-messages/std",
 	"bp-runtime/std",
 	"bp-polkadot-core/std",
 	"bp-pangolin-parachain/std",
 	"bridge-runtime-common/std",
-	"pallet-bridge-dispatch/std",
 	"pallet-bridge-grandpa/std",
 	"pallet-bridge-messages/std",
 	"pallet-fee-market/std",
