@@ -51,10 +51,3 @@ impl Config<WithCrabMessages> for Runtime {
 	type TargetHeaderChain = bm_crab::Crab;
 	type WeightInfo = ();
 }
-
-/// The XCM router. When we want to send an XCM message, we use this type. It amalgamates all of our
-/// individual routers.
-pub type XcmRouter = (
-	// Router to send message to Crab
-	ToCrabBridge<BridgeCrabMessages>,
-);
