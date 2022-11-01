@@ -130,7 +130,7 @@ pub mod pallet {
 		type DecimalMultiplier: Get<u128>;
 
 		type MessagesBridge: MessagesBridge<
-			Self::Origin,
+			Self::RuntimeOrigin,
 			Self::AccountId,
 			RingBalance<Self>,
 			<<Self as Config>::OutboundPayloadCreator as CreatePayload<

@@ -2,7 +2,7 @@
 use core::marker::PhantomData;
 // --- paritytech ---
 use frame_support::{log, weights::Weight};
-use xcm::latest::prelude::*;
+use xcm::latest::{prelude::*, Weight as XCMWeight};
 use xcm_executor::traits::ShouldExecute;
 
 //TODO: move DenyThenTry to polkadot's xcm module.
@@ -18,11 +18,11 @@ where
 	Deny: ShouldExecute,
 	Allow: ShouldExecute,
 {
-	fn should_execute<Call>(
+	fn should_execute<RuntimeCall>(
 		origin: &MultiLocation,
 		message: &mut [Instruction<RuntimeCall>],
-		max_weight: Weight,
-		weight_credit: &mut Weight,
+		max_weight: XCMWeight,
+		weight_credit: &mut XCMWeight,
 	) -> Result<(), ()> {
 		Deny::should_execute(origin, message, max_weight, weight_credit)?;
 		Allow::should_execute(origin, message, max_weight, weight_credit)
@@ -32,11 +32,11 @@ where
 // See issue #5233
 pub struct DenyReserveTransferToRelayChain;
 impl ShouldExecute for DenyReserveTransferToRelayChain {
-	fn should_execute<Call>(
+	fn should_execute<RuntimeCall>(
 		origin: &MultiLocation,
 		message: &mut [Instruction<RuntimeCall>],
-		_max_weight: Weight,
-		_weight_credit: &mut Weight,
+		_max_weight: XCMWeight,
+		_weight_credit: &mut XCMWeight,
 	) -> Result<(), ()> {
 		if message.iter().any(|inst| {
 			matches!(

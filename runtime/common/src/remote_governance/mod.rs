@@ -25,10 +25,10 @@ mod tests;
 
 // --- paritytech ---
 use frame_support::{
+	dispatch::GetDispatchInfo,
 	ensure,
 	pallet_prelude::*,
 	traits::{Get, UnfilteredDispatchable},
-	weights::GetDispatchInfo,
 };
 use frame_system::{ensure_signed, RawOrigin};
 use sp_core::H256;
@@ -50,10 +50,12 @@ pub mod pallet {
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 
 		/// Remote governance call or a emergency call.
-		type Call: Parameter + GetDispatchInfo + UnfilteredDispatchable<Origin = Self::Origin>;
+		type Call: Parameter
+			+ GetDispatchInfo
+			+ UnfilteredDispatchable<RuntimeOrigin = Self::RuntimeOrigin>;
 
 		/// Origin from which the root call can be made under the emergency mode.
-		type EmergencySafeguardOrigin: EnsureOrigin<Self::Origin>;
+		type EmergencySafeguardOrigin: EnsureOrigin<Self::RuntimeOrigin>;
 
 		type CheckInterval: Get<Self::BlockNumber>;
 
@@ -136,7 +138,7 @@ pub mod pallet {
 	impl<T: Config> Pallet<T> {
 		#[pallet::weight({
 			let dispatch_info = call.get_dispatch_info();
-			(dispatch_info.weight.saturating_add(10_000), dispatch_info.class)
+			(dispatch_info.weight.ref_time().saturating_add(10_000), dispatch_info.class)
         })]
 		pub fn emergency_safeguard(
 			origin: OriginFor<T>,
@@ -161,7 +163,7 @@ pub mod pallet {
 		/// Handle relay message sent from the source backing pallet with relay message
 		#[pallet::weight({
 			let dispatch_info = call.get_dispatch_info();
-			(dispatch_info.weight.saturating_add(10_000), dispatch_info.class)
+			(dispatch_info.weight.ref_time().saturating_add(10_000), dispatch_info.class)
         })]
 		pub fn enact_remote_call(
 			origin: OriginFor<T>,

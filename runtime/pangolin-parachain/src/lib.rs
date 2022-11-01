@@ -404,7 +404,7 @@ sp_api::impl_runtime_apis! {
 				) -> (ToPangolinMessagePayload, Balance) {
 					let message_payload = vec![0; params.size as usize];
 					let dispatch_origin = bp_message_dispatch::CallOrigin::SourceAccount(params.sender_account);
-					let message = FromThisChainMessagePayload::<WithPangolinMessageBridge> {
+					let message = FromThisChainMessagePayload {
 						spec_version: 0,
 						weight: params.size as _,
 						origin: dispatch_origin,
@@ -433,6 +433,8 @@ sp_api::impl_runtime_apis! {
 					)
 				}
 
+				// TODO @Guantong
+				unimplemented!("TODO");
 				fn is_message_dispatched(nonce: bp_messages::MessageNonce) -> bool {
 					frame_system::Pallet::<Runtime>::events()
 						.into_iter()

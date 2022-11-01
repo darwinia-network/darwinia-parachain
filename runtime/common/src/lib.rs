@@ -18,7 +18,8 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-pub mod helixbridge;
+// TODO @Guantong
+// pub mod helixbridge;
 pub mod remote_governance;
 pub mod xcm_config;
 
@@ -80,7 +81,7 @@ impl WeightToFeePolynomial for WeightToFee {
 		// in `Pangolin Parachain`, extrinsic base weight (smallest non-zero weight) is mapped to
 		// 100 MILLI:
 		let p = 100 * MILLI_COIN;
-		let q = Balance::from(ExtrinsicBaseWeight::get());
+		let q = Balance::from(ExtrinsicBaseWeight::get().ref_time());
 
 		smallvec::smallvec![WeightToFeeCoefficient {
 			degree: 1,
@@ -97,7 +98,7 @@ impl<R> OnUnbalanced<NegativeImbalance<R>> for ToStakingPot<R>
 where
 	R: pallet_balances::Config + pallet_collator_selection::Config,
 	<R as frame_system::Config>::AccountId: Into<AccountId> + From<AccountId>,
-	<R as frame_system::Config>::Event: From<pallet_balances::Event<R>>,
+	<R as frame_system::Config>::RuntimeEvent: From<pallet_balances::Event<R>>,
 {
 	fn on_nonzero_unbalanced(amount: NegativeImbalance<R>) {
 		let staking_pot = <pallet_collator_selection::Pallet<R>>::account_id();
@@ -111,7 +112,7 @@ impl<R> OnUnbalanced<NegativeImbalance<R>> for DealWithFees<R>
 where
 	R: pallet_balances::Config + pallet_collator_selection::Config,
 	<R as frame_system::Config>::AccountId: Into<AccountId> + From<AccountId>,
-	<R as frame_system::Config>::Event: From<pallet_balances::Event<R>>,
+	<R as frame_system::Config>::RuntimeEvent: From<pallet_balances::Event<R>>,
 {
 	fn on_unbalanceds<B>(mut fees_then_tips: impl Iterator<Item = NegativeImbalance<R>>) {
 		if let Some(mut fees) = fees_then_tips.next() {
@@ -143,7 +144,7 @@ impl<B, R, I>
 	LaneMessageVerifier<
 		OriginOf<ThisChain<B>>,
 		AccountIdOf<ThisChain<B>>,
-		FromThisChainMessagePayload<B>,
+		FromThisChainMessagePayload,
 		BalanceOf<ThisChain<B>>,
 	> for FromThisChainMessageVerifier<B, R, I>
 where
@@ -162,7 +163,7 @@ where
 		delivery_and_dispatch_fee: &BalanceOf<ThisChain<B>>,
 		lane: &LaneId,
 		lane_outbound_data: &OutboundLaneData,
-		payload: &FromThisChainMessagePayload<B>,
+		payload: &FromThisChainMessagePayload,
 	) -> Result<(), Self::Error> {
 		// reject message if lane is blocked
 		if !ThisChain::<B>::is_message_accepted(submitter, lane) {
@@ -184,18 +185,20 @@ where
 			frame_system::RawOrigin<AccountIdOf<ThisChain<B>>>,
 			OriginOf<ThisChain<B>>,
 		> = submitter.clone().into();
-		match raw_origin_or_err {
-			Ok(raw_origin) => pallet_bridge_dispatch::verify_message_origin(&raw_origin, payload)
-				.map(drop)
-				.map_err(|_| BAD_ORIGIN)?,
-			Err(_) => {
-				// so what it means that we've failed to convert origin to the
-				// `frame_system::RawOrigin`? now it means that the custom pallet origin has
-				// been used to send the message. Do we need to verify it? The answer is no,
-				// because pallet may craft any origin (e.g. root) && we can't verify whether it
-				// is valid, or not.
-			},
-		};
+		// TODO @Guantong
+		unimplemented!("TODO");
+		// match raw_origin_or_err {
+		// 	Ok(raw_origin) => pallet_bridge_dispatch::verify_message_origin(&raw_origin, payload)
+		// 		.map(drop)
+		// 		.map_err(|_| BAD_ORIGIN)?,
+		// 	Err(_) => {
+		// 		// so what it means that we've failed to convert origin to the
+		// 		// `frame_system::RawOrigin`? now it means that the custom pallet origin has
+		// 		// been used to send the message. Do we need to verify it? The answer is no,
+		// 		// because pallet may craft any origin (e.g. root) && we can't verify whether it
+		// 		// is valid, or not.
+		// 	},
+		// };
 
 		// Do the delivery_and_dispatch_fee. We assume that the delivery and dispatch fee always
 		// greater than the fee market provided fee.
