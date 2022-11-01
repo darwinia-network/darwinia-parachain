@@ -62,12 +62,12 @@ impl<T: frame_system::Config> pallet_bridge_grandpa::WeightInfo for WeightInfo<T
 	// Storage: BridgePangolinGrandpa ImportedHashesPointer (r:1 w:1)
 	// Storage: BridgePangolinGrandpa ImportedHashes (r:1 w:1)
 	fn submit_finality_proof(p: u32, v: u32, ) -> Weight {
-		(1_538_060_000 as Weight)
+		Weight::from_ref_time(1_538_060_000 as u64)
 			// Standard Error: 53_000
-			.saturating_add((32_771_000 as Weight).saturating_mul(p as Weight))
+			.saturating_add(Weight::from_ref_time(32_771_000 as u64).saturating_mul(p as u64))
 			// Standard Error: 54_000
-			.saturating_add((1_415_000 as Weight).saturating_mul(v as Weight))
-			.saturating_add(T::DbWeight::get().reads(7 as Weight))
-			.saturating_add(T::DbWeight::get().writes(6 as Weight))
+			.saturating_add(Weight::from_ref_time(1_415_000 as u64).saturating_mul(v as u64))
+			.saturating_add(T::DbWeight::get().reads(7 as u64))
+			.saturating_add(T::DbWeight::get().writes(6 as u64))
 	}
 }

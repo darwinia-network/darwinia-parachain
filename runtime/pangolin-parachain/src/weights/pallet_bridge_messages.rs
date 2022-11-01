@@ -62,9 +62,9 @@ impl<T: frame_system::Config> pallet_bridge_messages::WeightInfo for WeightInfo<
 	// Storage: FeeMarket Orders (r:0 w:1)
 	// Storage: BridgePangolinMessages OutboundMessages (r:0 w:9)
 	fn send_minimal_message_worst_case() -> Weight {
-		(89_187_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(6 as Weight))
-			.saturating_add(T::DbWeight::get().writes(13 as Weight))
+		Weight::from_ref_time(89_187_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(13 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinMessages OutboundLanes (r:1 w:1)
@@ -74,9 +74,9 @@ impl<T: frame_system::Config> pallet_bridge_messages::WeightInfo for WeightInfo<
 	// Storage: FeeMarket Orders (r:0 w:1)
 	// Storage: BridgePangolinMessages OutboundMessages (r:0 w:9)
 	fn send_1_kb_message_worst_case() -> Weight {
-		(64_031_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(6 as Weight))
-			.saturating_add(T::DbWeight::get().writes(13 as Weight))
+		Weight::from_ref_time(64_031_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(13 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinMessages OutboundLanes (r:1 w:1)
@@ -86,29 +86,29 @@ impl<T: frame_system::Config> pallet_bridge_messages::WeightInfo for WeightInfo<
 	// Storage: FeeMarket Orders (r:0 w:1)
 	// Storage: BridgePangolinMessages OutboundMessages (r:0 w:9)
 	fn send_16_kb_message_worst_case() -> Weight {
-		(84_128_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(6 as Weight))
-			.saturating_add(T::DbWeight::get().writes(13 as Weight))
+		Weight::from_ref_time(84_128_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(13 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinMessages OutboundLanes (r:1 w:0)
 	// Storage: System Account (r:2 w:2)
 	// Storage: BridgePangolinMessages OutboundMessages (r:1 w:1)
 	fn maximal_increase_message_fee() -> Weight {
-		(5_347_846_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(5 as Weight))
-			.saturating_add(T::DbWeight::get().writes(3 as Weight))
+		Weight::from_ref_time(5_347_846_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(5 as u64))
+			.saturating_add(T::DbWeight::get().writes(3 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinMessages OutboundLanes (r:1 w:0)
 	// Storage: System Account (r:2 w:2)
 	// Storage: BridgePangolinMessages OutboundMessages (r:1 w:1)
 	fn increase_message_fee(i: u32, ) -> Weight {
-		(0 as Weight)
+		Weight::from_ref_time(0 as u64)
 			// Standard Error: 0
-			.saturating_add((3_000 as Weight).saturating_mul(i as Weight))
-			.saturating_add(T::DbWeight::get().reads(5 as Weight))
-			.saturating_add(T::DbWeight::get().writes(3 as Weight))
+			.saturating_add(Weight::from_ref_time(3_000 as u64).saturating_mul(i as u64))
+			.saturating_add(T::DbWeight::get().reads(5 as u64))
+			.saturating_add(T::DbWeight::get().writes(3 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
@@ -116,9 +116,9 @@ impl<T: frame_system::Config> pallet_bridge_messages::WeightInfo for WeightInfo<
 	// Storage: TransactionPayment NextFeeMultiplier (r:1 w:0)
 	// Storage: System Account (r:2 w:2)
 	fn receive_single_message_proof() -> Weight {
-		(80_559_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(6 as Weight))
-			.saturating_add(T::DbWeight::get().writes(3 as Weight))
+		Weight::from_ref_time(80_559_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(3 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
@@ -126,9 +126,9 @@ impl<T: frame_system::Config> pallet_bridge_messages::WeightInfo for WeightInfo<
 	// Storage: TransactionPayment NextFeeMultiplier (r:1 w:0)
 	// Storage: System Account (r:2 w:2)
 	fn receive_two_messages_proof() -> Weight {
-		(134_576_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(6 as Weight))
-			.saturating_add(T::DbWeight::get().writes(3 as Weight))
+		Weight::from_ref_time(134_576_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(3 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
@@ -136,9 +136,9 @@ impl<T: frame_system::Config> pallet_bridge_messages::WeightInfo for WeightInfo<
 	// Storage: TransactionPayment NextFeeMultiplier (r:1 w:0)
 	// Storage: System Account (r:2 w:2)
 	fn receive_single_message_proof_with_outbound_lane_state() -> Weight {
-		(83_651_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(6 as Weight))
-			.saturating_add(T::DbWeight::get().writes(3 as Weight))
+		Weight::from_ref_time(83_651_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(3 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
@@ -146,9 +146,9 @@ impl<T: frame_system::Config> pallet_bridge_messages::WeightInfo for WeightInfo<
 	// Storage: TransactionPayment NextFeeMultiplier (r:1 w:0)
 	// Storage: System Account (r:2 w:2)
 	fn receive_single_message_proof_1_kb() -> Weight {
-		(88_558_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(6 as Weight))
-			.saturating_add(T::DbWeight::get().writes(3 as Weight))
+		Weight::from_ref_time(88_558_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(3 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
@@ -156,43 +156,43 @@ impl<T: frame_system::Config> pallet_bridge_messages::WeightInfo for WeightInfo<
 	// Storage: TransactionPayment NextFeeMultiplier (r:1 w:0)
 	// Storage: System Account (r:2 w:2)
 	fn receive_single_message_proof_16_kb() -> Weight {
-		(162_448_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(6 as Weight))
-			.saturating_add(T::DbWeight::get().writes(3 as Weight))
+		Weight::from_ref_time(162_448_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(3 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
 	// Storage: BridgePangolinMessages InboundLanes (r:1 w:1)
 	fn receive_single_prepaid_message_proof() -> Weight {
-		(56_279_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(3 as Weight))
-			.saturating_add(T::DbWeight::get().writes(1 as Weight))
+		Weight::from_ref_time(56_279_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(3 as u64))
+			.saturating_add(T::DbWeight::get().writes(1 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
 	// Storage: BridgePangolinMessages OutboundLanes (r:1 w:1)
 	// Storage: FeeMarket Orders (r:1 w:0)
 	fn receive_delivery_proof_for_single_message() -> Weight {
-		(28_079_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(4 as Weight))
-			.saturating_add(T::DbWeight::get().writes(1 as Weight))
+		Weight::from_ref_time(28_079_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(4 as u64))
+			.saturating_add(T::DbWeight::get().writes(1 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
 	// Storage: BridgePangolinMessages OutboundLanes (r:1 w:1)
 	// Storage: FeeMarket Orders (r:2 w:0)
 	fn receive_delivery_proof_for_two_messages_by_single_relayer() -> Weight {
-		(32_050_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(5 as Weight))
-			.saturating_add(T::DbWeight::get().writes(1 as Weight))
+		Weight::from_ref_time(32_050_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(5 as u64))
+			.saturating_add(T::DbWeight::get().writes(1 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
 	// Storage: BridgePangolinMessages OutboundLanes (r:1 w:1)
 	// Storage: FeeMarket Orders (r:2 w:0)
 	fn receive_delivery_proof_for_two_messages_by_two_relayers() -> Weight {
-		(30_665_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(5 as Weight))
-			.saturating_add(T::DbWeight::get().writes(1 as Weight))
+		Weight::from_ref_time(30_665_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(5 as u64))
+			.saturating_add(T::DbWeight::get().writes(1 as u64))
 	}
 }

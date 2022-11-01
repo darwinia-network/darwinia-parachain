@@ -62,9 +62,9 @@ impl<T: frame_system::Config> pallet_fee_market::WeightInfo for WeightInfo<T> {
 	// Storage: FeeMarket AssignedRelayersNumber (r:1 w:0)
 	// Storage: FeeMarket AssignedRelayers (r:0 w:1)
 	fn enroll_and_lock_collateral() -> Weight {
-		(54_123_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(9 as Weight))
-			.saturating_add(T::DbWeight::get().writes(5 as Weight))
+		Weight::from_ref_time(54_123_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(9 as u64))
+			.saturating_add(T::DbWeight::get().writes(5 as u64))
 	}
 	// Storage: FeeMarket Relayers (r:1 w:0)
 	// Storage: System Account (r:1 w:1)
@@ -74,9 +74,9 @@ impl<T: frame_system::Config> pallet_fee_market::WeightInfo for WeightInfo<T> {
 	// Storage: FeeMarket AssignedRelayersNumber (r:1 w:0)
 	// Storage: FeeMarket AssignedRelayers (r:0 w:1)
 	fn update_locked_collateral() -> Weight {
-		(48_545_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(9 as Weight))
-			.saturating_add(T::DbWeight::get().writes(4 as Weight))
+		Weight::from_ref_time(48_545_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(9 as u64))
+			.saturating_add(T::DbWeight::get().writes(4 as u64))
 	}
 	// Storage: FeeMarket Relayers (r:1 w:0)
 	// Storage: FeeMarket RelayersMap (r:4 w:1)
@@ -84,9 +84,9 @@ impl<T: frame_system::Config> pallet_fee_market::WeightInfo for WeightInfo<T> {
 	// Storage: FeeMarket AssignedRelayersNumber (r:1 w:0)
 	// Storage: FeeMarket AssignedRelayers (r:0 w:1)
 	fn update_relay_fee() -> Weight {
-		(37_050_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(7 as Weight))
-			.saturating_add(T::DbWeight::get().writes(2 as Weight))
+		Weight::from_ref_time(37_050_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(7 as u64))
+			.saturating_add(T::DbWeight::get().writes(2 as u64))
 	}
 	// Storage: FeeMarket Relayers (r:1 w:1)
 	// Storage: FeeMarket Orders (r:1 w:0)
@@ -96,14 +96,14 @@ impl<T: frame_system::Config> pallet_fee_market::WeightInfo for WeightInfo<T> {
 	// Storage: FeeMarket RelayersMap (r:3 w:1)
 	// Storage: FeeMarket AssignedRelayersNumber (r:1 w:0)
 	fn cancel_enrollment() -> Weight {
-		(46_749_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(9 as Weight))
-			.saturating_add(T::DbWeight::get().writes(5 as Weight))
+		Weight::from_ref_time(46_749_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(9 as u64))
+			.saturating_add(T::DbWeight::get().writes(5 as u64))
 	}
 	// Storage: FeeMarket CollateralSlashProtect (r:0 w:1)
 	fn set_slash_protect() -> Weight {
-		(6_946_000 as Weight)
-			.saturating_add(T::DbWeight::get().writes(1 as Weight))
+		Weight::from_ref_time(6_946_000 as u64)
+			.saturating_add(T::DbWeight::get().writes(1 as u64))
 	}
 	// Storage: FeeMarket Relayers (r:1 w:0)
 	// Storage: FeeMarket RelayersMap (r:4 w:0)
@@ -111,8 +111,8 @@ impl<T: frame_system::Config> pallet_fee_market::WeightInfo for WeightInfo<T> {
 	// Storage: FeeMarket AssignedRelayers (r:0 w:1)
 	// Storage: FeeMarket AssignedRelayersNumber (r:0 w:1)
 	fn set_assigned_relayers_number() -> Weight {
-		(33_824_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(6 as Weight))
-			.saturating_add(T::DbWeight::get().writes(2 as Weight))
+		Weight::from_ref_time(33_824_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(2 as u64))
 	}
 }
