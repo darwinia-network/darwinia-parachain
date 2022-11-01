@@ -347,6 +347,7 @@ xcm-executor = { git = "https://github.com/paritytech//polkadot", branch = "lock
 xcm-procedural = { git = "https://github.com/paritytech//polkadot", branch = "locked-for-gav-xcm-v3-and-bridges-2" }
 
 [patch."https://github.com/darwinia-network/darwinia-messages-substrate"]
+bp-darwinia-core       = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }
 bp-messages            = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }
 bp-polkadot-core       = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }
 bp-runtime             = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }

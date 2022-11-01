@@ -22,6 +22,11 @@ pub mod helixbridge;
 pub mod remote_governance;
 pub mod xcm_config;
 
+pub use bp_darwinia_core as bp_crab_parachain;
+pub use bp_darwinia_core as bp_crab;
+pub use bp_darwinia_core as bp_pangolin_parachain;
+pub use bp_darwinia_core as bp_pangolin;
+
 // --- core ---
 use core::marker::PhantomData;
 // --- paritytech ---

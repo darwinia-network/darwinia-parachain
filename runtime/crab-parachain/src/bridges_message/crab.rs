@@ -79,7 +79,7 @@ impl MessageBridge for WithCrabMessageBridge {
 
 	const BRIDGED_CHAIN_ID: ChainId = CRAB_CHAIN_ID;
 	const BRIDGED_MESSAGES_PALLET_NAME: &'static str =
-		bp_crab_parachain::WITH_CRAB_PARACHAIN_MESSAGES_PALLET_NAME;
+		bridge_runtime_common::WITH_CRAB_PARACHAIN_MESSAGES_PALLET_NAME;
 	const RELAYER_FEE_PERCENT: u32 = 10;
 	const THIS_CHAIN_ID: ChainId = CRAB_PARACHAIN_CHAIN_ID;
 }
