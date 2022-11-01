@@ -234,7 +234,7 @@ pub mod pallet {
 				);
 			}
 
-			Self::prun_message(burn_pruned_messages, min_retain_received_nonce)?;
+			Self::prune_message(burn_pruned_messages, min_retain_received_nonce)?;
 
 			T::RingCurrency::deposit_creating(&recipient, value);
 			Self::deposit_event(Event::TokenIssued(recipient, value));
@@ -332,7 +332,7 @@ pub mod pallet {
 				return Err(Error::<T>::FailureInfoNE.into());
 			}
 
-			Self::prun_message(burn_pruned_messages, min_retain_received_nonce)?;
+			Self::prune_message(burn_pruned_messages, min_retain_received_nonce)?;
 
 			Ok(().into())
 		}
@@ -379,9 +379,6 @@ pub mod pallet {
 			#[pallet::compact] fee: RingBalance<T>,
 		) -> DispatchResultWithPostInfo {
 			let user = ensure_signed(origin)?;
-
-			// Make sure the user's balance is enough to lock
-			ensure!(T::RingCurrency::free_balance(&user) > fee, <Error<T>>::InsufficientBalance);
 
 			// this pallet account as the submitter of the remote message
 			// we need to transfer fee from user to this account to pay the bridge fee
@@ -544,7 +541,7 @@ pub mod pallet {
 			T::BridgedAccountIdConverter::convert(hex_id)
 		}
 
-		pub fn prun_message(
+		pub fn prune_message(
 			pruned_messages: Vec<MessageNonce>,
 			min_retain_received_nonce: MessageNonce,
 		) -> Result<(), DispatchError> {
