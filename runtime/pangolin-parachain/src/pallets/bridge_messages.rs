@@ -31,7 +31,6 @@ frame_support::parameter_types! {
 impl Config<WithPangolinMessages> for Runtime {
 	type AccountIdConverter = bp_pangolin_parachain::AccountIdConverter;
 	type BridgedChainId = BridgedChainId;
-	type RuntimeEvent = RuntimeEvent;
 	type InboundMessageFee = bp_pangolin::Balance;
 	type InboundPayload = bm_pangolin::FromPangolinMessagePayload;
 	type InboundRelayer = bp_pangolin::AccountId;
@@ -47,6 +46,7 @@ impl Config<WithPangolinMessages> for Runtime {
 	type OutboundMessageFee = bp_pangolin_parachain::Balance;
 	type OutboundPayload = bm_pangolin::ToPangolinMessagePayload;
 	type Parameter = bm_pangolin::PangolinParachainToPangolinParameter;
+	type RuntimeEvent = RuntimeEvent;
 	type SourceHeaderChain = bm_pangolin::Pangolin;
 	type TargetHeaderChain = bm_pangolin::Pangolin;
 	type WeightInfo = WeightInfo<Runtime>;

@@ -6,7 +6,7 @@ use xcm_executor::XcmExecutor;
 use crate::*;
 
 impl Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
 	type ExecuteOverweightOrigin = EnsureRoot<AccountId>;
+	type RuntimeEvent = RuntimeEvent;
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 }

@@ -39,8 +39,8 @@ impl Config for Runtime {
 	type BridgeAccountIdConverter = bp_pangolin::AccountIdConverter;
 	type BridgeFinalized = PangolinBestFinalized;
 	type BridgedChainId = PangolinChainId;
-	type RuntimeCall = RuntimeCall;
 	type CheckInterval = CheckInterval;
 	type EmergencySafeguardOrigin = EnsureSpecific;
+	type RuntimeCall = RuntimeCall;
 	type RuntimeEvent = RuntimeEvent;
 }

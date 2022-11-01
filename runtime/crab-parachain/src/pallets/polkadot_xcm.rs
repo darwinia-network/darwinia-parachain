@@ -128,13 +128,14 @@ impl XcmCExecutorConfig for XcmConfig {
 	type AssetTransactor = LocalAssetTransactor;
 	type AssetTrap = PolkadotXcm;
 	type Barrier = Barrier;
-	type RuntimeCall = RuntimeCall;
+	type CallDispatcher = RuntimeCall;
 	type IsReserve = NativeAsset;
 	type IsTeleporter = NativeAsset;
 	// <- should be enough to allow teleportation of KSM
 	type LocationInverter = LocationInverter<Ancestry>;
 	type OriginConverter = XcmOriginToTransactDispatchOrigin;
 	type ResponseHandler = PolkadotXcm;
+	type RuntimeCall = RuntimeCall;
 	type SubscriptionService = PolkadotXcm;
 	type Trader = UsingComponents<
 		ConstantMultiplier<Balance, ConstU128<{ BASE_WEIGHT_FEE }>>,
@@ -145,15 +146,14 @@ impl XcmCExecutorConfig for XcmConfig {
 	>;
 	type Weigher = FixedWeightBounds<UnitWeightCost, RuntimeCall, MaxInstructions>;
 	type XcmSender = XcmRouter;
-	type CallDispatcher = RuntimeCall;
 }
 
 impl Config for Runtime {
 	type AdvertisedXcmVersion = CurrentXcmVersion;
-	type RuntimeCall = RuntimeCall;
-	type RuntimeEvent = RuntimeEvent;
 	type ExecuteXcmOrigin = EnsureXcmOrigin<Origin, LocalOriginToLocation>;
 	type LocationInverter = LocationInverter<Ancestry>;
+	type RuntimeCall = RuntimeCall;
+	type RuntimeEvent = RuntimeEvent;
 	type RuntimeOrigin = RuntimeOrigin;
 	type SendXcmOrigin = EnsureXcmOrigin<Origin, LocalOriginToLocation>;
 	type Weigher = FixedWeightBounds<UnitWeightCost, RuntimeCall, MaxInstructions>;

@@ -12,11 +12,11 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type RuntimeCall = RuntimeCall;
 	type Currency = Ring;
 	type DepositBase = DepositBase;
 	type DepositFactor = DepositFactor;
-	type RuntimeEvent = RuntimeEvent;
 	type MaxSignatories = MaxSignatories;
+	type RuntimeCall = RuntimeCall;
+	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = WeightInfo<Runtime>;
 }

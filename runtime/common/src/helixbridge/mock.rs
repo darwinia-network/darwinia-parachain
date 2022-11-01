@@ -53,11 +53,11 @@ impl pallet_balances::Config for Test {
 	type AccountStore = System;
 	type Balance = Balance;
 	type DustRemoval = ();
-	type RuntimeEvent = ();
 	type ExistentialDeposit = ExistentialDeposit;
 	type MaxLocks = ();
 	type MaxReserves = ();
 	type ReserveIdentifier = [u8; 8];
+	type RuntimeEvent = ();
 	type WeightInfo = ();
 }
 
@@ -79,9 +79,7 @@ impl frame_system::Config for Test {
 	type BlockLength = ();
 	type BlockNumber = u64;
 	type BlockWeights = ();
-	type RuntimeCall = RuntimeCall;
 	type DbWeight = ();
-	type RuntimeEvent = ();
 	type Hash = H256;
 	type Hashing = BlakeTwo256;
 	type Header = Header;
@@ -91,8 +89,10 @@ impl frame_system::Config for Test {
 	type OnKilledAccount = ();
 	type OnNewAccount = ();
 	type OnSetCode = ();
-	type RuntimeOrigin = RuntimeOrigin;
 	type PalletInfo = PalletInfo;
+	type RuntimeCall = RuntimeCall;
+	type RuntimeEvent = ();
+	type RuntimeOrigin = RuntimeOrigin;
 	type SS58Prefix = ();
 	type SystemWeightInfo = ();
 	type Version = ();
@@ -153,13 +153,13 @@ impl Config for Test {
 	type BridgedAccountIdConverter = AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
 	type DecimalMultiplier = DecimalsDifference;
-	type RuntimeEvent = ();
 	type MessageLaneId = MessageLaneId;
 	type MessageNoncer = MockS2sMessageSender;
 	type MessagesBridge = MockMessagesBridge;
 	type OutboundPayloadCreator = ();
 	type PalletId = S2sRelayPalletId;
 	type RingCurrency = Balances;
+	type RuntimeEvent = ();
 	type WeightInfo = ();
 }
 

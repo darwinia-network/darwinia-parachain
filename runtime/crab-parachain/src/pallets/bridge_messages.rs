@@ -31,7 +31,6 @@ frame_support::parameter_types! {
 impl Config<WithCrabMessages> for Runtime {
 	type AccountIdConverter = bp_crab_parachain::AccountIdConverter;
 	type BridgedChainId = BridgedChainId;
-	type RuntimeEvent = RuntimeEvent;
 	type InboundMessageFee = bp_crab::Balance;
 	type InboundPayload = bm_crab::FromCrabMessagePayload;
 	type InboundRelayer = bp_crab::AccountId;
@@ -47,6 +46,7 @@ impl Config<WithCrabMessages> for Runtime {
 	type OutboundMessageFee = bp_crab_parachain::Balance;
 	type OutboundPayload = bm_crab::ToCrabMessagePayload;
 	type Parameter = bm_crab::CrabParachainToCrabParameter;
+	type RuntimeEvent = RuntimeEvent;
 	type SourceHeaderChain = bm_crab::Crab;
 	type TargetHeaderChain = bm_crab::Crab;
 	type WeightInfo = ();

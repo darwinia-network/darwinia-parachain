@@ -1,9 +1,9 @@
 // --- paritytech ---
 use cumulus_pallet_parachain_system::ParachainSetCode;
 use frame_support::{
+	dispatch::DispatchClass,
 	traits::{ConstU32, Everything},
 	weights::{constants::WEIGHT_PER_SECOND, Weight},
-	dispatch::DispatchClass,
 };
 use frame_system::{
 	limits::{BlockLength, BlockWeights},
@@ -46,9 +46,7 @@ impl Config for Runtime {
 	type BlockLength = RuntimeBlockLength;
 	type BlockNumber = BlockNumber;
 	type BlockWeights = RuntimeBlockWeights;
-	type RuntimeCall = RuntimeCall;
 	type DbWeight = RocksDbWeight;
-	type RuntimeEvent = RuntimeEvent;
 	type Hash = Hash;
 	type Hashing = BlakeTwo256;
 	type Header = Header;
@@ -58,8 +56,10 @@ impl Config for Runtime {
 	type OnKilledAccount = ();
 	type OnNewAccount = ();
 	type OnSetCode = ParachainSetCode<Self>;
-	type RuntimeOrigin = RuntimeOrigin;
 	type PalletInfo = PalletInfo;
+	type RuntimeCall = RuntimeCall;
+	type RuntimeEvent = RuntimeEvent;
+	type RuntimeOrigin = RuntimeOrigin;
 	type SS58Prefix = SS58Prefix;
 	type SystemWeightInfo = WeightInfo<Runtime>;
 	type Version = Version;

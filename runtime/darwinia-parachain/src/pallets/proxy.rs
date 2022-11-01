@@ -80,14 +80,14 @@ frame_support::parameter_types! {
 impl Config for Runtime {
 	type AnnouncementDepositBase = AnnouncementDepositBase;
 	type AnnouncementDepositFactor = AnnouncementDepositFactor;
-	type RuntimeCall = RuntimeCall;
 	type CallHasher = BlakeTwo256;
 	type Currency = Ring;
-	type RuntimeEvent = RuntimeEvent;
 	type MaxPending = MaxPending;
 	type MaxProxies = MaxProxies;
 	type ProxyDepositBase = ProxyDepositBase;
 	type ProxyDepositFactor = ProxyDepositFactor;
 	type ProxyType = ProxyType;
+	type RuntimeCall = RuntimeCall;
+	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = ();
 }

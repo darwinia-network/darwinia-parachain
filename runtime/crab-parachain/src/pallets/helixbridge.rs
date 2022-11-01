@@ -51,12 +51,12 @@ impl Config for Runtime {
 	type BridgedAccountIdConverter = bp_crab::AccountIdConverter;
 	type BridgedChainId = CrabChainId;
 	type DecimalMultiplier = DecimalMultiplier;
-	type RuntimeEvent = RuntimeEvent;
 	type MessageLaneId = BridgeCrabLaneId;
 	type MessageNoncer = ToCrabMessageSender;
 	type MessagesBridge = BridgeCrabMessages;
 	type OutboundPayloadCreator = ToCrabOutboundPayLoad;
 	type PalletId = ParachainIssuingPalletId;
 	type RingCurrency = Ring;
+	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = ();
 }

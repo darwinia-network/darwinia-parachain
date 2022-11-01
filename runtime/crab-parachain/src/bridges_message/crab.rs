@@ -34,7 +34,7 @@ pub type FromCrabMessageDispatch = FromBridgedChainMessageDispatch<
 	WithCrabMessageBridge,
 	xcm_executor::XcmExecutor<crate::polkadot_xcm::XcmConfig>,
 	crate::polkadot_xcm::XcmWeigher,
-	WeightCredit
+	WeightCredit,
 >;
 
 pub const INITIAL_CRAB_TO_CRAB_PARACHAIN_CONVERSION_RATE: FixedU128 =

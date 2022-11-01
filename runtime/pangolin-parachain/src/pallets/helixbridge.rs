@@ -49,12 +49,12 @@ impl Config for Runtime {
 	type BridgedAccountIdConverter = bp_pangolin::AccountIdConverter;
 	type BridgedChainId = PangolinChainId;
 	type DecimalMultiplier = DecimalMultiplier;
-	type RuntimeEvent = RuntimeEvent;
 	type MessageLaneId = BridgePangolinLaneId;
 	type MessageNoncer = ToPangolinMessageSender;
 	type MessagesBridge = BridgePangolinMessages;
 	type OutboundPayloadCreator = ToPangolinOutboundPayLoad;
 	type PalletId = ParachainIssuingPalletId;
 	type RingCurrency = Ring;
+	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = ();
 }

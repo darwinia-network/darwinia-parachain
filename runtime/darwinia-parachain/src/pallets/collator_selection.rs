@@ -22,13 +22,13 @@ pub type CollatorSelectionUpdateOrigin =
 
 impl Config for Runtime {
 	type Currency = Ring;
-	type RuntimeEvent = RuntimeEvent;
 	// should be a multiple of session or things will get inconsistent
 	type KickThreshold = Period;
 	type MaxCandidates = MaxCandidates;
 	type MaxInvulnerables = MaxInvulnerables;
 	type MinCandidates = MinCandidates;
 	type PotId = PotId;
+	type RuntimeEvent = RuntimeEvent;
 	type UpdateOrigin = CollatorSelectionUpdateOrigin;
 	type ValidatorId = <Self as frame_system::Config>::AccountId;
 	type ValidatorIdOf = IdentityCollator;

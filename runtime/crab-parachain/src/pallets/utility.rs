@@ -4,8 +4,8 @@ use pallet_utility::Config;
 use crate::{weights::pallet_utility::WeightInfo, *};
 
 impl Config for Runtime {
+	type PalletsOrigin = OriginCaller;
 	type RuntimeCall = RuntimeCall;
 	type RuntimeEvent = RuntimeEvent;
-	type PalletsOrigin = OriginCaller;
 	type WeightInfo = WeightInfo<Runtime>;
 }

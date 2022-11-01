@@ -48,10 +48,10 @@ impl Config<WithPangolinFeeMarket> for Runtime {
 	type ConfirmRelayersRewardRatio = ConfirmRelayersRewardRatio;
 	type Currency = Ring;
 	type DutyRelayersRewardRatio = DutyRelayersRewardRatio;
-	type RuntimeEvent = RuntimeEvent;
 	type LockId = FeeMarketLockId;
 	type MessageRelayersRewardRatio = MessageRelayersRewardRatio;
 	type MinimumRelayFee = MinimumRelayFee;
+	type RuntimeEvent = RuntimeEvent;
 	type Slasher = FeeMarketSlasher;
 	type Slot = Slot;
 	type TreasuryPalletId = TreasuryPalletId;

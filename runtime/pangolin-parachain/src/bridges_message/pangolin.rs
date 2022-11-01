@@ -34,7 +34,7 @@ pub type FromPangolinMessageDispatch = FromBridgedChainMessageDispatch<
 	WithPangolinMessageBridge,
 	xcm_executor::XcmExecutor<crate::polkadot_xcm::XcmConfig>,
 	crate::polkadot_xcm::XcmWeigher,
-	WeightCredit
+	WeightCredit,
 >;
 
 pub const INITIAL_PANGOLIN_TO_PANGOLIN_PARACHAIN_CONVERSION_RATE: FixedU128 =
