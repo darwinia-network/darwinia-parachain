@@ -30,7 +30,7 @@ use crab_parachain_runtime::*;
 /// Specialized `ChainSpec` for the `Crab Parachain` parachain runtime.
 pub type ChainSpec = GenericChainSpec<GenesisConfig, Extensions>;
 
-pub const PARA_ID: u32 = 2105;
+pub const PARA_ID: u32 = 2229;
 
 const TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
