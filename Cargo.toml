@@ -175,6 +175,7 @@ pallet-recovery = { git = "https://github.com/paritytech//substrate", branch = "
 pallet-referenda = { git = "https://github.com/paritytech//substrate", branch = "sv-locked-for-gav-xcm-v3-and-bridges-2" }
 pallet-scheduler = { git = "https://github.com/paritytech//substrate", branch = "sv-locked-for-gav-xcm-v3-and-bridges-2" }
 pallet-session = { git = "https://github.com/paritytech//substrate", branch = "sv-locked-for-gav-xcm-v3-and-bridges-2" }
+pallet-session-benchmarking = { git = "https://github.com/paritytech//substrate", branch = "sv-locked-for-gav-xcm-v3-and-bridges-2" }
 pallet-society = { git = "https://github.com/paritytech//substrate", branch = "sv-locked-for-gav-xcm-v3-and-bridges-2" }
 pallet-staking = { git = "https://github.com/paritytech//substrate", branch = "sv-locked-for-gav-xcm-v3-and-bridges-2" }
 pallet-staking-reward-curve = { git = "https://github.com/paritytech//substrate", branch = "sv-locked-for-gav-xcm-v3-and-bridges-2" }
@@ -290,6 +291,7 @@ try-runtime-cli = { git = "https://github.com/paritytech//substrate", branch = "
 kusama-runtime = { git = "https://github.com/paritytech//polkadot", branch = "locked-for-gav-xcm-v3-and-bridges-2" }
 kusama-runtime-constants = { git = "https://github.com/paritytech//polkadot", branch = "locked-for-gav-xcm-v3-and-bridges-2" }
 pallet-xcm = { git = "https://github.com/paritytech//polkadot", branch = "locked-for-gav-xcm-v3-and-bridges-2" }
+pallet-xcm-benchmarks = { git = "https://github.com/paritytech//polkadot", branch = "locked-for-gav-xcm-v3-and-bridges-2" }
 polkadot-approval-distribution = { git = "https://github.com/paritytech//polkadot", branch = "locked-for-gav-xcm-v3-and-bridges-2" }
 polkadot-availability-bitfield-distribution = { git = "https://github.com/paritytech//polkadot", branch = "locked-for-gav-xcm-v3-and-bridges-2" }
 polkadot-availability-distribution = { git = "https://github.com/paritytech//polkadot", branch = "locked-for-gav-xcm-v3-and-bridges-2" }
@@ -354,6 +356,19 @@ pallet-bridge-messages = { git = "https://github.com/darwinia-patch/darwinia-mes
 pallet-fee-market      = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }
 
 [patch."https://github.com/paritytech/cumulus"]
+cumulus-client-cli        = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-client-collator   = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-client-consensus-aura = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-client-consensus-common = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-client-consensus-relay-chain = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-client-network = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-client-pov-recovery = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-client-service = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-primitives-parachain-inherent = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-relay-chain-inprocess-interface = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-relay-chain-interface = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-relay-chain-rpc-interface = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
+cumulus-test-relay-sproof-builder = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
 cumulus-pallet-aura-ext         = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
 cumulus-pallet-dmp-queue        = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
 cumulus-pallet-parachain-system = { git = "https://github.com/darwinia-patch/cumulus", branch = "gav-xcm-v3" }
