@@ -23,7 +23,7 @@ pub type FromPangolinMessagesProof = FromBridgedChainMessagesProof<bp_pangolin::
 /// Message payload for PangolinParachain -> Pangolin messages.
 pub type ToPangolinMessagePayload = FromThisChainMessagePayload;
 /// Message payload for Pangolin -> PangolinParachain messages.
-pub type FromPangolinMessagePayload = FromBridgedChainMessagePayload<Call>;
+pub type FromPangolinMessagePayload = FromBridgedChainMessagePayload<RuntimeCall>;
 
 /// Message verifier for PangolinParachain -> Pangolin messages.
 pub type ToPangolinMessageVerifier<R> =
@@ -34,9 +34,7 @@ pub type FromPangolinMessageDispatch = FromBridgedChainMessageDispatch<
 	WithPangolinMessageBridge,
 	xcm_executor::XcmExecutor<crate::polkadot_xcm::XcmConfig>,
 	crate::polkadot_xcm::XcmWeigher,
-	// 2 XCM instructions is for simple `Trap(42)` program, coming through bridge
-	// (it is prepended with `UniversalOrigin` instruction)
-	frame_support::traits::ConstU64<BASE_XCM_WEIGHT_TWICE>,
+	WeightCredit
 >;
 
 pub const INITIAL_PANGOLIN_TO_PANGOLIN_PARACHAIN_CONVERSION_RATE: FixedU128 =
@@ -44,11 +42,16 @@ pub const INITIAL_PANGOLIN_TO_PANGOLIN_PARACHAIN_CONVERSION_RATE: FixedU128 =
 /// Weight of 2 XCM instructions is for simple `Trap(42)` program, coming through bridge
 /// (it is prepended with `UniversalOrigin` instruction). It is used just for simplest manual
 /// tests, confirming that we don't break encoding somewhere between.
-pub const BASE_XCM_WEIGHT_TWICE: Weight = 2 * crate::xcm_config::BASE_XCM_WEIGHT;
+pub const BASE_XCM_WEIGHT_TWICE: u64 = 2 * crate::xcm_config::BASE_XCM_WEIGHT;
 
 frame_support::parameter_types! {
 	/// PangolinParachain to Pangolin conversion rate. Initially we trate both tokens as equal.
 	pub storage PangolinToPangolinParachainConversionRate: FixedU128 = INITIAL_PANGOLIN_TO_PANGOLIN_PARACHAIN_CONVERSION_RATE;
+	/// Weight credit for our test messages.
+	///
+	/// 2 XCM instructions is for simple `Trap(42)` program, coming through bridge
+	/// (it is prepended with `UniversalOrigin` instruction).
+	pub const WeightCredit: Weight = Weight::from_ref_time(BASE_XCM_WEIGHT_TWICE);
 }
 
 #[derive(Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug, TypeInfo)]
@@ -89,13 +92,12 @@ impl ChainWithMessages for PangolinParachain {
 	type Hash = bp_pangolin_parachain::Hash;
 	type Signature = bp_pangolin_parachain::Signature;
 	type Signer = bp_pangolin_parachain::AccountPublic;
-	type Weight = Weight;
 }
 impl ThisChainWithMessages for PangolinParachain {
-	type Call = Call;
-	type Origin = Origin;
+	type RuntimeCall = RuntimeCall;
+	type RuntimeOrigin = RuntimeOrigin;
 
-	fn is_message_accepted(send_origin: &Self::Origin, lane: &LaneId) -> bool {
+	fn is_message_accepted(send_origin: &Self::RuntimeOrigin, lane: &LaneId) -> bool {
 		let here_location =
 			xcm::v3::MultiLocation::from(crate::xcm_config::UniversalLocation::get());
 		match send_origin.caller {
@@ -128,7 +130,6 @@ impl ChainWithMessages for Pangolin {
 	type Hash = bp_pangolin::Hash;
 	type Signature = bp_pangolin::Signature;
 	type Signer = bp_pangolin::AccountPublic;
-	type Weight = Weight;
 }
 impl BridgedChainWithMessages for Pangolin {
 	fn maximal_extrinsic_size() -> u32 {

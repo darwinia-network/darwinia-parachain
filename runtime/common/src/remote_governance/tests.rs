@@ -41,7 +41,7 @@ fn emergency_safeguard_should_work() {
 
 		assert_noop!(
 			RemoteGovernance::emergency_safeguard(
-				Origin::signed(ALICE),
+				RuntimeOrigin::signed(ALICE),
 				force_balance_transfer.clone()
 			),
 			<Error<Test>>::EmergencyOnly
@@ -52,14 +52,14 @@ fn emergency_safeguard_should_work() {
 
 		assert_noop!(
 			RemoteGovernance::emergency_safeguard(
-				Origin::signed(BOB),
+				RuntimeOrigin::signed(BOB),
 				force_balance_transfer.clone()
 			),
 			BadOrigin
 		);
 
 		assert_ok!(RemoteGovernance::emergency_safeguard(
-			Origin::signed(ALICE),
+			RuntimeOrigin::signed(ALICE),
 			force_balance_transfer
 		));
 		assert_eq!(Balances::free_balance(BOB), 11);
@@ -80,7 +80,7 @@ fn enact_remote_call_should_work() {
 
 		assert_noop!(
 			RemoteGovernance::enact_remote_call(
-				Origin::signed(ALICE),
+				RuntimeOrigin::signed(ALICE),
 				force_balance_transfer.clone()
 			),
 			<Error<Test>>::RequireSourceRoot
@@ -90,7 +90,7 @@ fn enact_remote_call_should_work() {
 		let source_root = RemoteGovernance::derived_source_root();
 
 		assert_ok!(RemoteGovernance::enact_remote_call(
-			Origin::signed(source_root),
+			RuntimeOrigin::signed(source_root),
 			force_balance_transfer
 		));
 		assert_eq!(Balances::free_balance(BOB), 11);

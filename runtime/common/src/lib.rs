@@ -54,6 +54,7 @@ frame_support::parameter_types! {
 	/// that combined with `AdjustmentVariable`, we can recover from the minimum.
 	/// See `multiplier_can_grow_from_zero`.
 	pub MinimumMultiplier: Multiplier = Multiplier::saturating_from_rational(1, 1_000_000_000_u128);
+	pub MaximumMultiplier: Multiplier = sp_runtime::traits::Bounded::max_value();
 }
 
 /// Handles converting a weight scalar to a fee value, based on the scale and granularity of the

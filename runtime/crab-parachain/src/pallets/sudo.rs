@@ -4,6 +4,6 @@ use pallet_sudo::Config;
 use crate::*;
 
 impl Config for Runtime {
-	type Call = Call;
-	type Event = Event;
+	type RuntimeCall = RuntimeCall;
+	type RuntimeEvent = RuntimeEvent;
 }

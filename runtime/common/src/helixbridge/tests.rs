@@ -28,7 +28,7 @@ fn issue_from_remote_backing_not_configured() {
 		let (recipient, _recipient_vec) = build_account(10);
 		assert_err!(
 			S2sIssuing::issue_from_remote(
-				Origin::signed(build_account(1).0),
+				RuntimeOrigin::signed(build_account(1).0),
 				1u64,
 				recipient.clone(),
 			),
@@ -49,7 +49,7 @@ fn issue_from_remote_backing_remote_sender_invalid() {
 		));
 		assert_err!(
 			S2sIssuing::issue_from_remote(
-				Origin::signed(build_account(1).0),
+				RuntimeOrigin::signed(build_account(1).0),
 				1u64,
 				recipient.clone(),
 			),
@@ -71,7 +71,7 @@ fn issue_from_remote_backing_success() {
 			remote_backing_account
 		));
 		assert_ok!(S2sIssuing::issue_from_remote(
-			Origin::signed(drived_remote_backing_account),
+			RuntimeOrigin::signed(drived_remote_backing_account),
 			1024u64,
 			recipient.clone(),
 		));
@@ -84,7 +84,7 @@ fn burn_and_remote_unlock_insufficient_balance() {
 	new_test_ext().execute_with(|| {
 		assert_err!(
 			S2sIssuing::burn_and_remote_unlock(
-				Origin::signed(build_account(1).0),
+				RuntimeOrigin::signed(build_account(1).0),
 				1,
 				1,
 				100,
@@ -100,7 +100,7 @@ fn burn_and_remote_unlock_insufficient_balance() {
 fn burn_and_remote_unlock_success() {
 	new_test_ext().execute_with(|| {
 		assert_ok!(S2sIssuing::burn_and_remote_unlock(
-			Origin::signed(build_account(1).0),
+			RuntimeOrigin::signed(build_account(1).0),
 			1,
 			1,
 			10,

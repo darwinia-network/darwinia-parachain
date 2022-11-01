@@ -51,7 +51,7 @@ impl Config for Runtime {
 	type BridgedAccountIdConverter = bp_crab::AccountIdConverter;
 	type BridgedChainId = CrabChainId;
 	type DecimalMultiplier = DecimalMultiplier;
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	type MessageLaneId = BridgeCrabLaneId;
 	type MessageNoncer = ToCrabMessageSender;
 	type MessagesBridge = BridgeCrabMessages;

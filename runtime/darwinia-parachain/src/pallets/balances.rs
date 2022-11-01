@@ -21,7 +21,7 @@ impl Config for Runtime {
 	type AccountStore = System;
 	type Balance = Balance;
 	type DustRemoval = ();
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	type ExistentialDeposit = ExistentialDeposit;
 	type MaxLocks = MaxLocks;
 	type MaxReserves = MaxReserves;

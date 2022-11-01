@@ -17,7 +17,7 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	type Keys = SessionKeys;
 	type NextSessionRotation = PeriodicSessions<Period, Offset>;
 	// Essentially just Aura, but lets be pedantic.

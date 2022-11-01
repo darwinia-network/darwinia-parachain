@@ -9,7 +9,7 @@ use pallet_fee_market::s2s::{
 	FeeMarketMessageAcceptedHandler, FeeMarketMessageConfirmedHandler, FeeMarketPayment,
 };
 
-impl SenderOrigin<AccountId> for Origin {
+impl SenderOrigin<AccountId> for RuntimeOrigin {
 	fn linked_account(&self) -> Option<AccountId> {
 		// XCM deals wit fees in our deployments
 		None
@@ -24,14 +24,14 @@ frame_support::parameter_types! {
 	pub const MaxUnrewardedRelayerEntriesAtInboundLane: MessageNonce =
 		bp_pangolin::MAX_UNREWARDED_RELAYERS_IN_CONFIRMATION_TX;
 	pub const GetDeliveryConfirmationTransactionFee: Balance =
-		bp_pangolin::MAX_SINGLE_MESSAGE_DELIVERY_CONFIRMATION_TX_WEIGHT as _;
+		bp_pangolin::MAX_SINGLE_MESSAGE_DELIVERY_CONFIRMATION_TX_WEIGHT.ref_time() as _;
 	pub RootAccountForPayments: Option<AccountId> = None;
 }
 
 impl Config<WithPangolinMessages> for Runtime {
 	type AccountIdConverter = bp_pangolin_parachain::AccountIdConverter;
 	type BridgedChainId = BridgedChainId;
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	type InboundMessageFee = bp_pangolin::Balance;
 	type InboundPayload = bm_pangolin::FromPangolinMessagePayload;
 	type InboundRelayer = bp_pangolin::AccountId;

@@ -22,7 +22,7 @@ pub type CollatorSelectionUpdateOrigin =
 
 impl Config for Runtime {
 	type Currency = Ring;
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	// should be a multiple of session or things will get inconsistent
 	type KickThreshold = Period;
 	type MaxCandidates = MaxCandidates;

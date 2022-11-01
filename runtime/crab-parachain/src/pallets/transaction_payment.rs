@@ -5,7 +5,7 @@ use pallet_transaction_payment::{Config, CurrencyAdapter, TargetedFeeAdjustment}
 use crate::*;
 
 pub type SlowAdjustingFeeUpdate<R> =
-	TargetedFeeAdjustment<R, TargetBlockFullness, AdjustmentVariable, MinimumMultiplier>;
+	TargetedFeeAdjustment<R, TargetBlockFullness, AdjustmentVariable, MinimumMultiplier, MaximumMultiplier>;
 
 frame_support::parameter_types! {
 	pub const TransactionByteFee: Balance = 5 * MILLI_COIN;
@@ -13,7 +13,7 @@ frame_support::parameter_types! {
 }
 
 impl Config for Runtime {
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	type FeeMultiplierUpdate = SlowAdjustingFeeUpdate<Self>;
 	type LengthToFee = ConstantMultiplier<Balance, TransactionByteFee>;
 	type OnChargeTransaction = CurrencyAdapter<Ring, DealWithFees<Runtime>>;

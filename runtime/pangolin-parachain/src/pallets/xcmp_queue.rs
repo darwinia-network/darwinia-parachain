@@ -9,7 +9,7 @@ impl Config for Runtime {
 	type ChannelInfo = ParachainSystem;
 	type ControllerOrigin = EnsureRoot<AccountId>;
 	type ControllerOriginConverter = XcmOriginToTransactDispatchOrigin;
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	type ExecuteOverweightOrigin = EnsureRoot<AccountId>;
 	type VersionWrapper = PolkadotXcm;
 	type WeightInfo = WeightInfo<Runtime>;

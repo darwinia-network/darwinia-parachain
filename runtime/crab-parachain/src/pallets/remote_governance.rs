@@ -39,8 +39,8 @@ impl Config for Runtime {
 	type BridgeAccountIdConverter = bp_crab::AccountIdConverter;
 	type BridgeFinalized = CrabBestFinalized;
 	type BridgedChainId = CrabChainId;
-	type Call = Call;
+	type RuntimeCall = RuntimeCall;
 	type CheckInterval = CheckInterval;
 	type EmergencySafeguardOrigin = EnsureSpecific;
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 }

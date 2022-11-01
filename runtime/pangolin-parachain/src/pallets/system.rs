@@ -2,7 +2,8 @@
 use cumulus_pallet_parachain_system::ParachainSetCode;
 use frame_support::{
 	traits::{ConstU32, Everything},
-	weights::{constants::WEIGHT_PER_SECOND, DispatchClass, Weight},
+	weights::{constants::WEIGHT_PER_SECOND, Weight},
+	dispatch::DispatchClass,
 };
 use frame_system::{
 	limits::{BlockLength, BlockWeights},
@@ -20,39 +21,20 @@ use crate::{
 	*,
 };
 
-/// We assume that ~5% of the block weight is consumed by `on_initialize` handlers. This is
-/// used to limit the maximal weight of a single extrinsic.
-pub const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(5);
 /// We allow `Normal` extrinsics to fill up the block up to 75%, the rest can be used by
 /// Operational  extrinsics.
 pub const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
 
 /// We allow for .5 seconds of compute with a 12 second average block time.
-pub const MAXIMUM_BLOCK_WEIGHT: Weight = WEIGHT_PER_SECOND / 2;
+pub const MAXIMUM_BLOCK_WEIGHT: Weight = WEIGHT_PER_SECOND.set_proof_size(1_000).saturating_div(2);
 
 frame_support::parameter_types! {
 	pub const BlockHashCount: BlockNumber = 2400;
 	pub const Version: RuntimeVersion = VERSION;
 	pub RuntimeBlockLength: BlockLength =
 		BlockLength::max_with_normal_ratio(5 * 1024 * 1024, NORMAL_DISPATCH_RATIO);
-	pub RuntimeBlockWeights: BlockWeights = BlockWeights::builder()
-		.base_block(BlockExecutionWeight::get())
-		.for_class(DispatchClass::all(), |weights| {
-			weights.base_extrinsic = ExtrinsicBaseWeight::get();
-		})
-		.for_class(DispatchClass::Normal, |weights| {
-			weights.max_total = Some(NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT);
-		})
-		.for_class(DispatchClass::Operational, |weights| {
-			weights.max_total = Some(MAXIMUM_BLOCK_WEIGHT);
-			// Operational transactions have some extra reserved space, so that they
-			// are included even if block reached `MAXIMUM_BLOCK_WEIGHT`.
-			weights.reserved = Some(
-				MAXIMUM_BLOCK_WEIGHT - NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT
-			);
-		})
-		.avg_block_initialization(AVERAGE_ON_INITIALIZE_RATIO)
-		.build_or_panic();
+	pub BlockWeights: limits::BlockWeights =
+		limits::BlockWeights::with_sensible_defaults(MAXIMUM_BLOCK_WEIGHT, NORMAL_DISPATCH_RATIO);
 	pub const SS58Prefix: u8 = 42;
 }
 
@@ -64,9 +46,9 @@ impl Config for Runtime {
 	type BlockLength = RuntimeBlockLength;
 	type BlockNumber = BlockNumber;
 	type BlockWeights = RuntimeBlockWeights;
-	type Call = Call;
+	type RuntimeCall = RuntimeCall;
 	type DbWeight = RocksDbWeight;
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	type Hash = Hash;
 	type Hashing = BlakeTwo256;
 	type Header = Header;
@@ -76,7 +58,7 @@ impl Config for Runtime {
 	type OnKilledAccount = ();
 	type OnNewAccount = ();
 	type OnSetCode = ParachainSetCode<Self>;
-	type Origin = Origin;
+	type RuntimeOrigin = RuntimeOrigin;
 	type PalletInfo = PalletInfo;
 	type SS58Prefix = SS58Prefix;
 	type SystemWeightInfo = WeightInfo<Runtime>;

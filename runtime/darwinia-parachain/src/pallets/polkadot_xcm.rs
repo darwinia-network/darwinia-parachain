@@ -76,7 +76,7 @@ pub type XcmOriginToTransactDispatchOrigin = (
 	// Sovereign account converter; this attempts to derive an `AccountId` from the origin location
 	// using `LocationToAccountId` and then turn that into the usual `Signed` origin. Useful for
 	// foreign chains who want to have a local sovereign account on this chain which they control.
-	SovereignSignedViaLocation<LocationToAccountId, Origin>,
+	SovereignSignedViaLocation<LocationToAccountId, RuntimeOrigin>,
 	// Native converter for Relay-chain (Parent) location; will converts to a `Relay` origin when
 	// recognized.
 	RelayChainAsNative<RelayChainOrigin, Origin>,
@@ -87,7 +87,7 @@ pub type XcmOriginToTransactDispatchOrigin = (
 	// transaction from the Root origin.
 	ParentAsSuperuser<Origin>,
 	// Native signed account converter; this just converts an `AccountId32` origin into a normal
-	// `Origin::Signed` origin of the same 32-byte value.
+	// `RuntimeOrigin::signed` origin of the same 32-byte value.
 	SignedAccountId32AsNative<RelayNetwork, Origin>,
 	// Xcm origins can be represented natively under the Xcm pallet's Xcm origin.
 	XcmPassthrough<Origin>,
@@ -100,9 +100,9 @@ frame_support::parameter_types! {
 		0,
 		X1(PalletInstance(<Balances as PalletInfoAccess>::index() as u8))
 	);
-	pub RelayChainOrigin: Origin = CumulusOrigin::Relay.into();
+	pub RelayChainOrigin: RuntimeOrigin = CumulusOrigin::Relay.into();
 	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
-	pub UnitWeightCost: Weight = 1_000_000_000;
+	pub UnitWeightCost: u64 = 1_000_000_000;
 	pub Ancestry: MultiLocation = Parachain(ParachainInfo::parachain_id().into()).into();
 }
 
@@ -126,7 +126,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type AssetTransactor = LocalAssetTransactor;
 	type AssetTrap = PolkadotXcm;
 	type Barrier = Barrier;
-	type Call = Call;
+	type RuntimeCall = RuntimeCall;
 	type IsReserve = NativeAsset;
 	type IsTeleporter = NativeAsset;
 	// <- should be enough to allow teleportation of KSM
@@ -141,19 +141,20 @@ impl XcmCExecutorConfig for XcmConfig {
 		Balances,
 		ToAuthor<Runtime>,
 	>;
-	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
+	type Weigher = FixedWeightBounds<UnitWeightCost, RuntimeCall, MaxInstructions>;
 	type XcmSender = XcmRouter;
+	type CallDispatcher = RuntimeCall;
 }
 
 impl Config for Runtime {
 	type AdvertisedXcmVersion = CurrentXcmVersion;
-	type Call = Call;
-	type Event = Event;
+	type RuntimeCall = RuntimeCall;
+	type RuntimeEvent = RuntimeEvent;
 	type ExecuteXcmOrigin = EnsureXcmOrigin<Origin, LocalOriginToLocation>;
 	type LocationInverter = LocationInverter<Ancestry>;
-	type Origin = Origin;
+	type RuntimeOrigin = RuntimeOrigin;
 	type SendXcmOrigin = EnsureXcmOrigin<Origin, LocalOriginToLocation>;
-	type Weigher = FixedWeightBounds<UnitWeightCost, Call, MaxInstructions>;
+	type Weigher = FixedWeightBounds<UnitWeightCost, RuntimeCall, MaxInstructions>;
 	type XcmExecuteFilter = Everything;
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 	type XcmReserveTransferFilter = Everything;

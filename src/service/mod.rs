@@ -379,7 +379,7 @@ where
 	let prometheus_registry = parachain_config.prometheus_registry().cloned();
 	let transaction_pool = params.transaction_pool.clone();
 	let import_queue = cumulus_client_service::SharedImportQueue::new(params.import_queue);
-	let (network, system_rpc_tx, start_network) =
+	let (network, system_rpc_tx, tx_handler_controller, start_network) =
 		sc_service::build_network(sc_service::BuildNetworkParams {
 			config: &parachain_config,
 			client: client.clone(),
@@ -413,6 +413,7 @@ where
 		backend: backend.clone(),
 		network: network.clone(),
 		system_rpc_tx,
+		tx_handler_controller,
 		telemetry: telemetry.as_mut(),
 	})?;
 
@@ -511,7 +512,7 @@ where
 						slot_duration,
 					);
 
-					Ok((timestamp, slot))
+					Ok((slot, timestamp))
 				},
 				can_author_with: AlwaysCanAuthor,
 				telemetry,
@@ -611,7 +612,7 @@ where
 									"Failed to create parachain inherent",
 								)
 							})?;
-							Ok((timestamp, slot, parachain_inherent))
+							Ok((slot, timestamp, parachain_inherent))
 						}
 					},
 					block_import: client2.clone(),

@@ -48,7 +48,7 @@ impl Config<WithPangolinFeeMarket> for Runtime {
 	type ConfirmRelayersRewardRatio = ConfirmRelayersRewardRatio;
 	type Currency = Ring;
 	type DutyRelayersRewardRatio = DutyRelayersRewardRatio;
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	type LockId = FeeMarketLockId;
 	type MessageRelayersRewardRatio = MessageRelayersRewardRatio;
 	type MinimumRelayFee = MinimumRelayFee;

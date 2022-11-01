@@ -5,6 +5,6 @@ use xcm_executor::XcmExecutor;
 use crate::*;
 
 impl Config for Runtime {
-	type Event = Event;
+	type RuntimeEvent = RuntimeEvent;
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 }
