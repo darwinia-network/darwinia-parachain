@@ -5,6 +5,7 @@ use scale_info::TypeInfo;
 use frame_support::{log, weights::Weight, RuntimeDebug};
 use sp_runtime::{FixedPointNumber, FixedU128};
 use sp_std::ops::RangeInclusive;
+use xcm::latest::prelude::*;
 // --- darwinia-network ---
 use crate::*;
 use bp_messages::{source_chain::*, target_chain::*, *};
@@ -32,8 +33,8 @@ pub type ToCrabMessageVerifier<R> =
 /// Call-dispatch based message dispatch for Crab -> CrabParachain messages.
 pub type FromCrabMessageDispatch = FromBridgedChainMessageDispatch<
 	WithCrabMessageBridge,
-	xcm_executor::XcmExecutor<crate::polkadot_xcm::XcmConfig>,
-	crate::polkadot_xcm::XcmWeigher,
+	xcm_executor::XcmExecutor<XcmConfig>,
+	XcmWeigher,
 	WeightCredit,
 >;
 
@@ -42,7 +43,7 @@ pub const INITIAL_CRAB_TO_CRAB_PARACHAIN_CONVERSION_RATE: FixedU128 =
 /// Weight of 2 XCM instructions is for simple `Trap(42)` program, coming through bridge
 /// (it is prepended with `UniversalOrigin` instruction). It is used just for simplest manual
 /// tests, confirming that we don't break encoding somewhere between.
-pub const BASE_XCM_WEIGHT_TWICE: u64 = 2 * crate::xcm_config::BASE_XCM_WEIGHT;
+pub const BASE_XCM_WEIGHT_TWICE: u64 = 2 * BASE_XCM_WEIGHT;
 
 frame_support::parameter_types! {
 	/// CrabParachain to Crab conversion rate. Initially we trate both tokens as equal.
@@ -98,8 +99,7 @@ impl ThisChainWithMessages for CrabParachain {
 	type RuntimeOrigin = RuntimeOrigin;
 
 	fn is_message_accepted(send_origin: &Self::RuntimeOrigin, lane: &LaneId) -> bool {
-		let here_location =
-			xcm::v3::MultiLocation::from(crate::xcm_config::UniversalLocation::get());
+		let here_location = xcm::latest::MultiLocation::from(UniversalLocation::get());
 		match send_origin.caller {
 			OriginCaller::PolkadotXcm(pallet_xcm::Origin::Xcm(ref location))
 				if *location == here_location =>

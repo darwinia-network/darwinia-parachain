@@ -2,12 +2,13 @@
 use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;
 use frame_support::{
-	traits::{Everything, PalletInfoAccess},
+	traits::{Everything, Nothing, PalletInfoAccess},
 	weights::{ConstantMultiplier, Weight},
 };
 use pallet_xcm::{Config, CurrentXcmVersion, XcmPassthrough};
 use polkadot_parachain::primitives::Sibling;
 use polkadot_runtime_common::impls::ToAuthor;
+use sp_core::ConstU32;
 use sp_runtime::traits::ConstU128;
 use xcm::latest::prelude::*;
 use xcm_builder::*;
@@ -95,6 +96,9 @@ pub type XcmOriginToTransactDispatchOrigin = (
 	XcmPassthrough<RuntimeOrigin>,
 );
 
+/// The amount of weight an XCM operation takes. This is a safe overestimate.
+pub const BASE_XCM_WEIGHT: u64 = 1_000_000_000;
+
 frame_support::parameter_types! {
 	pub const RelayNetwork: NetworkId = NetworkId::Kusama;
 	pub const MaxInstructions: u32 = 100;
@@ -105,7 +109,7 @@ frame_support::parameter_types! {
 	);
 	pub RelayChainOrigin: RuntimeOrigin = CumulusOrigin::Relay.into();
 	// One XCM operation is 1_000_000 weight - almost certainly a conservative estimate.
-	pub UnitWeightCost: u64 = 1_000_000_000;
+	pub UnitWeightCost: u64 = BASE_XCM_WEIGHT;
 	pub UniversalLocation: InteriorMultiLocation = X1(Parachain(ParachainInfo::parachain_id().into()));
 }
 
@@ -121,6 +125,9 @@ frame_support::match_types! {
 		MultiLocation { parents: 1, interior: X1(_) }
 	};
 }
+
+/// XCM weigher type.
+pub type XcmWeigher = FixedWeightBounds<UnitWeightCost, RuntimeCall, MaxInstructions>;
 
 pub struct XcmConfig;
 impl XcmCExecutorConfig for XcmConfig {
@@ -152,7 +159,7 @@ impl XcmCExecutorConfig for XcmConfig {
 	type UniversalAliases = Nothing;
 	// <- should be enough to allow teleportation of KSM
 	type UniversalLocation = UniversalLocation;
-	type Weigher = FixedWeightBounds<UnitWeightCost, RuntimeCall, MaxInstructions>;
+	type Weigher = XcmWeigher;
 	type XcmSender = XcmRouter;
 }
 
@@ -169,7 +176,7 @@ impl Config for Runtime {
 	type SovereignAccountOf = LocationToAccountId;
 	type TrustedLockers = ();
 	type UniversalLocation = UniversalLocation;
-	type Weigher = FixedWeightBounds<UnitWeightCost, RuntimeCall, MaxInstructions>;
+	type Weigher = XcmWeigher;
 	type XcmExecuteFilter = Everything;
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 	type XcmReserveTransferFilter = Everything;
