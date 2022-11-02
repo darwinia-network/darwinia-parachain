@@ -10,10 +10,9 @@ use crate::*;
 use bp_messages::{source_chain::*, target_chain::*, *};
 use bp_runtime::*;
 use bridge_runtime_common::{
-	lanes::PANGOLIN_PANGOLIN_PARACHAIN_LANE,
+	lanes::*,
 	messages::{source::*, target::*, *},
 };
-use dp_common_runtime::FromThisChainMessageVerifier;
 
 /// Message delivery proof for PangolinParachain -> Pangolin messages.
 pub type ToPangolinMessagesDeliveryProof = FromBridgedChainMessagesDeliveryProof<bp_pangolin::Hash>;
@@ -68,10 +67,17 @@ impl MessageBridge for WithPangolinMessageBridge {
 	type ThisChain = PangolinParachain;
 
 	const BRIDGED_CHAIN_ID: ChainId = PANGOLIN_CHAIN_ID;
+	#[cfg(not(feature = "alpha"))]
 	const BRIDGED_MESSAGES_PALLET_NAME: &'static str =
 		bp_pangolin_parachain::WITH_PANGOLIN_PARACHAIN_MESSAGES_PALLET_NAME;
+	#[cfg(feature = "alpha")]
+	const BRIDGED_MESSAGES_PALLET_NAME: &'static str =
+		bp_pangolin_parachain_alpha::WITH_PANGOLIN_PARACHAIN_MESSAGES_PALLET_NAME;
 	const RELAYER_FEE_PERCENT: u32 = 10;
+	#[cfg(not(feature = "alpha"))]
 	const THIS_CHAIN_ID: ChainId = PANGOLIN_PARACHAIN_CHAIN_ID;
+	#[cfg(feature = "alpha")]
+	const THIS_CHAIN_ID: ChainId = PANGOLIN_PARACHAIN_ALPHA_CHAIN_ID;
 }
 
 #[derive(Clone, Copy, RuntimeDebug)]
@@ -88,8 +94,16 @@ impl ThisChainWithMessages for PangolinParachain {
 	type Call = Call;
 	type Origin = Origin;
 
+	#[cfg(not(feature = "alpha"))]
 	fn is_message_accepted(_send_origin: &Self::Origin, lane: &LaneId) -> bool {
 		*lane == [0, 0, 0, 0] || *lane == [0, 0, 0, 1] || *lane == PANGOLIN_PANGOLIN_PARACHAIN_LANE
+	}
+
+	#[cfg(feature = "alpha")]
+	fn is_message_accepted(_send_origin: &Self::Origin, lane: &LaneId) -> bool {
+		*lane == [0, 0, 0, 0]
+			|| *lane == [0, 0, 0, 1]
+			|| *lane == PANGOLIN_PANGOLIN_PARACHAIN_ALPHA_LANE
 	}
 
 	fn maximal_pending_messages_at_outbound_lane() -> MessageNonce {
@@ -154,5 +168,4 @@ impl SourceHeaderChain<<Self as ChainWithMessages>::Balance> for Pangolin {
 	}
 }
 
-/// The s2s backing pallet index in the pangoro chain runtime.
-pub const PANGOLIN_S2S_BACKING_PALLET_INDEX: u8 = 65;
+pub const ETHEREUM_PALLET_INDEX: u8 = 41;

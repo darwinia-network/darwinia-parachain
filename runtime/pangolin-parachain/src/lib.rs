@@ -67,6 +67,7 @@ mod benches {
 		// [pallet_bridge_messages, MessagesBench::<Runtime, WithPangolinMessages>]
 		[pallet_fee_market, PangolinFeeMarket]
 		[cumulus_pallet_xcmp_queue, XcmpQueue]
+		[dp_common_runtime, FromPangolinIssuing]
 	);
 }
 
@@ -123,7 +124,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
 	impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain"),
 	authoring_version: 1,
-	spec_version: 5_3_3_0,
+	spec_version: 5_3_4_0,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -137,7 +138,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
 	impl_name: sp_runtime::create_runtime_str!("Pangolin Parachain Alpha"),
 	authoring_version: 1,
-	spec_version: 5_3_3_0,
+	spec_version: 5_3_4_0,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -185,6 +186,8 @@ frame_support::construct_runtime! {
 
 		PangolinFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 		FromPangolinIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
+
+		MessageRouter: dp_common_runtime::message_router::{Pallet, Call, Storage, Event<T>} = 26,
 	}
 }
 
@@ -465,6 +468,7 @@ sp_api::impl_runtime_apis! {
 			let params = (&config, &whitelist);
 
 			add_benchmarks!(params, batches);
+			add_benchmark!(params, batches, dp_common_runtime, FromPangolinIssuing);
 
 			Ok(batches)
 		}

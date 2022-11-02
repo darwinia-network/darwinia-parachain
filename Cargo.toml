@@ -8,7 +8,7 @@ license     = "GPL-3.0"
 name        = "darwinia-parachain"
 readme      = "README.md"
 repository  = "https://github.com/darwinia-network/darwinia-parachain"
-version     = "5.3.3"
+version     = "5.3.4"
 
 [features]
 alpha = ["pangolin-parachain-runtime/alpha"]
@@ -33,7 +33,7 @@ runtime-benchmarks = [
 
 [dependencies]
 # crates.io
-array-bytes  = { version = "3.0" }
+array-bytes  = { version = "4.1" }
 async-trait  = { version = "0.1" }
 clap         = { version = "3.2", features = ["derive"] }
 codec        = { package = "parity-scale-codec", version = "3.1" }

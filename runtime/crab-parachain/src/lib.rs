@@ -120,7 +120,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: sp_runtime::create_runtime_str!("Crab Parachain"),
 	impl_name: sp_runtime::create_runtime_str!("Darwinia Crab Parachain"),
 	authoring_version: 1,
-	spec_version: 5_3_3_0,
+	spec_version: 5_3_4_0,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -174,6 +174,8 @@ frame_support::construct_runtime! {
 
 		CrabFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 		FromCrabIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
+
+		MessageRouter: dp_common_runtime::message_router::{Pallet, Call, Storage, Event<T>} = 26,
 	}
 }
 

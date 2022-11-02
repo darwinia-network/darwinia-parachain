@@ -1,7 +1,7 @@
 pub use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 
 // --- darwinia-network ---
-use crate::{weights::pallet_bridge_messages::WeightInfo, *};
+use crate::*;
 use bp_messages::{source_chain::SenderOrigin, MessageNonce};
 use bp_runtime::{ChainId, PANGOLIN_CHAIN_ID};
 use pallet_bridge_messages::Config;
@@ -44,13 +44,12 @@ impl Config<WithPangolinMessages> for Runtime {
 	type MaxUnrewardedRelayerEntriesAtInboundLane = MaxUnrewardedRelayerEntriesAtInboundLane;
 	type MessageDeliveryAndDispatchPayment = FeeMarketPayment<Self, WithPangolinFeeMarket, Ring>;
 	type MessageDispatch = bm_pangolin::FromPangolinMessageDispatch;
-	type OnDeliveryConfirmed =
-		(FromPangolinIssuing, FeeMarketMessageConfirmedHandler<Self, WithPangolinFeeMarket>);
+	type OnDeliveryConfirmed = FeeMarketMessageConfirmedHandler<Self, WithPangolinFeeMarket>;
 	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self, WithPangolinFeeMarket>;
 	type OutboundMessageFee = bp_pangolin_parachain::Balance;
 	type OutboundPayload = bm_pangolin::ToPangolinMessagePayload;
 	type Parameter = bm_pangolin::PangolinParachainToPangolinParameter;
 	type SourceHeaderChain = bm_pangolin::Pangolin;
 	type TargetHeaderChain = bm_pangolin::Pangolin;
-	type WeightInfo = WeightInfo<Runtime>;
+	type WeightInfo = ();
 }
