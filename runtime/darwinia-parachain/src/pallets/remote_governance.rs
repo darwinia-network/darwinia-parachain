@@ -27,8 +27,7 @@ impl<O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>> Ensu
 pub struct DarwiniaBestFinalized;
 impl Get<Hash> for DarwiniaBestFinalized {
 	fn get() -> Hash {
-		// <pallet_bridge_grandpa::BestFinalized<Runtime, WithCrabGrandpa>>::get()
-		todo!()
+		<pallet_bridge_grandpa::BestFinalized<Runtime, WithDarwiniaGrandpa>>::get()
 	}
 }
 

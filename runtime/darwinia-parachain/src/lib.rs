@@ -20,11 +20,15 @@
 #![recursion_limit = "256"]
 
 pub mod pallets;
-pub mod weights;
-
 pub use pallets::*;
 
-// pub mod weights;
+pub mod weights;
+
+// pub mod migrations;
+// pub use migrations::*;
+
+pub mod bridges_message;
+pub use bridges_message::*;
 
 pub mod wasm {
 	//! Make the WASM binary available.
@@ -147,7 +151,7 @@ frame_support::construct_runtime! {
 		Session: pallet_session::{Pallet, Call, Storage, Event, Config<T>} = 9,
 		Aura: pallet_aura::{Pallet, Storage, Config<T>} = 10,
 		AuraExt: cumulus_pallet_aura_ext::{Pallet, Storage, Config} = 11,
-		RemoteGovernance: dp_common_runtime::remote_governance::{Pallet, Call, Storage, Event<T>} = 20,
+		RemoteGovernance: dp_common_runtime::remote_governance::{Pallet, Call, Storage, Event<T>} = 25,
 
 		// XCM things.
 		XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Call, Storage, Event<T>} = 12,
@@ -159,6 +163,14 @@ frame_support::construct_runtime! {
 		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
 		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
+
+		// Darwinia Parachain <> Darwinia.
+		BridgeDarwiniaGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20,
+		BridgeDarwiniaMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
+		BridgeDarwiniaDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
+
+		DarwiniaFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
+		FromDarwiniaIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
 	}
 }
 
