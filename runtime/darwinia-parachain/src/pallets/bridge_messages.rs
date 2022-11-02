@@ -44,8 +44,7 @@ impl Config<WithDarwiniaMessages> for Runtime {
 	type MaxUnrewardedRelayerEntriesAtInboundLane = MaxUnrewardedRelayerEntriesAtInboundLane;
 	type MessageDeliveryAndDispatchPayment = FeeMarketPayment<Self, WithDarwiniaFeeMarket, Ring>;
 	type MessageDispatch = bm_darwinia::FromDarwiniaMessageDispatch;
-	type OnDeliveryConfirmed =
-		(FromDarwiniaIssuing, FeeMarketMessageConfirmedHandler<Self, WithDarwiniaFeeMarket>);
+	type OnDeliveryConfirmed = FeeMarketMessageConfirmedHandler<Self, WithDarwiniaFeeMarket>;
 	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self, WithDarwiniaFeeMarket>;
 	type OutboundMessageFee = bp_darwinia_parachain::Balance;
 	type OutboundPayload = bm_darwinia::ToDarwiniaMessagePayload;

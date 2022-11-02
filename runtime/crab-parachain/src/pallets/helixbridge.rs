@@ -53,7 +53,7 @@ frame_support::parameter_types! {
 	pub const ParachainIssuingPalletId: PalletId = PalletId(*b"da/paais");
 	pub const CrabChainId: ChainId = CRAB_CHAIN_ID;
 	pub const CrabSmartChainId: u64 = 44;
-	pub const MaxNonceReserves: u32 = 1024;
+	pub const MaxNonceReserves: u32 = 4096;
 }
 
 impl Config for Runtime {
