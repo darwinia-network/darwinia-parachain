@@ -67,5 +67,6 @@ pub use bridge_messages::*;
 pub mod fee_market;
 pub use fee_market::*;
 
-pub mod helixbridge;
-pub use helixbridge::*;
+// TODO @Guantong
+// pub mod helixbridge;
+// pub use helixbridge::*;

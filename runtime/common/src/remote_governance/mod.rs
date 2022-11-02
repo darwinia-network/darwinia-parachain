@@ -37,7 +37,7 @@ use sp_std::boxed::Box;
 // --- darwinia-network ---
 use bp_runtime::{derive_account_id, ChainId, SourceAccount};
 
-type AnyCall<T> = Box<<T as Config>::Call>;
+type AnyCall<T> = Box<<T as Config>::RuntimeCall>;
 
 #[frame_support::pallet]
 pub mod pallet {
@@ -50,7 +50,7 @@ pub mod pallet {
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 
 		/// Remote governance call or a emergency call.
-		type Call: Parameter
+		type RuntimeCall: Parameter
 			+ GetDispatchInfo
 			+ UnfilteredDispatchable<RuntimeOrigin = Self::RuntimeOrigin>;
 

@@ -2,7 +2,7 @@
 use codec::{Decode, Encode};
 use scale_info::TypeInfo;
 // --- paritytech ---
-use frame_support::{weights::Weight, RuntimeDebug};
+use frame_support::{weights::Weight, RuntimeDebug, log};
 use sp_runtime::{FixedPointNumber, FixedU128};
 use sp_std::ops::RangeInclusive;
 // --- darwinia-network ---

@@ -33,7 +33,7 @@ fn emergency_safeguard_should_work() {
 		run_to_block(1);
 
 		let force_balance_transfer =
-			Box::new(Call::Balances(pallet_balances::Call::<Test>::force_transfer {
+			Box::new(RuntimeCall::Balances(pallet_balances::Call::<Test>::force_transfer {
 				source: ALICE,
 				dest: BOB,
 				value: 11,
@@ -72,7 +72,7 @@ fn enact_remote_call_should_work() {
 		run_to_block(1);
 
 		let force_balance_transfer =
-			Box::new(Call::Balances(pallet_balances::Call::<Test>::force_transfer {
+			Box::new(RuntimeCall::Balances(pallet_balances::Call::<Test>::force_transfer {
 				source: ALICE,
 				dest: BOB,
 				value: 11,
