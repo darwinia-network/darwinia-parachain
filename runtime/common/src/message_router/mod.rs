@@ -174,7 +174,7 @@ pub mod pallet {
 						TargetXcmExecConfig::<T>::get(T::MoonbeamLocation::get())
 							.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
 					remote_weight = T::MoonbeamWeigher::weight(&mut Self::extend_remote_xcm(
-						raw_account.clone(),
+						raw_account,
 						remote_xcm.clone(),
 						MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(0) },
 					))
@@ -185,7 +185,7 @@ pub mod pallet {
 						TargetXcmExecConfig::<T>::get(T::AstarLocation::get())
 							.ok_or(Error::<T>::TargetXcmExecNotConfig)?;
 					remote_weight = T::AstarWeigher::weight(&mut Self::extend_remote_xcm(
-						raw_account.clone(),
+						raw_account,
 						remote_xcm.clone(),
 						MultiAsset { id: AssetId::from(T::LocalAssetId::get()), fun: Fungible(0) },
 					))
@@ -229,7 +229,7 @@ pub mod pallet {
 
 			// Toggle the xcm_fee relative to a target context
 			let ancestry = T::LocationInverter::ancestry();
-			let mut remote_xcm_fee_anchor_dest = remote_xcm_fee.clone();
+			let mut remote_xcm_fee_anchor_dest = remote_xcm_fee;
 			match target {
 				Target::Moonbeam => {
 					remote_xcm_fee_anchor_dest
@@ -292,7 +292,8 @@ pub mod pallet {
 				DescendOrigin(X1(AccountId32 { network: NetworkId::Any, id: raw_account })),
 			]);
 			extend_xcm.0.extend(xcm.0.into_iter());
-			return extend_xcm;
+
+			extend_xcm
 		}
 	}
 }
