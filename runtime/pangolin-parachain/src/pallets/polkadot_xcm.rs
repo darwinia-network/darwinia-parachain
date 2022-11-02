@@ -1,3 +1,4 @@
+use bridge_runtime_common::messages::source::XcmBridgeAdapter;
 // --- paritytech ---
 use cumulus_pallet_xcm::Origin as CumulusOrigin;
 use cumulus_primitives_utility::ParentAsUmp;

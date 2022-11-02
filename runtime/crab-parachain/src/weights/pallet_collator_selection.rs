@@ -112,8 +112,8 @@ impl<T: frame_system::Config> pallet_collator_selection::WeightInfo for WeightIn
 			.saturating_add(Weight::from_ref_time(19_258_000 as u64).saturating_mul(r as u64))
 			// Standard Error: 3_675_000
 			.saturating_add(Weight::from_ref_time(95_695_000 as u64).saturating_mul(c as u64))
-			.saturating_add(T::DbWeight::get().reads(Weight::from_ref_time(2 as u64).saturating_mul(c as u64)))
-			.saturating_add(T::DbWeight::get().writes(Weight::from_ref_time(1 as u64).saturating_mul(r as u64)))
-			.saturating_add(T::DbWeight::get().writes(Weight::from_ref_time(1 as u64).saturating_mul(c as u64)))
+			.saturating_add(T::DbWeight::get().reads((2 as u64).saturating_mul(c as u64)))
+			.saturating_add(T::DbWeight::get().writes((1 as u64).saturating_mul(r as u64)))
+			.saturating_add(T::DbWeight::get().writes((1 as u64).saturating_mul(c as u64)))
 	}
 }

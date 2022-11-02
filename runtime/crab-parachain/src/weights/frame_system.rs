@@ -74,20 +74,20 @@ impl<T: frame_system::Config> frame_system::WeightInfo for WeightInfo<T> {
 		Weight::from_ref_time(0 as u64)
 			// Standard Error: 0
 			.saturating_add(Weight::from_ref_time(445_000 as u64).saturating_mul(i as u64))
-			.saturating_add(T::DbWeight::get().writes(Weight::from_ref_time(1 as u64).saturating_mul(i as u64)))
+			.saturating_add(T::DbWeight::get().writes((1 as u64).saturating_mul(i as u64)))
 	}
 	// Storage: Skipped Metadata (r:0 w:0)
 	fn kill_storage(i: u32, ) -> Weight {
 		Weight::from_ref_time(0 as u64)
 			// Standard Error: 0
 			.saturating_add(Weight::from_ref_time(314_000 as u64).saturating_mul(i as u64))
-			.saturating_add(T::DbWeight::get().writes(Weight::from_ref_time(1 as u64).saturating_mul(i as u64)))
+			.saturating_add(T::DbWeight::get().writes((1 as u64).saturating_mul(i as u64)))
 	}
 	// Storage: Skipped Metadata (r:0 w:0)
 	fn kill_prefix(p: u32, ) -> Weight {
 		Weight::from_ref_time(1_189_000 as u64)
 			// Standard Error: 0
 			.saturating_add(Weight::from_ref_time(680_000 as u64).saturating_mul(p as u64))
-			.saturating_add(T::DbWeight::get().writes(Weight::from_ref_time(1 as u64).saturating_mul(p as u64)))
+			.saturating_add(T::DbWeight::get().writes((1 as u64).saturating_mul(p as u64)))
 	}
 }

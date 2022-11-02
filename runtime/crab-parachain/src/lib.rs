@@ -176,7 +176,8 @@ frame_support::construct_runtime! {
 		BridgeCrabMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
 
 		CrabFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
-		FromCrabIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
+		// TODO @Guantong
+		// FromCrabIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
 	}
 }
 

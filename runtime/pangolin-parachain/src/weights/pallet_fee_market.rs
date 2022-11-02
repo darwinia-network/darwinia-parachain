@@ -66,16 +66,15 @@ impl<T: frame_system::Config> pallet_fee_market::WeightInfo for WeightInfo<T> {
 			.saturating_add(T::DbWeight::get().reads(9 as u64))
 			.saturating_add(T::DbWeight::get().writes(5 as u64))
 	}
-	// Storage: FeeMarket Relayers (r:1 w:0)
-	// Storage: System Account (r:1 w:1)
-	// Storage: FeeMarket RelayersMap (r:4 w:1)
-	// Storage: Balances Locks (r:1 w:1)
-	// Storage: FeeMarket Orders (r:1 w:0)
-	// Storage: FeeMarket AssignedRelayersNumber (r:1 w:0)
-	// Storage: FeeMarket AssignedRelayers (r:0 w:1)
-	fn update_locked_collateral() -> Weight {
-		Weight::from_ref_time(48_545_000 as u64)
-			.saturating_add(T::DbWeight::get().reads(9 as u64))
+	fn increase_locked_collateral() -> Weight {
+		Weight::from_ref_time(192_480_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(25 as u64))
+			.saturating_add(T::DbWeight::get().writes(3 as u64))
+	}
+
+	fn decrease_locked_collateral() -> Weight {
+		Weight::from_ref_time(200_415_000 as u64)
+			.saturating_add(T::DbWeight::get().reads(25 as u64))
 			.saturating_add(T::DbWeight::get().writes(4 as u64))
 	}
 	// Storage: FeeMarket Relayers (r:1 w:0)
