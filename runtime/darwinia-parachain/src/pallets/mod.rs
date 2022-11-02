@@ -31,6 +31,9 @@ pub use aura::*;
 pub mod aura_ext;
 pub use aura_ext::*;
 
+pub mod remote_governance;
+pub use remote_governance::*;
+
 pub mod xcmp_queue;
 pub use xcmp_queue::*;
 
@@ -54,6 +57,21 @@ pub use proxy::*;
 
 pub mod sudo;
 pub use sudo::*;
+
+pub mod bridge_dispatch;
+pub use bridge_dispatch::*;
+
+pub mod bridge_grandpa;
+pub use bridge_grandpa::*;
+
+pub mod bridge_messages;
+pub use bridge_messages::*;
+
+pub mod fee_market;
+pub use fee_market::*;
+
+pub mod helixbridge;
+pub use helixbridge::*;
 
 pub mod message_router;
 pub use message_router::*;

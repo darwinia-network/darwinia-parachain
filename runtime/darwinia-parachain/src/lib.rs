@@ -20,11 +20,15 @@
 #![recursion_limit = "256"]
 
 pub mod pallets;
-pub mod weights;
-
 pub use pallets::*;
 
-// pub mod weights;
+pub mod weights;
+
+// pub mod migrations;
+// pub use migrations::*;
+
+pub mod bridges_message;
+pub use bridges_message::*;
 
 pub mod wasm {
 	//! Make the WASM binary available.
@@ -133,35 +137,40 @@ frame_support::construct_runtime! {
 		NodeBlock = OpaqueBlock,
 		UncheckedExtrinsic = UncheckedExtrinsic,
 	{
-		// System support stuff.
 		System: frame_system::{Pallet, Call, Storage, Config, Event<T>} = 0,
 		ParachainSystem: cumulus_pallet_parachain_system::{Pallet, Call, Inherent, Storage, Config, Event<T>, ValidateUnsigned} = 1,
 		Timestamp: pallet_timestamp::{Pallet, Call, Inherent, Storage} = 3,
 		ParachainInfo: parachain_info::{Pallet, Storage, Config} = 4,
 
-		// Monetary stuff.
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>} = 5,
 		TransactionPayment: pallet_transaction_payment::{Pallet, Storage, Event<T>} = 6,
 
-		// Collator support. the order of these 4 are important and shall not change.
+		// Collator things. the order of these 4 are important and shall not change.
 		Authorship: pallet_authorship::{Pallet, Call, Storage} = 7,
 		CollatorSelection: pallet_collator_selection::{Pallet, Call, Storage, Event<T>, Config<T>} = 8,
 		Session: pallet_session::{Pallet, Call, Storage, Event, Config<T>} = 9,
 		Aura: pallet_aura::{Pallet, Storage, Config<T>} = 10,
 		AuraExt: cumulus_pallet_aura_ext::{Pallet, Storage, Config} = 11,
+		RemoteGovernance: dp_common_runtime::remote_governance::{Pallet, Call, Storage, Event<T>} = 25,
 
-		// XCM helpers.
+		// XCM things.
 		XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Call, Storage, Event<T>} = 12,
 		PolkadotXcm: pallet_xcm::{Pallet, Call, Storage, Event<T>, Origin, Config} = 13,
 		CumulusXcm: cumulus_pallet_xcm::{Pallet, Event<T>, Origin} = 14,
 		DmpQueue: cumulus_pallet_dmp_queue::{Pallet, Call, Storage, Event<T>} = 15,
 
-		// Handy utilities.
 		Utility: pallet_utility::{Pallet, Call, Event} = 16,
 		Multisig: pallet_multisig::{Pallet, Call, Storage, Event<T>} = 17,
 		Proxy: pallet_proxy::{Pallet, Call, Storage, Event<T>} = 18,
 		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>} = 19,
 
+		// Darwinia Parachain <> Darwinia.
+		BridgeDarwiniaGrandpa: pallet_bridge_grandpa::<Instance1>::{Pallet, Call, Storage} = 20,
+		BridgeDarwiniaMessages: pallet_bridge_messages::<Instance1>::{Pallet, Call, Storage, Event<T>} = 21,
+		BridgeDarwiniaDispatch: pallet_bridge_dispatch::<Instance1>::{Pallet, Event<T>} = 22,
+
+		DarwiniaFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
+		FromDarwiniaIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
 		MessageRouter: dp_common_runtime::message_router::{Pallet, Call, Storage, Event<T>} = 26,
 	}
 }

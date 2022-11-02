@@ -605,9 +605,10 @@ pub mod pallet {
 
 				let message_nonce =
 					T::MessageNoncer::outbound_latest_generated_nonce(T::MessageLaneId::get());
-				return Ok(message_nonce);
+
+				Ok(message_nonce)
 			} else {
-				return Err(Error::<T>::BackingAccountNone.into());
+				Err(Error::<T>::BackingAccountNone.into())
 			}
 		}
 	}

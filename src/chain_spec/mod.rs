@@ -32,7 +32,7 @@ pub use pangolin_parachain::{
 // --- crates.io ---
 use serde::{Deserialize, Serialize};
 // --- paritytech ---
-use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
+use sc_chain_spec::ChainSpecExtension;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{Pair, Public};
 use sp_runtime::traits::IdentifyAccount;
@@ -43,7 +43,7 @@ use dc_primitives::{AccountId, AccountPublic};
 pub const SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;
 
 /// The extensions for the [`ChainSpec`].
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ChainSpecGroup, ChainSpecExtension)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ChainSpecExtension)]
 #[serde(deny_unknown_fields)]
 pub struct Extensions {
 	/// The relay chain of the Parachain.
