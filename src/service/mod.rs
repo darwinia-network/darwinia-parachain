@@ -53,7 +53,7 @@ use cumulus_primitives_core::{
 use cumulus_primitives_parachain_inherent::ParachainInherentData;
 use cumulus_relay_chain_inprocess_interface::build_inprocess_relay_chain;
 use cumulus_relay_chain_interface::{RelayChainError, RelayChainInterface, RelayChainResult};
-use cumulus_relay_chain_rpc_interface::RelayChainRPCInterface;
+use cumulus_relay_chain_rpc_interface::{create_client_and_start_worker, RelayChainRpcInterface};
 use polkadot_service::CollatorPair;
 use sc_basic_authorship::ProposerFactory;
 use sc_client_api::StateBackendFor;
@@ -62,7 +62,7 @@ use sc_consensus::{
 	BlockImportParams, DefaultImportQueue,
 };
 use sc_executor::WasmExecutor;
-use sc_network::NetworkService;
+use sc_network::{NetworkBlock, NetworkService};
 use sc_service::{
 	error::Result, ChainSpec, Configuration, PartialComponents, TFullBackend, TFullClient,
 	TaskManager,
@@ -70,10 +70,10 @@ use sc_service::{
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
 use sc_transaction_pool::FullPool;
 use sp_api::{ApiExt, HeaderT};
-use sp_consensus::{AlwaysCanAuthor, CacheKeyId};
+use sp_consensus::CacheKeyId;
 use sp_consensus_aura::sr25519::{AuthorityId as AuraId, AuthorityPair as AuraPair};
 use sp_keystore::SyncCryptoStorePtr;
-use sp_runtime::{generic::BlockId, traits::BlakeTwo256};
+use sp_runtime::{app_crypto::AppKey, generic::BlockId, traits::BlakeTwo256};
 use substrate_prometheus_endpoint::Registry;
 // --- darwinia-network ---
 use dc_primitives::{OpaqueBlock as Block, *};
@@ -304,8 +304,10 @@ async fn build_relay_chain_interface(
 	hwbench: Option<sc_sysinfo::HwBench>,
 ) -> RelayChainResult<(Arc<(dyn RelayChainInterface + 'static)>, Option<CollatorPair>)> {
 	match collator_options.relay_chain_rpc_url {
-		Some(relay_chain_url) =>
-			Ok((Arc::new(RelayChainRPCInterface::new(relay_chain_url).await?) as Arc<_>, None)),
+		Some(relay_chain_url) => {
+			let client = create_client_and_start_worker(relay_chain_url, task_manager).await?;
+			Ok((Arc::new(RelayChainRpcInterface::new(client)) as Arc<_>, None))
+		},
 		None => build_inprocess_relay_chain(
 			polkadot_config,
 			parachain_config,
@@ -500,7 +502,7 @@ where
 	let aura_verifier = move || {
 		let slot_duration = cumulus_client_consensus_aura::slot_duration(&*client2).unwrap();
 
-		Box::new(cumulus_client_consensus_aura::build_verifier::<AuraPair, _, _, _>(
+		Box::new(cumulus_client_consensus_aura::build_verifier::<<AuraId as AppKey>::Pair, _, _>(
 			BuildVerifierParams {
 				client: client2.clone(),
 				create_inherent_data_providers: move |_, _| async move {
@@ -514,7 +516,6 @@ where
 
 					Ok((slot, timestamp))
 				},
-				can_author_with: AlwaysCanAuthor,
 				telemetry,
 			},
 		)) as Box<_>
