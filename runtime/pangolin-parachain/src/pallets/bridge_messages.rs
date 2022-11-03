@@ -1,7 +1,10 @@
 pub use pallet_bridge_messages::Instance1 as WithPangolinMessages;
 
 // --- darwinia-network ---
-use crate::{weights::pallet_bridge_messages::WeightInfo, *};
+use crate::{
+	bm_pangolin::ToPangolinMaximalOutboundPayloadSize, weights::pallet_bridge_messages::WeightInfo,
+	*,
+};
 use bp_messages::{source_chain::SenderOrigin, MessageNonce};
 use bp_runtime::{ChainId, PANGOLIN_CHAIN_ID};
 use pallet_bridge_messages::Config;
@@ -36,10 +39,13 @@ impl Config<WithPangolinMessages> for Runtime {
 	type MaxMessagesToPruneAtOnce = MaxMessagesToPruneAtOnce;
 	type MaxUnconfirmedMessagesAtInboundLane = MaxUnconfirmedMessagesAtInboundLane;
 	type MaxUnrewardedRelayerEntriesAtInboundLane = MaxUnrewardedRelayerEntriesAtInboundLane;
+	type MaximalOutboundPayloadSize = ToPangolinMaximalOutboundPayloadSize;
 	type MessageDeliveryAndDispatchPayment = FeeMarketPayment<Self, WithPangolinFeeMarket, Ring>;
 	type MessageDispatch = bm_pangolin::FromPangolinMessageDispatch;
-	type OnDeliveryConfirmed =
-		(FromPangolinIssuing, FeeMarketMessageConfirmedHandler<Self, WithPangolinFeeMarket>);
+	// TODO @Guantong
+	type OnDeliveryConfirmed = ();
+	// type OnDeliveryConfirmed =
+	// 	(FromPangolinIssuing, FeeMarketMessageConfirmedHandler<Self, WithPangolinFeeMarket>);
 	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self, WithPangolinFeeMarket>;
 	type OutboundMessageFee = bp_pangolin_parachain::Balance;
 	type OutboundPayload = bm_pangolin::ToPangolinMessagePayload;

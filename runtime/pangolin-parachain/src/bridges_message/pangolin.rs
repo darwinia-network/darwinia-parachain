@@ -71,6 +71,12 @@ impl Parameter for PangolinParachainToPangolinParameter {
 	}
 }
 
+/// Maximal outbound payload size of Millau -> Rialto messages.
+pub type ToPangolinMaximalOutboundPayloadSize =
+	bridge_runtime_common::messages::source::FromThisChainMaximalOutboundPayloadSize<
+		WithPangolinMessageBridge,
+	>;
+
 /// Pangolin <-> PangolinParachain message bridge.
 #[derive(Clone, Copy, RuntimeDebug)]
 pub struct WithPangolinMessageBridge;
@@ -196,9 +202,10 @@ impl XcmBridge for ToPangolinBridge {
 	}
 
 	fn build_destination() -> MultiLocation {
-		let dest: InteriorMultiLocation = PangolinNetwork::get().into();
-		let here = UniversalLocation::get();
-		dest.relative_to(&here)
+		unimplemented!("TODO")
+		// let dest: InteriorMultiLocation = PangolinNetwork::get().into();
+		// let here = UniversalLocation::get();
+		// dest.relative_to(&here)
 	}
 
 	fn xcm_lane() -> LaneId {

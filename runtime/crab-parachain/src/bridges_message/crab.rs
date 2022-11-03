@@ -71,6 +71,12 @@ impl Parameter for CrabParachainToCrabParameter {
 	}
 }
 
+/// Maximal outbound payload size of Millau -> Rialto messages.
+pub type ToCrabMaximalOutboundPayloadSize =
+	bridge_runtime_common::messages::source::FromThisChainMaximalOutboundPayloadSize<
+		WithCrabMessageBridge,
+	>;
+
 /// Crab <-> CrabParachain message bridge.
 #[derive(Clone, Copy, RuntimeDebug)]
 pub struct WithCrabMessageBridge;
@@ -189,9 +195,10 @@ impl XcmBridge for ToCrabBridge {
 	}
 
 	fn build_destination() -> MultiLocation {
-		let dest: InteriorMultiLocation = CrabNetwork::get().into();
-		let here = UniversalLocation::get();
-		dest.relative_to(&here)
+		unimplemented!("TODO")
+		// let dest: InteriorMultiLocation = CrabNetwork::get().into();
+		// let here = UniversalLocation::get();
+		// dest.relative_to(&here)
 	}
 
 	fn xcm_lane() -> LaneId {

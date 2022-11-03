@@ -702,7 +702,7 @@ dependencies = [
 [[package]]
 name = "bp-darwinia-core"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bp-messages",
  "bp-runtime",
@@ -718,7 +718,7 @@ dependencies = [
 [[package]]
 name = "bp-header-chain"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bp-runtime",
  "finality-grandpa",
@@ -735,7 +735,7 @@ dependencies = [
 [[package]]
 name = "bp-messages"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bitvec 1.0.1",
  "bp-runtime",
@@ -752,7 +752,7 @@ dependencies = [
 [[package]]
 name = "bp-parachains"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bp-polkadot-core",
  "bp-runtime",
@@ -765,7 +765,7 @@ dependencies = [
 [[package]]
 name = "bp-polkadot-core"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bp-messages",
  "bp-runtime",
@@ -785,7 +785,7 @@ dependencies = [
 [[package]]
 name = "bp-runtime"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -806,7 +806,7 @@ dependencies = [
 [[package]]
 name = "bp-test-utils"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bp-header-chain",
  "ed25519-dalek",
@@ -821,7 +821,7 @@ dependencies = [
 [[package]]
 name = "bridge-runtime-common"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bp-messages",
  "bp-parachains",
@@ -5585,7 +5585,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-grandpa"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bp-header-chain",
  "bp-runtime",
@@ -5607,7 +5607,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-messages"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bitvec 1.0.1",
  "bp-messages",
@@ -5627,7 +5627,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-parachains"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bp-parachains",
  "bp-polkadot-core",
@@ -5826,7 +5826,7 @@ dependencies = [
 [[package]]
 name = "pallet-fee-market"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#f7a231fbec4377c1e7486f809b630bb12446ba49"
 dependencies = [
  "bp-messages",
  "bp-runtime",

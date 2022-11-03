@@ -1,7 +1,7 @@
 pub use pallet_bridge_messages::Instance1 as WithCrabMessages;
 
 // --- darwinia-network ---
-use crate::*;
+use crate::{bm_crab::ToCrabMaximalOutboundPayloadSize, *};
 use bp_messages::{source_chain::SenderOrigin, MessageNonce};
 use bp_runtime::{ChainId, CRAB_CHAIN_ID};
 use pallet_bridge_messages::Config;
@@ -36,10 +36,13 @@ impl Config<WithCrabMessages> for Runtime {
 	type MaxMessagesToPruneAtOnce = MaxMessagesToPruneAtOnce;
 	type MaxUnconfirmedMessagesAtInboundLane = MaxUnconfirmedMessagesAtInboundLane;
 	type MaxUnrewardedRelayerEntriesAtInboundLane = MaxUnrewardedRelayerEntriesAtInboundLane;
+	type MaximalOutboundPayloadSize = ToCrabMaximalOutboundPayloadSize;
 	type MessageDeliveryAndDispatchPayment = FeeMarketPayment<Self, WithCrabFeeMarket, Ring>;
 	type MessageDispatch = bm_crab::FromCrabMessageDispatch;
-	type OnDeliveryConfirmed =
-		(FromCrabIssuing, FeeMarketMessageConfirmedHandler<Self, WithCrabFeeMarket>);
+	// TODO @Guantong
+	type OnDeliveryConfirmed = ();
+	// type OnDeliveryConfirmed =
+	// 	(FromCrabIssuing, FeeMarketMessageConfirmedHandler<Self, WithCrabFeeMarket>);
 	type OnMessageAccepted = FeeMarketMessageAcceptedHandler<Self, WithCrabFeeMarket>;
 	type OutboundMessageFee = bp_crab_parachain::Balance;
 	type OutboundPayload = bm_crab::ToCrabMessagePayload;
