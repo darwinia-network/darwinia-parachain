@@ -100,17 +100,6 @@ impl<T: frame_system::Config> pallet_bridge_messages::WeightInfo for WeightInfo<
 			.saturating_add(T::DbWeight::get().writes(3 as u64))
 	}
 	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
-	// Storage: BridgePangolinMessages OutboundLanes (r:1 w:0)
-	// Storage: System Account (r:2 w:2)
-	// Storage: BridgePangolinMessages OutboundMessages (r:1 w:1)
-	fn increase_message_fee(i: u32, ) -> Weight {
-		Weight::from_ref_time(0 as u64)
-			// Standard Error: 0
-			.saturating_add(Weight::from_ref_time(3_000 as u64).saturating_mul(i as u64))
-			.saturating_add(T::DbWeight::get().reads(5 as u64))
-			.saturating_add(T::DbWeight::get().writes(3 as u64))
-	}
-	// Storage: BridgePangolinMessages PalletOperatingMode (r:1 w:0)
 	// Storage: BridgePangolinGrandpa ImportedHeaders (r:1 w:0)
 	// Storage: BridgePangolinMessages InboundLanes (r:1 w:1)
 	// Storage: TransactionPayment NextFeeMultiplier (r:1 w:0)

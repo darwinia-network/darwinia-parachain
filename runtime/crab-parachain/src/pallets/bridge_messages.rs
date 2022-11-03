@@ -23,8 +23,6 @@ frame_support::parameter_types! {
 		bp_crab::MAX_UNCONFIRMED_MESSAGES_IN_CONFIRMATION_TX;
 	pub const MaxUnrewardedRelayerEntriesAtInboundLane: MessageNonce =
 		bp_crab::MAX_UNREWARDED_RELAYERS_IN_CONFIRMATION_TX;
-	pub const GetDeliveryConfirmationTransactionFee: Balance =
-		bp_crab::MAX_SINGLE_MESSAGE_DELIVERY_CONFIRMATION_TX_WEIGHT.ref_time() as _;
 	pub RootAccountForPayments: Option<AccountId> = None;
 }
 

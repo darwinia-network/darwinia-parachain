@@ -3,6 +3,7 @@ use frame_support::traits::{EnsureOrigin, Get};
 use frame_system::RawOrigin;
 // --- darwinia-network ---
 use crate::*;
+use bp_runtime::{ChainId, PANGOLIN_CHAIN_ID};
 use dp_common_runtime::remote_governance::Config;
 
 pub struct EnsureSpecific;
@@ -33,6 +34,7 @@ impl Get<Hash> for PangolinBestFinalized {
 
 frame_support::parameter_types! {
 	pub const CheckInterval: BlockNumber = 2 * HOURS;
+	pub const PangolinChainId: ChainId = PANGOLIN_CHAIN_ID;
 }
 
 impl Config for Runtime {

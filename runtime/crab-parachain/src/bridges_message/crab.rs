@@ -80,7 +80,7 @@ impl MessageBridge for WithCrabMessageBridge {
 
 	const BRIDGED_CHAIN_ID: ChainId = CRAB_CHAIN_ID;
 	const BRIDGED_MESSAGES_PALLET_NAME: &'static str =
-		bridge_runtime_common::WITH_CRAB_PARACHAIN_MESSAGES_PALLET_NAME;
+		bridge_runtime_common::pallets::WITH_CRAB_PARACHAIN_MESSAGES_PALLET_NAME;
 	const RELAYER_FEE_PERCENT: u32 = 10;
 	const THIS_CHAIN_ID: ChainId = CRAB_PARACHAIN_CHAIN_ID;
 }
@@ -133,7 +133,7 @@ impl ChainWithMessages for Crab {
 }
 impl BridgedChainWithMessages for Crab {
 	fn maximal_extrinsic_size() -> u32 {
-		bp_crab::Crab::max_extrinsic_size()
+		bp_crab::DarwiniaLike::max_extrinsic_size()
 	}
 
 	fn verify_dispatch_weight(_message_payload: &[u8]) -> bool {
@@ -176,7 +176,7 @@ pub struct ToCrabBridge;
 
 impl XcmBridge for ToCrabBridge {
 	type MessageBridge = WithCrabMessageBridge;
-	type MessageSender = pallet_bridge_messages::Pallet<Runtime, WithCrabMessagesInstance>;
+	type MessageSender = pallet_bridge_messages::Pallet<Runtime, WithCrabMessages>;
 
 	fn universal_location() -> InteriorMultiLocation {
 		UniversalLocation::get()

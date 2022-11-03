@@ -354,6 +354,7 @@ bp-runtime             = { git = "https://github.com/darwinia-patch/darwinia-mes
 bridge-runtime-common  = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }
 pallet-bridge-grandpa  = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }
 pallet-bridge-messages = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }
+pallet-bridge-parachains = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }
 pallet-fee-market      = { git = "https://github.com/darwinia-patch/darwinia-messages-substrate", branch = "guantong-xcm" }
 
 [patch."https://github.com/paritytech/cumulus"]

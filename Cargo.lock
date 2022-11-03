@@ -702,7 +702,7 @@ dependencies = [
 [[package]]
 name = "bp-darwinia-core"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bp-messages",
  "bp-runtime",
@@ -718,7 +718,7 @@ dependencies = [
 [[package]]
 name = "bp-header-chain"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bp-runtime",
  "finality-grandpa",
@@ -735,7 +735,7 @@ dependencies = [
 [[package]]
 name = "bp-messages"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bitvec 1.0.1",
  "bp-runtime",
@@ -752,7 +752,7 @@ dependencies = [
 [[package]]
 name = "bp-parachains"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bp-polkadot-core",
  "bp-runtime",
@@ -765,7 +765,7 @@ dependencies = [
 [[package]]
 name = "bp-polkadot-core"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bp-messages",
  "bp-runtime",
@@ -785,7 +785,7 @@ dependencies = [
 [[package]]
 name = "bp-runtime"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -806,7 +806,7 @@ dependencies = [
 [[package]]
 name = "bp-test-utils"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bp-header-chain",
  "ed25519-dalek",
@@ -821,7 +821,7 @@ dependencies = [
 [[package]]
 name = "bridge-runtime-common"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bp-messages",
  "bp-parachains",
@@ -3752,9 +3752,9 @@ dependencies = [
 
 [[package]]
 name = "io-lifetimes"
-version = "0.7.4"
+version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e6e481ccbe3dea62107216d0d1138bb8ad8e5e5c43009a098bd1990272c497b0"
+checksum = "59ce5ef949d49ee85593fc4d3f3f95ad61657076395cbbce23e2121fc5542074"
 
 [[package]]
 name = "ip_network"
@@ -5585,7 +5585,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-grandpa"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bp-header-chain",
  "bp-runtime",
@@ -5607,7 +5607,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-messages"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bitvec 1.0.1",
  "bp-messages",
@@ -5627,7 +5627,7 @@ dependencies = [
 [[package]]
 name = "pallet-bridge-parachains"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bp-parachains",
  "bp-polkadot-core",
@@ -5761,7 +5761,7 @@ dependencies = [
 [[package]]
 name = "pallet-election-provider-support-benchmarking"
 version = "4.0.0-dev"
-source = "git+https://github.com/paritytech/substrate?branch=master#8fb4138d73ad88a19331c30c36ba91796c5846e1"
+source = "git+https://github.com/paritytech/substrate?branch=master#c7147ce4d3f8b43fe8c3875f0216739c6901c1e4"
 dependencies = [
  "frame-benchmarking",
  "frame-election-provider-support",
@@ -5826,7 +5826,7 @@ dependencies = [
 [[package]]
 name = "pallet-fee-market"
 version = "0.1.0"
-source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#888db90c30abc5335c810b9b5ab633f880107efd"
+source = "git+https://github.com/darwinia-patch/darwinia-messages-substrate?branch=guantong-xcm#9f16b6bff40672382f2609b8088504e7d8888c94"
 dependencies = [
  "bp-messages",
  "bp-runtime",
@@ -6019,7 +6019,7 @@ dependencies = [
 [[package]]
 name = "pallet-nomination-pools-benchmarking"
 version = "1.0.0"
-source = "git+https://github.com/paritytech/substrate?branch=master#8fb4138d73ad88a19331c30c36ba91796c5846e1"
+source = "git+https://github.com/paritytech/substrate?branch=master#c7147ce4d3f8b43fe8c3875f0216739c6901c1e4"
 dependencies = [
  "frame-benchmarking",
  "frame-election-provider-support",
@@ -6066,7 +6066,7 @@ dependencies = [
 [[package]]
 name = "pallet-offences-benchmarking"
 version = "4.0.0-dev"
-source = "git+https://github.com/paritytech/substrate?branch=master#8fb4138d73ad88a19331c30c36ba91796c5846e1"
+source = "git+https://github.com/paritytech/substrate?branch=master#c7147ce4d3f8b43fe8c3875f0216739c6901c1e4"
 dependencies = [
  "frame-benchmarking",
  "frame-election-provider-support",
@@ -6503,6 +6503,7 @@ dependencies = [
  "pallet-balances",
  "pallet-bridge-grandpa",
  "pallet-bridge-messages",
+ "pallet-bridge-parachains",
  "pallet-collator-selection",
  "pallet-fee-market",
  "pallet-multisig",
@@ -8795,16 +8796,16 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.35.12"
+version = "0.35.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "985947f9b6423159c4726323f373be0a21bdb514c5af06a849cb3d2dce2d01e8"
+checksum = "727a1a6d65f786ec22df8a81ca3121107f235970dc1705ed681d3e6e8b9cd5f9"
 dependencies = [
  "bitflags",
  "errno",
  "io-lifetimes",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.36.1",
+ "windows-sys 0.42.0",
 ]
 
 [[package]]
