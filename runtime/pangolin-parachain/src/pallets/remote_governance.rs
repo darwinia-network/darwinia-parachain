@@ -29,6 +29,8 @@ pub struct PangolinBestFinalized;
 impl Get<Hash> for PangolinBestFinalized {
 	fn get() -> Hash {
 		<pallet_bridge_grandpa::BestFinalized<Runtime, WithPangolinGrandpa>>::get()
+			.map(|(_, h)| h)
+			.unwrap_or_default()
 	}
 }
 

@@ -29,6 +29,8 @@ pub struct CrabBestFinalized;
 impl Get<Hash> for CrabBestFinalized {
 	fn get() -> Hash {
 		<pallet_bridge_grandpa::BestFinalized<Runtime, WithCrabGrandpa>>::get()
+			.map(|(_, h)| h)
+			.unwrap_or_default()
 	}
 }
 
