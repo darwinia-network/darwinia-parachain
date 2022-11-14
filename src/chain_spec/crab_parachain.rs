@@ -128,7 +128,7 @@ pub fn genesis_config() -> ChainSpec {
 		"crab_parachain",
 		ChainType::Live,
 		genesis,
-		["/dns4/r1.crab-parachain-p2p.darwinia.network/tcp/30333/ws/p2p/12D3KooWG4PuU1ysPwi3XTnWzAzv9vf8yEmh3kNnZH2nWW9TVJcQ"]
+		["/dns4/r1.crab-parachain-p2p.darwinia.network/tcp/30333/ws/p2p/12D3KooWJ2HH1UG5djNYT5SKGBsZ7FF8Q8haWfWPwqn3d1TxFZw4"]
 		.iter()
 		.filter_map(|s| FromStr::from_str(s).ok())
 		.collect(),
