@@ -171,7 +171,9 @@ frame_support::construct_runtime! {
 
 		DarwiniaFeeMarket: pallet_fee_market::<Instance1>::{Pallet, Call, Storage, Event<T>} = 23,
 		FromDarwiniaIssuing: dp_common_runtime::helixbridge::{Pallet, Call, Storage, Event<T>} = 24,
+
 		MessageRouter: dp_common_runtime::message_router::{Pallet, Call, Storage, Event<T>} = 26,
+		SoloToPara: cumulus_pallet_solo_to_para::{Pallet, Call, Storage, Event} = 27,
 	}
 }
 

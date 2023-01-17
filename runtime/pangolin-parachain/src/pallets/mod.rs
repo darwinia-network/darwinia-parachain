@@ -75,3 +75,6 @@ pub use helixbridge::*;
 
 pub mod message_router;
 pub use message_router::*;
+
+pub mod solo_to_para;
+pub use solo_to_para::*;
