@@ -30,6 +30,24 @@ pub const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
 /// We allow for .5 seconds of compute with a 12 second average block time.
 pub const MAXIMUM_BLOCK_WEIGHT: Weight = WEIGHT_PER_SECOND / 2;
 
+pub enum CallFilter {}
+impl frame_support::traits::Contains<Call> for CallFilter {
+	fn contains(call: &Call) -> bool {
+		match call {
+			Call::System(_)
+			| Call::ParachainSystem(_)
+			| Call::Timestamp(_)
+			| Call::Authorship(_)
+			| Call::CollatorSelection(_)
+			| Call::Session(_)
+			| Call::Sudo(_)
+			| Call::SoloToPara(_)
+			| Call::XcmpQueue(_) => true,
+			_ => false,
+		}
+	}
+}
+
 frame_support::parameter_types! {
 	pub const BlockHashCount: BlockNumber = 2400;
 	pub const Version: RuntimeVersion = VERSION;
@@ -59,7 +77,7 @@ frame_support::parameter_types! {
 impl Config for Runtime {
 	type AccountData = AccountData<Balance>;
 	type AccountId = AccountId;
-	type BaseCallFilter = Everything;
+	type BaseCallFilter = CallFilter;
 	type BlockHashCount = BlockHashCount;
 	type BlockLength = RuntimeBlockLength;
 	type BlockNumber = BlockNumber;
